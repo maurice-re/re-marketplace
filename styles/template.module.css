@@ -12,15 +12,6 @@
   align-items: center;
 }
 
-.footer {
-  display: flex;
-  flex: 1;
-  padding: 2rem 0;
-  border-top: 1px solid #eaeaea;
-  justify-content: center;
-  align-items: center;
-}
-
 .footer a {
   display: flex;
   justify-content: center;
@@ -113,4 +104,24 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.circle {
+  width: 200px;
+  height: 200px;
+  background-color: green;
+  border-radius: 50%;
+}
+
+.list {
+  list-style-type: none;
+}
+
+.nextButton {
+  background-color: transparent;
+  border-width: 0px;
+}
+
+.listItem {
+  display: inline;
 }
