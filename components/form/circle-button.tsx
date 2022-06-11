@@ -29,9 +29,10 @@ function FormCircleButton({
             width={icon ? 100 : 200}
             objectFit={"cover"}
             style={{ borderRadius: icon ? 0 : "50%" }}
+            alt={title}
           />
         ) : (
-          <Image src={"/"} height={100} width={100} />
+          <Image src={"/"} height={100} width={100} alt={"placeholder"} />
         )}
       </div>
       <p className={styles.itemTitle}>{title}</p>

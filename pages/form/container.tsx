@@ -100,7 +100,12 @@ const ProductPage: NextPage = () => {
       <main className={styles.main}>
         <div className={styles.row}>
           <div className={styles.pictureColumn}>
-            <Image src={re_container.image} width={500} height={500} />
+            <Image
+              src={re_container.image}
+              width={500}
+              height={500}
+              alt={re_container.title}
+            />
           </div>
           <div id="options" className={styles.column}>
             <h1 className={styles.productTitle}>{re_container.title}</h1>

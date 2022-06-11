@@ -16,7 +16,7 @@ const LocationPage: NextPage = () => {
       context.addRoute("business-types");
       setContext(context);
     }
-  }, [location]);
+  }, [context, location, setContext]);
 
   return (
     <div className={styles.container}>

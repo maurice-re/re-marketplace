@@ -1,10 +1,10 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useState } from 'react'
-import styles from '../styles/Form.module.css'
+import type { NextPage } from "next";
+import Head from "next/head";
+import { useState } from "react";
+import styles from "../../styles/Form.module.css";
 
 const DesignClientPage: NextPage = () => {
-  const [location, setLocation] = useState<string>('');
+  const [location, setLocation] = useState<string>("");
 
   return (
     <div className={styles.container}>
@@ -15,15 +15,13 @@ const DesignClientPage: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Become a design client
-        </h1>
+        <h1 className={styles.title}>Become a design client</h1>
         <div>
           <button type="button">Contact us</button>
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default DesignClientPage
+export default DesignClientPage;
