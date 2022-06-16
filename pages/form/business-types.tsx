@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import FormButtonPage from "../../components/button-page";
+import FormButtonPage from "../../components/form/button-page";
 import { business_types } from "../../constants/form";
 import styles from "../../styles/Form.module.css";
 

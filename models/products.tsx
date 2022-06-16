@@ -17,6 +17,7 @@ export class Product {
     this.image = image;
 
     this.sku = new Map<string, SKU>();
+    this.sku.set("0", new SKU("Error", "", ""));
     sizes.forEach((size, index) => {
       materials.forEach((material, mIndex) => {
         this.sku.set(
@@ -25,6 +26,16 @@ export class Product {
         );
       });
     });
+  }
+
+  getSku(size: string, material: string): string {
+    if (this.sizes.includes(size) && this.materials.includes(material)) {
+      return (
+        this.sizes.indexOf(size).toString() +
+        this.materials.indexOf(material).toString()
+      );
+    }
+    return "0";
   }
 }
 

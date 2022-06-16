@@ -1,11 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
-import FormButtonPage from "../../components/form/button-page";
-import { food_types } from "../../constants/form";
+import ProductPage from "../../components/form/product-page";
+import { swapboxProduct } from "../../constants/form";
 import styles from "../../styles/Form.module.css";
 
-const BusinessTypesPage: NextPage = () => {
+const Swapbox: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -14,9 +14,9 @@ const BusinessTypesPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <FormButtonPage items={food_types} oneToOne={false} pageName={"food"} />
+      <ProductPage product={swapboxProduct} />
     </div>
   );
 };
 
-export default BusinessTypesPage;
+export default Swapbox;

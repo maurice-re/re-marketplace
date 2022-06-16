@@ -16,7 +16,7 @@ function FormNextButton({
   const lastRoute = option && currentRouteIndex == context.routes.length - 1;
   const optionLabel = lastRoute
     ? "summary"
-    : context.routes[currentRouteIndex + 1];
+    : context.routes[currentRouteIndex + 1].split("=")[1];
 
   const nextPage = lastRoute
     ? "summary"
