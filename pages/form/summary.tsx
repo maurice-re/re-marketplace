@@ -12,12 +12,7 @@ const Summary: NextPage = () => {
   const items = context.cart.map((sku) => (
     <li style={{ display: "inline" }} key={sku.title}>
       <div className={styles.summaryRow}>
-        <Image
-          src="/images/takeout_front.png"
-          height={100}
-          width={125}
-          alt={"takeout front"}
-        />
+        <Image src={sku.image} height={100} width={125} alt={"takeout front"} />
         <div className={styles.summaryText}>{sku.title}</div>
         <div>{"x" + sku.quantity}</div>
       </div>

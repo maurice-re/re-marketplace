@@ -1,11 +1,16 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import React from "react";
-import FormButtonPage from "../../components/form/button-page";
-import { food_types } from "../../constants/form";
+import ProductPage from "../../components/form/product-page";
+import { swapboxProduct, swapcupProduct } from "../../constants/form";
 import styles from "../../styles/Form.module.css";
 
-const BusinessTypesPage: NextPage = () => {
+const Product: NextPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const product = id == "swapcup" ? swapcupProduct : swapboxProduct;
+
   return (
     <div className={styles.container}>
       <Head>
@@ -14,9 +19,9 @@ const BusinessTypesPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <FormButtonPage items={food_types} oneToOne={false} pageName={"food"} />
+      <ProductPage product={product} />
     </div>
   );
 };
 
-export default BusinessTypesPage;
+export default Product;

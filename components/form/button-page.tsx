@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useAppContext } from "../context/context-provider";
-import { FormButtonModel } from "../models/form-button";
-import styles from "../styles/Form.module.css";
-import FormCircleButton from "./form/circle-button";
-import FormNextButton from "./form/next-button";
+import { useAppContext } from "../../context/context-provider";
+import { FormButtonModel } from "../../models/form-button";
+import styles from "../../styles/Form.module.css";
+import FormCircleButton from "./circle-button";
+import FormNextButton from "./next-button";
 
 function FormButtonPage({
   items,

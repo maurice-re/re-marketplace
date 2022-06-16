@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import React from "react";
 import FormButtonPage from "../../components/form/button-page";
-import { food_types } from "../../constants/form";
+import { drink_types } from "../../constants/form";
 import styles from "../../styles/Form.module.css";
 
 const BusinessTypesPage: NextPage = () => {
@@ -14,7 +14,11 @@ const BusinessTypesPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <FormButtonPage items={food_types} oneToOne={false} pageName={"food"} />
+      <FormButtonPage
+        items={drink_types}
+        oneToOne={false}
+        pageName={"drinks"}
+      />
     </div>
   );
 };

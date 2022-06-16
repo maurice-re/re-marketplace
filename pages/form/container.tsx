@@ -15,7 +15,7 @@ const re_container: Product = new Product(
   "/images/takeout_vent.png"
 );
 
-const ProductPage: NextPage = () => {
+const Container: NextPage = () => {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string>("");
   const [context, updateAppContext] = useAppContext();
@@ -141,4 +141,4 @@ const ProductPage: NextPage = () => {
   );
 };
 
-export default ProductPage;
+export default Container;
