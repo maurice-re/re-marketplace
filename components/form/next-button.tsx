@@ -13,10 +13,13 @@ function FormNextButton({
 }) {
   const [context, _] = useAppContext();
   const currentRouteIndex = context.routes.indexOf(pageName);
+
   const lastRoute = option && currentRouteIndex == context.routes.length - 1;
   const optionLabel = lastRoute
-    ? "summary"
-    : context.routes[currentRouteIndex + 1].split("=")[1];
+    ? "=summary"
+    : context.routes[currentRouteIndex + 1];
+
+  console.log(optionLabel);
 
   const nextPage = lastRoute
     ? "summary"
@@ -29,7 +32,7 @@ function FormNextButton({
           type="button"
           disabled={disabled}
         >
-          {option ? "Next: " + optionLabel : "Next"}
+          {option ? "Next: " + optionLabel.split("=")[1] : "Next"}
         </button>
       </Link>
     </div>
