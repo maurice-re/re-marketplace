@@ -42,9 +42,11 @@ const Summary: NextPage = () => {
           <label htmlFor="eol">Agree to EOL policy</label>
         </div>
         <div style={{ marginTop: "20px" }}>
-          <button className={styles.checkoutButton} type="button">
-            {`Checkout: \$${2000 * context.cart.length}`}
-          </button>
+          <form action="/netlify/functions/checkout" method="POST">
+            <button className={styles.checkoutButton} type="submit">
+              {`Checkout: \$${2000 * context.cart.length}`}
+            </button>
+          </form>
         </div>
       </main>
     </div>
