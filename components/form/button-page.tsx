@@ -9,10 +9,12 @@ function FormButtonPage({
   items,
   oneToOne,
   pageName,
+  title,
 }: {
   items: FormButtonModel[];
   oneToOne: boolean;
   pageName: string;
+  title: string;
 }) {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
   const [context, setContext] = useAppContext();
@@ -57,9 +59,7 @@ function FormButtonPage({
 
   return (
     <main className={styles.main}>
-      <h1 className={styles.title}>
-        What types of products are you purchasing
-      </h1>
+      <h1 className={styles.title}>{title}</h1>
       <div className={styles.grid}>
         <ul className={styles.list}>{listItems}</ul>
       </div>
