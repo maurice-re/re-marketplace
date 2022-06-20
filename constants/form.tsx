@@ -4,8 +4,8 @@ import { Product } from "../models/products";
 import styles from "../styles/Form.module.css";
 
 export const business_types: FormButtonModel[] = [
-  new FormButtonModel("Food", "types?id=food", "/icons/food.jpg"),
-  new FormButtonModel("Drinks", "types?id=drinks", "/icons/drinks.jpg"),
+  new FormButtonModel("Food", "types?id=food", "/icons/food.png", true),
+  new FormButtonModel("Drinks", "types?id=drinks", "/icons/drinks.png", true),
 ];
 
 export const food_types: FormButtonModel[] = [
@@ -71,7 +71,7 @@ export const swapcupProduct: Product = new Product(
   "swapcup",
   ["8 oz", "16 oz"],
   ["Polypropylene", "Recyled Polypropylene", "Bio Based"],
-  "/images/cup_main.png"
+  "/images/cup_dark.png"
 );
 
 function handleOptionClick(

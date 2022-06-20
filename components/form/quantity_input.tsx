@@ -28,7 +28,7 @@ function SkuQuantityField({
       <div className={styles.quantityTitle}>{size + " " + material}</div>
       <input
         type="text"
-        className={styles.SkuQuantityField}
+        className={styles.quantityInput}
         onChange={(e) => handleChange(e.target.value, sku)}
       />
     </li>

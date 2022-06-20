@@ -29,6 +29,7 @@ function FormCircleButton({
             objectFit={"cover"}
             style={{ borderRadius: icon ? 0 : "50%" }}
             alt={title}
+            priority
           />
         ) : (
           <Image src={"/"} height={100} width={100} alt={"placeholder"} />
