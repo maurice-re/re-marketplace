@@ -1,11 +1,24 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import React from "react";
 import FormButtonPage from "../../components/form/button-page";
-import { drink_types } from "../../constants/form";
+import { business_types, drink_types, food_types } from "../../constants/form";
+import { FormButtonModel } from "../../models/form-button";
 import styles from "../../styles/Form.module.css";
 
 const BusinessTypesPage: NextPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const types: FormButtonModel[] = (() => {
+    if (id == "business") {
+      return business_types;
+    } else if (id == "food") {
+      return food_types;
+    }
+    return drink_types;
+  })();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -15,9 +28,9 @@ const BusinessTypesPage: NextPage = () => {
       </Head>
 
       <FormButtonPage
-        items={drink_types}
-        oneToOne={false}
-        pageName={"drinks"}
+        items={types}
+        oneToOne={id == "business" ? true : false}
+        pageName={router.asPath.slice(6)}
       />
     </div>
   );

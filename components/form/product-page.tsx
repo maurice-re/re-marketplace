@@ -1,17 +1,18 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { generateOptionsList } from "../../constants/form";
-import { useAppContext } from "../../context/context-provider";
 import { Product } from "../../models/products";
 import styles from "../../styles/Form.module.css";
 import FormNextButton from "./next-button";
 import SkuQuantityField from "./quantity_input";
 
-function ProductPage({ product }: { product: Product }) {
+function ProductPage({ product, route }: { product: Product; route: string }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-  const [context, updateAppContext] = useAppContext();
-
+  useEffect(() => {
+    setChosenSizes([]);
+    setChosenMaterial([]);
+  }, [route]);
   const sizes = generateOptionsList(
     product.sizes,
     chosenSizes,
@@ -69,11 +70,7 @@ function ProductPage({ product }: { product: Product }) {
                 <h2 className={styles.optionHeader}>Choose your quanity</h2>
                 <ul className={styles.grid}>{skus}</ul>
               </div>
-              <FormNextButton
-                pageName={`product?id=${product.title}`}
-                disabled={false}
-                option
-              />
+              <FormNextButton pageName={route} disabled={false} option />
             </div>
           )}
         </div>

@@ -4,9 +4,8 @@ import { Product } from "../models/products";
 import styles from "../styles/Form.module.css";
 
 export const business_types: FormButtonModel[] = [
-  new FormButtonModel("Food", "food", "/icons/food.jpg"),
-  new FormButtonModel("Drinks", "drinks", "/icons/drinks.jpg"),
-  new FormButtonModel("Groceries", "", "/icons/groceries.jpg"),
+  new FormButtonModel("Food", "types?id=food", "/icons/food.jpg"),
+  new FormButtonModel("Drinks", "types?id=drinks", "/icons/drinks.jpg"),
 ];
 
 export const food_types: FormButtonModel[] = [

@@ -14,7 +14,6 @@ function FormCircleButton({
   image?: string;
   icon?: boolean;
 }) {
-  console.log(icon);
   return (
     <button className={styles.circleButton} onClick={handleClick}>
       <div

@@ -17,13 +17,13 @@ function FormButtonPage({
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
   const [context, setContext] = useAppContext();
 
+  console.log(selected);
   const shouldRemove = (item: FormButtonModel) => {
     if (oneToOne) {
       return true;
     }
 
     const filteredRoutes = selected.filter((i) => i.route == item.route);
-    console.log(filteredRoutes);
     if (filteredRoutes.length > 1) {
       return false;
     }
@@ -42,7 +42,6 @@ function FormButtonPage({
     }
     setContext(context);
   }
-  console.log(context.routes);
 
   const listItems = items.map((item) => (
     <li className={styles.listItem} key={item.title}>

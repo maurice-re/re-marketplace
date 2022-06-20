@@ -19,7 +19,7 @@ const Product: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ProductPage product={product} />
+      <ProductPage product={product} route={router.asPath.slice(6)} />
     </div>
   );
 };

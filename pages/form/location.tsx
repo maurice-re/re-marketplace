@@ -8,9 +8,7 @@ import styles from "../../styles/Form.module.css";
 const LocationPage: NextPage = () => {
   const [location, setLocation] = useState<string>("");
   const [context, setContext] = useAppContext();
-  const currentRouteIndex = context.routes.indexOf("location");
 
-  console.log(context.routes);
   useEffect(() => {
     if (location.length > 0) {
       context.addRoute("business-types");

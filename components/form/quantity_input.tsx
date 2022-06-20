@@ -19,6 +19,7 @@ function SkuQuantityField({
     let changedSKU = product.sku.get(sku) ?? new SKU("", "", "");
     changedSKU.quantity = quantity;
     context.addToCart(changedSKU);
+    console.log(context.cart);
     updateAppContext(context);
   }
 

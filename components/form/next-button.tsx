@@ -12,18 +12,22 @@ function FormNextButton({
   option?: boolean;
 }) {
   const [context, _] = useAppContext();
-  const currentRouteIndex = context.routes.indexOf(pageName);
+  const currentRouteIndex = context.routes.findIndex(
+    (route) => route.name == pageName
+  );
 
-  const lastRoute = option && currentRouteIndex == context.routes.length - 1;
-  const optionLabel = lastRoute
-    ? "=summary"
-    : context.routes[currentRouteIndex + 1];
-
-  console.log(optionLabel);
-
-  const nextPage = lastRoute
-    ? "summary"
-    : context.routes[currentRouteIndex + 1] ?? "";
+  const nextPage = context.nextRoute(currentRouteIndex);
+  const label = (): string => {
+    if (!option) {
+      return "Next";
+    } else {
+      if (nextPage.includes("=")) {
+        return `Next: ${nextPage.split("=")[1]}`;
+      } else {
+        return `Next: ${nextPage}`;
+      }
+    }
+  };
   return (
     <div className={styles.nextContainer}>
       <Link href={nextPage}>
@@ -32,7 +36,7 @@ function FormNextButton({
           type="button"
           disabled={disabled}
         >
-          {option ? "Next: " + optionLabel.split("=")[1] : "Next"}
+          {label()}
         </button>
       </Link>
     </div>
