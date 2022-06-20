@@ -43,10 +43,13 @@ export class SKU {
   title: string;
   image: string;
   quantity: string;
+  price: string;
 
   constructor(title: string, image: string, quantity: string) {
     this.title = title;
     this.image = image;
     this.quantity = quantity;
+
+    this.price = `\$${title.length / 4}/unit`;
   }
 }
