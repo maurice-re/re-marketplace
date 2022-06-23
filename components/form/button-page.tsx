@@ -60,6 +60,7 @@ function FormButtonPage({
   return (
     <main className={styles.main}>
       <h1 className={styles.title}>{title}</h1>
+      <div className={styles.subtitle}>Select all that apply</div>
       <div className={styles.grid}>
         <ul className={styles.list}>{listItems}</ul>
       </div>

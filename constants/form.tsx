@@ -70,7 +70,7 @@ export const swapboxProduct: Product = new Product(
 export const swapcupProduct: Product = new Product(
   "swapcup",
   ["8 oz", "16 oz"],
-  ["Polypropylene", "Recyled Polypropylene"],
+  ["Polypropylene", "Recycled Polypropylene"],
   "/images/cup_dark.png"
 );
 

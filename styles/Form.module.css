@@ -171,6 +171,10 @@
   font-size: 18px;
 }
 
+.optionSubtitle {
+  font-size: 12px;
+}
+
 .payErrorText {
   font-size: 12px;
   color: red;
@@ -234,6 +238,11 @@
   display: flex;
 }
 
+.subtitle {
+  font-style: italic;
+  padding: 0 .5rem 2rem;
+  align-self: flex-start;
+}
 
 .summaryImage {
   width: 200px;
@@ -258,6 +267,6 @@
   line-height: 1.15;
   font-size: 3rem;
   font-weight: 500;
-  padding: 1rem 0 2rem;
+  padding: 1rem 0 8px;
   text-align: center;
 }
