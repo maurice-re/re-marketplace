@@ -37,6 +37,17 @@ export class Product {
     }
     return "0";
   }
+
+  getSkuFromTitle(title: string): string {
+    const sep = title.split(" ");
+    console.log(sep);
+    const size = sep[0] + " " + sep[1];
+    const material = sep.slice(2).join(" ");
+    console.log("size");
+    console.log(size);
+    console.log(material);
+    return this.getSku(size, material);
+  }
 }
 
 export class SKU {

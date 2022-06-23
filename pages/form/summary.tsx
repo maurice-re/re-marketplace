@@ -4,6 +4,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { swapboxProduct, swapcupProduct } from "../../constants/form";
 import { useAppContext } from "../../context/context-provider";
 import styles from "../../styles/Form.module.css";
 
@@ -13,10 +14,33 @@ const stripePromise = loadStripe(
 
 const Summary: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
-  const [context, _] = useAppContext();
+  const [numChanges, cartChanged] = useState<number>(0);
+  const [context, updateAppContext] = useAppContext();
   const router = useRouter();
 
-  const { canceled } = router.query;
+  const { canceled, cart } = router.query;
+  console.log(context.cart);
+
+  useEffect(() => {
+    if (cart) {
+      const cartArr = cart.toString().split(",");
+      console.log(cartArr);
+      context.cart = [];
+      cartArr.map((i) => {
+        const item = i.split("^");
+        [swapboxProduct, swapcupProduct].map((p) => {
+          const skuIndex = p.getSkuFromTitle(item[0]);
+          if (skuIndex != "0") {
+            let sku = p.sku.get(skuIndex)!;
+            sku.quantity = item[1];
+            context.addToCart(sku);
+          }
+        });
+      });
+      updateAppContext(context);
+      cartChanged(numChanges + 1);
+    }
+  }, [cart]);
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -66,9 +90,17 @@ const Summary: NextPage = () => {
         </div>
         <div style={{ marginTop: "20px" }}>
           <form action="/api/checkout" method="POST">
+            {/* <Link href={"checkout"}> */}
             <button className={styles.checkoutButton} type="submit" role="link">
               {`Checkout: \$${2000 * context.cart.length}`}
             </button>
+            <input
+              name={"cartString"}
+              value={context.toCheckoutString()}
+              style={{ display: "none" }}
+              readOnly
+            />
+            {/* </Link> */}
           </form>
         </div>
         {canceled && (
