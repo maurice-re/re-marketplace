@@ -26,7 +26,7 @@ const LocationPage: NextPage = () => {
       </Head>
       <ProgressBar pageName={"location"} />
       <main className={styles.main}>
-        <h1 className={styles.title}>What location are you in</h1>
+        <h1 className={styles.title}>What city do you operate in</h1>
         <div>
           <input
             className={styles.input}

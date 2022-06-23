@@ -15,6 +15,7 @@ const BusinessTypesPage: NextPage = () => {
       </Head>
 
       <FormButtonPage
+        title="What types of products are you packaging"
         items={business_types}
         oneToOne={true}
         pageName={"business-types"}
