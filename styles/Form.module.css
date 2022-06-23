@@ -53,7 +53,6 @@
 }
 
 .container {
-  padding: 0 2rem;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -89,6 +88,7 @@
 
 .listItem {
   display: inline-flex;
+  align-items: center;
 }
 
 .nextButton {
@@ -191,12 +191,28 @@
   margin-right: 3rem;
 }
 
+.price {
+  font-size: 10px;
+}
+
+.productTitle {
+  font-size: 30px;;
+}
+
+.progressBar {
+  height: 12px;
+  background-color: aquamarine;
+}
+
+
 .quantityTitle {
   display: flex;
   max-lines: 2;
-  width: 200px;
+  width: 216px;
   font-size: 18px;
   align-self: center;
+  /* border: 2px solid blue; */
+  align-items: flex-start;
 }
 
 .quantityInput {
@@ -208,7 +224,6 @@
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 18px;
-  margin-left: 8px;
 }
 
 .row {

@@ -63,14 +63,14 @@ export const drink_types: FormButtonModel[] = [
 export const swapboxProduct: Product = new Product(
   "swapbox",
   ["1 L", "1.5 L"],
-  ["Polypropylene", "Recycled Polypropylene", "Bio Based"],
+  ["Polypropylene", "Recycled Polypropylene"],
   "/images/takeout_vent.png"
 );
 
 export const swapcupProduct: Product = new Product(
   "swapcup",
   ["8 oz", "16 oz"],
-  ["Polypropylene", "Recyled Polypropylene", "Bio Based"],
+  ["Polypropylene", "Recyled Polypropylene"],
   "/images/cup_dark.png"
 );
 

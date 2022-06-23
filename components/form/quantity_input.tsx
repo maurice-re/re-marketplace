@@ -13,10 +13,11 @@ function SkuQuantityField({
 }) {
   const [context, updateAppContext] = useAppContext();
 
-  const sku: string = product.getSku(size, material);
+  const skuID: string = product.getSku(size, material);
+  const sku = product.sku.get(skuID);
 
-  function handleChange(quantity: string, sku: string) {
-    let changedSKU = product.sku.get(sku) ?? new SKU("", "", "");
+  function handleChange(quantity: string, skuID: string) {
+    let changedSKU = sku ?? new SKU("", "", "");
     changedSKU.quantity = quantity;
     context.addToCart(changedSKU);
     console.log(context.cart);
@@ -24,12 +25,15 @@ function SkuQuantityField({
   }
 
   return (
-    <li className={styles.listItem} key={sku}>
-      <div className={styles.quantityTitle}>{size + " " + material}</div>
+    <li className={styles.listItem} key={skuID}>
+      <div style={{ fontSize: 0 }}>
+        <span className={styles.quantityTitle}>{sku?.title}</span>
+        <span className={styles.price}>{`(${sku?.price})`}</span>
+      </div>
       <input
         type="text"
         className={styles.quantityInput}
-        onChange={(e) => handleChange(e.target.value, sku)}
+        onChange={(e) => handleChange(e.target.value, skuID)}
       />
     </li>
   );
