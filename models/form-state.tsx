@@ -5,7 +5,10 @@ export class FormState {
   cart: SKU[];
 
   constructor() {
-    this.cart = [];
+    this.cart = [
+      // new SKU("1.5L Recycled Polypropylene", "/images/takeout_vent.png", "30"),
+      // new SKU("1L Recycled Polypropylene", "/images/takeout_vent.png", "50"),
+    ];
     this.routes = [
       { name: "location", active: true },
       { name: "types?id=business", active: true },
@@ -44,11 +47,23 @@ export class FormState {
   }
 
   addToCart(sku: SKU) {
+    if (sku.image == "" && sku.quantity == "" && sku.title == "") {
+      return;
+    }
+
     const index = this.cart.findIndex((s) => s.title == sku.title);
     if (index != -1) {
       this.cart[index].quantity = sku.quantity;
     } else {
       this.cart.push(sku);
     }
+  }
+
+  toCheckoutString(): string {
+    let output: string[] = [];
+    this.cart.map((item) => {
+      output.push(item.title + "^" + item.quantity);
+    });
+    return output.join(",");
   }
 }
