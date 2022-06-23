@@ -62,7 +62,7 @@ const Summary: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <Confetti width={1000} height={1000} />
+        <Confetti width={1800} height={1200} />
         <h1 className={styles.title}>Congrats on your purchase!</h1>
         <div>
           <ul>{items}</ul>
