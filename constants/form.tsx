@@ -9,55 +9,70 @@ export const business_types: FormButtonModel[] = [
 ];
 
 export const food_types: FormButtonModel[] = [
-  new FormButtonModel("Salad", "product?id=swapbox", "/icons/salad.png", true),
   new FormButtonModel(
-    "Chicken Nuggets",
+    "Wet Food",
     "product?id=swapbox",
-    "/icons/nuggets.png",
-    true
-  ),
-  new FormButtonModel("Rice", "product?id=swapbox", "/icons/rice.png", true),
-  new FormButtonModel(
-    "Pasta",
-    "product?id=swapbox",
-    "/icons/spaguetti.png",
+    "/icons/soup.png",
     true
   ),
   new FormButtonModel(
-    "Burrito",
+    "Dry Food",
     "product?id=swapbox",
-    "/icons/burrito.png",
+    "/icons/salad.png",
     true
   ),
-  new FormButtonModel("Sushi", "product?id=swapbox", "/icons/sushi.png", true),
+  new FormButtonModel(
+    "Crispy Food",
+    "product?id=swapbox",
+    "/icons/fries.png",
+    true
+  ),
+  new FormButtonModel(
+    "Frozen Food",
+    "product?id=swapbox",
+    "/icons/steak.png",
+    true
+  ),
+  // new FormButtonModel(
+  //   "Snack Food",
+  //   "product?id=swapbox",
+  //   "/icons/burrito.png",
+  //   true
+  // ),
+  // new FormButtonModel("Sushi", "product?id=swapbox", "/icons/sushi.png", true),
 ];
 export const drink_types: FormButtonModel[] = [
   new FormButtonModel(
-    "Tea/Coffee",
+    "Hot Drinks",
     "product?id=swapcup",
     "/icons/tea-cup.png",
     true
   ),
   new FormButtonModel(
-    "Cocktails",
+    "Alcoholic Drinks",
     "product?id=swapcup",
     "/icons/cocktail.png",
     true
   ),
   new FormButtonModel(
-    "Soda",
+    "Carbonated Drinks",
     "product?id=swapcup",
     "/icons/soda-can.png",
     true
   ),
   new FormButtonModel(
-    "Smoothies",
+    "Frozen Drinks",
     "product?id=swapcup",
     "/icons/smoothies.png",
     true
   ),
-  new FormButtonModel("Juice", "product?id=swapcup", "/icons/juice.png", true),
-  new FormButtonModel("Beer", "product?id=swapcup", "/icons/beer.png", true),
+  new FormButtonModel(
+    "Fruit Drinks",
+    "product?id=swapcup",
+    "/icons/juice.png",
+    true
+  ),
+  new FormButtonModel("Dairy", "product?id=swapcup", "/icons/milk.png", true),
 ];
 
 export const swapboxProduct: Product = new Product(

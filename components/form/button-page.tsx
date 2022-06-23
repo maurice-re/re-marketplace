@@ -61,7 +61,7 @@ function FormButtonPage({
     <main className={styles.main}>
       <h1 className={styles.title}>{title}</h1>
       <div className={styles.subtitle}>Select all that apply</div>
-      <div className={styles.grid}>
+      <div className={items.length % 3 != 0 ? styles.gridSmall : styles.grid}>
         <ul className={styles.list}>{listItems}</ul>
       </div>
       <FormNextButton pageName={pageName} disabled={selected.length < 1} />
