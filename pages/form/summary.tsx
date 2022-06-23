@@ -40,7 +40,7 @@ const Summary: NextPage = () => {
       updateAppContext(context);
       cartChanged(numChanges + 1);
     }
-  }, [cart]);
+  }, [cart, numChanges, updateAppContext, context]);
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout

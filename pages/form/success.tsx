@@ -17,6 +17,8 @@ const Summary: NextPage = () => {
   const [numChanges, cartChanged] = useState<number>(0);
   const [context, updateAppContext] = useAppContext();
   const router = useRouter();
+  // let width = 1000;
+  let height = 1000;
 
   const { cart } = router.query;
 
@@ -39,7 +41,7 @@ const Summary: NextPage = () => {
       updateAppContext(context);
       cartChanged(numChanges + 1);
     }
-  }, [cart]);
+  }, [cart, numChanges, updateAppContext, context]);
 
   const items = context.cart.map((sku) => (
     <li style={{ display: "inline" }} key={sku.title}>
@@ -60,7 +62,7 @@ const Summary: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <Confetti width={window.screen.width} height={window.screen.height} />
+        <Confetti width={1000} height={1000} />
         <h1 className={styles.title}>Congrats on your purchase!</h1>
         <div>
           <ul>{items}</ul>

@@ -23,7 +23,7 @@ const Checkout: NextPage = () => {
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+  }, [context.cart]);
 
   const options = {
     clientSecret,
