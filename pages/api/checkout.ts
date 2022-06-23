@@ -3,7 +3,13 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const titleToPriceId: { [key: string]: string } = {
   '1.5 L Recycled Polypropylene' : "price_1LDbaLIvFN7nmmk5FI39l76U",
-  '1 L Recycled Polypropylene' : "price_1LDbbPIvFN7nmmk5Gp0RF9ek"
+  '1 L Recycled Polypropylene' : "price_1LDbbPIvFN7nmmk5Gp0RF9ek",
+  "8 oz Recycled Polypropylene": "price_1LDtvAIvFN7nmmk5OHlhpy2R",
+  "16 oz Recycled Polypropylene" : "price_1LDtvjIvFN7nmmk5EhxbhjA2",
+  '1.5 L Polypropylene' : "price_1LDbaLIvFN7nmmk5FI39l76U",
+  '1 L Polypropylene' : "price_1LDbbPIvFN7nmmk5Gp0RF9ek",
+  "8 oz Polypropylene": "price_1LDtvAIvFN7nmmk5OHlhpy2R",
+  "16 oz Polypropylene" : "price_1LDtvjIvFN7nmmk5EhxbhjA2"
 }
 
 export default async function handler(req : Request, res : Response) {

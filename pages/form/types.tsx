@@ -22,7 +22,7 @@ const BusinessTypesPage: NextPage = () => {
 
   const title: string = (() => {
     if (id == "business") {
-      return "What types of products are you purchasing";
+      return "What types of products are you packaging";
     } else if (id == "food") {
       return "What types of food are you packaging";
     }
