@@ -46,6 +46,7 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
             width={500}
             height={500}
             alt={product.title}
+            priority
           />
         </div>
         <div id="options" className={styles.column}>
