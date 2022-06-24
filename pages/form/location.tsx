@@ -1,21 +1,46 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import FormNextButton from "../../components/form/next-button";
 import ProgressBar from "../../components/form/progress-bar";
+import { cities } from "../../constants/cities";
 import { useAppContext } from "../../context/context-provider";
 import styles from "../../styles/Form.module.css";
 
 const LocationPage: NextPage = () => {
-  const [location, setLocation] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
   const [context, setContext] = useAppContext();
+  const [drawerOpen, toggleDrawer] = useState<boolean>();
+  const [_, setNewCity] = useState<string>("");
+  console.log(context.routes);
 
-  useEffect(() => {
-    if (location.length > 0) {
-      context.addRoute("business-types");
-      setContext(context);
+  function handleClick(city: string) {
+    if (context.locations.includes(city)) {
+      context.removeLocation(city);
+    } else {
+      context.addLocation(city);
     }
-  }, [context, location, setContext]);
+    setContext(context);
+    // setNewCity((prev) => (prev == city ? "" : city));
+    setQuery("");
+    toggleDrawer((prev) => !prev);
+  }
+
+  const options = cities
+    .filter((city) => city.toLowerCase().startsWith(query.toLowerCase()))
+    .map((city) => (
+      <div
+        key={city}
+        className="flex justify-between p-2 hover:bg-gray-200"
+        onClick={() => handleClick(city)}
+      >
+        <div className="text-xl">{city}</div>
+        {context.locations.includes(city) ? (
+          <div className="text-xl">✔</div>
+        ) : null}
+      </div>
+    ));
+  console.log(context.locations);
 
   return (
     <div className={styles.container}>
@@ -26,18 +51,45 @@ const LocationPage: NextPage = () => {
       </Head>
       <ProgressBar pageName={"location"} />
       <main className={styles.main}>
-        <h1 className={styles.title}>What city do you operate in</h1>
-        <div>
-          <input
-            className={styles.input}
-            type="text"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
-          />
+        <h1 className=" text-6xl font-semibold">
+          What cities do you operate in
+        </h1>
+        <div className=" text-sm italic self-start mb-8 ml-2">
+          Select all that apply
         </div>
+        <input
+          className=" text-xl p-4 border-2 border-gray-300 rounded-md w-3/5"
+          type="text"
+          value={
+            context.locations.length == 0
+              ? query
+              : context.locations.join(", ") + ", " + query
+          }
+          onFocus={() => toggleDrawer(true)}
+          onChange={(e) =>
+            setQuery(
+              context.locations.length == 0
+                ? e.target.value
+                : e.target.value.split(", ").slice(-1)[0]
+            )
+          }
+          placeholder="Enter city..."
+          required
+        />
+        {drawerOpen && (
+          <div className=" bg-gray-50 w-3/5 border-2 border-t-0 rounded-b-md max-h-64 overflow-auto">
+            {options}
+          </div>
+        )}
       </main>
-      <FormNextButton pageName={"location"} disabled={location.length < 1} />
+      <FormNextButton
+        pageName={"location"}
+        disabled={context.locations.length < 1}
+        onClick={() => {
+          context.addSummary();
+          setContext(context);
+        }}
+      />
     </div>
   );
 };

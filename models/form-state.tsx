@@ -1,40 +1,103 @@
 import { SKU } from "./products";
 
 export class FormState {
-  routes: { name: string; active: boolean }[];
-  cart: SKU[];
+  locations: string[];
+  routes: { name: string; active: boolean; city: string }[];
+  cart: { [city: string]: SKU[] } = {};
 
   constructor() {
-    this.cart = [
-      // new SKU("1.5L Recycled Polypropylene", "/images/takeout_vent.png", "30"),
-      // new SKU("1L Recycled Polypropylene", "/images/takeout_vent.png", "50"),
-    ];
-    this.routes = [
-      { name: "location", active: true },
-      { name: "types?id=business", active: true },
-      { name: "types?id=food", active: false },
-      { name: "types?id=drinks", active: false },
-      { name: "product?id=swapbox", active: false },
-      { name: "product?id=swapcup", active: false },
-      { name: "summary", active: true },
-    ];
+    this.locations = []; //["NY", "TOR"];
+    this.cart = {
+      // NY: [
+      //   new SKU(
+      //     "1.5 L Recycled Polypropylene",
+      //     "/images/takeout_vent.png",
+      //     "90"
+      //   ),
+      //   new SKU(
+      //     "1 L Recycled Polypropylene",
+      //     "/images/takeout_vent.png",
+      //     "100"
+      //   ),
+      // ],
+      // TOR: [
+      //   new SKU(
+      //     "1.5 L Recycled Polypropylene",
+      //     "/images/takeout_vent.png",
+      //     "50"
+      //   ),
+      // ],
+    };
+    this.routes = [{ name: "location", active: true, city: "" }];
   }
 
-  addRoute(route: string) {
+  addLocation(location: string) {
+    this.locations.push(location);
+    this.routes.push(
+      {
+        name: `types?id=business&city=${location}`,
+        active: true,
+        city: location,
+      },
+      { name: `types?id=food&city=${location}`, active: false, city: location },
+      {
+        name: `types?id=drinks&city=${location}`,
+        active: false,
+        city: location,
+      },
+      {
+        name: `product?id=swapbox&city=${location}`,
+        active: false,
+        city: location,
+      },
+      {
+        name: `product?id=swapcup&city=${location}`,
+        active: false,
+        city: location,
+      }
+    );
+  }
+
+  removeLocation(location: string) {
+    this.locations = this.locations.filter((city) => city != location);
+    this.routes = this.routes.filter((r) => r.city != location);
+  }
+
+  addSummary() {
+    this.routes.push({ name: `checkout`, active: true, city: "" });
+  }
+
+  static getCity(name: string): string {
+    const index = name.indexOf("city");
+    if (index != -1) {
+      return name.slice(index + 5);
+    }
+    return "";
+  }
+
+  addRoute(route: string, city: string) {
     const index = this.routes.findIndex(
-      (r) => r.name == route && r.active == false
+      (r) => r.name.startsWith(route) && r.active == false && r.city == city
     );
     if (index != -1) {
-      this.routes[index] = { name: route, active: true };
+      this.routes[index] = {
+        name: route + `&city=${city}`,
+        active: true,
+        city: city,
+      };
     }
   }
 
-  removeRoute(route: string) {
+  removeRoute(route: string, city: string) {
     const index = this.routes.findIndex(
-      (r) => r.name == route && r.active == true
+      (r) => r.name.startsWith(route) && r.active == true && r.city == city
     );
     if (index != -1) {
-      this.routes[index] = { name: route, active: false };
+      this.routes[index] = {
+        name: route + `&city=${city}`,
+        active: false,
+        city: city,
+      };
     }
   }
 
@@ -46,24 +109,41 @@ export class FormState {
     return "";
   }
 
-  addToCart(sku: SKU) {
+  addToCart(sku: SKU, city: string) {
     if (sku.image == "" && sku.quantity == "" && sku.title == "") {
       return;
     }
 
-    const index = this.cart.findIndex((s) => s.title == sku.title);
+    if (this.cart[city] == undefined) {
+      this.cart[city] = [];
+    }
+
+    const index = this.cart[city].findIndex((s) => s.title == sku.title);
     if (index != -1) {
-      this.cart[index].quantity = sku.quantity;
+      this.cart[city][index].quantity = sku.quantity;
     } else {
-      this.cart.push(sku);
+      this.cart[city].push(sku);
     }
   }
 
   toCheckoutString(): string {
     let output: string[] = [];
-    this.cart.map((item) => {
-      output.push(item.title + "^" + item.quantity);
+    this.locations.map((city) => {
+      this.cart[city].map((item) => {
+        output.push(item.title + "^" + item.quantity);
+      });
     });
     return output.join(",");
+  }
+
+  calculateCost(): number {
+    let cost = 0;
+    for (let city in this.cart) {
+      cost += 100; //shipping
+      this.cart[city].map((sku) => {
+        cost += sku.price * parseInt(sku.quantity);
+      });
+    }
+    return cost;
   }
 }

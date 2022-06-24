@@ -1,5 +1,3 @@
-import styles from "../../styles/Form.module.css";
-
 function FormOptionButton({
   handleClick,
   label,
@@ -12,7 +10,8 @@ function FormOptionButton({
   return (
     <button
       className={
-        styles.optionButton + (selected ? " " + styles.option_selected : "")
+        " border border-gray-200 p-4 rounded-md w-36 h-20 shadow-sm m-2 text-base mb-4" +
+        (selected ? " border-blue-500" : "")
       }
       onClick={handleClick}
     >

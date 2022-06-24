@@ -50,17 +50,30 @@ export class Product {
   }
 }
 
+const titleToPrice: { [key: string]: number } = {
+  "1.5 L Recycled Polypropylene": 6,
+  "1 L Recycled Polypropylene": 5,
+  "8 oz Recycled Polypropylene": 3,
+  "16 oz Recycled Polypropylene": 3.5,
+  "1.5 L Polypropylene": 6,
+  "1 L Polypropylene": 5,
+  "8 oz Polypropylene": 3,
+  "16 oz Polypropylene": 3.5,
+};
+
 export class SKU {
   title: string;
   image: string;
   quantity: string;
-  price: string;
+  price: number;
+  priceString: string;
 
   constructor(title: string, image: string, quantity: string) {
     this.title = title;
     this.image = image;
     this.quantity = quantity;
 
-    this.price = `\$${title.length / 4}/unit`;
+    this.price = titleToPrice[title];
+    this.priceString = this.price ? `$${this.price.toFixed(2)} each` : "";
   }
 }

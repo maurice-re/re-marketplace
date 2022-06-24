@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useAppContext } from "../../context/context-provider";
 import { Product, SKU } from "../../models/products";
 import styles from "../../styles/Form.module.css";
@@ -12,30 +13,33 @@ function SkuQuantityField({
   size: string;
 }) {
   const [context, updateAppContext] = useAppContext();
+  const router = useRouter();
+  const { city } = router.query;
+  console.log(city);
 
   const skuID: string = product.getSku(size, material);
   const sku = product.sku.get(skuID);
 
-  function handleChange(quantity: string, skuID: string) {
+  function handleChange(quantity: string) {
     let changedSKU = sku ?? new SKU("", "", "");
     changedSKU.quantity = quantity;
-    context.addToCart(changedSKU);
+    context.addToCart(changedSKU, city?.toString() ?? "");
     console.log(context.cart);
     updateAppContext(context);
   }
 
   return (
-    <li className={styles.listItem} key={skuID}>
-      <div style={{ fontSize: 0 }}>
-        <span className={styles.quantityTitle}>{sku?.title}</span>
-        <span className={styles.price}>{`(${sku?.price})`}</span>
+    <div className="flex justify-between ml-2 mr-20" key={skuID}>
+      <div className="flex-col w-40 mb-3">
+        <div className="text-lg mt-2">{sku?.title}</div>
+        <div className={styles.price}>{`(${sku?.priceString})`}</div>
       </div>
       <input
         type="text"
         className={styles.quantityInput}
-        onChange={(e) => handleChange(e.target.value, skuID)}
+        onChange={(e) => handleChange(e.target.value)}
       />
-    </li>
+    </div>
   );
 }
 
