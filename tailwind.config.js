@@ -8,7 +8,8 @@ module.exports = {
     extend: {
       colors: {
         'aquamarine-500' : '#7FFFD4',
-        'aquamarine-400' : '#99FFDD'
+        'aquamarine-400' : '#99FFDD',
+        'aquamarine-300' : '#ADFFE4',
       },
       height: {
         '148': '37rem'

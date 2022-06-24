@@ -29,17 +29,17 @@ function SkuQuantityField({
   }
 
   return (
-    <li className={styles.listItem} key={skuID}>
-      <div style={{ fontSize: 0 }}>
-        <span className={styles.quantityTitle}>{sku?.title}</span>
-        <span className={styles.price}>{`(${sku?.priceString})`}</span>
+    <div className="flex justify-between ml-2 mr-20" key={skuID}>
+      <div className="flex-col w-40 mb-3">
+        <div className="text-lg mt-2">{sku?.title}</div>
+        <div className={styles.price}>{`(${sku?.priceString})`}</div>
       </div>
       <input
         type="text"
         className={styles.quantityInput}
         onChange={(e) => handleChange(e.target.value)}
       />
-    </li>
+    </div>
   );
 }
 

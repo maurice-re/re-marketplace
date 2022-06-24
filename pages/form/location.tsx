@@ -51,7 +51,9 @@ const LocationPage: NextPage = () => {
       </Head>
       <ProgressBar pageName={"location"} />
       <main className={styles.main}>
-        <h1 className={styles.title}>What cities do you operate in</h1>
+        <h1 className=" text-6xl font-semibold">
+          What cities do you operate in
+        </h1>
         <div className=" text-sm italic self-start mb-8 ml-2">
           Select all that apply
         </div>

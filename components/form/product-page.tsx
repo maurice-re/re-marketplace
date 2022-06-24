@@ -55,7 +55,7 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
           />
         </div>
         <div id="options" className={styles.column}>
-          <h1 className={styles.productTitle}>
+          <h1 className="text-4xl font-medium mb-1">
             {product.title.charAt(0).toUpperCase() + product.title.slice(1)}
           </h1>
           <div
@@ -63,20 +63,20 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
               border: "2px solid transparent",
             }}
           >
-            <h2 className={styles.optionHeader}>Choose your size(s)</h2>
+            <h2 className="text-lg mt-2">Choose your size(s)</h2>
             <ul className={styles.grid}>{sizes}</ul>
           </div>
           <div>
-            <h2 className={styles.optionHeader}>Choose your material</h2>
+            <h2 className="text-lg mt-2">Choose your material</h2>
             <ul className={styles.grid}>{materials}</ul>
           </div>
           {chosenSizes.length > 0 && chosenMaterial.length > 0 && (
             <div>
               <div>
-                <h2 className={styles.optionHeader}>{`Choose your quanity${
+                <h2 className="text-lg mt-2">{`Choose your quanity${
                   context.locations.length > 1 ? ` for ${city}` : ""
                 }`}</h2>
-                <ul className={styles.grid}>{skus}</ul>
+                {skus}
               </div>
               <FormNextButton pageName={route} disabled={false} option />
             </div>
