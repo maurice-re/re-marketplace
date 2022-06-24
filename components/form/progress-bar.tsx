@@ -4,8 +4,9 @@ import styles from "../../styles/Form.module.css";
 function ProgressBar({ pageName }: { pageName: string }) {
   const [context, _] = useAppContext();
   const currentRouteIndex = context.routes.findIndex(
-    (route) => route.name == pageName
+    (route) => route.name == pageName.replace("%20", " ")
   );
+  console.log(pageName);
   console.log(currentRouteIndex);
   return (
     <div

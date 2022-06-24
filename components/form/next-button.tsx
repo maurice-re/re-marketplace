@@ -15,7 +15,7 @@ function FormNextButton({
 }) {
   const [context, _] = useAppContext();
   const currentRouteIndex = context.routes.findIndex(
-    (route) => route.name == pageName
+    (route) => route.name == pageName.replace("%20", " ")
   );
 
   const nextPage = context.nextRoute(currentRouteIndex);

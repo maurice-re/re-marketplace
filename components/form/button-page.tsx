@@ -40,11 +40,17 @@ function FormButtonPage({
   function handleClick(item: FormButtonModel) {
     if (selected.includes(item)) {
       if (shouldRemove(item)) {
-        context.removeRoute(item.route, FormState.getCity(router.asPath));
+        context.removeRoute(
+          item.route,
+          FormState.getCity(router.asPath).replace("%20", " ")
+        );
       }
       setSelected(selected.filter((val) => val != item));
     } else {
-      context.addRoute(item.route, FormState.getCity(router.asPath));
+      context.addRoute(
+        item.route,
+        FormState.getCity(router.asPath).replace("%20", " ")
+      );
       setSelected([...selected, item]);
     }
     setContext(context);

@@ -12,7 +12,7 @@ const LocationPage: NextPage = () => {
   const [context, setContext] = useAppContext();
   const [drawerOpen, toggleDrawer] = useState<boolean>();
   const [_, setNewCity] = useState<string>("");
-  console.log(query);
+  console.log(context.routes);
 
   function handleClick(city: string) {
     if (context.locations.includes(city)) {
