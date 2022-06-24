@@ -6,6 +6,7 @@ function ProgressBar({ pageName }: { pageName: string }) {
   const currentRouteIndex = context.routes.findIndex(
     (route) => route.name == pageName
   );
+  console.log(currentRouteIndex);
   return (
     <div
       className={styles.progressBar}

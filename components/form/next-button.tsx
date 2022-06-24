@@ -3,10 +3,12 @@ import { useAppContext } from "../../context/context-provider";
 import styles from "../../styles/Form.module.css";
 
 function FormNextButton({
+  onClick,
   pageName,
   disabled,
   option,
 }: {
+  onClick?: () => void;
   pageName: string;
   disabled: boolean;
   option?: boolean;
@@ -22,6 +24,9 @@ function FormNextButton({
       return "Next";
     } else {
       if (nextPage.includes("=")) {
+        if (nextPage.includes("business")) {
+          return `Next: ${nextPage.split("=")[2]}`;
+        }
         return `Next: ${nextPage.split("=")[1]}`;
       } else {
         return `Next: ${nextPage}`;
@@ -35,6 +40,7 @@ function FormNextButton({
           className={option ? styles.nextOptionButton : styles.nextButton}
           type="button"
           disabled={disabled}
+          onClick={onClick}
         >
           {label()}
         </button>

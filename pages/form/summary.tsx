@@ -2,10 +2,10 @@ import { loadStripe } from "@stripe/stripe-js";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ProgressBar from "../../components/form/progress-bar";
-import { swapboxProduct, swapcupProduct } from "../../constants/form";
 import { useAppContext } from "../../context/context-provider";
 import styles from "../../styles/Form.module.css";
 
@@ -22,26 +22,26 @@ const Summary: NextPage = () => {
   const { canceled, cart } = router.query;
   console.log(context.cart);
 
-  useEffect(() => {
-    if (cart) {
-      const cartArr = cart.toString().split(",");
-      console.log(cartArr);
-      context.cart = [];
-      cartArr.map((i) => {
-        const item = i.split("^");
-        [swapboxProduct, swapcupProduct].map((p) => {
-          const skuIndex = p.getSkuFromTitle(item[0]);
-          if (skuIndex != "0") {
-            let sku = p.sku.get(skuIndex)!;
-            sku.quantity = item[1];
-            context.addToCart(sku);
-          }
-        });
-      });
-      updateAppContext(context);
-      cartChanged(numChanges + 1);
-    }
-  }, [cart, numChanges, updateAppContext, context]);
+  // useEffect(() => {
+  //   if (cart) {
+  //     const cartArr = cart.toString().split(",");
+  //     console.log(cartArr);
+  //     context.cart = {};
+  //     cartArr.map((i) => {
+  //       const item = i.split("^");
+  //       [swapboxProduct, swapcupProduct].map((p) => {
+  //         const skuIndex = p.getSkuFromTitle(item[0]);
+  //         if (skuIndex != "0") {
+  //           let sku = p.sku.get(skuIndex)!;
+  //           sku.quantity = item[1];
+  //           context.addToCart(sku, "");
+  //         }
+  //       });
+  //     });
+  //     updateAppContext(context);
+  //     cartChanged((prev) => prev + 1);
+  //   }
+  // }, [cart, numChanges, updateAppContext, context]);
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -57,15 +57,28 @@ const Summary: NextPage = () => {
     }
   }, []);
 
-  const items = context.cart.map((sku) => (
-    <li style={{ display: "inline" }} key={sku.title}>
-      <div className={styles.summaryRow}>
-        <Image src={sku.image} height={100} width={125} alt={"takeout front"} />
-        <div className={styles.summaryText}>{sku.title}</div>
-        <div>{"x" + sku.quantity}</div>
-      </div>
-    </li>
-  ));
+  let items = [];
+  for (let city in context.cart) {
+    if (context.locations.length > 1) {
+      items.push(<div>{city}</div>);
+    }
+    items.push(
+      context.cart[city].map((sku) => (
+        <li style={{ display: "inline" }} key={sku.title}>
+          <div className={styles.summaryRow}>
+            <Image
+              src={sku.image}
+              height={100}
+              width={125}
+              alt={"takeout front"}
+            />
+            <div className={styles.summaryText}>{sku.title}</div>
+            <div>{"x" + sku.quantity}</div>
+          </div>
+        </li>
+      ))
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -90,19 +103,13 @@ const Summary: NextPage = () => {
           <label htmlFor="eol">Agree to EOL policy</label>
         </div>
         <div style={{ marginTop: "20px" }}>
-          <form action="/api/checkout" method="POST">
-            {/* <Link href={"checkout"}> */}
+          {/* <form action="/api/checkout" method="POST"> */}
+          <Link href={"checkout"}>
             <button className={styles.checkoutButton} type="submit" role="link">
-              {`Checkout: \$${2000 * context.cart.length}`}
+              {`Checkout: \$${context.calculateCost()}`}
             </button>
-            <input
-              name={"cartString"}
-              value={context.toCheckoutString()}
-              style={{ display: "none" }}
-              readOnly
-            />
-            {/* </Link> */}
-          </form>
+          </Link>
+          {/* </form> */}
         </div>
         {canceled && (
           <div className={styles.payErrorText}>

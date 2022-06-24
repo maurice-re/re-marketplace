@@ -1,6 +1,8 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { useAppContext } from "../../context/context-provider";
 import { FormButtonModel } from "../../models/form-button";
+import { FormState } from "../../models/form-state";
 import styles from "../../styles/Form.module.css";
 import FormCircleButton from "./circle-button";
 import FormNextButton from "./next-button";
@@ -18,6 +20,8 @@ function FormButtonPage({
 }) {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
   const [context, setContext] = useAppContext();
+  const router = useRouter();
+  const { city } = router.query;
 
   console.log(selected);
   const shouldRemove = (item: FormButtonModel) => {
@@ -31,15 +35,16 @@ function FormButtonPage({
     }
     return true;
   };
+  console.log(context.routes);
 
   function handleClick(item: FormButtonModel) {
     if (selected.includes(item)) {
       if (shouldRemove(item)) {
-        context.removeRoute(item.route);
+        context.removeRoute(item.route, FormState.getCity(router.asPath));
       }
       setSelected(selected.filter((val) => val != item));
     } else {
-      context.addRoute(item.route);
+      context.addRoute(item.route, FormState.getCity(router.asPath));
       setSelected([...selected, item]);
     }
     setContext(context);
@@ -59,7 +64,9 @@ function FormButtonPage({
 
   return (
     <main className={styles.main}>
-      <h1 className={styles.title}>{title}</h1>
+      <h1 className={styles.title}>{`${title}${
+        context.locations.length > 1 ? ` in ${city}` : ""
+      }`}</h1>
       <div className={styles.subtitle}>Select all that apply</div>
       <div className={items.length % 3 != 0 ? styles.gridSmall : styles.grid}>
         <ul className={styles.list}>{listItems}</ul>

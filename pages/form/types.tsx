@@ -11,6 +11,7 @@ import styles from "../../styles/Form.module.css";
 const BusinessTypesPage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
+  console.log(id);
   const types: FormButtonModel[] = (() => {
     if (id == "business") {
       return business_types;

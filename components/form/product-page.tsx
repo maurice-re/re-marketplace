@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateOptionsList } from "../../constants/form";
+import { useAppContext } from "../../context/context-provider";
 import { Product } from "../../models/products";
 import styles from "../../styles/Form.module.css";
 import FormNextButton from "./next-button";
@@ -9,6 +11,9 @@ import SkuQuantityField from "./quantity_input";
 function ProductPage({ product, route }: { product: Product; route: string }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
+  const [context, _] = useAppContext();
+  const router = useRouter();
+  const { city } = router.query;
   useEffect(() => {
     setChosenSizes([]);
     setChosenMaterial([]);
@@ -68,7 +73,9 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
           {chosenSizes.length > 0 && chosenMaterial.length > 0 && (
             <div>
               <div>
-                <h2 className={styles.optionHeader}>Choose your quanity</h2>
+                <h2 className={styles.optionHeader}>{`Choose your quanity${
+                  context.locations.length > 1 ? ` for ${city}` : ""
+                }`}</h2>
                 <ul className={styles.grid}>{skus}</ul>
               </div>
               <FormNextButton pageName={route} disabled={false} option />
