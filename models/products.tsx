@@ -51,13 +51,13 @@ export class Product {
 }
 
 const titleToPrice: { [key: string]: number } = {
-  "1.5 L Recycled Polypropylene": 6,
-  "1 L Recycled Polypropylene": 5,
-  "8 oz Recycled Polypropylene": 3,
+  "1.5 L Recycled Polypropylene": 9.85,
+  "1 L Recycled Polypropylene": 8.82,
+  "8 oz Recycled Polypropylene": 1,
   "16 oz Recycled Polypropylene": 3.5,
-  "1.5 L Polypropylene": 6,
-  "1 L Polypropylene": 5,
-  "8 oz Polypropylene": 3,
+  "1.5 L Polypropylene": 9.85,
+  "1 L Polypropylene": 8.82,
+  "8 oz Polypropylene": 1,
   "16 oz Polypropylene": 3.5,
 };
 

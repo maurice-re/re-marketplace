@@ -74,7 +74,7 @@ const Checkout: NextPage = () => {
           <div className="text-xs text-gray-500">{`Taiwan to ${city} 5-7 days`}</div>
         </div>
         <div className="">
-          <div className="text-sm font-semibold mb-0.5">$100.00</div>
+          <div className="text-sm font-semibold mb-0.5">Calculated later</div>
         </div>
       </div>
     );

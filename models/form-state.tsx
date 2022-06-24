@@ -139,7 +139,7 @@ export class FormState {
   calculateCost(): number {
     let cost = 0;
     for (let city in this.cart) {
-      cost += 100; //shipping
+      cost += 0; //shipping
       this.cart[city].map((sku) => {
         cost += sku.price * parseInt(sku.quantity);
       });
