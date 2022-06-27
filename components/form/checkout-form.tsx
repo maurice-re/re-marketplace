@@ -49,38 +49,57 @@ export default function CheckoutForm() {
     });
   }, [stripe]);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(e);
+    const formElements = (e.target as any).elements as HTMLInputElement[];
 
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
+    let formData: [string, string][] = [];
+    for (let i = 1; i < formElements.length; i++) {
+      formData.push([formElements[i].name, formElements[i].value]);
+    }
+    console.log(formData);
+    console.log(context.cart);
+
+    const msg: string = `An order was just placed! The form data is: ${formData.toString()} the cart is ${context.toCheckoutString()}`;
+    const res = await fetch("/api/sendgrid", {
+      body: JSON.stringify({
+        msg: msg,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+
+    const { er } = await res.json();
+    if (er) {
+      console.log(er);
       return;
     }
 
     setIsLoading(true);
+    if (stripe && elements) {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          // Make sure to change this to your payment completion page
+          return_url: "https://marketplace.re.company/form/success",
+        },
+      });
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/form/success",
-      },
-    });
+      // This point will only be reached if there is an immediate error when
+      // confirming the payment. Otherwise, your customer will be redirected to
+      // your `return_url`. For some payment methods like iDEAL, your customer will
+      // be redirected to an intermediate site first to authorize the payment, then
+      // redirected to the `return_url`.
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setMessage(error.message ?? "error");
+      } else {
+        setMessage("An unexpected error occurred.");
+      }
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message ?? "error");
-    } else {
-      setMessage("An unexpected error occurred.");
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const addresses = context.locations.map((city) => (

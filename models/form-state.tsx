@@ -129,6 +129,7 @@ export class FormState {
   toCheckoutString(): string {
     let output: string[] = [];
     this.locations.map((city) => {
+      output.push(city);
       this.cart[city].map((item) => {
         output.push(item.title + "^" + item.quantity);
       });
