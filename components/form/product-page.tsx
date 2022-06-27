@@ -11,6 +11,7 @@ import SkuQuantityField from "./quantity_input";
 function ProductPage({ product, route }: { product: Product; route: string }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
+  console.log(chosenMaterial);
   const [context, _] = useAppContext();
   const router = useRouter();
   const { city } = router.query;
@@ -73,9 +74,13 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
           {chosenSizes.length > 0 && chosenMaterial.length > 0 && (
             <div>
               <div>
-                <h2 className="text-lg mt-2">{`Choose your quanity${
-                  context.locations.length > 1 ? ` for ${city}` : ""
-                }`}</h2>
+                <h2 className="text-lg mt-2">
+                  Choose your quanity
+                  <span>{context.locations.length > 1 ? " for " : ""}</span>
+                  <span className="text-aquamarine-800">
+                    {context.locations.length > 1 ? `${city}` : ""}
+                  </span>
+                </h2>
                 {skus}
               </div>
               <FormNextButton pageName={route} disabled={false} option />

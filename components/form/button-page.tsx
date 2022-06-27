@@ -70,9 +70,13 @@ function FormButtonPage({
 
   return (
     <main className={styles.main}>
-      <h1 className=" text-6xl font-semibold text-center max-w-screen-lg">{`${title}${
-        context.locations.length > 1 ? ` in ${city}` : ""
-      }`}</h1>
+      <h1 className=" text-6xl font-semibold text-center max-w-screen-lg">
+        {title}
+        <span>{context.locations.length > 1 ? ` in ` : ""}</span>
+        <span className=" text-aquamarine-600">
+          {context.locations.length > 1 ? `${city}` : ""}
+        </span>
+      </h1>
       <div className=" text-sm italic self-start mb-8 ml-28 mt-2">
         Select all that apply
       </div>
