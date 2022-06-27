@@ -40,7 +40,10 @@ const LocationPage: NextPage = () => {
     ));
 
   const chosen = context.locations.map((city) => (
-    <div className="bg-aquamarine-500 text-sm pr-2 py-1 rounded-md mr-1 mb-1 flex">
+    <div
+      className="bg-aquamarine-500 text-sm pr-2 py-1 rounded-md mr-1 mb-1 flex"
+      key={city}
+    >
       <button
         className="pl-1 pr-1 text-red-500"
         onClick={() => handleClick(city)}
