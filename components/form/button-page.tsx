@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import { FormButtonModel } from "../../models/form-button";
 import { FormState } from "../../models/form-state";
 import styles from "../../styles/Form.module.css";
@@ -19,7 +19,7 @@ function FormButtonPage({
   title: string;
 }) {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
-  const [context, setContext] = useAppContext();
+  const { activateRoute, deactivateRoute, locations } = useFormState();
   const router = useRouter();
   const { city } = router.query;
 
@@ -35,25 +35,23 @@ function FormButtonPage({
     }
     return true;
   };
-  console.log(context.routes);
 
   function handleClick(item: FormButtonModel) {
     if (selected.includes(item)) {
       if (shouldRemove(item)) {
-        context.removeRoute(
+        deactivateRoute(
           item.route,
           FormState.getCity(router.asPath).replace("%20", " ")
         );
       }
       setSelected(selected.filter((val) => val != item));
     } else {
-      context.addRoute(
+      activateRoute(
         item.route,
         FormState.getCity(router.asPath).replace("%20", " ")
       );
       setSelected([...selected, item]);
     }
-    setContext(context);
   }
 
   const listItems = items.map((item) => (
@@ -71,7 +69,7 @@ function FormButtonPage({
   return (
     <main className={styles.main}>
       <h1 className=" text-6xl font-semibold text-center max-w-screen-lg">{`${title}${
-        context.locations.length > 1 ? ` in ${city}` : ""
+        locations.length > 1 ? ` in ${city}` : ""
       }`}</h1>
       <div className=" text-sm italic self-start mb-8 ml-28 mt-2">
         Select all that apply

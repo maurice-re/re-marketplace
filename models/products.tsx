@@ -77,3 +77,159 @@ export class SKU {
     this.priceString = this.price ? `$${this.price.toFixed(2)} each` : "";
   }
 }
+
+export enum ProductTitles {
+  SWAPBOX = "Swapbox",
+  SWAPCUP = "Swapcup",
+}
+
+export enum ProductMaterials {
+  RPP = "Recycled Polypropylene",
+  PP = "Polypropylene",
+}
+
+export enum ProductSizes {
+  LITER = "1 L",
+  ONE_AND_HALF_LITER = "1 L",
+  EIGHT_OUNCE = "8 oz",
+  SIXTEEN_OUNCE = "16 oz",
+}
+
+type Product2 = {
+  images: string[];
+  locations: string[];
+  material: string;
+  name: string;
+  numOrders: number;
+  numSold: number;
+  price: {
+    quantity: number;
+    price: number;
+  }[];
+  size: string;
+};
+
+const allproducts: Product2[] = [
+  // Boxes
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.RPP,
+    name: ProductTitles.SWAPBOX,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 9.85,
+      },
+    ],
+    size: ProductSizes.ONE_AND_HALF_LITER,
+  },
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.RPP,
+    name: ProductTitles.SWAPBOX,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 8.82,
+      },
+    ],
+    size: ProductSizes.LITER,
+  },
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.PP,
+    name: ProductTitles.SWAPBOX,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 9.85,
+      },
+    ],
+    size: ProductSizes.ONE_AND_HALF_LITER,
+  },
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.PP,
+    name: ProductTitles.SWAPBOX,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 8.82,
+      },
+    ],
+    size: ProductSizes.LITER,
+  },
+  // Cups
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.RPP,
+    name: ProductTitles.SWAPCUP,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 10,
+      },
+    ],
+    size: ProductSizes.SIXTEEN_OUNCE,
+  },
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.PP,
+    name: ProductTitles.SWAPCUP,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 10,
+      },
+    ],
+    size: ProductSizes.SIXTEEN_OUNCE,
+  },
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.RPP,
+    name: ProductTitles.SWAPCUP,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 10,
+      },
+    ],
+    size: ProductSizes.EIGHT_OUNCE,
+  },
+  {
+    images: [],
+    locations: [],
+    material: ProductMaterials.PP,
+    name: ProductTitles.SWAPCUP,
+    numOrders: 0,
+    numSold: 0,
+    price: [
+      {
+        quantity: 0,
+        price: 10,
+      },
+    ],
+    size: ProductSizes.EIGHT_OUNCE,
+  },
+];

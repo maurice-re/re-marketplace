@@ -6,42 +6,22 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ProgressBar from "../../components/form/progress-bar";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import styles from "../../styles/Form.module.css";
 
+// const stripePromise = loadStripe(
+//   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
+// );
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
+  process.env.NEXT_PUBLIC_TEST_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
 const Summary: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
-  const [numChanges, cartChanged] = useState<number>(0);
-  const [context, updateAppContext] = useAppContext();
+  const { calculateTotal, cart, locations } = useFormState();
   const router = useRouter();
 
-  const { canceled, cart } = router.query;
-  console.log(context.cart);
-
-  // useEffect(() => {
-  //   if (cart) {
-  //     const cartArr = cart.toString().split(",");
-  //     console.log(cartArr);
-  //     context.cart = {};
-  //     cartArr.map((i) => {
-  //       const item = i.split("^");
-  //       [swapboxProduct, swapcupProduct].map((p) => {
-  //         const skuIndex = p.getSkuFromTitle(item[0]);
-  //         if (skuIndex != "0") {
-  //           let sku = p.sku.get(skuIndex)!;
-  //           sku.quantity = item[1];
-  //           context.addToCart(sku, "");
-  //         }
-  //       });
-  //     });
-  //     updateAppContext(context);
-  //     cartChanged((prev) => prev + 1);
-  //   }
-  // }, [cart, numChanges, updateAppContext, context]);
+  const { canceled } = router.query;
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -58,12 +38,12 @@ const Summary: NextPage = () => {
   }, []);
 
   let items = [];
-  for (let city in context.cart) {
-    if (context.locations.length > 1) {
+  for (let city in cart) {
+    if (locations.length > 1) {
       items.push(<div>{city}</div>);
     }
     items.push(
-      context.cart[city].map((sku) => (
+      cart[city].map((sku) => (
         <li style={{ display: "inline" }} key={sku.title}>
           <div className={styles.summaryRow}>
             <Image
@@ -106,7 +86,7 @@ const Summary: NextPage = () => {
           {/* <form action="/api/checkout" method="POST"> */}
           <Link href={"checkout"}>
             <button className={styles.checkoutButton} type="submit" role="link">
-              {`Checkout: \$${context.calculateCost()}`}
+              {`Checkout: \$${calculateTotal()}`}
             </button>
           </Link>
           {/* </form> */}

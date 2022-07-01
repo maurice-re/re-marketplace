@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateOptionsList } from "../../constants/form";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import { Product } from "../../models/products";
 import styles from "../../styles/Form.module.css";
 import FormNextButton from "./next-button";
@@ -11,7 +11,7 @@ import SkuQuantityField from "./quantity_input";
 function ProductPage({ product, route }: { product: Product; route: string }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-  const [context, _] = useAppContext();
+  const { locations } = useFormState();
   const router = useRouter();
   const { city } = router.query;
   useEffect(() => {
@@ -74,7 +74,7 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
             <div>
               <div>
                 <h2 className="text-lg mt-2">{`Choose your quanity${
-                  context.locations.length > 1 ? ` for ${city}` : ""
+                  locations.length > 1 ? ` for ${city}` : ""
                 }`}</h2>
                 {skus}
               </div>

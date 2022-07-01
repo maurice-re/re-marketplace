@@ -4,7 +4,8 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import React, { FormEvent, useState } from "react";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
+import { saveToLocalStorage } from "../../utils/form/localStorage";
 import AddressField from "./address-field";
 import DoubleAddressField from "./double-address-field";
 
@@ -14,7 +15,7 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [context, _] = useAppContext();
+  const { cart, locations } = useFormState();
 
   React.useEffect(() => {
     if (!stripe) {
@@ -53,29 +54,14 @@ export default function CheckoutForm() {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
 
-    let formData: [string, string][] = [];
-    for (let i = 1; i < formElements.length; i++) {
-      formData.push([formElements[i].name, formElements[i].value]);
+    let shippingInfo: string[] = [];
+    for (let i = 0; i < formElements.length - 1; i++) {
+      shippingInfo.push(formElements[i].value);
     }
-    console.log(formData);
-    console.log(context.cart);
-
-    const msg: string = `An order was just placed! The form data is: ${formData.toString()} the cart is ${context.toCheckoutString()}`;
-    const res = await fetch("/api/sendgrid", {
-      body: JSON.stringify({
-        msg: msg,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    const { er } = await res.json();
-    if (er) {
-      console.log(er);
-      return;
-    }
+    saveToLocalStorage(
+      [cart, shippingInfo, locations],
+      ["cart", "shipping", "locations"]
+    );
 
     setIsLoading(true);
     if (stripe && elements) {
@@ -83,28 +69,24 @@ export default function CheckoutForm() {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: "https://marketplace.re.company/form/success",
+          // return_url: "https://marketplace.re.company/form/success",
+          return_url: "http://localhost:3000/form/success",
         },
       });
 
-      // This point will only be reached if there is an immediate error when
-      // confirming the payment. Otherwise, your customer will be redirected to
-      // your `return_url`. For some payment methods like iDEAL, your customer will
-      // be redirected to an intermediate site first to authorize the payment, then
-      // redirected to the `return_url`.
+      // This will only be reached if there is a payment error
       if (error.type === "card_error" || error.type === "validation_error") {
         setMessage(error.message ?? "error");
       } else {
         setMessage("An unexpected error occurred.");
       }
-
       setIsLoading(false);
     }
   };
 
-  const addresses = context.locations.map((city) => (
+  const addresses = locations.map((city) => (
     <div className="py-4" key={city}>
-      {context.locations.length > 1 ? (
+      {locations.length > 1 ? (
         <div className="text-lg font-semibold">{`${city} Shipping Address`}</div>
       ) : (
         <div className="text-lg font-semibold">{`Shipping Address`}</div>
@@ -124,13 +106,6 @@ export default function CheckoutForm() {
       onSubmit={handleSubmit}
       className="flex-col border-l border-grey-500 rounded px-10 py-4 items-start h-148 overflow-auto"
     >
-      <div className="text-lg font-semibold mb-1">EOL Agreement</div>
-      <div className="inline-block text-sm">
-        <input type="checkbox" className="text-sm" id="eol"></input>
-        <label htmlFor="eol" className="text-base pl-1 inline-block">
-          Agree to EOL policy
-        </label>
-      </div>
       <div>{addresses}</div>
       <PaymentElement id="payment-element" className="my-4" />
       <div className="flex w-full place-content-center">

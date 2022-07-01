@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express';
 import { SKU } from '../../models/products';
 
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST_KEY);
 
 const calculateOrderAmount = (items : SKU[]) => {
   // Replace this constant with a calculation of the order's amount

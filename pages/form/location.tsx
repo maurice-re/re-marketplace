@@ -4,23 +4,36 @@ import { useState } from "react";
 import FormNextButton from "../../components/form/next-button";
 import ProgressBar from "../../components/form/progress-bar";
 import { cities } from "../../constants/cities";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
+import { fakeOrder } from "../../models/order";
 import styles from "../../styles/Form.module.css";
+type Product = {
+  images: string[];
+  locations: string[];
+  material: string;
+  name: string;
+  numOrders: number;
+  numSold: number;
+  price: {
+    quantity: number;
+    price: number;
+  }[];
+  size: string;
+};
 
 const LocationPage: NextPage = () => {
+  const { addLocation, addSummary, locations, removeLocation } = useFormState();
   const [query, setQuery] = useState<string>("");
-  const [context, setContext] = useAppContext();
   const [drawerOpen, toggleDrawer] = useState<boolean>();
-  const [_, setNewCity] = useState<string>("");
-  console.log(context.routes);
+  console.log(locations);
+  console.log(locations.length);
 
   function handleClick(city: string) {
-    if (context.locations.includes(city)) {
-      context.removeLocation(city);
+    if (locations.includes(city)) {
+      removeLocation(city);
     } else {
-      context.addLocation(city);
+      addLocation(city);
     }
-    setContext(context);
     // setNewCity((prev) => (prev == city ? "" : city));
     setQuery("");
     toggleDrawer((prev) => !prev);
@@ -35,13 +48,19 @@ const LocationPage: NextPage = () => {
         onClick={() => handleClick(city)}
       >
         <div className="text-xl">{city}</div>
-        {context.locations.includes(city) ? (
-          <div className="text-xl">✔</div>
-        ) : null}
+        {locations.includes(city) ? <div className="text-xl">✔</div> : null}
       </div>
     ));
-  console.log(context.locations);
 
+  function createFakeOrder() {
+    fetch("/api/orders/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ json: JSON.stringify(fakeOrder) }),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
   return (
     <div className={styles.container}>
       <Head>
@@ -61,14 +80,12 @@ const LocationPage: NextPage = () => {
           className=" text-xl p-4 border-2 border-gray-300 rounded-md w-3/5"
           type="text"
           value={
-            context.locations.length == 0
-              ? query
-              : context.locations.join(", ") + ", " + query
+            locations.length == 0 ? query : locations.join(", ") + ", " + query
           }
           onFocus={() => toggleDrawer(true)}
           onChange={(e) =>
             setQuery(
-              context.locations.length == 0
+              locations.length == 0
                 ? e.target.value
                 : e.target.value.split(", ").slice(-1)[0]
             )
@@ -81,14 +98,17 @@ const LocationPage: NextPage = () => {
             {options}
           </div>
         )}
+        <button
+          className=" bg-blue-600 px-4 py-2 text-lg text-white"
+          onClick={createFakeOrder}
+        >
+          Order
+        </button>
       </main>
       <FormNextButton
         pageName={"location"}
-        disabled={context.locations.length < 1}
-        onClick={() => {
-          context.addSummary();
-          setContext(context);
-        }}
+        disabled={locations.length < 1}
+        onClick={() => addSummary()}
       />
     </div>
   );

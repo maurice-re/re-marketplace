@@ -1,18 +1,19 @@
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import styles from "../../styles/Form.module.css";
 
 function ProgressBar({ pageName }: { pageName: string }) {
-  const [context, _] = useAppContext();
-  const currentRouteIndex = context.routes.findIndex(
+  const { routes } = useFormState();
+  const currentRouteIndex = routes.findIndex(
     (route) => route.name == pageName.replace("%20", " ")
   );
-  console.log(pageName);
-  console.log(currentRouteIndex);
+
+  console.log(routes);
+
   return (
     <div
       className={styles.progressBar}
       style={{
-        width: `${((currentRouteIndex + 1) / context.routes.length) * 100}%`,
+        width: `${((currentRouteIndex + 1) / routes.length) * 100}%`,
       }}
     ></div>
   );
