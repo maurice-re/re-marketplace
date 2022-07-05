@@ -13,7 +13,7 @@ function DoubleAddressField({
     <div className="p-0 my-0 flex-row">
       <input
         name={leftPlaceholder}
-        className="p-1 border-l-2 border-r border-y text-lg w-1/2"
+        className="p-1 border-l-2 border-r border-y text-lg w-1/2 bg-stripe-gray border-gray-500 outline-re-green-800"
         type="text"
         value={leftVal}
         placeholder={leftPlaceholder}
@@ -21,7 +21,7 @@ function DoubleAddressField({
       />
       <input
         name={rightPlaceholder}
-        className="p-1 border-l border-r-2 border-y text-lg w-1/2"
+        className="p-1 border-l border-r-2 border-y text-lg w-1/2 bg-stripe-gray border-gray-500 outline-re-green-800"
         type="text"
         value={rightVal}
         placeholder={rightPlaceholder}

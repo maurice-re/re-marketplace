@@ -182,4 +182,5 @@ export const cities = [
   "North Bay",
   "Belleville",
   "Mirabel",
+  "Hong Kong",
 ];
