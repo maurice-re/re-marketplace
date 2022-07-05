@@ -37,7 +37,12 @@ const LocationPage: NextPage = () => {
         <div className=" text-25 pl-6 font-theinhardt-300">{city}</div>
         {context.locations.includes(city) ? (
           <div className="bg-re-green-500 h-6 w-6 group-hover:bg-white mr-5 rounded-full pl-1 my-auto">
-            <Image src="/icons/check.png" height={10} width={15} />
+            <Image
+              src="/icons/check.png"
+              height={10}
+              width={15}
+              alt="check mark"
+            />
           </div>
         ) : null}
       </div>

@@ -17,7 +17,12 @@ function FormOptionButton({
     <div className="flex group relative w-52 mr-8 pt-2">
       {selected && (
         <div className="bg-re-green-500 h-6 w-6 z-10 rounded-full pl-1 absolute right-2 top-0 group-hover:bg-re-green-700">
-          <Image src="/icons/check.png" height={10} width={15} />
+          <Image
+            src="/icons/check.png"
+            height={10}
+            width={15}
+            alt="check mark"
+          />
         </div>
       )}
       <button

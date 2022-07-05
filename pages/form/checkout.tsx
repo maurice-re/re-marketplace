@@ -1,5 +1,5 @@
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+import { Appearance, loadStripe } from "@stripe/stripe-js";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -26,7 +26,7 @@ const Checkout: NextPage = () => {
       .then((data) => setClientSecret(data.clientSecret));
   }, [context]);
 
-  const appearance = {
+  const appearance: Appearance = {
     theme: "night",
     variables: {
       colorPrimary: "#58FEC4",
@@ -119,6 +119,7 @@ const Checkout: NextPage = () => {
         </div>
         <div className="w-1/2 h-full">
           {clientSecret && (
+            // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
               <CheckoutForm />
             </Elements>

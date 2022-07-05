@@ -43,7 +43,10 @@ const Summary: NextPage = () => {
   for (let city in context.cart) {
     items.push(
       context.cart[city].map((sku) => (
-        <div className="flex justify-evenly py-4 border-b-2">
+        <div
+          className="flex justify-evenly py-4 border-b-2"
+          key={city + sku.title}
+        >
           <div>
             <Image
               src={sku.image}
@@ -101,7 +104,12 @@ const Summary: NextPage = () => {
         <div className="group relative px-2 pt-2">
           {eol && (
             <div className="bg-re-green-500 h-6 w-6 z-10 rounded-full pl-1 absolute right-0 top-0 group-hover:bg-re-green-700">
-              <Image src="/icons/check.png" height={10} width={15} />
+              <Image
+                src="/icons/check.png"
+                height={10}
+                width={15}
+                alt="check mark"
+              />
             </div>
           )}
           <button

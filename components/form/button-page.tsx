@@ -62,6 +62,7 @@ function FormButtonPage({
       selected={selected.includes(item)}
       image={item.image}
       icon={item.icon}
+      key={item.title}
     />
   ));
 
