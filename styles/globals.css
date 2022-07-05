@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "theinhardt";
+  src: url("../public/fonts/Theinhardt-Regular.otf");
+}
+@font-face {
+  font-family: "theinhardt-italics";
+  src: url("../public/fonts/Theinhardt-RegularIta.otf");
+  font-style: italic;
+}
+@font-face {
+  font-family: "theinhardt-300";
+  src: url("../public/fonts/Theinhardt-Light.otf");
+  font-weight: 300;
+}
+
 html,
 body {
   padding: 0;

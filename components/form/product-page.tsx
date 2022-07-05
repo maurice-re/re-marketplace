@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { generateOptionsList } from "../../constants/form";
 import { useAppContext } from "../../context/context-provider";
 import { Product } from "../../models/products";
-import styles from "../../styles/Form.module.css";
 import FormNextButton from "./next-button";
 import SkuQuantityField from "./quantity_input";
 
@@ -44,50 +43,50 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
     ));
 
   return (
-    <main className={styles.main}>
-      <div className={styles.row}>
-        <div className={styles.pictureColumn}>
+    <main className="flex flex-col container mx-auto my-4 justify-evenly">
+      <div className=" text-white text-5xl text-center font-theinhardt">
+        {product.title.charAt(0).toUpperCase() + product.title.slice(1)}
+      </div>
+      <div className="flex justify-evenly">
+        <div className="w-124 h-124 relative">
+          <div className="w-120 h-120 bg-re-blue right-1 bottom-0 absolute rounded-2xl"></div>
           <Image
             src={product.image}
-            width={500}
-            height={500}
+            width={484}
+            height={484}
             alt={product.title}
             priority
+            className="rounded-2xl"
           />
         </div>
-        <div id="options" className={styles.column}>
-          <h1 className="text-4xl font-medium mb-1">
-            {product.title.charAt(0).toUpperCase() + product.title.slice(1)}
-          </h1>
-          <div
-            style={{
-              border: "2px solid transparent",
-            }}
-          >
-            <h2 className="text-lg mt-2">Choose your size(s)</h2>
-            <ul className={styles.grid}>{sizes}</ul>
+        <div id="options" className="w-124">
+          <div className="mb-8">
+            <h2 className="text-white text-25 font-theinhardt-300 mb-2">
+              Choose your size (s)
+            </h2>
+            <div className="flex flex-wrap">{sizes}</div>
           </div>
-          <div>
-            <h2 className="text-lg mt-2">Choose your material</h2>
-            <ul className={styles.grid}>{materials}</ul>
+          <div className="mb-8">
+            <h2 className="text-white text-25 font-theinhardt-300 mb-2">
+              Choose your material
+            </h2>
+            <div className="flex flex-wrap">{materials}</div>
           </div>
           {chosenSizes.length > 0 && chosenMaterial.length > 0 && (
             <div>
-              <div>
-                <h2 className="text-lg mt-2">
-                  Choose your quanity
-                  <span>{context.locations.length > 1 ? " for " : ""}</span>
-                  <span className="text-aquamarine-800">
-                    {context.locations.length > 1 ? `${city}` : ""}
-                  </span>
-                </h2>
-                {skus}
-              </div>
-              <FormNextButton pageName={route} disabled={false} option />
+              <h2 className="text-white text-25 font-theinhardt-300 mb-2">
+                Choose your quanity
+                <span>{context.locations.length > 1 ? " for " : ""}</span>
+                <span className=" text-re-green-500">
+                  {context.locations.length > 1 ? `${city}` : ""}
+                </span>
+              </h2>
+              {skus}
             </div>
           )}
         </div>
       </div>
+      <FormNextButton pageName={route} disabled={false} option green />
     </main>
   );
 }

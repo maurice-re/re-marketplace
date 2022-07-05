@@ -122,22 +122,15 @@ export default function CheckoutForm() {
     <form
       id="payment-form"
       onSubmit={handleSubmit}
-      className="flex-col border-l border-grey-500 rounded px-10 py-4 items-start h-148 overflow-auto"
+      className="flex-col border-l border-grey-500 rounded px-10 py-4 h-full items-start overflow-auto"
     >
-      <div className="text-lg font-semibold mb-1">EOL Agreement</div>
-      <div className="inline-block text-sm">
-        <input type="checkbox" className="text-sm" id="eol"></input>
-        <label htmlFor="eol" className="text-base pl-1 inline-block">
-          Agree to EOL policy
-        </label>
-      </div>
       <div>{addresses}</div>
       <PaymentElement id="payment-element" className="my-4" />
       <div className="flex w-full place-content-center">
         <button
           disabled={isLoading || !stripe || !elements}
           id="submit"
-          className=" bg-aquamarine-500 px-4 py-2 w-1/2 mb-4 rounded-md hover:bg-aquamarine-400 place-content-center flex"
+          className=" bg-re-green-500 px-4 py-2 w-1/2 mb-4 rounded-md hover:bg-aquamarine-400 place-content-center flex"
         >
           {isLoading ? (
             <div className=" animate-spin h-6 w-6 border-t-2 border-l-2 border-black rounded-full" />

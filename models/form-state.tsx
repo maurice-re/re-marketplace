@@ -64,7 +64,7 @@ export class FormState {
   }
 
   addSummary() {
-    this.routes.push({ name: `checkout`, active: true, city: "" });
+    this.routes.push({ name: `summary`, active: true, city: "" });
   }
 
   static getCity(name: string): string {
