@@ -1,7 +1,6 @@
 import FormOptionButton from "../components/form/option-button";
 import { FormButtonModel } from "../models/form-button";
 import { Product } from "../models/products";
-import styles from "../styles/Form.module.css";
 
 export const business_types: FormButtonModel[] = [
   new FormButtonModel("Food", "types?id=food", "/icons/food.png", true),
@@ -117,14 +116,12 @@ export function generateOptionsList(
   multipleChoice: boolean
 ) {
   return list.map((size) => (
-    <li className={styles.listItem} key={size}>
-      <FormOptionButton
-        handleClick={() =>
-          handleOptionClick(size, selected, setSelected, multipleChoice)
-        }
-        label={size}
-        selected={selected.includes(size)}
-      />
-    </li>
+    <FormOptionButton
+      handleClick={() =>
+        handleOptionClick(size, selected, setSelected, multipleChoice)
+      }
+      label={size}
+      selected={selected.includes(size)}
+    />
   ));
 }

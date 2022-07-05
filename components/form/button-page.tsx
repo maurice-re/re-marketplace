@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useAppContext } from "../../context/context-provider";
 import { FormButtonModel } from "../../models/form-button";
 import { FormState } from "../../models/form-state";
-import styles from "../../styles/Form.module.css";
 import FormCircleButton from "./circle-button";
 import FormNextButton from "./next-button";
 
@@ -57,32 +56,39 @@ function FormButtonPage({
   }
 
   const listItems = items.map((item) => (
-    <li className={styles.listItem} key={item.title}>
-      <FormCircleButton
-        handleClick={() => handleClick(item)}
-        title={item.title}
-        selected={selected.includes(item)}
-        image={item.image}
-        icon={item.icon}
-      />
-    </li>
+    <FormCircleButton
+      handleClick={() => handleClick(item)}
+      title={item.title}
+      selected={selected.includes(item)}
+      image={item.image}
+      icon={item.icon}
+      key={item.title}
+    />
   ));
 
+  const titleWidth: string = context.locations.length > 1 ? " w-144" : " w-124";
+  const numColumns: string = items.length > 4 ? " columns-3" : " columns-2";
+
   return (
-    <main className={styles.main}>
-      <h1 className=" text-6xl font-semibold text-center max-w-screen-lg">
-        {title}
-        <span>{context.locations.length > 1 ? ` in ` : ""}</span>
-        <span className=" text-aquamarine-600">
-          {context.locations.length > 1 ? `${city}` : ""}
-        </span>
-      </h1>
-      <div className=" text-sm italic self-start mb-8 ml-28 mt-2">
-        Select all that apply
+    <main className="flex flex-col container mx-auto items-center justify-evenly my-4">
+      <div>
+        <h1
+          className={
+            " text-5xl font-theinhardt text-white text-center" + titleWidth
+          }
+        >
+          {context.locations.length > 1 ? title.split("?")[0] : title}
+          {context.locations.length > 1 && <span> in </span>}
+          {context.locations.length > 1 && (
+            <span className=" text-re-green-500">{city}</span>
+          )}
+          {context.locations.length > 1 && <span>?</span>}
+        </h1>
+        <div className="  text-sm italic self-right font-theinhardt text-white ml-6">
+          Select all that apply
+        </div>
       </div>
-      <div className={items.length % 3 != 0 ? styles.gridSmall : styles.grid}>
-        <ul className={styles.list}>{listItems}</ul>
-      </div>
+      <div className={"self-center" + numColumns}>{listItems}</div>
       <FormNextButton pageName={pageName} disabled={selected.length < 1} />
     </main>
   );

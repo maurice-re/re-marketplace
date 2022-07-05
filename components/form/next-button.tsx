@@ -1,17 +1,18 @@
 import Link from "next/link";
 import { useAppContext } from "../../context/context-provider";
-import styles from "../../styles/Form.module.css";
 
 function FormNextButton({
   onClick,
   pageName,
   disabled,
   option,
+  green,
 }: {
   onClick?: () => void;
   pageName: string;
   disabled: boolean;
   option?: boolean;
+  green?: boolean;
 }) {
   const [context, _] = useAppContext();
   const currentRouteIndex = context.routes.findIndex(
@@ -19,37 +20,34 @@ function FormNextButton({
   );
 
   const nextPage = context.nextRoute(currentRouteIndex);
-  const label = (): string => {
-    if (!option) {
-      return "Next";
-    } else {
-      if (nextPage.includes("=")) {
-        if (nextPage.includes("business")) {
-          return `Next: ${nextPage.split("=")[2]}`;
-        }
-        if (nextPage.includes("swapcup")) {
-          return "Next: swapcup";
-        }
-        return `Next: ${nextPage.split("=")[1]}`;
-      } else {
-        return `Next: ${nextPage}`;
-      }
-    }
-  };
+  if (green) {
+    return (
+      <div className={"flex place-content-center"}>
+        <Link href={nextPage}>
+          <button
+            className={
+              " bg-re-green-500 text-28 py-2 rounded-10 w-full text-black font-theinhardt mt-6 hover:bg-re-green-300 active:bg-re-green-400 disabled:bg-gray-300 max-w-lg"
+            }
+            type="button"
+            disabled={disabled}
+            onClick={onClick}
+          >
+            Next →
+          </button>
+        </Link>
+      </div>
+    );
+  }
   return (
     <div className={"flex place-content-center"}>
       <Link href={nextPage}>
         <button
-          className={
-            option
-              ? "w-full bg-aquamarine-500 py-3 mt-4 mr-16 rounded hover:bg-aquamarine-300 shadow-sm hover:shadow-md"
-              : styles.nextButton
-          }
+          className=" bg-white text-28 py-2 rounded-10 w-124 text-black font-theinhardt mt-6 hover:bg-gray-100 disabled:bg-gray-300 active:bg-gray-50"
           type="button"
           disabled={disabled}
           onClick={onClick}
         >
-          {label()}
+          Next →
         </button>
       </Link>
     </div>
