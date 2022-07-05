@@ -67,6 +67,7 @@ function FormButtonPage({
   ));
 
   const titleWidth: string = context.locations.length > 1 ? " w-144" : " w-124";
+  const numColumns: string = items.length > 4 ? " columns-3" : " columns-2";
 
   return (
     <main className="flex flex-col container mx-auto items-center justify-evenly my-4">
@@ -76,17 +77,18 @@ function FormButtonPage({
             " text-5xl font-theinhardt text-white text-center" + titleWidth
           }
         >
-          {title}
+          {context.locations.length > 1 ? title.split("?")[0] : title}
           {context.locations.length > 1 && <span> in </span>}
           {context.locations.length > 1 && (
             <span className=" text-re-green-500">{city}</span>
           )}
+          {context.locations.length > 1 && <span>?</span>}
         </h1>
         <div className="  text-sm italic self-right font-theinhardt text-white ml-6">
           Select all that apply
         </div>
       </div>
-      <div className="self-center columns-2">{listItems}</div>
+      <div className={"self-center" + numColumns}>{listItems}</div>
       <FormNextButton pageName={pageName} disabled={selected.length < 1} />
     </main>
   );
