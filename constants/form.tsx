@@ -29,16 +29,9 @@ export const food_types: FormButtonModel[] = [
   new FormButtonModel(
     "Frozen Food",
     "product?id=swapbox",
-    "/icons/steak.png",
+    "/icons/frozen-food.png",
     true
   ),
-  // new FormButtonModel(
-  //   "Snack Food",
-  //   "product?id=swapbox",
-  //   "/icons/burrito.png",
-  //   true
-  // ),
-  // new FormButtonModel("Sushi", "product?id=swapbox", "/icons/sushi.png", true),
 ];
 export const drink_types: FormButtonModel[] = [
   new FormButtonModel(
@@ -78,14 +71,14 @@ export const swapboxProduct: Product = new Product(
   "swapbox",
   ["1 L", "1.5 L"],
   ["Polypropylene", "Recycled Polypropylene"],
-  "/images/takeout_vent.png"
+  "/images/swapbox_main.png"
 );
 
 export const swapcupProduct: Product = new Product(
   "swapcup",
   ["8 oz", "16 oz"],
   ["Polypropylene", "Recycled Polypropylene"],
-  "/images/cup_dark.png"
+  "/images/swapcup_main.png"
 );
 
 function handleOptionClick(
