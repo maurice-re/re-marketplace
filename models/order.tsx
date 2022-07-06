@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export type OrderItem = {
   title: string;
   price: number;
@@ -22,6 +24,7 @@ export class Order {
   orderId: string;
   total: number;
   userId: string;
+  timestamp: Timestamp;
 
   constructor(userId: string, items: OrderItem[], locations: OrderLocation[]) {
     this.items = items;
@@ -34,6 +37,7 @@ export class Order {
         .toFixed(2)
     );
     this.userId = userId;
+    this.timestamp = Timestamp.now();
   }
 }
 
@@ -59,3 +63,12 @@ export const fakeOrder = new Order(
     },
   ]
 );
+export function createFakeOrder() {
+  fetch("/api/orders/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ json: JSON.stringify(fakeOrder) }),
+  })
+    .then((res) => res.json())
+    .then((data) => console.log(data));
+}

@@ -27,7 +27,7 @@ const Checkout: NextPage = () => {
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+  }, [calculateTotal]);
 
   const appearance: Appearance = {
     theme: "night",

@@ -20,6 +20,7 @@ export async function addToFirebase(cart: FormCart, locations:string[], shipping
         const loc = {
           city: shippingData[4 + 7 * index],
           country: shippingData[1 + 7 * index],
+          dateAdded: now,
           line1: shippingData[2 + 7 * index],
           line2: shippingData[3 + 7 * index],
           lastOrderDate: now,
@@ -67,6 +68,7 @@ export async function addToFirebase(cart: FormCart, locations:string[], shipping
       items: items,
       locations: orderLocations,
       numItems: items.reduce<number>((total, item) => total + item.quantity, 0),
+      timestamp: now,
       total: parseFloat(
         items
           .reduce((total, item) => total + item.price * item.quantity, 0)
