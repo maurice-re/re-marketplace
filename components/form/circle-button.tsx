@@ -44,6 +44,7 @@ function FormCircleButton({
             objectFit={"cover"}
             alt={title}
             priority
+            className=" invert"
           />
         ) : (
           <Image src={"/"} height={100} width={100} alt={"placeholder"} />
