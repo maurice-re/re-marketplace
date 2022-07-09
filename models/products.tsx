@@ -51,14 +51,14 @@ export class Product {
 }
 
 const titleToPrice: { [key: string]: number } = {
-  "1.5 L Recycled Polypropylene": 9.85,
-  "1 L Recycled Polypropylene": 8.82,
-  "8 oz Recycled Polypropylene": 1,
-  "16 oz Recycled Polypropylene": 3.5,
-  "1.5 L Polypropylene": 9.85,
-  "1 L Polypropylene": 8.82,
-  "8 oz Polypropylene": 1,
-  "16 oz Polypropylene": 3.5,
+  "1.5 L Recycled Polypropylene": 9.46,
+  "1 L Recycled Polypropylene": 8.59,
+  "8 oz Recycled Polypropylene": 10,
+  "16 oz Recycled Polypropylene": 10,
+  "1.5 L Polypropylene": 9.46,
+  "1 L Polypropylene": 8.59,
+  "8 oz Polypropylene": 10,
+  "16 oz Polypropylene": 10,
 };
 
 export class SKU {
@@ -121,7 +121,7 @@ const allproducts: Product2[] = [
     price: [
       {
         quantity: 0,
-        price: 9.85,
+        price: 9.46,
       },
     ],
     size: ProductSizes.ONE_AND_HALF_LITER,
@@ -136,7 +136,7 @@ const allproducts: Product2[] = [
     price: [
       {
         quantity: 0,
-        price: 8.82,
+        price: 8.59,
       },
     ],
     size: ProductSizes.LITER,
@@ -151,7 +151,7 @@ const allproducts: Product2[] = [
     price: [
       {
         quantity: 0,
-        price: 9.85,
+        price: 9.46,
       },
     ],
     size: ProductSizes.ONE_AND_HALF_LITER,
@@ -166,7 +166,7 @@ const allproducts: Product2[] = [
     price: [
       {
         quantity: 0,
-        price: 8.82,
+        price: 8.59,
       },
     ],
     size: ProductSizes.LITER,
