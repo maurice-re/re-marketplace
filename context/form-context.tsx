@@ -217,8 +217,7 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
 
       let sku = product.sku.get(id);
       if (sku) {
-        sku.quantity = quantity;
-        newCart[location].push(sku);
+        newCart[location].push({ ...sku, quantity: quantity });
       }
     });
 
