@@ -1,4 +1,12 @@
+import { createDecipheriv } from "crypto";
 import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  checkoutCipherAlgorithm,
+  checkoutCipherIv,
+  checkoutCipherKey,
+  swapboxProduct,
+  swapcupProduct,
+} from "../constants/form";
 import { OrderItem } from "../models/order";
 import { SKU } from "../models/products";
 
@@ -25,6 +33,7 @@ type FormState = {
   toItems: () => OrderItem[];
   removeLocation: (location: string) => void;
   routes: FormRoute[];
+  skipToCheckout: (checkout: string) => void;
   shippingData: string[];
 };
 const FormContext = createContext<FormState>({} as FormState);
@@ -181,6 +190,42 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function skipToCheckout(checkout: string) {
+    const decipher = createDecipheriv(
+      checkoutCipherAlgorithm,
+      checkoutCipherKey,
+      checkoutCipherIv
+    );
+    const decrypted =
+      decipher.update(checkout, "hex", "utf8") + decipher.final("utf8");
+    const seperated = decrypted.split("*");
+
+    let newLocations: string[] = [];
+    let newCart: FormCart = {};
+
+    seperated.forEach((itemOrder) => {
+      const [location, quantity, size] = itemOrder.split("^");
+      if (!newLocations.includes(location)) {
+        console.log(`set ${location}`);
+        newLocations.push(location);
+        newCart[location] = [];
+      }
+
+      const product =
+        size == "1 L" || size == "1.5 L" ? swapboxProduct : swapcupProduct;
+      const id: string = product.getSku(size, "Recycled Polypropylene");
+
+      let sku = product.sku.get(id);
+      if (sku) {
+        sku.quantity = quantity;
+        newCart[location].push(sku);
+      }
+    });
+
+    setLocations(newLocations);
+    setCart(newCart);
+  }
+
   return (
     <FormContext.Provider
       value={{
@@ -197,6 +242,7 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         toItems,
         removeLocation,
         routes,
+        skipToCheckout,
         shippingData,
       }}
     >

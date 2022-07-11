@@ -15,10 +15,16 @@ const stripePromise = loadStripe(
 
 const Summary: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
-  const { calculateTotal, cart, locations } = useFormState();
+  const { calculateTotal, cart, locations, skipToCheckout } = useFormState();
   const router = useRouter();
 
-  const { canceled } = router.query;
+  const { checkout } = router.query;
+
+  useEffect(() => {
+    if (typeof checkout == "string") {
+      skipToCheckout(checkout);
+    }
+  }, [checkout, skipToCheckout]);
 
   const eolBorderColor = eol
     ? " border-re-green-500 group-hover:border-re-green-700"
@@ -41,46 +47,49 @@ const Summary: NextPage = () => {
   let items = [];
   for (let city in cart) {
     items.push(
-      cart[city].map((sku) => (
-        <div
-          className="flex justify-evenly py-4 border-b-2"
-          key={city + sku.title}
-        >
-          <div>
-            <Image
-              src={sku.image}
-              height={160}
-              width={160}
-              alt={"takeout front"}
-              className="rounded-2xl"
-            />
-          </div>
-          <div className="flex flex-col justify-center w-68">
-            <div className={"text-sm-25 text-white font-theinhardt"}>
-              {sku.title.split(" ", 2).join(" ")}
-            </div>
-            <div className={"text-sm-25 text-white font-theinhardt"}>
-              {sku.title.split(" ").slice(2).join(" ").padEnd(22)}
-            </div>
-            <div className="text-28 text-white font-theinhardt font-bold">
-              {"x " + sku.quantity}
-            </div>
-          </div>
-          <div className="flex flex-col pb-2 justify-between">
-            <div className="text-sm text-re-green-500 text-right">
-              {locations.length > 1 ? city : ""}
-            </div>
+      cart[city].map((sku, index) => {
+        const border = items.length == 0 && index == 0 ? "" : " border-t-2";
+        return (
+          <div
+            className={"flex justify-evenly py-4" + border}
+            key={city + sku.title}
+          >
             <div>
-              <button className="text-white text-25 font-theinhardt-300 border-2 border-white px-4 py-1 rounded-10 mr-2">
-                Edit
-              </button>
-              <button className="text-white hover:text-red-400 text-28">
-                &times;
-              </button>
+              <Image
+                src={sku.image}
+                height={160}
+                width={160}
+                alt={"takeout front"}
+                className="rounded-2xl"
+              />
+            </div>
+            <div className="flex flex-col justify-center w-68">
+              <div className={"text-sm-25 text-white font-theinhardt"}>
+                {sku.title.split(" ", 2).join(" ")}
+              </div>
+              <div className={"text-sm-25 text-white font-theinhardt"}>
+                {sku.title.split(" ").slice(2).join(" ").padEnd(22)}
+              </div>
+              <div className="text-28 text-white font-theinhardt font-bold">
+                {"x " + sku.quantity}
+              </div>
+            </div>
+            <div className="flex flex-col pb-2 justify-between">
+              <div className="text-md text-re-green-500 text-right">
+                {locations.length > 1 ? city : ""}
+              </div>
+              <div>
+                <button className="text-white text-25 font-theinhardt-300 border-2 border-white px-4 py-1 rounded-10 mr-2">
+                  Edit
+                </button>
+                <button className="text-white hover:text-red-400 text-28">
+                  &times;
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))
+        );
+      })
     );
   }
 
@@ -97,7 +106,7 @@ const Summary: NextPage = () => {
         <h1 className="text-5xl font-theinhardt text-white text-center">
           Your perfect setup
         </h1>
-        <div className="bg-re-gray h-100 rounded-2xl w-7/10 overflow-auto">
+        <div className="bg-re-gray h-104 rounded-2xl w-7/10 overflow-auto">
           {items}
         </div>
         <div className="group relative px-2 pt-2">
