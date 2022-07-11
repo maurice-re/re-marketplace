@@ -1,3 +1,4 @@
+import { createCipheriv } from "crypto";
 import FormOptionButton from "../components/form/option-button";
 import { FormButtonModel } from "../models/form-button";
 import { Product } from "../models/products";
@@ -118,3 +119,27 @@ export function generateOptionsList(
     />
   ));
 }
+
+export const checkoutCipherAlgorithm = "aes256"; // or any other algorithm supported by OpenSSL
+export const checkoutCipherKey = "walkedupheybuhbuhbuhgotanygrapes";
+export const checkoutCipherIv = "ffa44bd444d0bde4";
+
+export function generateCheckoutLink(checkoutString: string) {
+  let cipher = createCipheriv(
+    checkoutCipherAlgorithm,
+    checkoutCipherKey,
+    checkoutCipherIv
+  );
+  return cipher.update(checkoutString, "utf8", "hex") + cipher.final("hex");
+}
+
+const muuseOrder = [
+  "Singapore^500^1 L",
+  "Singapore^100^1.5 L",
+  "Toronto^100^1 L",
+  "Toronto^100^1.5 L",
+  "Hong Kong^60^1 L",
+].join("*");
+
+const muuseCipher =
+  "cac142c0c520b0fb2c45ff0dd168e9b74f8460d6a95082754328f00e5e91a6cc06f42bb3ac58c08e4135e55db2ea524bf6cacdbf37baae6cf844a2e880afc41d9200e4b026725fe5dcf529859adef0f4fe195b81e463864bec91f3a85dee35ee";

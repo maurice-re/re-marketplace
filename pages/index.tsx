@@ -1,13 +1,8 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useState } from 'react'
-import LocationPage from './form/location'
+import type { NextPage } from "next";
+import LocationPage from "./form/location";
 
 const Home: NextPage = () => {
-  return (
-    <LocationPage />
-  )
-}
+  return <LocationPage />;
+};
 
-export default Home
+export default Home;
