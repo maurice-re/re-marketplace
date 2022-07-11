@@ -12,9 +12,6 @@ import { useFormState } from "../../context/form-context";
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
-// const stripePromise = loadStripe(
-//   process.env.NEXT_PUBLIC_TEST_STRIPE_PUBLISHABLE_KEY ?? ""
-// );
 
 const Summary: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
