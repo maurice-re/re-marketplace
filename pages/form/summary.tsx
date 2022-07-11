@@ -24,7 +24,7 @@ const Summary: NextPage = () => {
     if (typeof checkout == "string") {
       skipToCheckout(checkout);
     }
-  }, [checkout]);
+  }, [checkout, skipToCheckout]);
 
   const eolBorderColor = eol
     ? " border-re-green-500 group-hover:border-re-green-700"
