@@ -1,55 +1,54 @@
-import { loadStripe } from "@stripe/stripe-js";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import { useAppContext } from "../../context/context-provider";
+import { FormCart } from "../../context/form-context";
 import styles from "../../styles/Form.module.css";
-
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-);
+import { addToFirebase } from "../../utils/form/firebase";
 
 const Summary: NextPage = () => {
-  const [numChanges, cartChanged] = useState<number>(0);
-  const [context, updateAppContext] = useAppContext();
-  const router = useRouter();
-  // let width = 1000;
-  let height = 1000;
+  const [cart, setCart] = useState<FormCart>({});
 
-  const { cart } = router.query;
+  useEffect(() => {
+    console.log("use");
+    // Retrieve from local storage
+    const cart: string | null = localStorage.getItem("cart");
+    const locaitons: string | null = localStorage.getItem("locations");
+    const shippingInfo: string | null = localStorage.getItem("shipping");
+    // Send to Firebase
+    if (cart != null && locaitons != null && shippingInfo != null) {
+      addToFirebase(
+        JSON.parse(cart),
+        JSON.parse(locaitons),
+        JSON.parse(shippingInfo)
+      );
+      console.log("Adding");
+      localStorage.clear();
+      setCart(JSON.parse(cart));
+    }
+  }, []);
 
-  // useEffect(() => {
-  //   if (cart) {
-  //     const cartArr = cart.toString().split(",");
-  //     console.log(cartArr);
-  //     context.cart = [];
-  //     cartArr.map((i) => {
-  //       const item = i.split("^");
-  //       [swapboxProduct, swapcupProduct].map((p) => {
-  //         const skuIndex = p.getSkuFromTitle(item[0]);
-  //         if (skuIndex != "0") {
-  //           let sku = p.sku.get(skuIndex)!;
-  //           sku.quantity = item[1];
-  //           context.addToCart(sku);
-  //         }
-  //       });
-  //     });
-  //     updateAppContext(context);
-  //     cartChanged(numChanges + 1);
-  //   }
-  // }, [cart, numChanges, updateAppContext, context]);
-
-  // const items = context.cart.map((sku) => (
-  //   <li style={{ display: "inline" }} key={sku.title}>
-  //     <div className={styles.summaryRow}>
-  //       <Image src={sku.image} height={100} width={125} alt={"takeout front"} />
-  //       <div className={styles.summaryText}>{sku.title}</div>
-  //       <div>{"x" + sku.quantity}</div>
-  //     </div>
-  //   </li>
-  // ));
+  let items = [];
+  for (let city in cart) {
+    items.push(<div>{city}</div>);
+    items.push(
+      cart[city].map((sku) => (
+        <li style={{ display: "inline" }} key={sku.title}>
+          <div className={styles.summaryRow}>
+            <Image
+              src={sku.image}
+              height={100}
+              width={125}
+              alt={"takeout front"}
+            />
+            <div className={styles.summaryText}>{sku.title}</div>
+            <div>{"x" + sku.quantity}</div>
+          </div>
+        </li>
+      ))
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -62,7 +61,7 @@ const Summary: NextPage = () => {
       <main className={styles.main}>
         <Confetti width={1800} height={1200} />
         <h1 className={styles.title}>Congrats on your purchase!</h1>
-        <div>{/* <ul>{items}</ul> */}</div>
+        <div>{items}</div>
       </main>
     </div>
   );

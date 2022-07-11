@@ -6,24 +6,34 @@ import FormNextButton from "../../components/form/next-button";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
 import { cities } from "../../constants/cities";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
+type Product = {
+  images: string[];
+  locations: string[];
+  material: string;
+  name: string;
+  numOrders: number;
+  numSold: number;
+  price: {
+    quantity: number;
+    price: number;
+  }[];
+  size: string;
+};
 
 const LocationPage: NextPage = () => {
+  const { addLocation, addSummary, locations, removeLocation } = useFormState();
   const [query, setQuery] = useState<string>("");
-  const [context, setContext] = useAppContext();
   const [drawerOpen, toggleDrawer] = useState<boolean>();
-  const [_, forceRender] = useState<number>(0);
 
   function handleClick(city: string) {
-    if (context.locations.includes(city)) {
-      context.removeLocation(city);
+    if (locations.includes(city)) {
+      removeLocation(city);
     } else {
-      context.addLocation(city);
+      addLocation(city);
     }
-    setContext(context);
     setQuery("");
     toggleDrawer(false);
-    forceRender((prev) => prev + 1);
   }
 
   const options = cities
@@ -35,7 +45,7 @@ const LocationPage: NextPage = () => {
         onMouseDown={() => handleClick(city)}
       >
         <div className=" text-25 pl-6 font-theinhardt-300">{city}</div>
-        {context.locations.includes(city) ? (
+        {locations.includes(city) ? (
           <div className="bg-re-green-500 h-6 w-6 group-hover:bg-white mr-5 rounded-full pl-1 my-auto">
             <Image
               src="/icons/check.png"
@@ -48,7 +58,7 @@ const LocationPage: NextPage = () => {
       </div>
     ));
 
-  const chosen = context.locations.map((city) => (
+  const chosen = locations.map((city) => (
     <div
       className="bg-black text-sm text-white pr-2 py-1 rounded mr-3 my-1 flex border border-white font-theinhardt-300"
       key={city}
@@ -108,11 +118,8 @@ const LocationPage: NextPage = () => {
           {!drawerOpen && (
             <FormNextButton
               pageName={"location"}
-              disabled={context.locations.length < 1}
-              onClick={() => {
-                context.addSummary();
-                setContext(context);
-              }}
+              disabled={locations.length < 1}
+              onClick={() => addSummary()}
               green
             />
           )}

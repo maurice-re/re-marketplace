@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import { Product, SKU } from "../../models/products";
 
 function SkuQuantityField({
@@ -11,7 +11,7 @@ function SkuQuantityField({
   product: Product;
   size: string;
 }) {
-  const [context, updateAppContext] = useAppContext();
+  const { addToCart, cart } = useFormState();
   const router = useRouter();
   const { city } = router.query;
   console.log(city);
@@ -22,9 +22,8 @@ function SkuQuantityField({
   function handleChange(quantity: string) {
     let changedSKU = sku ?? new SKU("", "", "");
     changedSKU.quantity = quantity;
-    context.addToCart(changedSKU, city?.toString() ?? "");
-    console.log(context.cart);
-    updateAppContext(context);
+    addToCart(changedSKU, city?.toString() ?? "");
+    console.log(cart);
   }
 
   return (

@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateOptionsList } from "../../constants/form";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import { Product } from "../../models/products";
 import FormNextButton from "./next-button";
 import SkuQuantityField from "./quantity_input";
@@ -10,14 +10,16 @@ import SkuQuantityField from "./quantity_input";
 function ProductPage({ product, route }: { product: Product; route: string }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-  console.log(chosenMaterial);
-  const [context, _] = useAppContext();
+  const { locations } = useFormState();
   const router = useRouter();
+
   const { city } = router.query;
+
   useEffect(() => {
     setChosenSizes([]);
     setChosenMaterial([]);
   }, [route]);
+
   const sizes = generateOptionsList(
     product.sizes,
     chosenSizes,
@@ -76,9 +78,9 @@ function ProductPage({ product, route }: { product: Product; route: string }) {
             <div>
               <h2 className="text-white text-25 font-theinhardt-300 mb-2">
                 Choose your quanity
-                <span>{context.locations.length > 1 ? " for " : ""}</span>
+                <span>{locations.length > 1 ? " for " : ""}</span>
                 <span className=" text-re-green-500">
-                  {context.locations.length > 1 ? `${city}` : ""}
+                  {locations.length > 1 ? `${city}` : ""}
                 </span>
               </h2>
               {skus}

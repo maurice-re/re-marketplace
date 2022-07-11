@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 
 function FormNextButton({
   onClick,
@@ -14,12 +14,12 @@ function FormNextButton({
   option?: boolean;
   green?: boolean;
 }) {
-  const [context, _] = useAppContext();
-  const currentRouteIndex = context.routes.findIndex(
+  const { nextRoute, routes } = useFormState();
+  const currentRouteIndex = routes.findIndex(
     (route) => route.name == pageName.replace("%20", " ")
   );
 
-  const nextPage = context.nextRoute(currentRouteIndex);
+  const nextPage = nextRoute(currentRouteIndex);
   if (green) {
     return (
       <div className={"flex place-content-center"}>

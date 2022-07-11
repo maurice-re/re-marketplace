@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import CheckoutForm from "../../components/form/checkout-form";
 import ReLogo from "../../components/form/re-logo";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -14,17 +14,17 @@ const stripePromise = loadStripe(
 
 const Checkout: NextPage = () => {
   const [clientSecret, setClientSecret] = useState("");
-  const [context, _] = useAppContext();
+  const { calculateTotal, cart, locations } = useFormState();
 
   useEffect(() => {
     fetch("/api/payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cost: context.calculateCost() }),
+      body: JSON.stringify({ cost: calculateTotal() }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, [context]);
+  }, [calculateTotal]);
 
   const appearance: Appearance = {
     theme: "night",
@@ -39,8 +39,8 @@ const Checkout: NextPage = () => {
   };
 
   let items = [];
-  for (let city in context.cart) {
-    if (context.locations.length > 1) {
+  for (let city in cart) {
+    if (locations.length > 1) {
       items.push(
         <div>
           <div>{`${city} orders`}</div>
@@ -48,7 +48,7 @@ const Checkout: NextPage = () => {
       );
     }
     items.push(
-      context.cart[city].map((sku) => (
+      cart[city].map((sku) => (
         <div
           className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
           key={sku.title}
@@ -101,9 +101,9 @@ const Checkout: NextPage = () => {
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
-          <h1 className=" text-4xl font-semibold pb-4">{`$${context
-            .calculateCost()
-            .toFixed(2)}`}</h1>
+          <h1 className=" text-4xl font-semibold pb-4">{`$${calculateTotal().toFixed(
+            2
+          )}`}</h1>
           {items}
           <div className="ml-16 mr-6 border my-4" />
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-8">
@@ -111,9 +111,9 @@ const Checkout: NextPage = () => {
               <div className="text-sm font-semibold mb-0.5">Total due</div>
             </div>
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${context
-                .calculateCost()
-                .toFixed(2)}`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${calculateTotal().toFixed(
+                2
+              )}`}</div>
             </div>
           </div>
         </div>

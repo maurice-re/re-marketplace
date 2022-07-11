@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -15,11 +15,10 @@ const stripePromise = loadStripe(
 
 const Summary: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
-  const [context, updateAppContext] = useAppContext();
+  const { calculateTotal, cart, locations } = useFormState();
   const router = useRouter();
 
-  const { canceled, cart } = router.query;
-  console.log(context.cart);
+  const { canceled } = router.query;
 
   const eolBorderColor = eol
     ? " border-re-green-500 group-hover:border-re-green-700"
@@ -40,9 +39,9 @@ const Summary: NextPage = () => {
   }, []);
 
   let items = [];
-  for (let city in context.cart) {
+  for (let city in cart) {
     items.push(
-      context.cart[city].map((sku) => (
+      cart[city].map((sku) => (
         <div
           className="flex justify-evenly py-4 border-b-2"
           key={city + sku.title}
@@ -69,7 +68,7 @@ const Summary: NextPage = () => {
           </div>
           <div className="flex flex-col pb-2 justify-between">
             <div className="text-sm text-re-green-500 text-right">
-              {context.locations.length > 1 ? city : ""}
+              {locations.length > 1 ? city : ""}
             </div>
             <div>
               <button className="text-white text-25 font-theinhardt-300 border-2 border-white px-4 py-1 rounded-10 mr-2">
@@ -131,7 +130,7 @@ const Summary: NextPage = () => {
             role="link"
             disabled={!eol}
           >
-            {`Checkout: \$${context.calculateCost().toFixed(2)}`}
+            {`Checkout: \$${calculateTotal().toFixed(2)}`}
           </button>
         </Link>
       </main>

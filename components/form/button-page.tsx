@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useAppContext } from "../../context/context-provider";
+import { useFormState } from "../../context/form-context";
 import { FormButtonModel } from "../../models/form-button";
 import { FormState } from "../../models/form-state";
 import FormCircleButton from "./circle-button";
@@ -18,7 +18,7 @@ function FormButtonPage({
   title: string;
 }) {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
-  const [context, setContext] = useAppContext();
+  const { activateRoute, deactivateRoute, locations } = useFormState();
   const router = useRouter();
   const { city } = router.query;
 
@@ -34,25 +34,23 @@ function FormButtonPage({
     }
     return true;
   };
-  console.log(context.routes);
 
   function handleClick(item: FormButtonModel) {
     if (selected.includes(item)) {
       if (shouldRemove(item)) {
-        context.removeRoute(
+        deactivateRoute(
           item.route,
           FormState.getCity(router.asPath).replace("%20", " ")
         );
       }
       setSelected(selected.filter((val) => val != item));
     } else {
-      context.addRoute(
+      activateRoute(
         item.route,
         FormState.getCity(router.asPath).replace("%20", " ")
       );
       setSelected([...selected, item]);
     }
-    setContext(context);
   }
 
   const listItems = items.map((item) => (
@@ -66,7 +64,7 @@ function FormButtonPage({
     />
   ));
 
-  const titleWidth: string = context.locations.length > 1 ? " w-144" : " w-124";
+  const titleWidth: string = locations.length > 1 ? " w-144" : " w-124";
   const numColumns: string = items.length > 4 ? " columns-3" : " columns-2";
 
   return (
@@ -77,12 +75,12 @@ function FormButtonPage({
             " text-5xl font-theinhardt text-white text-center" + titleWidth
           }
         >
-          {context.locations.length > 1 ? title.split("?")[0] : title}
-          {context.locations.length > 1 && <span> in </span>}
-          {context.locations.length > 1 && (
+          {locations.length > 1 ? title.split("?")[0] : title}
+          {locations.length > 1 && <span> in </span>}
+          {locations.length > 1 && (
             <span className=" text-re-green-500">{city}</span>
           )}
-          {context.locations.length > 1 && <span>?</span>}
+          {locations.length > 1 && <span>?</span>}
         </h1>
         <div className="  text-sm italic self-right font-theinhardt text-white ml-6">
           Select all that apply
