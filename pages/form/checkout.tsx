@@ -21,7 +21,7 @@ const Checkout: NextPage = () => {
     fetch("/api/payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cost: total }),
+      body: JSON.stringify({ cost: total * 1.07 }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
