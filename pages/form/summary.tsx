@@ -142,7 +142,7 @@ const Summary: NextPage = () => {
             role="link"
             disabled={!eol}
           >
-            {`Checkout: \$${calculateTotal().toFixed(2)}`}
+            {`Checkout: \$${(calculateTotal() * 1.07).toFixed(2)}`}
           </button>
         </Link>
       </main>
