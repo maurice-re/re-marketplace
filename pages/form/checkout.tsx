@@ -15,16 +15,17 @@ const stripePromise = loadStripe(
 const Checkout: NextPage = () => {
   const [clientSecret, setClientSecret] = useState("");
   const { calculateTotal, cart, locations } = useFormState();
+  const total = calculateTotal();
 
   useEffect(() => {
     fetch("/api/payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cost: calculateTotal() }),
+      body: JSON.stringify({ cost: total * 1.07 }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, [calculateTotal]);
+  }, [total]);
 
   const appearance: Appearance = {
     theme: "night",
@@ -101,19 +102,29 @@ const Checkout: NextPage = () => {
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
-          <h1 className=" text-4xl font-semibold pb-4">{`$${calculateTotal().toFixed(
+          <h1 className=" text-4xl font-semibold pb-4">{`$${total.toFixed(
             2
           )}`}</h1>
           {items}
           <div className="ml-16 mr-6 border my-4" />
+          <div className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300">
+            <div className="">
+              <div className="text-sm font-semibold mb-0.5">Tax (7%)</div>
+            </div>
+            <div className="">
+              <div className="text-sm font-semibold mb-0.5">{`$${(
+                total * 0.7
+              ).toFixed(2)}`}</div>
+            </div>
+          </div>
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-8">
             <div className="">
               <div className="text-sm font-semibold mb-0.5">Total due</div>
             </div>
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${calculateTotal().toFixed(
-                2
-              )}`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${(
+                total * 1.07
+              ).toFixed(2)}`}</div>
             </div>
           </div>
         </div>
