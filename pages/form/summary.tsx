@@ -53,11 +53,11 @@ const Summary: NextPage = () => {
         <div className=" text-white text-25 pl-8 pt-4">{city}</div>
         {cart[city].map((sku, index) => {
           return (
-            <div>
+            <div key={city + sku.title}>
               {index != 0 && (
                 <div className=" bg-white w-11/12 h-0.5 mx-auto" />
               )}
-              <div className="flex justify-evenly py-4" key={city + sku.title}>
+              <div className="flex justify-evenly py-4">
                 <div>
                   <Image
                     src={sku.image}
