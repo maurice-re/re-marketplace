@@ -44,7 +44,7 @@ const Checkout: NextPage = () => {
   for (let city in cart) {
     if (locations.length > 1) {
       items.push(
-        <div>
+        <div key={"name" + city}>
           <div>{`${city} orders`}</div>
         </div>
       );
