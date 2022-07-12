@@ -52,7 +52,9 @@ const Summary: NextPage = () => {
               />
             </div>
             <div>
-              <div className="text-md font-semibold mb-0.5">{sku.title}</div>
+              <div className="text-md font-semibold mb-0.5">
+                {sku.title.split(" ").slice(0, 2).join(" ") + " rPP Swap Box"}
+              </div>
               <div className="text-sm text-gray-300">{`Qty ${sku.quantity}`}</div>
             </div>
           </div>

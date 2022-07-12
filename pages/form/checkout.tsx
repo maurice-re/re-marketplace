@@ -65,7 +65,9 @@ const Checkout: NextPage = () => {
               />
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5">{sku.title}</div>
+              <div className="text-sm font-semibold mb-0.5">
+                {"rPP Swap Box"}
+              </div>
               <div className="text-xs text-gray-300">{`Qty ${sku.quantity}`}</div>
             </div>
           </div>
@@ -111,13 +113,23 @@ const Checkout: NextPage = () => {
           ).toFixed(2)}`}</h1>
           {items}
           <div className="ml-16 mr-6 border my-4" />
-          <div className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300">
+          <div className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200">
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">Tax (7%)</div>
+              <div className="text-sm font-semibold mb-0.5">Subtotal</div>
             </div>
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${(
-                total * 0.7
+              <div className="text-sm font-semibold mb-0.5">{`$${total.toFixed(
+                2
+              )}`}</div>
+            </div>
+          </div>
+          <div className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300">
+            <div className="">
+              <div className="text-xs font-semibold mb-0.5">Tax (7%)</div>
+            </div>
+            <div className="">
+              <div className="text-xs font-semibold mb-0.5">{`$${(
+                total * 0.07
               ).toFixed(2)}`}</div>
             </div>
           </div>
