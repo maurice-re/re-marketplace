@@ -116,6 +116,7 @@ export function generateOptionsList(
       }
       label={size}
       selected={selected.includes(size)}
+      key={size}
     />
   ));
 }
