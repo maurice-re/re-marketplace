@@ -49,7 +49,10 @@ const Summary: NextPage = () => {
   for (let city in cart) {
     const topBorder = items.length == 0 ? "" : " border-t-4";
     items.push(
-      <div className={"flex flex-col border-white" + topBorder}>
+      <div
+        className={"flex flex-col border-white" + topBorder}
+        key={city + " border"}
+      >
         <div className=" text-white text-25 pl-8 pt-4">{city}</div>
         {cart[city].map((sku, index) => {
           return (
