@@ -24,7 +24,8 @@ const Summary: NextPage = () => {
     if (typeof checkout == "string") {
       skipToCheckout(checkout);
     }
-  }, [checkout, skipToCheckout]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkout]);
 
   const eolBorderColor = eol
     ? " border-re-green-500 group-hover:border-re-green-700"
@@ -46,50 +47,52 @@ const Summary: NextPage = () => {
 
   let items = [];
   for (let city in cart) {
+    const topBorder = items.length == 0 ? "" : " border-t-4";
     items.push(
-      cart[city].map((sku, index) => {
-        const border = items.length == 0 && index == 0 ? "" : " border-t-2";
-        return (
-          <div
-            className={"flex justify-evenly py-4" + border}
-            key={city + sku.title}
-          >
-            <div>
-              <Image
-                src={sku.image}
-                height={160}
-                width={160}
-                alt={"takeout front"}
-                className="rounded-2xl"
-              />
+      <div className={"flex flex-col border-white" + topBorder}>
+        <div className=" text-white text-25 pl-8 pt-4">{city}</div>
+        {cart[city].map((sku, index) => {
+          return (
+            <div key={city + sku.title}>
+              {index != 0 && (
+                <div className=" bg-white w-11/12 h-0.5 mx-auto" />
+              )}
+              <div className="flex justify-evenly py-4">
+                <div>
+                  <Image
+                    src={sku.image}
+                    height={160}
+                    width={160}
+                    alt={"takeout front"}
+                    className="rounded-2xl"
+                  />
+                </div>
+                <div className="flex flex-col justify-center w-68">
+                  <div className={"text-sm-25 text-white font-theinhardt"}>
+                    {sku.title.split(" ", 2).join(" ")}
+                  </div>
+                  <div className={"text-sm-25 text-white font-theinhardt"}>
+                    {sku.title.split(" ").slice(2).join(" ").padEnd(22)}
+                  </div>
+                  <div className="text-28 text-white font-theinhardt font-bold">
+                    {"x " + sku.quantity}
+                  </div>
+                </div>
+                <div className="self-end">
+                  <div>
+                    <button className="text-white text-25 font-theinhardt-300 border-2 border-white px-4 py-1 rounded-10 mr-2">
+                      Edit
+                    </button>
+                    <button className="text-white hover:text-red-400 text-28">
+                      &times;
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col justify-center w-68">
-              <div className={"text-sm-25 text-white font-theinhardt"}>
-                {sku.title.split(" ", 2).join(" ")}
-              </div>
-              <div className={"text-sm-25 text-white font-theinhardt"}>
-                {sku.title.split(" ").slice(2).join(" ").padEnd(22)}
-              </div>
-              <div className="text-28 text-white font-theinhardt font-bold">
-                {"x " + sku.quantity}
-              </div>
-            </div>
-            <div className="flex flex-col pb-2 justify-between">
-              <div className="text-md text-re-green-500 text-right">
-                {locations.length > 1 ? city : ""}
-              </div>
-              <div>
-                <button className="text-white text-25 font-theinhardt-300 border-2 border-white px-4 py-1 rounded-10 mr-2">
-                  Edit
-                </button>
-                <button className="text-white hover:text-red-400 text-28">
-                  &times;
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })
+          );
+        })}
+      </div>
     );
   }
 
