@@ -1,36 +1,36 @@
 import { useRouter } from "next/router";
+import allProducts from "../../content/products.json";
+import allSkus from "../../content/skus.json";
 import { useFormState } from "../../context/form-context";
-import { Product, SKU } from "../../models/products";
 
 function SkuQuantityField({
   material,
-  product,
+  productId,
   size,
 }: {
   material: string;
-  product: Product;
+  productId: string;
   size: string;
 }) {
   const { addToCart, cart } = useFormState();
   const router = useRouter();
   const { city } = router.query;
-  console.log(city);
 
-  const skuID: string = product.getSku(size, material);
-  const sku = product.sku.get(skuID);
+  const product = allProducts.filter((p) => p.id == productId)[0];
+  const sku = allSkus.filter(
+    (sku) => sku.material == material && sku.size == size
+  )[0];
 
   function handleChange(quantity: string) {
-    let changedSKU = sku ?? new SKU("", "", "");
-    changedSKU.quantity = quantity;
-    addToCart(changedSKU, city?.toString() ?? "");
+    addToCart(sku.id, quantity, city!.toString());
     console.log(cart);
   }
 
   return (
-    <div className="flex justify-between items-center mb-2" key={skuID}>
+    <div className="flex justify-between items-center mb-2" key={sku.id}>
       <div className="">
-        <div className="text-white text-25 font-theinhardt">{sku?.title}</div>
-        <div className="text-white text-xs font-theinhardt-300">{`(${sku?.priceString})`}</div>
+        <div className="text-white text-25 font-theinhardt">{product.name}</div>
+        <div className="text-white text-xs font-theinhardt-300">{`(\$${sku.price} each)`}</div>
       </div>
 
       <div className="flex mr-2">

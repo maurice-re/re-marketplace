@@ -7,19 +7,6 @@ import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
 import { cities } from "../../constants/cities";
 import { useFormState } from "../../context/form-context";
-type Product = {
-  images: string[];
-  locations: string[];
-  material: string;
-  name: string;
-  numOrders: number;
-  numSold: number;
-  price: {
-    quantity: number;
-    price: number;
-  }[];
-  size: string;
-};
 
 const LocationPage: NextPage = () => {
   const { addLocation, addSummary, locations, removeLocation } = useFormState();

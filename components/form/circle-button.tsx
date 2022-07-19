@@ -5,13 +5,11 @@ function FormCircleButton({
   title,
   selected,
   image,
-  icon,
 }: {
   handleClick: () => void;
   title: string;
   selected: boolean;
   image?: string;
-  icon?: boolean;
 }) {
   const borderColor = selected
     ? " border-re-green-500 group-hover:border-re-green-700"

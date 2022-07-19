@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { FormButtonModel } from "../../constants/form";
 import { useFormState } from "../../context/form-context";
-import { FormButtonModel } from "../../models/form-button";
-import { FormState } from "../../models/form-state";
 import FormCircleButton from "./circle-button";
 import FormNextButton from "./next-button";
 
@@ -18,7 +17,7 @@ function FormButtonPage({
   title: string;
 }) {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
-  const { activateRoute, deactivateRoute, locations } = useFormState();
+  const { activateRoute, deactivateRoute, getCity, locations } = useFormState();
   const router = useRouter();
   const { city } = router.query;
 
@@ -38,17 +37,11 @@ function FormButtonPage({
   function handleClick(item: FormButtonModel) {
     if (selected.includes(item)) {
       if (shouldRemove(item)) {
-        deactivateRoute(
-          item.route,
-          FormState.getCity(router.asPath).replace("%20", " ")
-        );
+        deactivateRoute(item.route, getCity(router.asPath).replace("%20", " "));
       }
       setSelected(selected.filter((val) => val != item));
     } else {
-      activateRoute(
-        item.route,
-        FormState.getCity(router.asPath).replace("%20", " ")
-      );
+      activateRoute(item.route, getCity(router.asPath).replace("%20", " "));
       setSelected([...selected, item]);
     }
   }
@@ -59,7 +52,6 @@ function FormButtonPage({
       title={item.title}
       selected={selected.includes(item)}
       image={item.image}
-      icon={item.icon}
       key={item.title}
     />
   ));

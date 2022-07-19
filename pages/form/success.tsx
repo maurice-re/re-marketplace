@@ -1,68 +1,88 @@
 import type { NextPage } from "next";
+import { signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import { FormCart } from "../../context/form-context";
-import { addToFirebase } from "../../utils/form/firebase";
+import { CartOrder } from "../../context/form-context";
+import { allLocations } from "../../utils/prisma/cart";
 
 const Summary: NextPage = () => {
-  const [cart, setCart] = useState<FormCart>({});
+  const [cart, setCart] = useState<CartOrder[]>([]);
 
   useEffect(() => {
-    console.log("use");
     // Retrieve from local storage
     const cart: string | null = localStorage.getItem("cart");
-    const locaitons: string | null = localStorage.getItem("locations");
     const shippingInfo: string | null = localStorage.getItem("shipping");
     // Send to Firebase
-    if (cart != null && locaitons != null && shippingInfo != null) {
-      addToFirebase(
-        JSON.parse(cart),
-        JSON.parse(locaitons),
-        JSON.parse(shippingInfo)
-      );
-      console.log("Adding");
-      // localStorage.clear();
-      setCart(JSON.parse(cart));
+    if (cart != null && shippingInfo != null) {
+      console.log("fetch");
+      const jCart: CartOrder[] = JSON.parse(cart);
+      const jForm: string[] = JSON.parse(shippingInfo);
+      createAndSignIn(jCart, jForm);
+      localStorage.clear();
+      setCart(jCart);
     }
   }, []);
 
-  let items = [];
-  console.log(cart);
-  for (let city in cart) {
+  async function createAndSignIn(cart: CartOrder[], form: string[]) {
+    await fetch("/api/create/createUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        cart: cart,
+        form: form,
+      }),
+    })
+      .then((res) => console.log(res))
+      .catch((e) => console.log(e));
+
+    signIn("email", {
+      redirect: false,
+      email: form[2],
+      callbackUrl: "/dashboard",
+    });
+  }
+
+  let items: (JSX.Element | JSX.Element[])[] = [];
+  allLocations(cart).forEach((city) => {
     items.push(
       <div>
         <div>{`${city} orders`}</div>
       </div>
     );
     items.push(
-      cart[city].map((sku) => (
-        <div
-          className="flex columns-2 justify-between items-center mr-4 my-4"
-          key={sku.title}
-        >
-          <div className="flex columns-2 justify-start items-center">
-            <div className="h-16 w-16 overflow-hidden rounded place-content-center mr-3">
-              <Image
-                src={sku.image}
-                alt={"takeout front"}
-                height={"100%"}
-                width={"100%"}
-              />
-            </div>
-            <div>
-              <div className="text-md font-semibold mb-0.5">
-                {sku.title.split(" ").slice(0, 2).join(" ") + " rPP Swap Box"}
+      cart.map((order) => {
+        if (order.location != city) {
+          return <div key={order.sku.id + city} />;
+        }
+        return (
+          <div
+            className="flex columns-2 justify-between items-center mr-4 my-4"
+            key={order.sku.id + city}
+          >
+            <div className="flex columns-2 justify-start items-center">
+              <div className="h-16 w-16 overflow-hidden rounded place-content-center mr-3">
+                <Image
+                  src={order.product.mainImage}
+                  alt={"takeout front"}
+                  height={"100%"}
+                  width={"100%"}
+                />
               </div>
-              <div className="text-sm text-gray-300">{`Qty ${sku.quantity}`}</div>
+              <div>
+                <div className="text-md font-semibold mb-0.5">
+                  {`${order.sku.size} ${order.sku.materialShort} ${order.product.name}`}
+                </div>
+                <div className="text-sm text-gray-300">{`Qty ${order.quantity}`}</div>
+              </div>
             </div>
           </div>
-        </div>
-      ))
+        );
+      })
     );
     items.push(<div className="h-8" />);
-  }
+  });
 
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden">
@@ -78,6 +98,10 @@ const Summary: NextPage = () => {
           Congrats on your purchase!
         </h1>
         <div className=" mt-16 border-2 rounded-xl px-8 pt-8">{items}</div>
+        <div className="border-2 border-white px-8 py-4">
+          <div>Want to manage your order?</div>
+          <div>Check your email</div>
+        </div>
       </main>
     </div>
   );
