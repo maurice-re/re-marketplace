@@ -12,17 +12,168 @@ generator client {
   previewFeatures = ["referentialIntegrity"]
 }
 
-model User {
-  id              Int       @default(autoincrement()) @id
-  createdAt       DateTime  @default(now())
-  email           String    @db.VarChar(255)
-  numOrders       Int       @default(1)
+model Account {
+  id              String        @id @default(cuid())
+  access_token    String?       @db.Text
+  expires_at      Int?
+  id_token        String?       @db.Text
+  provider        String
+  providerId      String
+  refresh_token   String?       @db.Text
+  scope           String?
+  session_state   String?
+  token_type      String?
+  type            String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+
+  @@unique([provider, providerId])
+}
+
+model Company {
+  id              String        @default(cuid()) @id
+  createdAt       DateTime
+  customerId      String?
+  locations       Location[]
+  name            String
+  numUsers        Int           @default(1)
+  orders          Order[]
+  transactions    Transaction[]
+  users           User[]
+}
+
+model Image {
+  id              Int           @default(autoincrement()) @id
+  rank            Int
+  skus            Sku[]
+  skuId           Int
+  uri             String
+}
+
+model Location {
+  id              String        @default(cuid()) @id
+  city            String
+  country         String
+  company         Company       @relation(fields: [companyId], references: [id])
+  companyId       String
+  displayName     String?
+  lastOrderDate   DateTime
+  line1           String
+  line2           String?
+  numOrders       Int           @default(1)
+  orders          Order[]
+  shippingName    String
+  state           String
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String
+  zip             String
 }
 
 model Order {
-  id          Int     @default(autoincrement()) @id
-  numItem    Int     @default(1)
-  total Float @default(0)
-  userId Int
+  id              String        @default(cuid()) @id
+  amount          Float
+  company         Company       @relation(fields: [companyId], references: [id])
+  companyId       String
+  createdAt       DateTime
+  location        Location      @relation(fields: [locationId], references: [id])
+  locationId      String
+  quantity        Int
+  recievedAt      DateTime?
+  shippedAt       DateTime?
+  sku             Sku           @relation(fields: [skuId], references: [id])
+  skuId           String
+  status          Status        @default(PROCESSING)
+  transaction     Transaction   @relation(fields: [transactionId], references: [id])
+  transactionId   String
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String
+}
 
+model Product {
+  id              String        @default(cuid()) @id
+  mainImage       String
+  materials       String
+  name            String
+  sizes           String
+  skus            Sku[]
+}
+
+enum Region {
+  NORTH_AMERICA
+  ASIA
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Session {
+  id           String           @id @default(cuid())
+  sessionToken String           @unique
+  userId       String
+  expires      DateTime
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Sku {
+  id              String        @default(cuid()) @id
+  images          Image[]
+  mainImage       String
+  material        String
+  materialShort   String
+  orders          Order[]
+  price           Float
+  product         Product       @relation(fields: [productId], references: [id])
+  productId       String
+  size            String
+}
+
+enum Status {
+  COMPLETED
+  PARTIAL_COMPLETED
+  SHIPPING
+  PROCESSING
+}
+
+model Transaction {
+  id              String        @default(cuid()) @id
+  amount          Float
+  company         Company       @relation(fields: [companyId], references: [id])
+  companyId       String
+  createdAt       DateTime
+  numItems        Int
+  numLocations    Int           @default(1)
+  orders          Order[]
+  status          Status        @default(PROCESSING)
+  user            User          @relation(fields: [userId], references: [id])
+  userId          String
+}
+
+model User {
+  id              String        @default(cuid()) @id
+  accounts        Account[]
+  company         Company       @relation(fields: [companyId], references: [id])
+  companyId       String         
+  createdAt       DateTime
+  email           String        @unique()
+  emailVerified   DateTime?
+  firstName       String?
+  lastName        String?
+  locations       Location[]
+  manufacturer    Boolean       @default(false)
+  numOrders       Int           @default(1)
+  orders          Order[]
+  reEmployee      Boolean       @default(false)
+  role            Role
+  sessions        Session[]
+  transactions    Transaction[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String             @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
 }

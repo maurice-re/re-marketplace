@@ -1,36 +1,38 @@
+import { Product, Sku } from "@prisma/client";
 import { createDecipheriv } from "crypto";
 import { createContext, ReactNode, useContext, useState } from "react";
 import {
   checkoutCipherAlgorithm,
   checkoutCipherIv,
   checkoutCipherKey,
-  swapboxProduct,
-  swapcupProduct,
 } from "../constants/form";
-import { OrderItem } from "../models/order";
-import { SKU } from "../models/products";
+import allProducts from "../content/products.json";
+import allSkus from "../content/skus.json";
 
 type FormRoute = {
   active: boolean;
   city: string;
   name: string;
 };
-export type FormCart = {
-  [city: string]: SKU[];
+
+export type CartOrder = {
+  location: string;
+  product: Product;
+  quantity: number;
+  sku: Sku;
 };
 
 type FormState = {
   activateRoute: (route: string, city: string) => void;
   addLocation: (location: string) => void;
   addSummary: () => void;
-  addToCart: (sku: SKU, city: string) => void;
+  addToCart: (skuId: string, quantity: string, city: string) => void;
   calculateTotal: () => number;
-  cart: FormCart;
+  cart: CartOrder[];
   deactivateRoute: (route: string, city: string) => void;
   getCity: (name: string) => string;
   locations: string[];
   nextRoute: (index: number) => string;
-  toItems: () => OrderItem[];
   removeLocation: (location: string) => void;
   routes: FormRoute[];
   skipToCheckout: (checkout: string) => void;
@@ -43,7 +45,7 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
   const [routes, setRoutes] = useState<FormRoute[]>([
     { name: "location", active: true, city: "" },
   ]);
-  const [cart, setCart] = useState<FormCart>({});
+  const [cart, setCart] = useState<CartOrder[]>([]);
   const [shippingData, setShippingData] = useState<string[]>([]);
 
   function activateRoute(route: string, city: string) {
@@ -83,7 +85,6 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         city: location,
       },
     ]);
-    setCart((currCart) => ({ ...currCart, [location]: [] }));
   }
 
   function addSummary() {
@@ -102,36 +103,38 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     ]);
   }
 
-  function addToCart(sku: SKU, city: string) {
-    if (sku.image == "" && sku.quantity == "" && sku.title == "") {
-      return;
-    }
+  function addToCart(skuId: string, quantity: string, city: string) {
+    const sku = allSkus.filter((s) => s.id == skuId)[0];
+    const product = allProducts.filter((p) => p.id == sku.productId)[0];
 
-    const index = cart[city].findIndex((s) => s.title == sku.title);
-    if (index != -1) {
-      cart[city][index].quantity = sku.quantity;
+    const skuExists = cart.filter(
+      (order) => order.sku.id == skuId && order.location == city
+    );
+
+    if (skuExists.length == 0) {
+      setCart((curr) => [
+        ...curr,
+        {
+          location: city,
+          product: product,
+          quantity: parseInt(quantity),
+          sku: sku,
+        },
+      ]);
     } else {
-      cart[city].push(sku);
+      setCart((curr) => {
+        curr.forEach((order) => {
+          if (order.sku.id == skuId && order.location == city) {
+            order.quantity = parseInt(quantity);
+          }
+        });
+        return curr;
+      });
     }
-  }
-
-  function addShippingData(elements: HTMLInputElement[]) {
-    let shippingInfo: string[] = [];
-    for (let i = 0; i < elements.length - 1; i++) {
-      shippingInfo.push(elements[i].value);
-    }
-    setShippingData(shippingInfo);
   }
 
   function calculateTotal(): number {
-    let cost = 0;
-    for (let city in cart) {
-      cost += 0; //shipping
-      cart[city].map((sku) => {
-        cost += sku.price * parseInt(sku.quantity);
-      });
-    }
-    return cost;
+    return cart.reduce((total, o) => total + o.quantity * o.sku.price, 0);
   }
 
   function deactivateRoute(route: string, city: string) {
@@ -163,31 +166,9 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     return "";
   }
 
-  function toItems(): OrderItem[] {
-    let items: OrderItem[] = [];
-    for (let city in cart) {
-      cart[city].map((sku) => {
-        items.push({
-          price: sku.price,
-          quantity: parseInt(sku.quantity),
-          title: sku.title,
-          productId: "",
-          image: sku.image,
-          locationName: city,
-          locationId: "00",
-        });
-      });
-    }
-    return items;
-  }
-
   function removeLocation(location: string) {
     setLocations((curr) => curr.filter((city) => city != location));
     setRoutes((curr) => curr.filter((r) => r.city != location));
-    setCart((curr) => {
-      delete curr[location];
-      return curr;
-    });
   }
 
   function skipToCheckout(checkout: string) {
@@ -198,26 +179,28 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     );
     const decrypted =
       decipher.update(checkout, "hex", "utf8") + decipher.final("utf8");
-    const seperated = decrypted.split("*");
+    const separated = decrypted.split("*");
 
     let newLocations: string[] = [];
-    let newCart: FormCart = {};
+    let newCart: CartOrder[] = [];
 
-    seperated.forEach((itemOrder) => {
+    separated.forEach((itemOrder) => {
       const [location, quantity, size] = itemOrder.split("^");
       if (!newLocations.includes(location)) {
-        console.log(`set ${location}`);
         newLocations.push(location);
-        newCart[location] = [];
       }
 
-      const product =
-        size == "1 L" || size == "1.5 L" ? swapboxProduct : swapcupProduct;
-      const id: string = product.getSku(size, "Recycled Polypropylene");
-
-      let sku = product.sku.get(id);
+      const sku = allSkus.filter(
+        (s) => s.material == "Recycled Polypropylene" && s.size == size
+      )[0];
+      const product = allProducts.filter((p) => p.id == sku.productId)[0];
       if (sku) {
-        newCart[location].push({ ...sku, quantity: quantity });
+        newCart.push({
+          location: location,
+          product: product,
+          quantity: parseInt(quantity),
+          sku: sku,
+        });
       }
     });
 
@@ -238,7 +221,6 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         getCity,
         locations,
         nextRoute,
-        toItems,
         removeLocation,
         routes,
         skipToCheckout,

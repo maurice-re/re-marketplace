@@ -1,86 +1,64 @@
 import { createCipheriv } from "crypto";
 import FormOptionButton from "../components/form/option-button";
-import { FormButtonModel } from "../models/form-button";
-import { Product } from "../models/products";
+
+export type FormButtonModel = {
+  title: string;
+  route: string;
+  image?: string;
+};
+
+export enum Materials {
+  RPP = "Recycled Polypropylene",
+}
 
 export const business_types: FormButtonModel[] = [
-  new FormButtonModel("Food", "types?id=food", "/icons/food.png", true),
-  new FormButtonModel("Drinks", "types?id=drinks", "/icons/drinks.png", true),
+  { title: "Food", route: "types?id=food", image: "/icons/food.png" },
+
+  { title: "Drinks", route: "types?id=drinks", image: "/icons/drinks.png" },
 ];
 
 export const food_types: FormButtonModel[] = [
-  new FormButtonModel(
-    "Wet Food",
-    "product?id=swapbox",
-    "/icons/soup.png",
-    true
-  ),
-  new FormButtonModel(
-    "Dry Food",
-    "product?id=swapbox",
-    "/icons/salad.png",
-    true
-  ),
-  new FormButtonModel(
-    "Crispy Food",
-    "product?id=swapbox",
-    "/icons/fries.png",
-    true
-  ),
-  new FormButtonModel(
-    "Frozen Food",
-    "product?id=swapbox",
-    "/icons/frozen-food.png",
-    true
-  ),
+  { title: "Wet Food", route: "product?id=swapbox", image: "/icons/soup.png" },
+  { title: "Dry Food", route: "product?id=swapbox", image: "/icons/salad.png" },
+  {
+    title: "Crispy Food",
+    route: "product?id=swapbox",
+    image: "/icons/fries.png",
+  },
+  {
+    title: "Frozen Food",
+    route: "product?id=swapbox",
+    image: "/icons/frozen-food.png",
+  },
 ];
 export const drink_types: FormButtonModel[] = [
-  new FormButtonModel(
-    "Hot Drinks",
-    "product?id=swapcup",
-    "/icons/tea-cup.png",
-    true
-  ),
-  new FormButtonModel(
-    "Alcoholic Drinks",
-    "product?id=swapcup",
-    "/icons/cocktail.png",
-    true
-  ),
-  new FormButtonModel(
-    "Carbonated Drinks",
-    "product?id=swapcup",
-    "/icons/soda-can.png",
-    true
-  ),
-  new FormButtonModel(
-    "Frozen Drinks",
-    "product?id=swapcup",
-    "/icons/smoothies.png",
-    true
-  ),
-  new FormButtonModel(
-    "Fruit Drinks",
-    "product?id=swapcup",
-    "/icons/juice.png",
-    true
-  ),
-  new FormButtonModel("Dairy", "product?id=swapcup", "/icons/milk.png", true),
+  {
+    title: "Hot Drinks",
+    route: "product?id=swapcup",
+    image: "/icons/tea-cup.png",
+  },
+  {
+    title: "Alcoholic Drinks",
+    route: "product?id=swapcup",
+    image: "/icons/cocktail.png",
+  },
+  {
+    title: "Carbonated Drinks",
+    route: "product?id=swapcup",
+    image: "/icons/soda-can.png",
+  },
+  {
+    title: "Frozen Drinks",
+    route: "product?id=swapcup",
+    image: "/icons/smoothies.png",
+  },
+  {
+    title: "Fruit Drinks",
+    route: "product?id=swapcup",
+    image: "/icons/juice.png",
+  },
+  { title: "Dairy", route: "product?id=swapcup", image: "/icons/milk.png" },
 ];
-
-export const swapboxProduct: Product = new Product(
-  "swapbox",
-  ["1 L", "1.5 L"],
-  ["Polypropylene", "Recycled Polypropylene"],
-  "/images/swapbox_main.png"
-);
-
-export const swapcupProduct: Product = new Product(
-  "swapcup",
-  ["8 oz", "16 oz"],
-  ["Polypropylene", "Recycled Polypropylene"],
-  "/images/swapcup_main.png"
-);
 
 function handleOptionClick(
   optionLabel: string,
