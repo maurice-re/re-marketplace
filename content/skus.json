@@ -1,0 +1,82 @@
+[
+    {    
+        "id": "RE-SB2-1L-RPP-D",
+        "images": [],
+        "mainImage": "/images/swapbox_main.png",
+        "material": "Recycled Polypropylene",
+        "materialShort": "RPP",
+        "price": 8.59,
+        "productId": "SB2",
+        "size": "1 L"
+    },
+    {    
+        "id": "RE-SB2-1.5L-RPP-D",
+        "images": [],
+        "mainImage": "/images/swapbox_main.png",
+        "material": "Recycled Polypropylene",
+        "materialShort": "RPP",
+        "price": 9.46,
+        "productId": "SB2",
+        "size": "1.5 L"
+    },
+    {    
+        "id": "RE-SB2-1L-PP-D",
+        "images": [],
+        "mainImage": "/images/swapbox_main.png",
+        "material": "Polypropylene",
+        "materialShort": "PP",
+        "price": 8.59,
+        "productId": "SB2",
+        "size": "1 L"
+    },
+    {    
+        "id": "RE-SB2-1.5L-PP-D",
+        "images": [],
+        "mainImage": "/images/swapbox_main.png",
+        "material": "Polypropylene",
+        "materialShort": "PP",
+        "price": 9.46,
+        "productId": "SB2",
+        "size": "1.5 L"
+    },
+    {    
+        "id": "RE-SC1-8OZ-RPP-D",
+        "images": [],
+        "mainImage": "/images/swapcup_main.png",
+        "material": "Recycled Polypropylene",
+        "materialShort": "RPP",
+        "price": 10,
+        "productId": "SC1",
+        "size": "8 oz"
+    },
+    {    
+        "id": "RE-SC1-16OZ-RPP-D",
+        "images": [],
+        "mainImage": "/images/swapcup_main.png",
+        "material": "Recycled Polypropylene",
+        "materialShort": "RPP",
+        "price": 10,
+        "productId": "SC1",
+        "size": "16 oz"
+    },
+    {    
+        "id": "RE-SC1-8OZ-PP-D",
+        "images": [],
+        "mainImage": "/images/swapcup_main.png",
+        "material": "Polypropylene",
+        "materialShort": "PP",
+        "price": 10,
+        "productId": "SC1",
+        "size": "8 oz"
+    },
+    {    
+        "id": "RE-SC1-16OZ-PP-D",
+        "images": [],
+        "mainImage": "/images/swapcup_main.png",
+        "material": "Polypropylene",
+        "materialShort": "PP",
+        "price": 10,
+        "productId": "SC1",
+        "size": "16 oz"
+    }
+]

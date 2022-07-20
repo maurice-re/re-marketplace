@@ -5,8 +5,12 @@ import React from "react";
 import FormButtonPage from "../../components/form/button-page";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
-import { business_types, drink_types, food_types } from "../../constants/form";
-import { FormButtonModel } from "../../models/form-button";
+import {
+  business_types,
+  drink_types,
+  food_types,
+  FormButtonModel,
+} from "../../constants/form";
 
 const BusinessTypesPage: NextPage = () => {
   const router = useRouter();

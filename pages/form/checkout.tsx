@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import CheckoutForm from "../../components/form/checkout-form";
 import ReLogo from "../../components/form/re-logo";
 import { useFormState } from "../../context/form-context";
+import { allLocations } from "../../utils/prisma/cart";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -40,8 +41,8 @@ const Checkout: NextPage = () => {
     appearance,
   };
 
-  let items = [];
-  for (let city in cart) {
+  let items: (JSX.Element | JSX.Element[])[] = [];
+  allLocations(cart).forEach((city) => {
     if (locations.length > 1) {
       items.push(
         <div key={"name" + city}>
@@ -50,35 +51,40 @@ const Checkout: NextPage = () => {
       );
     }
     items.push(
-      cart[city].map((sku) => (
-        <div
-          className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
-          key={sku.title}
-        >
-          <div className="flex columns-2 justify-start items-center">
-            <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
-              <Image
-                src={sku.image}
-                alt={"takeout front"}
-                height={"100%"}
-                width={"100%"}
-              />
+      cart.map((order) => {
+        if (order.location != city) {
+          return <div key={order.sku.id + city} hidden />;
+        }
+        return (
+          <div
+            className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
+            key={order.sku.id + city}
+          >
+            <div className="flex columns-2 justify-start items-center">
+              <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
+                <Image
+                  src={order.product.mainImage}
+                  alt={"takeout front"}
+                  height={"100%"}
+                  width={"100%"}
+                />
+              </div>
+              <div>
+                <div className="text-sm font-semibold mb-0.5">
+                  {"rPP Swap Box"}
+                </div>
+                <div className="text-xs text-gray-300">{`Qty ${order.quantity}`}</div>
+              </div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5">
-                {"rPP Swap Box"}
-              </div>
-              <div className="text-xs text-gray-300">{`Qty ${sku.quantity}`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${(
+                order.sku.price * order.quantity
+              ).toFixed(2)}`}</div>
+              <div className="text-xs text-gray-300">{`\$${order.sku.price} each`}</div>
             </div>
           </div>
-          <div>
-            <div className="text-sm font-semibold mb-0.5">{`$${(
-              sku.price * parseInt(sku.quantity)
-            ).toFixed(2)}`}</div>
-            <div className="text-xs text-gray-300">{sku.priceString}</div>
-          </div>
-        </div>
-      ))
+        );
+      })
     );
     items.push(
       <div
@@ -94,7 +100,7 @@ const Checkout: NextPage = () => {
         </div>
       </div>
     );
-  }
+  });
 
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center text-white">

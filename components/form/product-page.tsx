@@ -1,62 +1,103 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { generateOptionsList } from "../../constants/form";
+import allProducts from "../../content/products.json";
 import { useFormState } from "../../context/form-context";
-import { Product } from "../../models/products";
 import FormNextButton from "./next-button";
+import FormOptionButton from "./option-button";
 import SkuQuantityField from "./quantity_input";
 
-function ProductPage({ product, route }: { product: Product; route: string }) {
+function ProductPage({
+  productId,
+  route,
+}: {
+  productId: string;
+  route: string;
+}) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
   const { locations } = useFormState();
   const router = useRouter();
 
   const { city } = router.query;
+  const product = allProducts.filter((p) => p.id == productId)[0];
 
   useEffect(() => {
     setChosenSizes([]);
     setChosenMaterial([]);
   }, [route]);
 
-  const sizes = generateOptionsList(
-    product.sizes,
-    chosenSizes,
-    setChosenSizes,
-    true
-  );
-  const materials = generateOptionsList(
-    product.materials,
-    chosenMaterial,
-    setChosenMaterial,
-    false
-  );
+  function handleOptionClick(
+    optionLabel: string,
+    selected: string[],
+    setSelected: any,
+    multipleChoice: boolean
+  ) {
+    if (multipleChoice) {
+      if (selected.includes(optionLabel)) {
+        setSelected(selected.filter((val) => val != optionLabel));
+      } else {
+        setSelected([...selected, optionLabel]);
+      }
+    } else {
+      if (optionLabel == selected[0]) {
+        setSelected("");
+      } else {
+        setSelected([optionLabel]);
+      }
+    }
+  }
+
+  const sizes = product.sizes
+    .split(",")
+    .map((size) => (
+      <FormOptionButton
+        handleClick={() =>
+          handleOptionClick(size, chosenSizes, setChosenSizes, true)
+        }
+        label={size}
+        selected={chosenSizes.includes(size)}
+        key={size}
+      />
+    ));
+
+  const materials = product.materials
+    .split(",")
+    .map((material) => (
+      <FormOptionButton
+        handleClick={() =>
+          handleOptionClick(material, chosenMaterial, setChosenMaterial, false)
+        }
+        label={material}
+        selected={chosenMaterial.includes(material)}
+        key={material}
+      />
+    ));
 
   const skus = chosenSizes
     .sort((a, b) => parseInt(a.split(" ")[0]) - parseInt(b.split(" ")[0]))
     .map((size) => (
       <SkuQuantityField
         material={chosenMaterial[0]}
-        product={product}
+        productId={productId}
         size={size}
-        key={product.getSku(size, chosenMaterial[0])}
+        key={size + chosenMaterial[0]}
       />
     ));
 
   return (
     <main className="flex flex-col container mx-auto my-4 justify-evenly">
       <div className=" text-white text-5xl text-center font-theinhardt">
-        {product.title.charAt(0).toUpperCase() + product.title.slice(1)}
+        {product.name.charAt(0).toUpperCase() + product.name.slice(1)}
       </div>
       <div className="flex justify-evenly">
         <div className="w-124 h-124 relative">
           <div className="w-120 h-120 bg-re-blue right-1 bottom-0 absolute rounded-2xl"></div>
           <Image
-            src={product.image}
+            src={product.mainImage}
             width={484}
             height={484}
-            alt={product.title}
+            alt={product.name}
             priority
             className="rounded-2xl"
           />

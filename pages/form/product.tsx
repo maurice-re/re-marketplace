@@ -5,12 +5,11 @@ import React from "react";
 import ProductPage from "../../components/form/product-page";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
-import { swapboxProduct, swapcupProduct } from "../../constants/form";
 
 const Product: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const product = id == "swapcup" ? swapcupProduct : swapboxProduct;
+  const productId = id == "swapcup" ? "SC1" : "SB2";
 
   return (
     <div className="w-screen h-screen bg-black flex">
@@ -21,7 +20,7 @@ const Product: NextPage = () => {
       </Head>
       <ProgressBar pageName={router.asPath.slice(6)} />
       <ReLogo />
-      <ProductPage product={product} route={router.asPath.slice(6)} />
+      <ProductPage productId={productId} route={router.asPath.slice(6)} />
     </div>
   );
 };

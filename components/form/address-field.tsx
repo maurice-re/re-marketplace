@@ -6,8 +6,8 @@ function AddressField({
   placeholder,
 }: {
   bottom?: boolean;
-  top?: boolean;
   placeholder: string;
+  top?: boolean;
 }) {
   const [val, setVal] = useState<string>("");
 

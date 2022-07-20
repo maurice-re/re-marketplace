@@ -1,14 +1,6 @@
 import type { Request, Response } from 'express';
-import { SKU } from '../../models/products';
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-const calculateOrderAmount = (items : SKU[]) => {
-  // Replace this constant with a calculation of the order's amount
-  // Calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-  return 1400;
-};
 
 export default async function handler(req: Request, res: Response) {
   const { cost } = req.body;

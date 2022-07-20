@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
 import { useFormState } from "../../context/form-context";
+import { allLocations } from "../../utils/prisma/cart";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -45,8 +46,9 @@ const Summary: NextPage = () => {
     }
   }, []);
 
-  let items = [];
-  for (let city in cart) {
+  let items: JSX.Element[] = [];
+  allLocations(cart).forEach((city) => {
+    let first = 1;
     const topBorder = items.length == 0 ? "" : " border-t-4";
     items.push(
       <div
@@ -54,16 +56,18 @@ const Summary: NextPage = () => {
         key={city + " border"}
       >
         <div className=" text-white text-25 pl-8 pt-4">{city}</div>
-        {cart[city].map((sku, index) => {
+        {cart.map((order) => {
+          if (order.location != city) {
+            return <div key={order.sku.id + city} />;
+          }
+          first -= 1;
           return (
-            <div key={city + sku.title}>
-              {index != 0 && (
-                <div className=" bg-white w-11/12 h-0.5 mx-auto" />
-              )}
+            <div key={city + order.sku.id}>
+              {first < 0 && <div className=" bg-white w-11/12 h-0.5 mx-auto" />}
               <div className="flex justify-evenly py-4">
                 <div>
                   <Image
-                    src={sku.image}
+                    src={order.product.mainImage}
                     height={160}
                     width={160}
                     alt={"takeout front"}
@@ -72,13 +76,17 @@ const Summary: NextPage = () => {
                 </div>
                 <div className="flex flex-col justify-center w-68">
                   <div className={"text-sm-25 text-white font-theinhardt"}>
-                    {sku.title.split(" ", 2).join(" ")}
+                    {order.sku.size}
                   </div>
                   <div className={"text-sm-25 text-white font-theinhardt"}>
-                    {"rPP Swap Box".padEnd(22)}
+                    {(
+                      order.sku.materialShort +
+                      " " +
+                      order.product.name
+                    ).padEnd(22)}
                   </div>
                   <div className="text-28 text-white font-theinhardt font-bold">
-                    {"x " + sku.quantity}
+                    {"x " + order.quantity}
                   </div>
                 </div>
                 <div className="self-end">
@@ -97,7 +105,7 @@ const Summary: NextPage = () => {
         })}
       </div>
     );
-  }
+  });
 
   return (
     <div className="w-screen h-screen bg-black flex">

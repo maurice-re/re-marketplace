@@ -58,6 +58,7 @@ export default function CheckoutForm() {
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
     }
+
     saveToLocalStorage(
       [cart, shippingInfo, locations],
       ["cart", "shipping", "locations"]
@@ -106,6 +107,18 @@ export default function CheckoutForm() {
       onSubmit={handleSubmit}
       className="flex-col border-l border-grey-500 rounded px-10 py-4 h-full items-start overflow-auto"
     >
+      <div>
+        <div className="py-4">
+          <div className="text-lg font-semibold">Your Info</div>
+          <DoubleAddressField
+            leftPlaceholder="First Name"
+            rightPlaceholder="Last Name"
+            top
+          />
+          <AddressField placeholder="Email" />
+          <AddressField placeholder="Company Name" bottom />
+        </div>
+      </div>
       <div>{addresses}</div>
       <PaymentElement id="payment-element" className="my-4" />
       <div className="flex w-full place-content-center">
