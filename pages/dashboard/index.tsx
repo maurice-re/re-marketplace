@@ -36,9 +36,9 @@ const Home: NextPage<HomeProps> = ({ transaction, user }: HomeProps) => {
             <div>{`Last order ${new Date(
               transaction.createdAt
             ).toDateString()}`}</div>
-            <div>{`Order status is ${transaction.status}`}</div>
             <div>{`${transaction.numItems} containers ordered`}</div>
             <div>{`Sent to ${transaction.numLocations} locations`}</div>
+            <div>{`Order status is ${transaction.status}`}</div>
           </div>
         </main>
       </div>
