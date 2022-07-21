@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
         from: process.env.EMAIL_FROM,
     })
   ],
-  secret: "ME",
+  secret: process.env.NEXTAUTH_SECRET,
   theme: {
       colorScheme: "dark" 
   }
