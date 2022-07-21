@@ -1,9 +1,8 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import EmailProvider from "next-auth/providers/email";
+import prisma from "../../../constants/prisma";
 
-const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -18,7 +17,7 @@ export const authOptions: NextAuthOptions = {
         from: process.env.EMAIL_FROM,
     })
   ],
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET ?? "DMWYcJdU5UuNga6XvRw85gUtd6Ov2XsfEwTwh+ql7nM=",
   theme: {
       colorScheme: "dark" 
   }
