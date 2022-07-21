@@ -1,9 +1,7 @@
 import { Order } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import prisma from "../../../constants/prisma";
-import { authOptions } from "../../api/auth/[...nextauth]";
 
 type OrderProps = {
   order: Order | undefined;
@@ -47,15 +45,15 @@ const OrderPage: NextPage<OrderProps> = ({ order }: OrderProps) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { orderId } = context.query;
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-  if (session && typeof orderId == "string") {
+  // const session = await unstable_getServerSession(
+  //   context.req,
+  //   context.res,
+  //   authOptions
+  // );
+  if (typeof orderId == "string") {
     const user = await prisma.user.findUnique({
       where: {
-        email: session?.user?.email ?? "",
+        email: "mmcool120@live.com",
       },
     });
     console.log(user);
