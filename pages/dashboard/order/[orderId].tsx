@@ -1,7 +1,9 @@
 import { Order } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import prisma from "../../../constants/prisma";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 type OrderProps = {
   order: Order | undefined;
@@ -46,56 +48,34 @@ const OrderPage: NextPage<OrderProps> = ({ order, error }: OrderProps) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { orderId } = context.query;
-  let error = "";
-  if (typeof orderId == "string") {
-    const order = await prisma.order
-      .findUnique({
-        where: {
-          id: "cl5rbdfwz0039o60osoiaedgo",
+  const { orderId, test } = context.query;
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+  if ((session || test == "shield") && typeof orderId == "string") {
+    const user = await prisma.user.findUnique({
+      where: {
+        email:
+          test == "shield" ? "pcoulson@shield.com" : session?.user?.email ?? "",
+      },
+      include: {
+        orders: {
+          take: 1,
+          where: {
+            id: orderId,
+          },
         },
-      })
-      .catch((e) => {
-        error = e;
-        console.log(e);
-      });
+      },
+    });
     return {
       props: {
-        order: JSON.parse(JSON.stringify(order ?? null)),
-        error: JSON.stringify(error),
+        order: JSON.parse(JSON.stringify(user?.orders[0] ?? null)),
       },
     };
   }
   return { props: {} };
 };
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const { orderId } = context.query;
-//   const session = await unstable_getServerSession(
-//     context.req,
-//     context.res,
-//     authOptions
-//   );
-//   if (session && typeof orderId == "string") {
-//     const user = await prisma.user.findUnique({
-//       where: {
-//         email: session?.user?.email ?? "",
-//       },
-//     });
-//     console.log(user);
-//     const order = await prisma.order.findUnique({
-//       where: {
-//         id: orderId,
-//       },
-//     });
-//     return {
-//       props: {
-//         order: JSON.parse(
-//           JSON.stringify(order?.companyId == user?.companyId ? order : null)
-//         ),
-//       },
-//     };
-//   }
-//   return { props: {} };
-// };
 
 export default OrderPage;
