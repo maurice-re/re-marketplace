@@ -14,24 +14,31 @@ const Summary: NextPage = () => {
     // Retrieve from local storage
     const cart: string | null = localStorage.getItem("cart");
     const shippingInfo: string | null = localStorage.getItem("shipping");
+    const customerId: string | null = localStorage.getItem("customerId");
     // Send to Firebase
-    if (cart != null && shippingInfo != null) {
+    if (cart != null && shippingInfo != null && customerId != null) {
       console.log("fetch");
       const jCart: CartOrder[] = JSON.parse(cart);
       const jForm: string[] = JSON.parse(shippingInfo);
-      createAndSignIn(jCart, jForm);
+      const jId: string = JSON.parse(customerId);
+      createAndSignIn(jCart, jForm, jId);
       localStorage.clear();
       setCart(jCart);
     }
   }, []);
 
-  async function createAndSignIn(cart: CartOrder[], form: string[]) {
+  async function createAndSignIn(
+    cart: CartOrder[],
+    form: string[],
+    customerId: string
+  ) {
     await fetch("/api/create/createUser", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cart: cart,
         form: form,
+        customerId: customerId,
       }),
     })
       .then((res) => console.log(res))
@@ -98,7 +105,7 @@ const Summary: NextPage = () => {
           Congrats on your purchase!
         </h1>
         <div className=" mt-16 border-2 rounded-xl px-8 pt-8">{items}</div>
-        <div className="border-2 border-white px-8 py-4">
+        <div className="border-2 border-white px-8 py-4 mt-4 text-center rounded-md">
           <div>Want to manage your order?</div>
           <div>Check your email</div>
         </div>

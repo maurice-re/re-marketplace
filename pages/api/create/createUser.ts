@@ -9,9 +9,11 @@ async function createUser(req: Request, res: Response) {
   const {
     cart,
     form,
+    customerId
   } : {
       cart: CartOrder[],
-      form: string[]
+      form: string[],
+      customerId: string
   } = req.body;
   
   const now = new Date();
@@ -26,6 +28,7 @@ async function createUser(req: Request, res: Response) {
     data: {
       createdAt: now,
       name: form[3],
+      customerId: customerId
     },
   });
 

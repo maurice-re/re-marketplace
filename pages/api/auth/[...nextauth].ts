@@ -9,7 +9,11 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async redirect({ url, baseUrl }) {
       return `${baseUrl}/dashboard`
-    }
+    },
+    async session({ session, user, token}) {
+      session.user = user;
+      return session
+    },
   },
   providers: [
     EmailProvider({
