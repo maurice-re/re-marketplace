@@ -58,7 +58,7 @@ const Summary: NextPage = () => {
         <div className=" text-white text-25 pl-8 pt-4">{city}</div>
         {cart.map((order) => {
           if (order.location != city) {
-            return <div key={order.sku.id + city} />;
+            return;
           }
           first -= 1;
           return (

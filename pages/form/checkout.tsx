@@ -30,7 +30,8 @@ const Checkout: NextPage = () => {
         setClientSecret(data.clientSecret);
         setCustomerId(data.customerId);
       });
-  }, [calculateTotal, setCustomerId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const appearance: Appearance = {
     theme: "night",
@@ -56,7 +57,9 @@ const Checkout: NextPage = () => {
     items.push(
       cart.map((order) => {
         if (order.location != city) {
-          return <div key={order.sku.id + city} hidden />;
+          return (
+            <div key={order.location + order.sku.id + "hidden"} hidden></div>
+          );
         }
         return (
           <div
@@ -74,7 +77,11 @@ const Checkout: NextPage = () => {
               </div>
               <div>
                 <div className="text-sm font-semibold mb-0.5">
-                  {"rPP Swap Box"}
+                  {order.sku.size +
+                    " " +
+                    order.sku.materialShort +
+                    " " +
+                    order.product.name}
                 </div>
                 <div className="text-xs text-gray-300">{`Qty ${order.quantity}`}</div>
               </div>
