@@ -115,8 +115,6 @@ export function generateCheckoutLink(checkoutString: string) {
 const muuseOrder = [
   "Singapore^500^1 L",
   "Singapore^100^1.5 L",
-  "Toronto^100^1 L",
-  "Toronto^100^1.5 L",
   "Hong Kong^60^1 L",
 ].join("*");
 

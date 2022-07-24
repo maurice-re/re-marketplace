@@ -15,7 +15,7 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { cart, locations } = useFormState();
+  const { cart, locations, customerId } = useFormState();
 
   React.useEffect(() => {
     if (!stripe) {
@@ -60,8 +60,8 @@ export default function CheckoutForm() {
     }
 
     saveToLocalStorage(
-      [cart, shippingInfo, locations],
-      ["cart", "shipping", "locations"]
+      [cart, shippingInfo, locations, customerId],
+      ["cart", "shipping", "locations", "customerId"]
     );
 
     setIsLoading(true);
@@ -92,12 +92,16 @@ export default function CheckoutForm() {
       ) : (
         <div className="text-lg font-semibold">{`Shipping Address`}</div>
       )}
-      <AddressField placeholder="Name" top />
-      <AddressField placeholder="Country" />
-      <AddressField placeholder="Address Line 1" />
+      <AddressField placeholder="Name" top required />
+      <AddressField placeholder="Country" required />
+      <AddressField placeholder="Address Line 1" required />
       <AddressField placeholder="Address Line 2" />
-      <DoubleAddressField leftPlaceholder="City" rightPlaceholder="Zip" />
-      <AddressField placeholder="State" bottom />
+      <DoubleAddressField
+        leftPlaceholder="City"
+        rightPlaceholder="Zip"
+        required
+      />
+      <AddressField placeholder="State" bottom required />
     </div>
   ));
 
@@ -114,9 +118,10 @@ export default function CheckoutForm() {
             leftPlaceholder="First Name"
             rightPlaceholder="Last Name"
             top
+            required
           />
-          <AddressField placeholder="Email" />
-          <AddressField placeholder="Company Name" bottom />
+          <AddressField placeholder="Email" required />
+          <AddressField placeholder="Company Name" bottom required />
         </div>
       </div>
       <div>{addresses}</div>

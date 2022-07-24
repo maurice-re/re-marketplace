@@ -2,10 +2,12 @@ import { useState } from "react";
 
 function DoubleAddressField({
   leftPlaceholder,
+  required,
   rightPlaceholder,
   top,
 }: {
   leftPlaceholder: string;
+  required?: boolean;
   rightPlaceholder: string;
   top?: boolean;
 }) {
@@ -29,6 +31,7 @@ function DoubleAddressField({
         value={leftVal}
         placeholder={leftPlaceholder}
         onChange={(e) => setLeftVal(e.target.value)}
+        required={required}
       />
       <input
         name={rightPlaceholder}
@@ -37,6 +40,7 @@ function DoubleAddressField({
         value={rightVal}
         placeholder={rightPlaceholder}
         onChange={(e) => setRightVal(e.target.value)}
+        required={required}
       />
     </div>
   );

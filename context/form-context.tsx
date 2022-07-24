@@ -1,11 +1,5 @@
 import { Product, Sku } from "@prisma/client";
-import { createDecipheriv } from "crypto";
 import { createContext, ReactNode, useContext, useState } from "react";
-import {
-  checkoutCipherAlgorithm,
-  checkoutCipherIv,
-  checkoutCipherKey,
-} from "../constants/form";
 import allProducts from "../content/products.json";
 import allSkus from "../content/skus.json";
 
@@ -29,12 +23,14 @@ type FormState = {
   addToCart: (skuId: string, quantity: string, city: string) => void;
   calculateTotal: () => number;
   cart: CartOrder[];
+  customerId: string;
   deactivateRoute: (route: string, city: string) => void;
   getCity: (name: string) => string;
   locations: string[];
   nextRoute: (index: number) => string;
   removeLocation: (location: string) => void;
   routes: FormRoute[];
+  setCustomerId: (id: string) => void;
   skipToCheckout: (checkout: string) => void;
   shippingData: string[];
 };
@@ -47,6 +43,7 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
   ]);
   const [cart, setCart] = useState<CartOrder[]>([]);
   const [shippingData, setShippingData] = useState<string[]>([]);
+  const [customerId, setCustomerIdInt] = useState<string>("");
 
   function activateRoute(route: string, city: string) {
     const index = routes.findIndex(
@@ -171,15 +168,12 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     setRoutes((curr) => curr.filter((r) => r.city != location));
   }
 
+  function setCustomerId(id: string) {
+    setCustomerIdInt(id);
+  }
+
   function skipToCheckout(checkout: string) {
-    const decipher = createDecipheriv(
-      checkoutCipherAlgorithm,
-      checkoutCipherKey,
-      checkoutCipherIv
-    );
-    const decrypted =
-      decipher.update(checkout, "hex", "utf8") + decipher.final("utf8");
-    const separated = decrypted.split("*");
+    const separated = checkout.split("*");
 
     let newLocations: string[] = [];
     let newCart: CartOrder[] = [];
@@ -217,12 +211,14 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         addToCart,
         calculateTotal,
         cart,
+        customerId,
         deactivateRoute,
         getCity,
         locations,
         nextRoute,
         removeLocation,
         routes,
+        setCustomerId,
         skipToCheckout,
         shippingData,
       }}

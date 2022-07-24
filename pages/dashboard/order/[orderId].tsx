@@ -1,4 +1,4 @@
-import { Order } from "@prisma/client";
+import { Order, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
@@ -55,23 +55,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     authOptions
   );
   if ((session || test == "shield") && typeof orderId == "string") {
-    const user = await prisma.user.findUnique({
+    const order = await prisma.order.findFirst({
       where: {
-        email:
-          test == "shield" ? "pcoulson@shield.com" : session?.user?.email ?? "",
-      },
-      include: {
-        orders: {
-          take: 1,
-          where: {
-            id: orderId,
-          },
-        },
+        id: orderId,
+        companyId: (session?.user as User).companyId,
       },
     });
     return {
       props: {
-        order: JSON.parse(JSON.stringify(user?.orders[0] ?? null)),
+        order: JSON.parse(JSON.stringify(order ?? null)),
       },
     };
   }

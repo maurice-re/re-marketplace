@@ -15,7 +15,7 @@ const stripePromise = loadStripe(
 
 const Checkout: NextPage = () => {
   const [clientSecret, setClientSecret] = useState("");
-  const { calculateTotal, cart, locations } = useFormState();
+  const { calculateTotal, cart, locations, setCustomerId } = useFormState();
   const total = calculateTotal();
 
   useEffect(() => {
@@ -23,11 +23,14 @@ const Checkout: NextPage = () => {
     fetch("/api/payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cost: taxTotal }),
+      body: JSON.stringify({ cost: taxTotal, id: "" }),
     })
       .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
-  }, [calculateTotal]);
+      .then((data) => {
+        setClientSecret(data.clientSecret);
+        setCustomerId(data.customerId);
+      });
+  }, [calculateTotal, setCustomerId]);
 
   const appearance: Appearance = {
     theme: "night",

@@ -2,11 +2,13 @@ import { useState } from "react";
 
 function AddressField({
   bottom,
-  top,
   placeholder,
+  required,
+  top,
 }: {
   bottom?: boolean;
   placeholder: string;
+  required?: boolean;
   top?: boolean;
 }) {
   const [val, setVal] = useState<string>("");
@@ -28,6 +30,7 @@ function AddressField({
         value={val}
         placeholder={placeholder}
         onChange={(e) => setVal(e.target.value)}
+        required={required}
       />
     </div>
   );
