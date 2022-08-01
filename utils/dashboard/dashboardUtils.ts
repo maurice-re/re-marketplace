@@ -1,6 +1,6 @@
 import { Location, Order, Sku, Transaction } from "@prisma/client";
 
-type OrderSkuProduct = Order & {
+export type OrderSkuProduct = Order & {
   sku: Sku & {
     product: {
       name: string;
@@ -20,7 +20,7 @@ export type SkuProduct = Sku & {
 
 export type TransactionCustomerOrders = Transaction & {
   company: {
-    customerId: string | null;
+    customerId: string;
   };
   orders: (Order & {
     location: Location;
@@ -31,6 +31,27 @@ export type TransactionCustomerOrders = Transaction & {
     };
   })[];
 };
+
+export type OrderCustomerLocation = Order & {
+  company: {
+      customerId: string;
+  };
+  location: Location;
+  sku: Sku & {
+      product: {
+          name: string;
+      };
+  };
+};
+
+export type OrderLocationSku = Order & {
+  location: Location;
+  sku: Sku & {
+    product: {
+      name: string;
+    };
+  };
+}
 
 
 export function getUniqueSkus(orders: OrderSkuProduct[]): SkuProduct[] {
@@ -99,13 +120,13 @@ export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[
     }
 
 
-export function totalFromTransaction(transaction: TransactionCustomerOrders): number {
-  const total  = transaction.orders.reduce((prev, curr) => prev + curr.quantity * curr.sku.price, 0)
+export function totalFromOrders(orders: OrderLocationSku[]): number {
+  const total  = orders.reduce((prev, curr) => prev + curr.quantity * curr.sku.price, 0);
   return parseFloat(total.toFixed(2));
 }
 
-export function getLocationsFromTransaction(transaction: TransactionCustomerOrders): Location[] {
-  return transaction.orders.reduce((prev, curr) => {
+export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {
+  return orders.reduce((prev, curr) => {
     if(prev.find(l => l.id == curr.locationId)){
       return prev;
     } else {

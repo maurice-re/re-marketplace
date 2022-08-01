@@ -8,8 +8,10 @@ import CheckoutInfo from "../../components/dashboard/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
 import {
+  OrderCustomerLocation,
+  OrderSkuProduct,
   separateByLocationId,
-  totalFromTransaction,
+  totalFromOrders,
   TransactionCustomerOrders,
 } from "../../utils/dashboard/dashboardUtils";
 
@@ -18,10 +20,12 @@ const stripePromise = loadStripe(
 );
 
 type CheckoutProps = {
-  transaction: TransactionCustomerOrders;
+  transaction?: TransactionCustomerOrders;
+  order?: OrderCustomerLocation;
 };
 
 const DashboardCheckout: NextPage<CheckoutProps> = ({
+  order,
   transaction,
 }: CheckoutProps) => {
   const [clientSecret, setClientSecret] = useState("");
@@ -29,16 +33,35 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
   const [paymentMethods, setPaymentMethods] = useState<
     PaymentMethod[] | undefined
   >();
-  const total = transaction ? totalFromTransaction(transaction) : 0;
+  const total = (): number => {
+    if (transaction) {
+      return totalFromOrders(transaction.orders);
+    }
+    if (order) {
+      return totalFromOrders([order]);
+    }
+    return 0;
+  };
+
+  const customerId = (): string => {
+    if (transaction) {
+      return transaction.company.customerId;
+    }
+    if (order) {
+      return order.company.customerId;
+    }
+    return "";
+  };
 
   useEffect(() => {
-    const taxTotal = transaction ? parseFloat((total * 1.07).toFixed(2)) : 0;
+    const taxTotal = parseFloat((total() * 1.07).toFixed(2));
+    console.log(taxTotal);
     fetch("/api/payment/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cost: taxTotal,
-        id: transaction.company.customerId,
+        id: customerId(),
       }),
     })
       .then((res) => res.json())
@@ -63,7 +86,17 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
   };
 
   let items: (JSX.Element | JSX.Element[])[] = [];
-  separateByLocationId(transaction.orders ?? []).forEach((cityArr) => {
+  const orders = (): OrderSkuProduct[][] => {
+    if (transaction) {
+      return separateByLocationId(transaction.orders);
+    }
+    if (order) {
+      return separateByLocationId([order]);
+    }
+    return [];
+  };
+
+  orders().forEach((cityArr) => {
     if (true) {
       items.push(
         <div key={"name" + cityArr[0].id}>
@@ -84,7 +117,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
               <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
                 <Image
                   src={order.sku.mainImage}
-                  alt={"takeout front"}
+                  alt={order.sku.product.name}
                   height={"100%"}
                   width={"100%"}
                 />
@@ -139,7 +172,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
           <h1 className=" text-4xl font-semibold pb-4">{`$${(
-            total * 1.07
+            total() * 1.07
           ).toFixed(2)}`}</h1>
           {items}
           <div className="ml-16 mr-6 border my-4" />
@@ -148,7 +181,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
               <div className="text-sm font-semibold mb-0.5">Subtotal</div>
             </div>
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${total.toFixed(
+              <div className="text-sm font-semibold mb-0.5">{`$${total().toFixed(
                 2
               )}`}</div>
             </div>
@@ -159,7 +192,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
             </div>
             <div className="">
               <div className="text-xs font-semibold mb-0.5">{`$${(
-                total * 0.07
+                total() * 0.07
               ).toFixed(2)}`}</div>
             </div>
           </div>
@@ -169,7 +202,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
             </div>
             <div className="">
               <div className="text-sm font-semibold mb-0.5">{`$${(
-                total * 1.07
+                total() * 1.07
               ).toFixed(2)}`}</div>
             </div>
           </div>
@@ -179,6 +212,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
               <CheckoutInfo
+                order={order}
                 transaction={transaction}
                 paymentMethods={paymentMethods}
                 paymentId={paymentId}
@@ -192,7 +226,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { test, transactionId } = context.query;
+  const { orderId, test, transactionId } = context.query;
 
   if (typeof transactionId == "string") {
     const transaction = await prisma.transaction.findUnique({
@@ -224,6 +258,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         transaction: JSON.parse(JSON.stringify(transaction)),
+      },
+    };
+  }
+
+  if (typeof orderId == "string") {
+    const order = await prisma.order.findUnique({
+      where: {
+        id: orderId,
+      },
+      include: {
+        company: {
+          select: {
+            customerId: true,
+          },
+        },
+        sku: {
+          include: {
+            product: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        location: true,
+      },
+    });
+    return {
+      props: {
+        order: JSON.parse(JSON.stringify(order)),
       },
     };
   }

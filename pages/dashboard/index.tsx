@@ -89,7 +89,16 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
               <div className="flex flex-col m-4 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
                 <div className="flex justify-between w-full items-start">
                   <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
-                    Latest Transaction
+                    <span>Latest Transaction</span>
+                    <span className="text-xl"> – </span>
+                    <span className="text-xl">
+                      {`${new Date(
+                        user.transactions[0].createdAt
+                      ).toLocaleDateString("en-us", {
+                        day: "numeric",
+                        month: "short",
+                      })}`}
+                    </span>
                   </h1>
                   <Link
                     href={{
@@ -160,9 +169,16 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                                 </div>
                               </div>
                               <div className="flex flex-col ml-2 justify-between">
-                                <button className="px-2 py-0.5 bg-re-gray-400 rounded text-xs mb-1 hover:bg-re-green-600 hover:text-black">
-                                  Re-order
-                                </button>
+                                <Link
+                                  href={{
+                                    pathname: "/dashboard/checkout",
+                                    query: { orderId: o.id },
+                                  }}
+                                >
+                                  <button className="px-2 py-0.5 bg-re-gray-400 rounded text-xs mb-1 hover:bg-re-green-600 hover:text-black">
+                                    Re-order
+                                  </button>
+                                </Link>
                                 <button
                                   className="px-2 py-0.5 bg-re-gray-400 rounded text-xs hover:bg-opacity-60"
                                   disabled
@@ -245,6 +261,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           include: {
             orders: {
               include: {
+                company: {
+                  select: {
+                    customerId: true,
+                  },
+                },
                 sku: {
                   include: {
                     product: {
