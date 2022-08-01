@@ -72,7 +72,7 @@ export default function CheckoutInfo({
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: process.env.BASE_PATH + "/dashboard",
+          return_url: window.location.origin + "/dashboard",
         },
       });
 

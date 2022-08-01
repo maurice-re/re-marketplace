@@ -53,7 +53,6 @@ export default function CheckoutForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
-
     let shippingInfo: string[] = [];
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
@@ -70,7 +69,7 @@ export default function CheckoutForm() {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: process.env.BASE_PATH + "/form/success",
+          return_url: window.location.origin + "/form/success",
         },
       });
 
