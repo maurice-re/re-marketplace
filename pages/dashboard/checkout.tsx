@@ -1,34 +1,51 @@
 import { Elements } from "@stripe/react-stripe-js";
-import { Appearance, loadStripe } from "@stripe/stripe-js";
-import type { NextPage } from "next";
+import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import CheckoutForm from "../../components/form/checkout-form";
+import CheckoutInfo from "../../components/dashboard/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
-import { useFormState } from "../../context/form-context";
-import { allLocations } from "../../utils/prisma/cart";
+import prisma from "../../constants/prisma";
+import {
+  separateByLocationId,
+  totalFromTransaction,
+  TransactionCustomerOrders,
+} from "../../utils/dashboard/dashboardUtils";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-const Checkout: NextPage = () => {
+type CheckoutProps = {
+  transaction: TransactionCustomerOrders;
+};
+
+const DashboardCheckout: NextPage<CheckoutProps> = ({
+  transaction,
+}: CheckoutProps) => {
   const [clientSecret, setClientSecret] = useState("");
-  const { calculateTotal, cart, locations, setCustomerId } = useFormState();
-  const total = calculateTotal();
+  const [paymentId, setPaymentId] = useState("");
+  const [paymentMethods, setPaymentMethods] = useState<
+    PaymentMethod[] | undefined
+  >();
+  const total = transaction ? totalFromTransaction(transaction) : 0;
 
   useEffect(() => {
-    const taxTotal = parseFloat((calculateTotal() * 1.07).toFixed(2));
+    const taxTotal = transaction ? parseFloat((total * 1.07).toFixed(2)) : 0;
     fetch("/api/payment/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cost: taxTotal, id: "" }),
+      body: JSON.stringify({
+        cost: taxTotal,
+        id: transaction.company.customerId,
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
         setClientSecret(data.clientSecret);
-        setCustomerId(data.customerId);
+        setPaymentId(data.paymentId);
+        setPaymentMethods(data.paymentMethods);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -46,30 +63,27 @@ const Checkout: NextPage = () => {
   };
 
   let items: (JSX.Element | JSX.Element[])[] = [];
-  allLocations(cart).forEach((city) => {
-    if (locations.length > 1) {
+  separateByLocationId(transaction.orders ?? []).forEach((cityArr) => {
+    if (true) {
       items.push(
-        <div key={"name" + city}>
-          <div>{`${city} orders`}</div>
+        <div key={"name" + cityArr[0].id}>
+          <div>{`${
+            cityArr[0].location.displayName ?? cityArr[0].location.city
+          } orders`}</div>
         </div>
       );
     }
     items.push(
-      cart.map((order) => {
-        if (order.location != city) {
-          return (
-            <div key={order.location + order.sku.id + "hidden"} hidden></div>
-          );
-        }
+      cityArr.map((order) => {
         return (
           <div
             className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
-            key={order.sku.id + city}
+            key={order.sku.id + cityArr[0].locationId}
           >
             <div className="flex columns-2 justify-start items-center">
               <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
                 <Image
-                  src={order.product.mainImage}
+                  src={order.sku.mainImage}
                   alt={"takeout front"}
                   height={"100%"}
                   width={"100%"}
@@ -81,7 +95,7 @@ const Checkout: NextPage = () => {
                     " " +
                     order.sku.materialShort +
                     " " +
-                    order.product.name}
+                    order.sku.product.name}
                 </div>
                 <div className="text-xs text-gray-300">{`Qty ${order.quantity}`}</div>
               </div>
@@ -99,11 +113,11 @@ const Checkout: NextPage = () => {
     items.push(
       <div
         className="flex columns-2 pl-16 justify-between mr-6 mb-8"
-        key={"tax" + city}
+        key={"tax" + cityArr[0].locationId}
       >
         <div className="">
           <div className="text-sm font-semibold mb-0.5">Shipping</div>
-          <div className="text-xs text-gray-300">{`Shenzen to ${city} 7-10 days`}</div>
+          <div className="text-xs text-gray-300">{`Shenzen to ${cityArr[0].location.city} 7-10 days`}</div>
         </div>
         <div className="">
           <div className="text-sm font-semibold mb-0.5">Calculated later</div>
@@ -164,7 +178,11 @@ const Checkout: NextPage = () => {
           {clientSecret && (
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutForm />
+              <CheckoutInfo
+                transaction={transaction}
+                paymentMethods={paymentMethods}
+                paymentId={paymentId}
+              />
             </Elements>
           )}
         </div>
@@ -173,4 +191,43 @@ const Checkout: NextPage = () => {
   );
 };
 
-export default Checkout;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { test, transactionId } = context.query;
+
+  if (typeof transactionId == "string") {
+    const transaction = await prisma.transaction.findUnique({
+      where: {
+        id: transactionId,
+      },
+      include: {
+        company: {
+          select: {
+            customerId: true,
+          },
+        },
+        orders: {
+          include: {
+            sku: {
+              include: {
+                product: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+            location: true,
+          },
+        },
+      },
+    });
+    return {
+      props: {
+        transaction: JSON.parse(JSON.stringify(transaction)),
+      },
+    };
+  }
+  return { props: {} };
+};
+
+export default DashboardCheckout;

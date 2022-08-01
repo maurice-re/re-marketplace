@@ -33,7 +33,7 @@ model Account {
 model Company {
   id              String        @default(cuid()) @id
   createdAt       DateTime
-  customerId      String?
+  customerId      String
   locations       Location[]
   name            String
   numUsers        Int           @default(1)
