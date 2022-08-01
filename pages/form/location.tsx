@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import { signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
@@ -73,6 +74,17 @@ const LocationPage: NextPage = () => {
       </Head>
       <ProgressBar pageName={"location"} />
       <ReLogo />
+      <div className="absolute left-4 top-6 flex text-white">
+        <div className="text-white">
+          <span>Already have an account? </span>
+          <span
+            className="hover:text-re-green-500 cursor-pointer"
+            onClick={() => signIn()}
+          >
+            Log In
+          </span>
+        </div>
+      </div>
       <main className="flex flex-col container mx-auto self-end h-2/3 items-center">
         <div className="">
           <h1 className=" text-5xl font-theinhardt text-white">
