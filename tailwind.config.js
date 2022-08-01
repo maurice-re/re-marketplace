@@ -6,6 +6,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      borderRadius: {
+        '10' : '10px',
+      },
+      borderWidth: {
+        '3' : '3px'
+      },
       colors: {
         'aquamarine-800' : '#58B294',
         'aquamarine-700' : '#65CCA9',
@@ -22,8 +28,21 @@ module.exports = {
         're-green-200' : '#8AFED5',
         're-green-100' : '#9AFEDB',
         're-blue': '#5336FF',
-        're-gray': '#2B2B2B',
+        're-gray-500': '#2B2B2B',
+        're-gray-400': '#353535',
+        're-gray-300': '#3f3f3f',
         'stripe-gray': '#30313d'
+      },
+      fontFamily: {
+        'theinhardt' : ["Theinhardt", "sans-serif"],
+        'theinhardt-300' : ["Theinhardt-300", "sans-serif"],
+        'theinhardt-italics' : ["Theinhardt-italics", "sans-serif"]
+      },
+      fontSize: {
+        'sm-25' : ['25px', '28px'],
+        '25' : ['25px', '38px'],
+        '28' : ['28px', '38px'],
+        '35' : ['35px', '40px']
       },
       height: {
         '100' : '25rem',
@@ -42,20 +61,6 @@ module.exports = {
         '144': '36rem',
         '148': '37rem',
         '7/10': '70%'
-      },
-      fontFamily: {
-        'theinhardt' : ["Theinhardt", "sans-serif"],
-        'theinhardt-300' : ["Theinhardt-300", "sans-serif"],
-        'theinhardt-italics' : ["Theinhardt-italics", "sans-serif"]
-      },
-      borderRadius: {
-        '10' : '10px'
-      },
-      fontSize: {
-        'sm-25' : ['25px', '28px'],
-        '25' : ['25px', '38px'],
-        '28' : ['28px', '38px'],
-        '35' : ['35px', '40px']
       }
     },
   },

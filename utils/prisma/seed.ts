@@ -19,6 +19,7 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
   const testCompany = {
     id: "616",
     createdAt: now,
+    customerId: "cus_M9eeBtGCJfNxeZ",
     name: "S.H.I.E.L.D.",
     numUsers: 2,
   }

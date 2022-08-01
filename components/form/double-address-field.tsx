@@ -2,13 +2,17 @@ import { useState } from "react";
 
 function DoubleAddressField({
   leftPlaceholder,
+  leftValue,
   required,
   rightPlaceholder,
+  rightValue,
   top,
 }: {
   leftPlaceholder: string;
+  leftValue?: string;
   required?: boolean;
   rightPlaceholder: string;
+  rightValue?: string;
   top?: boolean;
 }) {
   const [leftVal, setLeftVal] = useState<string>("");
@@ -28,19 +32,21 @@ function DoubleAddressField({
         name={leftPlaceholder}
         className={leftInputClass}
         type="text"
-        value={leftVal}
+        value={leftValue ?? leftVal}
         placeholder={leftPlaceholder}
         onChange={(e) => setLeftVal(e.target.value)}
         required={required}
+        disabled={leftValue != undefined}
       />
       <input
         name={rightPlaceholder}
         className={rightInputClass}
         type="text"
-        value={rightVal}
+        value={rightValue ?? rightVal}
         placeholder={rightPlaceholder}
         onChange={(e) => setRightVal(e.target.value)}
         required={required}
+        disabled={rightValue != undefined}
       />
     </div>
   );
