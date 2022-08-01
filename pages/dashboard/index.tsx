@@ -1,10 +1,11 @@
 import { Location, Order, Transaction, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import QuickOrder from "../../components/dashboard/quickOrder";
 import prisma from "../../constants/prisma";
@@ -39,9 +40,15 @@ type HomeProps = {
 
 const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
   const [email, setEmail] = useState<string>(user?.email ?? "");
+  const router = useRouter();
 
   function handleLogin() {
     signIn("email", { redirect: false, email: email });
+  }
+
+  async function handleSignOut() {
+    await signOut({ redirect: false });
+    router.push("/");
   }
 
   const locationsOrdered = separateByLocationId(user.transactions[0].orders);
@@ -60,9 +67,17 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
         {head}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-4">
-            <h1 className=" font-theinhardt text-3xl">{`Hi ${
-              user.firstName == "Phil" ? "Agent Coulson" : user.firstName
-            }!`}</h1>
+            <div className="flex">
+              <h1 className=" font-theinhardt text-3xl">{`Hi ${
+                user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
+              <button
+                className="ml-4 px-2 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </button>
+            </div>
             <div className="flex items-center">
               <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
               <div className="bg-white w-px h-5/6 mx-2" />
