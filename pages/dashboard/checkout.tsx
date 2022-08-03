@@ -28,6 +28,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
   order,
   transaction,
 }: CheckoutProps) => {
+  console.log(order);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentId, setPaymentId] = useState("");
   const [paymentMethods, setPaymentMethods] = useState<
@@ -226,7 +227,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { orderId, test, transactionId } = context.query;
+  const { orderId, orders, test, transactionId } = context.query;
 
   if (typeof transactionId == "string") {
     const transaction = await prisma.transaction.findUnique({
@@ -288,6 +289,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         order: JSON.parse(JSON.stringify(order)),
+      },
+    };
+  }
+
+  if (typeof orders == "string") {
+    console.log(orders);
+    return {
+      props: {
+        transaction: JSON.parse(orders),
       },
     };
   }

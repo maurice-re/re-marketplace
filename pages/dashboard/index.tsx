@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import QuickOrder from "../../components/dashboard/quickOrder";
+import Sidebar from "../../components/dashboard/sidebar";
 import prisma from "../../constants/prisma";
 import {
   addDays,
@@ -20,6 +21,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 type UserTransactionOrder = User & {
   company: {
     name: string;
+    customerId: string;
   };
   transactions: (Transaction & {
     orders: (Order & {
@@ -63,148 +65,157 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
   );
   if (user) {
     return (
-      <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
-        <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          <div className="flex justify-between px-4">
-            <div className="flex">
-              <h1 className=" font-theinhardt text-3xl">{`Hi ${
-                user.firstName == "Phil" ? "Agent Coulson" : user.firstName
-              }!`}</h1>
-              <button
-                className="ml-4 px-2 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </button>
-            </div>
-            <div className="flex items-center">
-              <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
-              <div className="bg-white w-px h-5/6 mx-2" />
-              <h1 className=" font-theinhardt text-3xl">{user.company.name}</h1>
-            </div>
-          </div>
-          <div className="flex overflow-auto">
-            <div className="flex flex-col w-3/5 justify-between pb-4">
-              <div className="flex flex-col m-4 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
-                <div className="flex justify-between w-full items-start">
-                  <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
-                    <span>Latest Transaction</span>
-                    <span className="text-xl"> – </span>
-                    <span className="text-xl">
-                      {`${new Date(
-                        user.transactions[0].createdAt
-                      ).toLocaleDateString("en-us", {
-                        day: "numeric",
-                        month: "short",
-                      })}`}
-                    </span>
-                  </h1>
-                  <Link
-                    href={{
-                      pathname: "/dashboard/checkout",
-                      query: { transactionId: user.transactions[0].id },
-                    }}
-                  >
-                    <button className=" px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black">
-                      Order Again
-                    </button>
-                  </Link>
-                </div>
-                <div className=" h-px bg-white mb-2 w-full" />
-                <div className="flex flex-col w-full">
-                  {separateByLocationId(user.transactions[0].orders).map(
-                    (arr, index) => (
-                      <div key={arr[0].locationId}>
-                        <div className="flex justify-between mt-1 mb-3">
-                          <h2 className="text-xl font-theinhardt">
-                            {arr[0].location.displayName ??
-                              arr[0].location.city}
-                          </h2>
-                          <h3 className="text-lg font-theinhardt-300">{`\$${arr.reduce(
-                            (prev, curr) => prev + curr.amount,
-                            0
-                          )}`}</h3>
-                        </div>
-                        {arr.map((o, i) => (
-                          <div
-                            className="flex ml-6 justify-between"
-                            key={o.id + "items"}
-                          >
-                            <div
-                              className={`flex items-center ${
-                                index + 1 != arr.length ? "mb-3" : ""
-                              }`}
-                            >
-                              <Image
-                                src={o.sku.mainImage}
-                                height={96}
-                                width={96}
-                                alt={skuName(o.sku)}
-                                className="rounded"
-                              />
-                              <div className="flex-col text-start ml-2">
-                                <div className="text-base font-theinhardt">
-                                  {o.sku.product.name}
-                                </div>
-                                <div className=" text-xs font-theinhardt-300">
-                                  {`${o.sku.size} | ${o.sku.materialShort}`}
-                                </div>
-                              </div>
-                              <div className="ml-2 text-sm font-theinhardt-300">{`x ${o.quantity}`}</div>
-                            </div>
-                            <div className="flex mb-3 items-center">
-                              <div className="flex-col justify-center text-center">
-                                <div className="text-base font-theinhardt">
-                                  {o.status.toLowerCase()}
-                                </div>
-                                <div className=" text-xs font-theinhardt-300">
-                                  {`Est. shipping ${addDays(
-                                    o.createdAt,
-                                    7
-                                  ).toLocaleDateString("en-us", {
-                                    month: "long",
-                                    day: "numeric",
-                                  })}`}
-                                </div>
-                              </div>
-                              <div className="flex flex-col ml-2 justify-between">
-                                <Link
-                                  href={{
-                                    pathname: "/dashboard/checkout",
-                                    query: { orderId: o.id },
-                                  }}
-                                >
-                                  <button className="px-2 py-0.5 bg-re-gray-400 rounded text-xs mb-1 hover:bg-re-green-600 hover:text-black">
-                                    Re-order
-                                  </button>
-                                </Link>
-                                <button
-                                  className="px-2 py-0.5 bg-re-gray-400 rounded text-xs hover:bg-opacity-60"
-                                  disabled
-                                >
-                                  Schedule
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )
-                  )}
-                </div>
+      <Sidebar>
+        <div className="w-full h-screen bg-black flex overflow-auto">
+          {head}
+          <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
+            <div className="flex justify-between px-1">
+              <div className="flex">
+                <h1 className=" font-theinhardt text-3xl">{`Hi ${
+                  user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+                }!`}</h1>
+                <button
+                  className="ml-4 px-2 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </button>
               </div>
-              <QuickOrder skus={skus} locations={locations} />
+              <div className="flex items-center">
+                <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
+                <div className="bg-white w-px h-5/6 mx-2" />
+                <h1 className=" font-theinhardt text-3xl">
+                  {user.company.name}
+                </h1>
+              </div>
             </div>
-            <div className="flex flex-col m-4 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl h-5/6 self-end">
-              <div>Set up tracking</div>
-              <button className=" bg-re-gray-400 rounded-10 text-white px-2 py-2 font-theinhardt my-2 hover:bg-re-green-600 hover:text-black text-base">
-                Get started
-              </button>
+            <div className="flex overflow-auto">
+              <div className="flex flex-col w-3/5 justify-between pb-4">
+                <div className="flex flex-col my-4 mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
+                  <div className="flex justify-between w-full items-start">
+                    <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
+                      <span>Latest Transaction</span>
+                      <span className="text-xl"> – </span>
+                      <span className="text-xl">
+                        {`${new Date(
+                          user.transactions[0].createdAt
+                        ).toLocaleDateString("en-us", {
+                          day: "numeric",
+                          month: "short",
+                        })}`}
+                      </span>
+                    </h1>
+                    <Link
+                      href={{
+                        pathname: "/dashboard/checkout",
+                        query: { transactionId: user.transactions[0].id },
+                      }}
+                    >
+                      <button className=" px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black">
+                        Order Again
+                      </button>
+                    </Link>
+                  </div>
+                  <div className=" h-px bg-white mb-2 w-full" />
+                  <div className="flex flex-col w-full">
+                    {separateByLocationId(user.transactions[0].orders).map(
+                      (arr, index) => (
+                        <div key={arr[0].locationId}>
+                          <div className="flex justify-between mt-1 mb-3">
+                            <h2 className="text-xl font-theinhardt">
+                              {arr[0].location.displayName ??
+                                arr[0].location.city}
+                            </h2>
+                            <h3 className="text-lg font-theinhardt-300">{`\$${arr.reduce(
+                              (prev, curr) => prev + curr.amount,
+                              0
+                            )}`}</h3>
+                          </div>
+                          {arr.map((o, i) => (
+                            <div
+                              className="flex ml-6 justify-between"
+                              key={o.id + "items"}
+                            >
+                              <div
+                                className={`flex items-center ${
+                                  index + 1 != arr.length ? "mb-3" : ""
+                                }`}
+                              >
+                                <Image
+                                  src={o.sku.mainImage}
+                                  height={96}
+                                  width={96}
+                                  alt={skuName(o.sku)}
+                                  className="rounded"
+                                />
+                                <div className="flex-col text-start ml-2">
+                                  <div className="text-base font-theinhardt">
+                                    {o.sku.product.name}
+                                  </div>
+                                  <div className=" text-xs font-theinhardt-300">
+                                    {`${o.sku.size} | ${o.sku.materialShort}`}
+                                  </div>
+                                </div>
+                                <div className="ml-2 text-sm font-theinhardt-300">{`x ${o.quantity}`}</div>
+                              </div>
+                              <div className="flex mb-3 items-center">
+                                <div className="flex-col justify-center text-center">
+                                  <div className="text-base font-theinhardt">
+                                    {o.status.toLowerCase()}
+                                  </div>
+                                  <div className=" text-xs font-theinhardt-300">
+                                    {`Est. shipping ${addDays(
+                                      o.createdAt,
+                                      7
+                                    ).toLocaleDateString("en-us", {
+                                      month: "long",
+                                      day: "numeric",
+                                    })}`}
+                                  </div>
+                                </div>
+                                <div className="flex flex-col ml-2 justify-between">
+                                  <Link
+                                    href={{
+                                      pathname: "/dashboard/checkout",
+                                      query: { orderId: o.id },
+                                    }}
+                                  >
+                                    <button className="px-2 py-0.5 bg-re-gray-400 rounded text-xs mb-1 hover:bg-re-green-600 hover:text-black">
+                                      Re-order
+                                    </button>
+                                  </Link>
+                                  <button
+                                    className="px-2 py-0.5 bg-re-gray-400 rounded text-xs hover:bg-opacity-60"
+                                    disabled
+                                  >
+                                    Schedule
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+                <QuickOrder
+                  userId={user.id}
+                  customerId={user.company.customerId}
+                  locations={locations}
+                  skus={skus}
+                />
+              </div>
+              <div className="flex flex-col my-4 ml-4 mr-1 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl h-5/6 self-center">
+                <div>Set up tracking</div>
+                <button className=" bg-re-gray-400 rounded-10 text-white px-2 py-2 font-theinhardt my-2 hover:bg-re-green-600 hover:text-black text-base">
+                  Get started
+                </button>
+              </div>
             </div>
-          </div>
-        </main>
-      </div>
+          </main>
+        </div>
+      </Sidebar>
     );
   }
 
@@ -251,6 +262,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         company: {
           select: {
             name: true,
+            customerId: true,
           },
         },
         transactions: {

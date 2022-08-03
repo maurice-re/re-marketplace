@@ -20,6 +20,7 @@ export type SkuProduct = Sku & {
 
 export type TransactionCustomerOrders = Transaction & {
   company: {
+    name?: string;
     customerId: string;
   };
   orders: (Order & {
@@ -34,6 +35,7 @@ export type TransactionCustomerOrders = Transaction & {
 
 export type OrderCustomerLocation = Order & {
   company: {
+      name?: string;
       customerId: string;
   };
   location: Location;
@@ -100,6 +102,7 @@ export function skuName(sku: SkuProduct): string {
 }
 
 function getLocationIds(orders: OrderSkuProduct[]): string[]{
+    console.log(orders)
     return orders.reduce((prev, curr) => {
         if(prev.includes(curr.locationId)) {
             return prev
@@ -111,11 +114,13 @@ function getLocationIds(orders: OrderSkuProduct[]): string[]{
 
 export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[][]  {
     const locationIds = getLocationIds(orders);
+    console.log(locationIds)
     let output: OrderSkuProduct[][] = [];
     locationIds.forEach(loc => {   
         const or = orders.filter(o => o.locationId == loc);
         output.push(or)
     })
+    console.log(output);
     return output
     }
 
@@ -133,4 +138,35 @@ export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {
       return [...prev, curr.location ]
     }
   }, [] as Location[])
+}
+
+export function dayMonthYear(d: Date) : string {
+  const date = new Date(d);
+  const day = date.toLocaleString("en-us", {
+    day: "numeric"
+  })
+  const month = date.toLocaleString("en-us", {
+    month: "long"
+  })
+  const year = date.toLocaleString("en-us", {
+    year: "numeric"
+  })
+  return day + " " + month + " " + year;
+}
+export function monthDayYear(d: Date) : string {
+  const date = new Date(d);
+  const day = date.toLocaleString("en-us", {
+    day: "2-digit"
+  })
+  const month = date.toLocaleString("en-us", {
+    month: "2-digit"
+  })
+  const year = date.toLocaleString("en-us", {
+    year: "numeric"
+  })
+  return month + "/" + day + "/" + year;
+}
+
+export function fullProductName(order: OrderSkuProduct): string {
+  return [order.sku.size, order.sku.materialShort, order.sku.product.name].join(" ")
 }

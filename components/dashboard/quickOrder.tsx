@@ -1,13 +1,24 @@
-import { Location } from "@prisma/client";
+import { Location, Status } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
+import {
+  skuName,
+  SkuProduct,
+  totalFromOrders,
+  TransactionCustomerOrders,
+} from "../../utils/dashboard/dashboardUtils";
 
 function QuickOrder({
+  customerId,
   locations,
+  userId,
   skus,
 }: {
+  customerId: string;
   locations: Location[];
+  userId: string;
   skus: SkuProduct[];
 }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
@@ -15,6 +26,7 @@ function QuickOrder({
     []
   );
   const [location, setLocation] = useState<string>(locations[0].id);
+  const router = useRouter();
 
   function handleItemPress(skuSelected: SkuProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
@@ -38,8 +50,55 @@ function QuickOrder({
     });
   }
 
+  function handleBuyNow(): string {
+    const now = new Date();
+    const selectedLocation = locations.find((loc) => loc.id == location);
+
+    if (selectedLocation) {
+      const orders = skuIdQuantity.map(([sku, quantity]) => {
+        return {
+          id: "",
+          amount: sku.price * parseInt(quantity),
+          company: {
+            customerId: customerId,
+          },
+          companyId: selectedLocation.companyId,
+          createdAt: now,
+          location: selectedLocation,
+          locationId: selectedLocation.id,
+          quantity: parseInt(quantity),
+          shippedAt: now,
+          recievedAt: now,
+          status: Status.PROCESSING,
+          skuId: sku.id,
+          sku: sku,
+          transactionId: "",
+          userId: userId,
+        };
+      });
+
+      const transaction: TransactionCustomerOrders = {
+        id: "",
+        amount: totalFromOrders(orders),
+        company: {
+          customerId: customerId,
+        },
+        companyId: selectedLocation.companyId,
+        createdAt: now,
+        numItems: 0,
+        numLocations: 0,
+        orders: orders,
+        status: Status.PROCESSING,
+        userId: userId,
+      };
+      return JSON.stringify(transaction);
+    }
+
+    return "";
+  }
+
   return (
-    <div className="flex flex-col mx-4 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
+    <div className="flex flex-col mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
       <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
         Quick Order
       </h1>
@@ -137,9 +196,20 @@ function QuickOrder({
                 ))}
               </select>
             </div>
-            <button className="px-3 py-2 bg-re-gray-400 rounded hover:bg-re-green-600 hover:text-black">
-              Buy now
-            </button>
+            <Link
+              href={{
+                pathname: "/dashboard/checkout",
+                query: { orders: handleBuyNow() },
+              }}
+              as={`/dashboard/checkout/${new Date().getTime()}`}
+            >
+              <button
+                className="px-3 py-2 bg-re-gray-400 rounded hover:bg-re-green-600 hover:text-black"
+                onClick={handleBuyNow}
+              >
+                Buy now
+              </button>
+            </Link>
           </div>
         )}
       </div>
