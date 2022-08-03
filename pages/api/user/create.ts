@@ -5,7 +5,7 @@ import { CartOrder } from "../../../context/form-context";
 import { allLocations, calculateAmount, numItems, numLocations } from "../../../utils/prisma/cart";
 
 
-async function createUser(req: Request, res: Response) {
+async function create(req: Request, res: Response) {
   const {
     cart,
     form,
@@ -92,4 +92,4 @@ async function createUser(req: Request, res: Response) {
   res.status(200).send();
 }
 
-export default createUser;
+export default create;

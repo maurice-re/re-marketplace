@@ -4,14 +4,14 @@ import type { Stripe } from "stripe";
 const stripe: Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 export default async function handler(req: Request, res: Response) {
-  const { cost, id } = req.body;
+  const { cost, id } : {cost: number, id: string} = req.body;
   let customerId = id;
   if (customerId == "") {
     const customer = await stripe.customers.create();
     customerId = customer.id;
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: cost * 100,
+      amount: parseInt((cost * 100).toFixed(0)),
       automatic_payment_methods: {
         enabled: true,
       },
@@ -29,8 +29,9 @@ export default async function handler(req: Request, res: Response) {
       id,
       {type: "card"}
     )
+    console.log(parseInt((cost * 100).toFixed(0)))
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: cost * 100,
+      amount: parseInt((cost * 100).toFixed(0)),
       currency: "usd",
       customer: customerId,
       setup_future_usage: "off_session"

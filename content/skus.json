@@ -45,6 +45,15 @@
         "size": "8 oz"
     },
     {    
+        "id": "RE-SC1-12OZ-RPP-D",
+        "mainImage": "/images/swapcup_main.png",
+        "material": "Recycled Polypropylene",
+        "materialShort": "RPP",
+        "price": 10,
+        "productId": "SC1",
+        "size": "12 oz"
+    },
+    {    
         "id": "RE-SC1-16OZ-RPP-D",
         "mainImage": "/images/swapcup_main.png",
         "material": "Recycled Polypropylene",
@@ -61,6 +70,15 @@
         "price": 10,
         "productId": "SC1",
         "size": "8 oz"
+    },
+    {    
+        "id": "RE-SC1-12OZ-PP-D",
+        "mainImage": "/images/swapcup_main.png",
+        "material": "Polypropylene",
+        "materialShort": "PP",
+        "price": 10,
+        "productId": "SC1",
+        "size": "12 oz"
     },
     {    
         "id": "RE-SC1-16OZ-PP-D",

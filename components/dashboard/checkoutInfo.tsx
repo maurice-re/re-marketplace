@@ -7,7 +7,9 @@ import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 import {
-  getLocationsFromTransaction,
+  getLocationsFromOrders,
+  OrderCustomerLocation,
+  OrderLocationSku,
   TransactionCustomerOrders,
 } from "../../utils/dashboard/dashboardUtils";
 import AddressField from "../form/address-field";
@@ -16,11 +18,13 @@ import DoubleAddressField from "../form/double-address-field";
 export default function CheckoutInfo({
   paymentId,
   paymentMethods,
+  order,
   transaction,
 }: {
   paymentId: string;
   paymentMethods?: PaymentMethod[];
-  transaction: TransactionCustomerOrders;
+  order?: OrderCustomerLocation;
+  transaction?: TransactionCustomerOrders;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -96,8 +100,26 @@ export default function CheckoutInfo({
         }),
       })
         .then((res) => res.json())
-        .then((data) => {
+        .then(async (data) => {
           if (data.status == "succeeded") {
+            if (transaction) {
+              await fetch("/api/transaction/repeat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  transaction: transaction,
+                }),
+              });
+            }
+            if (order) {
+              await fetch("/api/order/repeat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  order: order,
+                }),
+              });
+            }
             router.replace("/dashboard");
           }
         })
@@ -106,9 +128,19 @@ export default function CheckoutInfo({
     }
   };
 
-  const addresses = getLocationsFromTransaction(transaction).map((location) => (
+  const orders = (): OrderLocationSku[] => {
+    if (transaction) {
+      return transaction.orders;
+    }
+    if (order) {
+      return [order];
+    }
+    return [];
+  };
+
+  const addresses = getLocationsFromOrders(orders()).map((location) => (
     <div className="py-4" key={location.id + "address"}>
-      {getLocationsFromTransaction(transaction).length > 1 ? (
+      {getLocationsFromOrders(orders()).length > 1 ? (
         <div className="text-lg font-semibold">{`${
           location.displayName ?? location.city
         } Shipping Address`}</div>

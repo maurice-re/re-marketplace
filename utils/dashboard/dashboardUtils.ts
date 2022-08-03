@@ -1,6 +1,6 @@
 import { Location, Order, Sku, Transaction } from "@prisma/client";
 
-type OrderSkuProduct = Order & {
+export type OrderSkuProduct = Order & {
   sku: Sku & {
     product: {
       name: string;
@@ -20,7 +20,8 @@ export type SkuProduct = Sku & {
 
 export type TransactionCustomerOrders = Transaction & {
   company: {
-    customerId: string | null;
+    name?: string;
+    customerId: string;
   };
   orders: (Order & {
     location: Location;
@@ -31,6 +32,28 @@ export type TransactionCustomerOrders = Transaction & {
     };
   })[];
 };
+
+export type OrderCustomerLocation = Order & {
+  company: {
+      name?: string;
+      customerId: string;
+  };
+  location: Location;
+  sku: Sku & {
+      product: {
+          name: string;
+      };
+  };
+};
+
+export type OrderLocationSku = Order & {
+  location: Location;
+  sku: Sku & {
+    product: {
+      name: string;
+    };
+  };
+}
 
 
 export function getUniqueSkus(orders: OrderSkuProduct[]): SkuProduct[] {
@@ -79,6 +102,7 @@ export function skuName(sku: SkuProduct): string {
 }
 
 function getLocationIds(orders: OrderSkuProduct[]): string[]{
+    console.log(orders)
     return orders.reduce((prev, curr) => {
         if(prev.includes(curr.locationId)) {
             return prev
@@ -90,26 +114,59 @@ function getLocationIds(orders: OrderSkuProduct[]): string[]{
 
 export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[][]  {
     const locationIds = getLocationIds(orders);
+    console.log(locationIds)
     let output: OrderSkuProduct[][] = [];
     locationIds.forEach(loc => {   
         const or = orders.filter(o => o.locationId == loc);
         output.push(or)
     })
+    console.log(output);
     return output
     }
 
 
-export function totalFromTransaction(transaction: TransactionCustomerOrders): number {
-  const total  = transaction.orders.reduce((prev, curr) => prev + curr.quantity * curr.sku.price, 0)
+export function totalFromOrders(orders: OrderLocationSku[]): number {
+  const total  = orders.reduce((prev, curr) => prev + curr.quantity * curr.sku.price, 0);
   return parseFloat(total.toFixed(2));
 }
 
-export function getLocationsFromTransaction(transaction: TransactionCustomerOrders): Location[] {
-  return transaction.orders.reduce((prev, curr) => {
+export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {
+  return orders.reduce((prev, curr) => {
     if(prev.find(l => l.id == curr.locationId)){
       return prev;
     } else {
       return [...prev, curr.location ]
     }
   }, [] as Location[])
+}
+
+export function dayMonthYear(d: Date) : string {
+  const date = new Date(d);
+  const day = date.toLocaleString("en-us", {
+    day: "numeric"
+  })
+  const month = date.toLocaleString("en-us", {
+    month: "long"
+  })
+  const year = date.toLocaleString("en-us", {
+    year: "numeric"
+  })
+  return day + " " + month + " " + year;
+}
+export function monthDayYear(d: Date) : string {
+  const date = new Date(d);
+  const day = date.toLocaleString("en-us", {
+    day: "2-digit"
+  })
+  const month = date.toLocaleString("en-us", {
+    month: "2-digit"
+  })
+  const year = date.toLocaleString("en-us", {
+    year: "numeric"
+  })
+  return month + "/" + day + "/" + year;
+}
+
+export function fullProductName(order: OrderSkuProduct): string {
+  return [order.sku.size, order.sku.materialShort, order.sku.product.name].join(" ")
 }
