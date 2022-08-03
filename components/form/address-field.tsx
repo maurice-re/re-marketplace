@@ -5,11 +5,13 @@ function AddressField({
   placeholder,
   required,
   top,
+  value,
 }: {
   bottom?: boolean;
   placeholder: string;
   required?: boolean;
   top?: boolean;
+  value?: string;
 }) {
   const [val, setVal] = useState<string>("");
 
@@ -27,10 +29,11 @@ function AddressField({
         name={placeholder}
         className={inputClass}
         type="text"
-        value={val}
+        value={value ?? val}
         placeholder={placeholder}
         onChange={(e) => setVal(e.target.value)}
         required={required}
+        disabled={value != undefined}
       />
     </div>
   );

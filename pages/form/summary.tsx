@@ -120,7 +120,7 @@ const Summary: NextPage = () => {
         <h1 className="text-5xl font-theinhardt text-white text-center">
           Your perfect setup
         </h1>
-        <div className="bg-re-gray h-104 rounded-2xl w-7/10 overflow-auto">
+        <div className="bg-re-gray-500 h-104 rounded-2xl w-7/10 overflow-auto">
           {items}
         </div>
         <div className="group relative px-2 pt-2">
