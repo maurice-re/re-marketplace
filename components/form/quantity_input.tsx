@@ -29,7 +29,9 @@ function SkuQuantityField({
   return (
     <div className="flex justify-between items-center mb-2" key={sku.id}>
       <div className="">
-        <div className="text-white text-25 font-theinhardt">{product.name}</div>
+        <div className="text-white text-25 font-theinhardt">
+          {sku.size + " " + product.name}
+        </div>
         <div className="text-white text-xs font-theinhardt-300">{`(\$${sku.price} each)`}</div>
       </div>
 
