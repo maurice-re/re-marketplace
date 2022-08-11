@@ -15,7 +15,7 @@ const Quote: NextPage = () => {
   const { calculateTotal, cart, locations, skipToCheckout } = useFormState();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
 
   const { checkout } = router.query;
 
@@ -160,8 +160,7 @@ const Quote: NextPage = () => {
           </button> */}
           <form id="quote form" onSubmit={handleSubmit}>
             <div className=" w-96">
-              <div className="pb-4">
-                <div className="text-lg font-semibold">Your Info</div>
+              <div className="pb-4 text-white">
                 <AddressField placeholder="Name" top required />
                 <AddressField placeholder="Email" required />
                 <AddressField placeholder="Company Name" bottom required />
