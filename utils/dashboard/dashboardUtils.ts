@@ -168,5 +168,5 @@ export function monthDayYear(d: Date) : string {
 }
 
 export function fullProductName(order: OrderSkuProduct): string {
-  return [order.sku.size, order.sku.materialShort, order.sku.product.name].join(" ")
+  return order.sku.size + " " + order.sku.materialShort + " " + order.sku.product.name
 }

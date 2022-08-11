@@ -40,8 +40,6 @@ const TransactionPage: NextPage<TransactionProps> = ({
         <div>{`Transaction was placed on ${transaction.createdAt}`}</div>
         <div>{`Transaction status is ${transaction.status.toLowerCase()}`}</div>
         <div>{`Transaction amount was \$${transaction.amount}`}</div>
-        <div>{`Transaction was for ${transaction.numItems} items`}</div>
-        <div>{`Transaction was sent to ${transaction.numLocations} Locations`}</div>
       </main>
     </div>
   );

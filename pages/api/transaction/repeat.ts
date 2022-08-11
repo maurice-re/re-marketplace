@@ -22,8 +22,6 @@ async function repeat(req: Request, res: Response) {
       amount: transaction.amount,
       companyId: transaction.companyId,
       createdAt: now,
-      numItems: transaction.numItems,
-      numLocations: transaction.numLocations,
       userId: transaction.userId,
     },
   });

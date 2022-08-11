@@ -22,9 +22,11 @@ type FormState = {
   addSummary: () => void;
   addToCart: (skuId: string, quantity: string, city: string) => void;
   calculateTotal: () => number;
+  canCheckout: boolean;
   cart: CartOrder[];
   customerId: string;
   deactivateRoute: (route: string, city: string) => void;
+  disableCheckout: () => void;
   getCity: (name: string) => string;
   locations: string[];
   nextRoute: (index: number) => string;
@@ -44,6 +46,7 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartOrder[]>([]);
   const [shippingData, setShippingData] = useState<string[]>([]);
   const [customerId, setCustomerIdInt] = useState<string>("");
+  const [canCheckout, setCanCheckout] = useState<boolean>(true);
 
   function activateRoute(route: string, city: string) {
     const index = routes.findIndex(
@@ -85,19 +88,30 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
   }
 
   function addSummary() {
-    setRoutes((curr) => [
-      ...curr,
-      {
-        active: true,
-        name: "summary",
-        city: "",
-      },
-      {
-        active: true,
-        name: "checkout",
-        city: "",
-      },
-    ]);
+    if (canCheckout) {
+      setRoutes((curr) => [
+        ...curr,
+        {
+          active: true,
+          name: "summary",
+          city: "",
+        },
+        {
+          active: true,
+          name: "checkout",
+          city: "",
+        },
+      ]);
+    } else {
+      setRoutes((curr) => [
+        ...curr,
+        {
+          active: true,
+          name: "quote",
+          city: "",
+        },
+      ]);
+    }
   }
 
   function addToCart(skuId: string, quantity: string, city: string) {
@@ -132,6 +146,10 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
 
   function calculateTotal(): number {
     return cart.reduce((total, o) => total + o.quantity * o.sku.price, 0);
+  }
+
+  function disableCheckout() {
+    setCanCheckout(false);
   }
 
   function deactivateRoute(route: string, city: string) {
@@ -210,9 +228,11 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         addSummary,
         addToCart,
         calculateTotal,
+        canCheckout,
         cart,
         customerId,
         deactivateRoute,
+        disableCheckout,
         getCity,
         locations,
         nextRoute,
