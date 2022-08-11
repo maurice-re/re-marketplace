@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../context/form-context";
-import { allLocations, calculateAmount, numItems, numLocations } from "../../../utils/prisma/cart";
+import { allLocations, calculateAmount } from "../../../utils/prisma/cart";
 
 
 async function create(req: Request, res: Response) {
@@ -48,8 +48,6 @@ async function create(req: Request, res: Response) {
       amount: calculateAmount(cart, tax),
       companyId: company.id,
       createdAt: now,
-      numItems: numItems(cart),
-      numLocations: numLocations(cart),
       userId: user.id,
     },
   });
@@ -64,7 +62,6 @@ async function create(req: Request, res: Response) {
         lastOrderDate: now,
         line1: shippingInfo[2 + 7 * formIndex],
         line2: shippingInfo[3 + 7 * formIndex],
-        numOrders: 1,
         shippingName: shippingInfo[0 + 7 * formIndex],
         state: shippingInfo[6 + 7 * formIndex],
         userId: user.id,

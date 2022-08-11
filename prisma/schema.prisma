@@ -36,7 +36,6 @@ model Company {
   customerId      String
   locations       Location[]
   name            String
-  numUsers        Int           @default(1)
   orders          Order[]
   transactions    Transaction[]
   users           User[]
@@ -60,7 +59,6 @@ model Location {
   lastOrderDate   DateTime
   line1           String
   line2           String?
-  numOrders       Int           @default(1)
   orders          Order[]
   shippingName    String
   state           String
@@ -142,8 +140,6 @@ model Transaction {
   company         Company       @relation(fields: [companyId], references: [id])
   companyId       String
   createdAt       DateTime
-  numItems        Int
-  numLocations    Int           @default(1)
   orders          Order[]
   status          Status        @default(PROCESSING)
   user            User          @relation(fields: [userId], references: [id])
@@ -162,7 +158,6 @@ model User {
   lastName        String?
   locations       Location[]
   manufacturer    Boolean       @default(false)
-  numOrders       Int           @default(1)
   orders          Order[]
   reEmployee      Boolean       @default(false)
   role            Role

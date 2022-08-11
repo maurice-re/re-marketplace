@@ -21,14 +21,13 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
     createdAt: now,
     customerId: "cus_M9eeBtGCJfNxeZ",
     name: "S.H.I.E.L.D.",
-    numUsers: 2,
   }
   const shield = await prisma.company.upsert({ 
     where: {id: "616"}, update: testCompany, create: testCompany 
   })
 
   const testAdmin = {
-    companyId: shield.id,     
+    companyId: testCompany.id,     
     createdAt: now,
     email: "pcoulson@shield.com",
     firstName: "Phil",
@@ -42,10 +41,8 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
   const testTransaction = {
     id: "616",
     amount: 20000,
-    companyId: shield.id,
+    companyId: testCompany.id,
     createdAt: now,
-    numItems: 2000,
-    numLocations: 2,
     userId: phil.id
   }
   const transaction = await prisma.transaction.upsert({
@@ -56,13 +53,13 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
     id: "219",
     city: "New York",
     country: "United States",
-    companyId: shield.id,
+    companyId: testCompany.id,
     displayName: "Headquarters",
     lastOrderDate: now,
     line1: "219 W 47th St",
     shippingName: "S.H.I.E.L.D",
     state: "New York",
-    userId: phil.id,
+    userId: phil.id.toString(),
     zip: "10036"
   }
   const Headquarters = await prisma.location.upsert({
@@ -73,7 +70,7 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
     id: "3250",
     city: "Quantico",
     country: "United States",
-    companyId: shield.id,
+    companyId: testCompany.id,
     displayName: "Playground",
     lastOrderDate: now,
     line1: "3250 Catlin Ave",
@@ -89,7 +86,7 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
   const testOrder1 = {
       id: "00001",
       amount: 10000,
-      companyId: shield.id,
+      companyId: testCompany.id,
       createdAt: now,
       locationId: Headquarters.id,
       quantity: 1000,
@@ -104,7 +101,7 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
   const testOrder2 = {
     id: "00002",
     amount: 5000,
-    companyId: shield.id,
+    companyId: testCompany.id,
     createdAt: now,
     locationId: Headquarters.id,
     quantity: 500,
@@ -119,7 +116,7 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
   const testOrder3 = {
     id: "00003",
     amount: 5000,
-    companyId: shield.id,
+    companyId: testCompany.id,
     createdAt: now,
     locationId: playground.id,
     quantity: 500,

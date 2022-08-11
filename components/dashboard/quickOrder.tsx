@@ -85,8 +85,6 @@ function QuickOrder({
         },
         companyId: selectedLocation.companyId,
         createdAt: now,
-        numItems: 0,
-        numLocations: 0,
         orders: orders,
         status: Status.PROCESSING,
         userId: userId,

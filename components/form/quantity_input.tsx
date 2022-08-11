@@ -12,7 +12,7 @@ function SkuQuantityField({
   productId: string;
   size: string;
 }) {
-  const { addToCart, cart } = useFormState();
+  const { addToCart, canCheckout, cart } = useFormState();
   const router = useRouter();
   const { city } = router.query;
 
@@ -32,7 +32,9 @@ function SkuQuantityField({
         <div className="text-white text-25 font-theinhardt">
           {sku.size + " " + product.name}
         </div>
-        <div className="text-white text-xs font-theinhardt-300">{`(\$${sku.price} each)`}</div>
+        {canCheckout && (
+          <div className="text-white text-xs font-theinhardt-300">{`(\$${sku.price} each)`}</div>
+        )}
       </div>
 
       <div className="flex mr-2">

@@ -7,7 +7,6 @@ import prisma from "../../../constants/prisma";
 import {
   addDays,
   dayMonthYear,
-  fullProductName,
   monthDayYear,
   OrderCustomerLocation,
 } from "../../../utils/dashboard/dashboardUtils";
@@ -61,25 +60,35 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
           <div className="w-full bg-re-gray-400 rounded-10 mx-2 my-4 overflow-auto">
             <div className="p-4">
               {orders.map((order) => (
-                <div key={order.id} className="flex w-full">
-                  <div className="flex flex-col w-1/4 items-center my-3 py-2">
+                <div
+                  key={order.id}
+                  className="flex w-full border border-white my-3 justify-center"
+                >
+                  <div className="flex flex-col w-1/4 items-center py-3">
                     <div>{dayMonthYear(order.createdAt)}</div>
-                    <div>{`Order Id: ${order.id}`}</div>
+                    <div className="text-xs font-theinhardt-300 text-gray-200">{`Order Id: ${order.id}`}</div>
                   </div>
-                  <div className="flex flex-col w-1/4 items-center my-3 py-2">
-                    <div>{order.quantity + fullProductName(order)}</div>
+                  <div className="flex flex-col w-1/4 items-center py-3">
+                    <div>{order.quantity + " " + order.sku.product.name}</div>
+                    <div className="font-theinhardt-300 text-sm text-gray-200">
+                      {order.sku.size + " | " + order.sku.materialShort}
+                    </div>
                   </div>
-                  <div className="flex flex-col w-1/4 items-center my-3 py-2">
+                  <div className="flex flex-col w-1/4 items-center py-3">
                     <div>
                       {order.location.displayName ?? order.location.city}
                     </div>
                   </div>
-                  <div className="flex flex-col w-1/4 items-center my-3 py-2">
+                  <div className="flex flex-col w-1/4 items-center py-3">
                     <div>{order.status}</div>
-                    <div>{`Estimated shipping ${monthDayYear(
-                      addDays(order.createdAt, 7)
-                    )}`}</div>
-                    <button className="self-end">Order Again</button>
+                    <div className="font-theinhardt-300 text-sm text-gray-200">
+                      {`Estimated shipping ${monthDayYear(
+                        addDays(order.createdAt, 7)
+                      )}`}
+                    </div>
+                    <button className="px-2 py-0.5 bg-re-gray-500 rounded text-xs mb-1 hover:bg-re-green-600 hover:text-black self-end">
+                      Order Again
+                    </button>
                   </div>
                 </div>
               ))}

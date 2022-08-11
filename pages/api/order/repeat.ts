@@ -22,8 +22,6 @@ async function repeat(req: Request, res: Response) {
       amount: parseFloat(((order.sku.price * order.quantity) * 1.07).toFixed(2)),
       companyId: order.companyId,
       createdAt: now,
-      numItems: order.quantity,
-      numLocations: 1,
       userId: order.userId,
     },
   });
