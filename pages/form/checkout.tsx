@@ -120,7 +120,7 @@ const Checkout: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ReLogo />
-
+      <meta name="viewport" content="width=device-width, minimum-scale=1" />
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>

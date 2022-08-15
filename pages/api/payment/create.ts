@@ -12,12 +12,15 @@ export default async function handler(req: Request, res: Response) {
     // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
       amount: parseInt((cost * 100).toFixed(0)),
-      automatic_payment_methods: {
-        enabled: true,
-      },
       currency: "usd",
       customer: customerId,
       setup_future_usage: "off_session",
+      payment_method_types: ["us_bank_account"],
+      // payment_method_options: {
+      //   us_bank_account: {
+      //     financial_connections: {permissions: ['payment_method', 'balances']},
+      //   },
+      // },
     });
 
     res.send({
@@ -34,7 +37,13 @@ export default async function handler(req: Request, res: Response) {
       amount: parseInt((cost * 100).toFixed(0)),
       currency: "usd",
       customer: customerId,
-      setup_future_usage: "off_session"
+      setup_future_usage: "off_session",
+      payment_method_types: ["us_bank_account"],
+      // payment_method_options: {
+      //   us_bank_account: {
+      //     financial_connections: {permissions: ['payment_method', 'balances']},
+      //   },
+      // },
     });
     res.send({
       clientSecret: paymentIntent.client_secret,
