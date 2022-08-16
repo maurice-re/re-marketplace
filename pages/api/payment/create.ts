@@ -15,7 +15,7 @@ export default async function handler(req: Request, res: Response) {
       currency: "usd",
       customer: customerId,
       setup_future_usage: "off_session",
-      payment_method_types: ["us_bank_account"],
+      payment_method_types: ["card", "us_bank_account"],
       // payment_method_options: {
       //   us_bank_account: {
       //     financial_connections: {permissions: ['payment_method', 'balances']},
@@ -38,7 +38,7 @@ export default async function handler(req: Request, res: Response) {
       currency: "usd",
       customer: customerId,
       setup_future_usage: "off_session",
-      payment_method_types: ["us_bank_account"],
+      payment_method_types: ["card", "us_bank_account"],
       // payment_method_options: {
       //   us_bank_account: {
       //     financial_connections: {permissions: ['payment_method', 'balances']},
