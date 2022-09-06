@@ -148,13 +148,8 @@ function QuickOrder({
                 key={sku.id}
               >
                 <div className="flex-col">
-                  <div className="flex items-center">
-                    <div className="font-theinhardt text-sm mr-2">
-                      {sku.product.name}
-                    </div>
-                    <div className="font-theinhardt-300 text-xs">
-                      {sku.size + " | " + sku.materialShort}
-                    </div>
+                  <div className="font-theinhardt text-sm mr-2">
+                    {sku.product.name}
                   </div>
                   <div className="text-xs font-theinhardt text-center">
                     {`\$${calculatePriceFromCatalog(
@@ -165,16 +160,19 @@ function QuickOrder({
                     )} each`}
                   </div>
                 </div>
+                <div className="text-sm font-theinhardt text-center">
+                  {`\$${sku.price}`}
+                </div>
                 <input
                   value={
                     skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
                   }
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
-                  className="bg-re-gray-500 bg-opacity-70 w-9 text-sm"
+                  className="bg-re-gray-500 rounded-lg py-0.5 bg-opacity-70 px-2 w-11 text-xs text-center flex"
                 />
               </div>
             ))}
-            <div className="h-px mx-2 mb-3 bg-white bg-opacity-70" />
+            <div className="h-px mb-3 bg-white bg-opacity-70" />
             <div className="flex justify-between mb-2">
               <div>Total:</div>
               <div>
@@ -214,7 +212,7 @@ function QuickOrder({
               as={`/dashboard/checkout/${new Date().getTime()}`}
             >
               <button
-                className="px-3 py-2 bg-re-gray-400 rounded hover:bg-re-green-600 hover:text-black"
+                className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
                 onClick={handleBuyNow}
               >
                 Buy now
