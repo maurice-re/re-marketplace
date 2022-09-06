@@ -71,26 +71,24 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
           {head}
           <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
             <div className="flex justify-between px-1">
-              <div className="flex">
-                <h1 className=" font-theinhardt text-3xl">{`Hi ${
+                <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
                   user.firstName == "Phil" ? "Agent Coulson" : user.firstName
                 }!`}</h1>
-                <button
-                  className="ml-4 px-2 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
-                  onClick={handleSignOut}
-                >
-                  Sign Out
-                </button>
-              </div>
               <div className="flex items-center">
                 <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
                 <div className="bg-white w-px h-5/6 mx-2" />
                 <h1 className=" font-theinhardt text-3xl">
                   {user.company.name}
                 </h1>
+                <button
+                  className="ml-6 px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
-            <div className="flex overflow-auto">
+            <div className="flex">
               <div className="flex flex-col w-3/5 justify-between pb-4">
                 <div className="flex flex-col my-4 mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
                   <div className="flex justify-between w-full items-start">
