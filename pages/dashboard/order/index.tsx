@@ -50,49 +50,53 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          <div className="flex justify-between mx-2">
-            <h1 className=" font-theinhardt text-3xl">Orders</h1>
-            <h1 className=" font-theinhardt text-3xl">
+        <main className="flex flex-col container mx-auto py-6 px-1  text-white font-theinhardt">
+          <div className="flex justify-between">
+            <h1 className="font-theinhardt text-3xl">Orders</h1>
+            <h1 className="font-theinhardt text-3xl">
               {orders[0].company.name}
             </h1>
           </div>
-          <div className="w-full bg-re-gray-400 rounded-10 mx-2 my-4 overflow-auto">
-            <div className="p-4">
-              {orders.map((order) => (
-                <div
-                  key={order.id}
-                  className="flex w-full border border-white my-3 justify-center"
-                >
-                  <div className="flex flex-col w-1/4 items-center py-3">
-                    <div>{dayMonthYear(order.createdAt)}</div>
-                    <div className="text-xs font-theinhardt-300 text-gray-200">{`Order Id: ${order.id}`}</div>
-                  </div>
-                  <div className="flex flex-col w-1/4 items-center py-3">
+          <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch">
+            {orders.map((order) => (
+              <div
+                key={order.id}
+                className="card w-full h-72 my-3 bg-base-100 shadow-xl font-theinhardt justify-center"
+              >
+                <div className="card-body justify-center">
+                  <h2 className="card-title leading-none">
+                    {dayMonthYear(order.createdAt)}
+                  </h2>
+                  <div className="flex w-full leading-none">{`Order ID: ${order.id}`}</div>
+                  <div className="h-px bg-white my-1 w-full" />
+                  <div className="flex flex-col w-full">
                     <div>{order.quantity + " " + order.sku.product.name}</div>
-                    <div className="font-theinhardt-300 text-sm text-gray-200">
+                    <div className="font-theinhardt-300 text-sm text-gray-200 leading-none">
                       {order.sku.size + " | " + order.sku.materialShort}
                     </div>
                   </div>
-                  <div className="flex flex-col w-1/4 items-center py-3">
-                    <div>
-                      {order.location.displayName ?? order.location.city}
+                  <div className="flex w-full">
+                    {order.location.displayName ?? order.location.city}
+                  </div>
+                  <div className="flex items-center text-sm font-theinhardt-300 gap-1">
+                    <div className="text-re-green-600">{order.status}</div>
+                    <div className="text-gray-200">
+                      {` — Est. shipping ${new Date(
+                        order.createdAt
+                      ).toLocaleDateString("en-us", {
+                        day: "numeric",
+                        month: "short",
+                      })}`}
                     </div>
                   </div>
-                  <div className="flex flex-col w-1/4 items-center py-3">
-                    <div>{order.status}</div>
-                    <div className="font-theinhardt-300 text-sm text-gray-200">
-                      {`Estimated shipping ${monthDayYear(
-                        addDays(order.createdAt, 7)
-                      )}`}
-                    </div>
-                    <button className="px-2 py-0.5 bg-re-gray-500 rounded text-xs mb-1 hover:bg-re-green-600 hover:text-black self-end">
-                      Order Again
+                  <div className="card-actions justify-end">
+                    <button className="btn btn-sm btn-accent btn-outline font-theinhardt-500 text-xs tracking-wide">
+                      Re-order
                     </button>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </main>
       </div>
