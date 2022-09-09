@@ -41,6 +41,7 @@ function QuickOrder({
   }
 
   function handleQuantityChange(val: string, skuSelected: SkuProduct) {
+    val = val.slice(2); // remove 'x ' prefix to deal with number only
     setSkuIdQuantity((prev) => {
       return prev.map((tup) => {
         if (tup[0].id == skuSelected.id) {
