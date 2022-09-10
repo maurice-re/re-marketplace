@@ -41,7 +41,6 @@ function QuickOrder({
   }
 
   function handleQuantityChange(val: string, skuSelected: SkuProduct) {
-    val = val.slice(2); // remove 'x ' prefix to deal with number only
     setSkuIdQuantity((prev) => {
       return prev.map((tup) => {
         if (tup[0].id == skuSelected.id) {
@@ -114,7 +113,7 @@ function QuickOrder({
           {skus.map((sku) => (
             <div
               key={sku.id}
-              className=" flex flex-col items-center mx-1 mb-2 group"
+              className="flex flex-col items-center mx-1 mb-2 group"
             >
               <button
                 className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
@@ -149,21 +148,21 @@ function QuickOrder({
                 key={sku.id}
               >
                 <div className="flex-col">
-                  <div className="font-theinhardt text-sm mr-2">
+                  <div className="">
                     {sku.product.name}
                   </div>
-                  <div className="text-xs font-theinhardt text-center">
+                  <div className="text-xs">
+                    {sku.size + " | " + sku.materialShort}
+                  </div>
+                  </div>
+                  <div className="text-sm font-theinhardt text-center">
                     {`\$${calculatePriceFromCatalog(
                       sku,
                       sku.product,
                       sku.id,
                       1
-                    )} each`}
+                    )}`}
                   </div>
-                </div>
-                <div className="text-sm font-theinhardt text-center">
-                  {`\$${sku.price}`}
-                </div>
                 <input
                   value={
                     skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
