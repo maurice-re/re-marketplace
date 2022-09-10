@@ -107,10 +107,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     context.res,
     authOptions
   );
-  if (session || test == "shield") {
+  if (session) {
     const orders = await prisma.order.findMany({
       where: {
-        companyId: test == "shield" ? "616" : (session?.user as User).companyId,
+        companyId: (session?.user as User).companyId,
       },
       include: {
         company: {
@@ -122,11 +122,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         location: true,
         sku: {
           include: {
-            product: {
-              select: {
-                name: true,
-              },
-            },
+            product: true,
           },
         },
       },
