@@ -1,3 +1,4 @@
+import { Product } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -6,16 +7,10 @@ import FormNextButton from "./next-button";
 import FormOptionButton from "./option-button";
 import SkuQuantityField from "./quantity_input";
 
-function ProductPage({
-  productId,
-  route,
-}: {
-  productId: string;
-  route: string;
-}) {
+function ProductPage({ product, route }: { product: Product; route: string }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-  const { locations, productCatalog } = useFormState();
+  const { locations } = useFormState();
   const router = useRouter();
 
   useEffect(() => {
@@ -24,10 +19,6 @@ function ProductPage({
   }, [route]);
 
   const { city } = router.query;
-  const product =
-    productCatalog != undefined
-      ? productCatalog.find((p) => p.id == productId)!
-      : undefined;
 
   if (product == undefined) {
     return (
@@ -89,7 +80,7 @@ function ProductPage({
     .map((size) => (
       <SkuQuantityField
         material={chosenMaterial[0]}
-        productId={productId}
+        productId={product.id}
         size={size}
         key={size + chosenMaterial[0]}
       />
