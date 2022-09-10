@@ -35,7 +35,6 @@ const LocationPage: NextPage<LocationProps> = ({
 
   useEffect(() => {
     initializeCatalog(_skus, _products);
-    console.log(_skus);
   }, [_skus, _products, initializeCatalog]);
 
   useEffect(() => {
