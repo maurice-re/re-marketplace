@@ -1,7 +1,6 @@
 import { Product, Sku } from "@prisma/client";
 import { createContext, ReactNode, useContext, useState } from "react";
-import allProducts from "../content/products.json";
-import allSkus from "../content/skus.json";
+import { calculatePriceFromCatalog } from "../utils/prisma/dbUtils";
 
 type FormRoute = {
   active: boolean;
@@ -22,23 +21,36 @@ type FormState = {
   addSummary: () => void;
   addToCart: (skuId: string, quantity: string, city: string) => void;
   calculateTotal: () => number;
+  calculatePrice: (
+    id: string,
+    _quantity: number | string,
+    tax?: number
+  ) => number;
   canCheckout: boolean;
   cart: CartOrder[];
   customerId: string;
   deactivateRoute: (route: string, city: string) => void;
   disableCheckout: () => void;
   getCity: (name: string) => string;
+  initializeCatalog: (skus: Sku[], products: Product[]) => void;
   locations: string[];
   nextRoute: (index: number) => string;
+  productCatalog: Product[];
   removeLocation: (location: string) => void;
   routes: FormRoute[];
   setCustomerId: (id: string) => void;
   skipToCheckout: (checkout: string) => void;
+  skuCatalog: Sku[];
   shippingData: string[];
 };
 const FormContext = createContext<FormState>({} as FormState);
 
 export function FormStateProvider({ children }: { children: ReactNode }) {
+  const [skuCatalog, setSkuCatalog] = useState<Sku[]>([] as Sku[]);
+  const [productCatalog, setProductCatalog] = useState<Product[]>(
+    [] as Product[]
+  );
+
   const [locations, setLocations] = useState<string[]>([]);
   const [routes, setRoutes] = useState<FormRoute[]>([
     { name: "location", active: true, city: "" },
@@ -115,8 +127,8 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
   }
 
   function addToCart(skuId: string, quantity: string, city: string) {
-    const sku = allSkus.filter((s) => s.id == skuId)[0];
-    const product = allProducts.filter((p) => p.id == sku.productId)[0];
+    const sku = skuCatalog.filter((s) => s.id == skuId)[0];
+    const product = productCatalog.filter((p) => p.id == sku.productId)[0];
 
     const skuExists = cart.filter(
       (order) => order.sku.id == skuId && order.location == city
@@ -144,8 +156,25 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  function calculatePrice(
+    id: string,
+    quantity: number | string,
+    tax?: number
+  ): number {
+    return calculatePriceFromCatalog(
+      skuCatalog,
+      productCatalog,
+      id,
+      quantity,
+      tax
+    );
+  }
+
   function calculateTotal(): number {
-    return cart.reduce((total, o) => total + o.quantity * o.sku.price, 0);
+    return cart.reduce(
+      (total, o) => total + calculatePrice(o.sku.id, o.quantity),
+      0
+    );
   }
 
   function disableCheckout() {
@@ -163,6 +192,11 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         city: city,
       };
     }
+  }
+
+  function initializeCatalog(skus: Sku[], products: Product[]) {
+    setSkuCatalog(skus);
+    setProductCatalog(products);
   }
 
   function getCity(name: string): string {
@@ -202,10 +236,10 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         newLocations.push(location);
       }
 
-      const sku = allSkus.filter(
+      const sku = skuCatalog.filter(
         (s) => s.material == "Recycled Polypropylene" && s.size == size
       )[0];
-      const product = allProducts.filter((p) => p.id == sku.productId)[0];
+      const product = productCatalog.filter((p) => p.id == sku.productId)[0];
       if (sku) {
         newCart.push({
           location: location,
@@ -228,18 +262,22 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
         addSummary,
         addToCart,
         calculateTotal,
+        calculatePrice,
         canCheckout,
         cart,
         customerId,
         deactivateRoute,
         disableCheckout,
         getCity,
+        initializeCatalog,
         locations,
         nextRoute,
+        productCatalog,
         removeLocation,
         routes,
         setCustomerId,
         skipToCheckout,
+        skuCatalog,
         shippingData,
       }}
     >

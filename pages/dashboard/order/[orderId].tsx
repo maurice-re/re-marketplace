@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     context.res,
     authOptions
   );
-  if ((session || test == "shield") && typeof orderId == "string") {
+  if (session && typeof orderId == "string") {
     const order = await prisma.order.findFirst({
       where: {
         id: orderId,

@@ -130,10 +130,6 @@ function Sidebar({ children }: { children: ReactNode }) {
               key={route.link}
               href={{
                 pathname: route.link,
-                query:
-                  router.query.test == "shield"
-                    ? { test: "shield" }
-                    : undefined,
               }}
             >
               <button
@@ -177,8 +173,6 @@ function Sidebar({ children }: { children: ReactNode }) {
             key={route.link}
             href={{
               pathname: route.link,
-              query:
-                router.query.test == "shield" ? { test: "shield" } : undefined,
             }}
           >
             <button

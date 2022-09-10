@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import allProducts from "../../content/products.json";
-import allSkus from "../../content/skus.json";
+import { useState } from "react";
 import { useFormState } from "../../context/form-context";
+import { getPriceFromTable } from "../../utils/prisma/dbUtils";
 
 function SkuQuantityField({
   material,
@@ -12,18 +12,27 @@ function SkuQuantityField({
   productId: string;
   size: string;
 }) {
-  const { addToCart, canCheckout, cart } = useFormState();
+  const {
+    addToCart,
+    calculatePrice,
+    canCheckout,
+    cart,
+    skuCatalog,
+    productCatalog,
+  } = useFormState();
   const router = useRouter();
   const { city } = router.query;
 
-  const product = allProducts.filter((p) => p.id == productId)[0];
-  const sku = allSkus.filter(
+  const product = productCatalog.filter((p) => p.id == productId)[0];
+  const sku = skuCatalog.filter(
     (sku) => sku.material == material && sku.size == size
   )[0];
 
+  const [quantity, setQuantity] = useState<number>(0);
+
   function handleChange(quantity: string) {
     addToCart(sku.id, quantity, city!.toString());
-    console.log(cart);
+    setQuantity(parseInt(quantity == "" ? "0" : quantity));
   }
 
   return (
@@ -33,7 +42,10 @@ function SkuQuantityField({
           {sku.size + " " + product.name}
         </div>
         {canCheckout && (
-          <div className="text-white text-xs font-theinhardt-300">{`(\$${sku.price} each)`}</div>
+          <div className="text-white text-xs font-theinhardt-300">{`(\$${getPriceFromTable(
+            product.priceTable,
+            quantity
+          )} each)`}</div>
         )}
       </div>
 

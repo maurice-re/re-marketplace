@@ -16,6 +16,7 @@ import {
   skuName,
   SkuProduct,
 } from "../../utils/dashboard/dashboardUtils";
+import { make20Ids } from "../../utils/prisma/seedUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 type UserTransactionOrder = User & {
@@ -186,7 +187,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                                   </Link>
                                   <button
                                     className="px-2 py-0.5 bg-re-gray-400 rounded text-xs hover:bg-opacity-60"
-                                    disabled
+                                    onClick={() => make20Ids()}
                                   >
                                     Schedule
                                   </button>
@@ -246,17 +247,15 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { test } = context.query;
   const session = await unstable_getServerSession(
     context.req,
     context.res,
     authOptions
   );
-  if (session || test == "shield") {
+  if (session) {
     const user = await prisma.user.findUnique({
       where: {
-        email:
-          test == "shield" ? "pcoulson@shield.com" : session?.user?.email ?? "",
+        email: session?.user?.email ?? "",
       },
       include: {
         company: {
@@ -280,11 +279,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 },
                 sku: {
                   include: {
-                    product: {
-                      select: {
-                        name: true,
-                      },
-                    },
+                    product: true,
                   },
                 },
                 location: {
@@ -301,11 +296,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
     const skus = await prisma.sku.findMany({
       include: {
-        product: {
-          select: {
-            name: true,
-          },
-        },
+        product: true,
       },
     });
 

@@ -1,4 +1,5 @@
 import { CartOrder } from "../../context/form-context";
+import { calculatePriceFromCatalog } from "./dbUtils";
 
 export function numLocations(cart: CartOrder[]): number {
   let locations: string[] = [];
@@ -25,12 +26,16 @@ export function numItems(cart: CartOrder[]): number {
 }
 
 export function calculateAmount(cart: CartOrder[], tax: number): number {
-  return parseFloat(
-    (
-      cart.reduce(
-        (total, order) => total + order.sku.price * order.quantity,
-        0
-      ) * tax
-    ).toFixed(2)
+  return cart.reduce(
+    (total, cartOrder) =>
+      total +
+      calculatePriceFromCatalog(
+        cartOrder.sku,
+        cartOrder.product,
+        cartOrder.sku.id,
+        cartOrder.quantity,
+        tax
+      ),
+    0
   );
 }

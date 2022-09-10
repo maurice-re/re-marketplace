@@ -14,6 +14,10 @@ import {
   totalFromOrders,
   TransactionCustomerOrders,
 } from "../../utils/dashboard/dashboardUtils";
+import {
+  calculatePriceFromCatalog,
+  getPriceFromTable,
+} from "../../utils/prisma/dbUtils";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -135,10 +139,16 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
               </div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5">{`$${(
-                order.sku.price * order.quantity
-              ).toFixed(2)}`}</div>
-              <div className="text-xs text-gray-300">{`\$${order.sku.price} each`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
+                order.sku,
+                order.sku.product,
+                order.sku.id,
+                order.quantity
+              )}`}</div>
+              <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+                order.sku.product.priceTable,
+                order.quantity
+              )} each`}</div>
             </div>
           </div>
         );
@@ -244,11 +254,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           include: {
             sku: {
               include: {
-                product: {
-                  select: {
-                    name: true,
-                  },
-                },
+                product: true,
               },
             },
             location: true,
@@ -276,11 +282,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
         sku: {
           include: {
-            product: {
-              select: {
-                name: true,
-              },
-            },
+            product: true,
           },
         },
         location: true,

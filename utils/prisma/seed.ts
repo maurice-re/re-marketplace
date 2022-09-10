@@ -1,6 +1,6 @@
-import { PrismaClient, Role } from '@prisma/client';
-import allProducts from "../../content/products.json";
-import allSkus from "../../content/skus.json";
+import { PrismaClient, Role, SubscriptionType } from '@prisma/client';
+import allProducts from "./products.json";
+import { getSkusFromProduct } from './seedUtils';
 
 const prisma = new PrismaClient()
 
@@ -10,7 +10,7 @@ async function main() {
     where: {id: product.id}, update: product, create: product
 }))
 
-allSkus.map(async (sku) => await prisma.sku.upsert({
+getSkusFromProduct(allProducts).map(async (sku) => await prisma.sku.upsert({
   where: {id: sku.id}, update: sku, create: sku
 }))
 
@@ -21,6 +21,7 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
     createdAt: now,
     customerId: "cus_M9eeBtGCJfNxeZ",
     name: "S.H.I.E.L.D.",
+    subscriptionType: SubscriptionType.FREE
   }
   const shield = await prisma.company.upsert({ 
     where: {id: "616"}, update: testCompany, create: testCompany 
@@ -29,13 +30,13 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
   const testAdmin = {
     companyId: testCompany.id,     
     createdAt: now,
-    email: "pcoulson@shield.com",
+    email: "pcoulson@myyahoo.com",
     firstName: "Phil",
     lastName: "Coulson",
     role: Role.ADMIN,
   }
   const phil = await prisma.user.upsert({
-    where: {email: "pcoulson@shield.com"}, update: testAdmin, create: testAdmin
+    where: {email: "pcoulson@myyahoo.com"}, update: testAdmin, create: testAdmin
   })
 
   const testTransaction = {
@@ -90,8 +91,8 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
       createdAt: now,
       locationId: Headquarters.id,
       quantity: 1000,
-      skuId: "RE-SB2-1.5L-RPP-D",
-      transactionId: transaction.id,
+      skuId: "SB21.5RPPG",
+      transactionId: "616",
       userId: phil.id
   }
   await prisma.order.upsert({
@@ -105,8 +106,8 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
     createdAt: now,
     locationId: Headquarters.id,
     quantity: 500,
-    skuId: "RE-SB2-1L-RPP-D",
-    transactionId: transaction.id,
+    skuId: "SB21RPPW",
+    transactionId: "616",
     userId: phil.id
   }
   await prisma.order.upsert({
@@ -120,8 +121,8 @@ allSkus.map(async (sku) => await prisma.sku.upsert({
     createdAt: now,
     locationId: playground.id,
     quantity: 500,
-    skuId: "RE-SB2-1.5L-RPP-D",
-    transactionId: transaction.id,
+    skuId: "SB21.5RPPG",
+    transactionId: "616",
     userId: phil.id
   }
   await prisma.order.upsert({

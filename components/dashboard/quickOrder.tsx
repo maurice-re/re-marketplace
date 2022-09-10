@@ -9,6 +9,7 @@ import {
   totalFromOrders,
   TransactionCustomerOrders,
 } from "../../utils/dashboard/dashboardUtils";
+import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
 
 function QuickOrder({
   customerId,
@@ -58,7 +59,8 @@ function QuickOrder({
       const orders = skuIdQuantity.map(([sku, quantity]) => {
         return {
           id: "",
-          amount: sku.price * parseInt(quantity),
+          amount: calculatePriceFromCatalog(sku, sku.product, sku.id, quantity),
+          comments: null,
           company: {
             customerId: customerId,
           },
@@ -67,8 +69,9 @@ function QuickOrder({
           location: selectedLocation,
           locationId: selectedLocation.id,
           quantity: parseInt(quantity),
+          qrCode: false,
           shippedAt: now,
-          recievedAt: now,
+          receivedAt: now,
           status: Status.PROCESSING,
           skuId: sku.id,
           sku: sku,
@@ -154,12 +157,17 @@ function QuickOrder({
                     </div>
                   </div>
                   <div className="text-xs font-theinhardt text-center">
-                    {`\$${sku.price} each`}
+                    {`\$${calculatePriceFromCatalog(
+                      sku,
+                      sku.product,
+                      sku.id,
+                      1
+                    )} each`}
                   </div>
                 </div>
                 <input
                   value={
-                    skuIdQuantity.find((tup) => tup[0].id == sku.id)?.[1] ?? ""
+                    skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
                   }
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
                   className="bg-re-gray-500 bg-opacity-70 w-9 text-sm"
@@ -172,9 +180,13 @@ function QuickOrder({
               <div>
                 {`\$${skuIdQuantity
                   .reduce(
-                    (prev, curr) =>
-                      curr[0].price * parseInt(curr[1] == "" ? "0" : curr[1]) +
-                      prev,
+                    (prev, [sku, quantity]) =>
+                      calculatePriceFromCatalog(
+                        sku,
+                        sku.product,
+                        sku.id,
+                        quantity == "" ? 0 : quantity
+                      ) + prev,
                     0
                   )
                   .toFixed(2)}`}
