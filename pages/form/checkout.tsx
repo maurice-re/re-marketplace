@@ -8,6 +8,7 @@ import CheckoutForm from "../../components/form/checkout-form";
 import ReLogo from "../../components/form/re-logo";
 import { useFormState } from "../../context/form-context";
 import { allLocations } from "../../utils/prisma/cart";
+import { getPriceFromTable } from "../../utils/prisma/dbUtils";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -15,7 +16,8 @@ const stripePromise = loadStripe(
 
 const Checkout: NextPage = () => {
   const [clientSecret, setClientSecret] = useState("");
-  const { calculateTotal, cart, locations, setCustomerId } = useFormState();
+  const { calculatePrice, calculateTotal, cart, locations, setCustomerId } =
+    useFormState();
   const total = calculateTotal();
 
   useEffect(() => {
@@ -87,10 +89,14 @@ const Checkout: NextPage = () => {
               </div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5">{`$${(
-                order.sku.price * order.quantity
-              ).toFixed(2)}`}</div>
-              <div className="text-xs text-gray-300">{`\$${order.sku.price} each`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${calculatePrice(
+                order.sku.id,
+                order.quantity
+              )}`}</div>
+              <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+                order.product.priceTable,
+                order.quantity
+              )} each`}</div>
             </div>
           </div>
         );

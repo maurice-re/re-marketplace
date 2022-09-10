@@ -30,15 +30,47 @@ model Account {
   @@unique([provider, providerId])
 }
 
+model ApiLogging {
+  id              Int       @id @default(autoincrement())
+  calledAt        DateTime  @default(now())
+  route           String
+}
+
 model Company {
-  id              String        @default(cuid()) @id
-  createdAt       DateTime
-  customerId      String
-  locations       Location[]
-  name            String
-  orders          Order[]
-  transactions    Transaction[]
-  users           User[]
+  id                String              @default(cuid()) @id
+  apiKey            String?             @unique
+  createdAt         DateTime
+  customerId        String
+  events            Event[]
+  locations         Location[]
+  name              String
+  orders            Order[]
+  subscriptionType  SubscriptionType    @default(FREE)
+  transactions      Transaction[]
+  untracked         UntrackedInventory[]
+  users             User[]
+}
+
+model Event {
+  id                String      @default(cuid()) @id
+  company           Company     @relation(fields: [companyId], references: [id])
+  companyId         String
+  consumerId        String?
+  itemId            String
+  location          Location?   @relation(fields: [locationId], references: [id])
+  locationId        String?
+  sku               Sku         @relation(fields: [skuId], references: [id])
+  skuId             String
+  timestamp         DateTime    @default(now())
+  trackingLocation  String?
+  type              EventType
+}
+
+enum EventType {
+  BORROWED
+  EOL
+  LOST
+  RETURNED
 }
 
 model Image {
@@ -50,37 +82,41 @@ model Image {
 }
 
 model Location {
-  id              String        @default(cuid()) @id
-  city            String
-  country         String
-  company         Company       @relation(fields: [companyId], references: [id])
-  companyId       String
-  displayName     String?
-  lastOrderDate   DateTime
-  line1           String
-  line2           String?
-  orders          Order[]
-  shippingName    String
-  state           String
-  user            User          @relation(fields: [userId], references: [id])
-  userId          String
-  zip             String
+  id                String        @default(cuid()) @id
+  city              String
+  country           String
+  company           Company       @relation(fields: [companyId], references: [id])
+  companyId         String
+  displayName       String?
+  events            Event[]       @relation(fields: [])
+  lastOrderDate     DateTime
+  line1             String
+  line2             String?
+  orders            Order[]
+  shippingName      String
+  state             String
+  user              User          @relation(fields: [userId], references: [id])
+  userId            String
+  trackingLocation  String?
+  zip               String
 }
 
 model Order {
   id              String        @default(cuid()) @id
   amount          Float
+  comments        String?
   company         Company       @relation(fields: [companyId], references: [id])
   companyId       String
   createdAt       DateTime
   location        Location      @relation(fields: [locationId], references: [id])
   locationId      String
   quantity        Int
-  recievedAt      DateTime?
+  qrCode          Boolean       @default(false)
+  receivedAt      DateTime?
   shippedAt       DateTime?
   sku             Sku           @relation(fields: [skuId], references: [id])
   skuId           String
-  status          Status        @default(PROCESSING)
+  status          Status        @default(SUBMITTED)
   transaction     Transaction   @relation(fields: [transactionId], references: [id])
   transactionId   String
   user            User          @relation(fields: [userId], references: [id])
@@ -89,9 +125,11 @@ model Order {
 
 model Product {
   id              String        @default(cuid()) @id
+  colors          String
   mainImage       String
   materials       String
   name            String
+  priceTable      String
   sizes           String
   skus            Sku[]
 }
@@ -116,34 +154,60 @@ model Session {
 
 model Sku {
   id              String        @default(cuid()) @id
+  color           String
+  colorPrice      Float
+  events          Event[]
   images          Image[]
   mainImage       String
   material        String
+  materialPrice   Float
   materialShort   String
   orders          Order[]
-  price           Float
   product         Product       @relation(fields: [productId], references: [id])
   productId       String
+  untracked       UntrackedInventory[]
   size            String
+  sizePrice       Float
 }
 
 enum Status {
+  SUBMITTED
+  ACCEPTED
+  PROCESSING
+  SHIPPING
   COMPLETED
   PARTIAL_COMPLETED
-  SHIPPING
-  PROCESSING
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+  PREMIUM_PLUS
 }
 
 model Transaction {
-  id              String        @default(cuid()) @id
+  id              String                @default(cuid()) @id
   amount          Float
-  company         Company       @relation(fields: [companyId], references: [id])
+  company         Company               @relation(fields: [companyId], references: [id])
   companyId       String
   createdAt       DateTime
   orders          Order[]
-  status          Status        @default(PROCESSING)
-  user            User          @relation(fields: [userId], references: [id])
+  status          Status                @default(SUBMITTED)
+  untracked       UntrackedInventory[]
+  user            User                  @relation(fields: [userId], references: [id])
   userId          String
+}
+
+model UntrackedInventory {
+  company         Company       @relation(fields: [companyId], references: [id])
+  companyId       String
+  sku             Sku           @relation(fields: [skuId], references: [id])
+  skuId           String
+  transaction     Transaction   @relation(fields: [transactionId], references: [id])
+  transactionId   String
+  quantity        Int
+
+  @@unique([companyId, skuId])
 }
 
 model User {

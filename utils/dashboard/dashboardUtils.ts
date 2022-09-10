@@ -1,10 +1,9 @@
-import { Location, Order, Sku, Transaction } from "@prisma/client";
+import { Location, Order, Product, Sku, Transaction } from "@prisma/client";
+import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export type OrderSkuProduct = Order & {
   sku: Sku & {
-    product: {
-      name: string;
-    };
+    product: Product;
   };
   location: {
     displayName: string | null;
@@ -13,9 +12,7 @@ export type OrderSkuProduct = Order & {
 };
 
 export type SkuProduct = Sku & {
-    product: {
-      name: string;
-    };
+    product: Product;
   };
 
 export type TransactionCustomerOrders = Transaction & {
@@ -26,9 +23,7 @@ export type TransactionCustomerOrders = Transaction & {
   orders: (Order & {
     location: Location;
     sku: Sku & {
-      product: {
-        name: string;
-      };
+      product: Product;
     };
   })[];
 };
@@ -40,18 +35,14 @@ export type OrderCustomerLocation = Order & {
   };
   location: Location;
   sku: Sku & {
-      product: {
-          name: string;
-      };
+      product: Product;
   };
 };
 
 export type OrderLocationSku = Order & {
   location: Location;
   sku: Sku & {
-    product: {
-      name: string;
-    };
+    product: Product;
   };
 }
 
@@ -126,8 +117,7 @@ export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[
 
 
 export function totalFromOrders(orders: OrderLocationSku[]): number {
-  const total  = orders.reduce((prev, curr) => prev + curr.quantity * curr.sku.price, 0);
-  return parseFloat(total.toFixed(2));
+  return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.sku.product, order.skuId, order.quantity), 0);
 }
 
 export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {

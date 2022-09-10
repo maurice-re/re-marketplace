@@ -56,7 +56,7 @@ const Quote: NextPage = () => {
       cart
     )}`;
 
-    await fetch("/api/mail/sendQuote", {
+    await fetch("/api/mail/send-quote", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

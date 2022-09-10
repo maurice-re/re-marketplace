@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import allProducts from "../../content/products.json";
 import { useFormState } from "../../context/form-context";
 import FormNextButton from "./next-button";
 import FormOptionButton from "./option-button";
@@ -16,16 +15,27 @@ function ProductPage({
 }) {
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
   const [chosenMaterial, setChosenMaterial] = useState<string[]>([]);
-  const { locations } = useFormState();
+  const { locations, productCatalog } = useFormState();
   const router = useRouter();
-
-  const { city } = router.query;
-  const product = allProducts.filter((p) => p.id == productId)[0];
 
   useEffect(() => {
     setChosenSizes([]);
     setChosenMaterial([]);
   }, [route]);
+
+  const { city } = router.query;
+  const product =
+    productCatalog != undefined
+      ? productCatalog.find((p) => p.id == productId)!
+      : undefined;
+
+  if (product == undefined) {
+    return (
+      <main className="flex flex-col container mx-auto my-4 justify-evenly">
+        <div>An Error Occurred, please restart</div>
+      </main>
+    );
+  }
 
   function handleOptionClick(
     optionLabel: string,
@@ -49,7 +59,7 @@ function ProductPage({
   }
 
   const sizes = product.sizes
-    .split(",")
+    .split(", ")
     .map((size) => (
       <FormOptionButton
         handleClick={() =>
@@ -62,7 +72,7 @@ function ProductPage({
     ));
 
   const materials = product.materials
-    .split(",")
+    .split(", ")
     .map((material) => (
       <FormOptionButton
         handleClick={() =>
@@ -118,7 +128,7 @@ function ProductPage({
           {chosenSizes.length > 0 && chosenMaterial.length > 0 && (
             <div>
               <h2 className="text-white text-25 font-theinhardt-300 mb-2">
-                Choose your quanity
+                Choose your quantity
                 <span>{locations.length > 1 ? " for " : ""}</span>
                 <span className=" text-re-green-500">
                   {locations.length > 1 ? `${city}` : ""}
