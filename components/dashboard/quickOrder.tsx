@@ -104,10 +104,12 @@ function QuickOrder({
         Quick Order
       </h1>
       <div className=" h-px bg-white mb-4 w-full" />
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between w-full gap-4">
         <div
-          className={`flex flex-wrap ${
-            selected.length == 0 ? "w-full" : "W-2/3"
+          className={`grid gap-4 h-96 overflow-y-scroll w-full pr-1 items-start ${
+            selected.length == 0
+              ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
+              : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
           }`}
         >
           {skus.map((sku) => (
@@ -141,28 +143,26 @@ function QuickOrder({
           ))}
         </div>
         {selected.length > 0 && (
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col justify-start">
             {selected.map((sku) => (
               <div
                 className="flex justify-between items-center mb-4"
                 key={sku.id}
               >
                 <div className="flex-col">
-                  <div className="">
-                    {sku.product.name}
-                  </div>
+                  <div className="">{sku.product.name}</div>
                   <div className="text-xs">
                     {sku.size + " | " + sku.materialShort}
                   </div>
-                  </div>
-                  <div className="text-sm font-theinhardt text-center">
-                    {`\$${calculatePriceFromCatalog(
-                      sku,
-                      sku.product,
-                      sku.id,
-                      1
-                    )}`}
-                  </div>
+                </div>
+                <div className="text-sm font-theinhardt text-center">
+                  {`\$${calculatePriceFromCatalog(
+                    sku,
+                    sku.product,
+                    sku.id,
+                    1
+                  )}`}
+                </div>
                 <input
                   value={
                     skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""

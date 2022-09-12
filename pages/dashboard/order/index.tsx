@@ -48,13 +48,17 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
               {orders[0].company.name}
             </h1>
           </div>
-          <div className="flex items-center justify-start">
-            <GoSearch />
-            <input
-              type="text"
-              placeholder="Search for an order"
-              className="input input-ghost w-64 my-4 ml-4 text-lg"
-            />
+          <div className="form-control mx-auto my-4">
+            <div className="input-group w-96">
+              <input
+                type="text"
+                placeholder="Search for an order"
+                className="input text-md w-5/6"
+              />
+              <button className="btn btn-square w-1/6">
+                <GoSearch size={20} />
+              </button>
+            </div>
           </div>
           <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch">
             {orders.map((order) => (
