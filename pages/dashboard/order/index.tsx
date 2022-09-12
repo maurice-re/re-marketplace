@@ -10,7 +10,7 @@ import {
   OrderCustomerLocation,
 } from "../../../utils/dashboard/dashboardUtils";
 import { authOptions } from "../../api/auth/[...nextauth]";
-
+import { GoSearch } from "react-icons/go";
 type OrderProps = {
   orders: OrderCustomerLocation[];
 };
@@ -41,12 +41,20 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <main className="flex flex-col container mx-auto py-6 px-1  text-white font-theinhardt">
+        <main className="flex flex-col container mx-auto py-6 px-1 w-full text-white font-theinhardt">
           <div className="flex justify-between">
             <h1 className="font-theinhardt text-3xl">Orders</h1>
             <h1 className="font-theinhardt text-3xl">
               {orders[0].company.name}
             </h1>
+          </div>
+          <div className="flex items-center justify-start">
+            <GoSearch />
+            <input
+              type="text"
+              placeholder="Search for an order"
+              className="input input-ghost w-64 my-4 ml-4 text-lg"
+            />
           </div>
           <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch">
             {orders.map((order) => (
