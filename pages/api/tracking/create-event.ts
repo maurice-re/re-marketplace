@@ -7,23 +7,31 @@ async function createEvent(req: Request, res: Response) {
     // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Apikey")) {
+    console.log(authorization);
+    logApi("create-event", false, "Invalid API key format");
     res.status(401).send("Invalid API key format");
     return;
   }
-
+  
   // Get company with locations and untracked inventory
   // If company doesn't exist API key is invalid so send that
-  const company = await prisma.company.findUnique({
+  const apiWithCompany = await prisma.apiKey.findFirst({
     where: {
-      apiKey: authorization.slice(7),
+      id: authorization.slice(7)
     },
     include: {
-        locations: true,
-      untracked: true,
-    },
-  });
+      company: {
+        include: {
+          locations: true,
+          untracked: true
+        }
+      }
+    }
+  })
 
-  if (!company) {
+  if (!apiWithCompany || apiWithCompany.company == undefined) {
+    console.log(apiWithCompany);
+    logApi("create-event", false, "Unauthorized access");
     res.status(401).send("Unauthorized access/API key invalid");
     return;
   }
@@ -43,8 +51,11 @@ async function createEvent(req: Request, res: Response) {
     type: EventType;
   } = req.body;
 
+  const company = apiWithCompany.company;
+
   if (company == undefined) {
     res.status(400).send("API Key invalid/outdated");
+    logApi(type.toLowerCase(), false, "API Key Invalid/outdated")
     return;
   }
   const skus = await prisma.sku.findMany();
@@ -70,7 +81,7 @@ async function createEvent(req: Request, res: Response) {
     },
   });
   res.status(200).send("Successfully tracked event");
-  updateUntracked(itemId, company, sku!.id);
+  // updateUntracked(itemId, company, sku!.id);
   logApi(type.toLowerCase())
 }
 

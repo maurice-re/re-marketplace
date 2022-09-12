@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
-import { customAlphabet } from "nanoid";
-const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
-const nanoid = customAlphabet(alphabet, 12);
+import { nanoid } from "../../../utils/api/apiUtils";
 
 
 async function createQr(req: Request, res: Response) {

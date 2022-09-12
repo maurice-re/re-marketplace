@@ -1,5 +1,5 @@
 import { Product, Sku } from "@prisma/client";
-import { customAlphabet } from "nanoid";
+import { nanoid } from "../api/apiUtils";
 import internalProducts from "./products.json";
 
 
@@ -46,8 +46,6 @@ export const getSkusFromProduct = (productCatalog: Product[]): Sku[] => internal
   return prev.concat(options);
 }, [] as Sku[])
 
-const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
-const nanoid = customAlphabet(alphabet, 12);
 export function make20Ids() {
   const output = []
   for (let i = 0; i < 20; i++) {
