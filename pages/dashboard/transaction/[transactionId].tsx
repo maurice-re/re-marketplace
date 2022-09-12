@@ -52,11 +52,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     context.res,
     authOptions
   );
-  if ((session || test == "shield") && typeof transactionId == "string") {
+  if (session && typeof transactionId == "string") {
     const user = await prisma.user.findUnique({
       where: {
-        email:
-          test == "shield" ? "pcoulson@shield.com" : session?.user?.email ?? "",
+        email: session?.user?.email ?? "",
       },
       include: {
         transactions: {

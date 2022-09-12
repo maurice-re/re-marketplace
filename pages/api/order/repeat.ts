@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { OrderCustomerLocation } from "../../../utils/dashboard/dashboardUtils";
+import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";
 
 
 async function repeat(req: Request, res: Response) {
@@ -19,7 +20,7 @@ async function repeat(req: Request, res: Response) {
 
   const transaction = await prisma.transaction.create({
     data: {
-      amount: parseFloat(((order.sku.price * order.quantity) * 1.07).toFixed(2)),
+      amount: calculatePriceFromCatalog(order.sku, order.sku.product, order.sku.id, order.quantity, 1.07),
       companyId: order.companyId,
       createdAt: now,
       userId: order.userId,

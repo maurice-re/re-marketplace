@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../context/form-context";
 import { allLocations, calculateAmount } from "../../../utils/prisma/cart";
+import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";
 
 
 async function create(req: Request, res: Response) {
@@ -72,7 +73,7 @@ async function create(req: Request, res: Response) {
       if(order.location == city) {
         await prisma.order.create({
             data: {
-                amount: parseFloat((order.sku.price * order.quantity * tax).toFixed(2)),
+                amount: calculatePriceFromCatalog(order.sku, order.product, order.sku.id, order.quantity, tax),
                 companyId: company.id,
                 createdAt: now,
                 locationId: location.id,

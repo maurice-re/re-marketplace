@@ -64,5 +64,16 @@ module.exports = {
       }
     },
   },
-  plugins: [],
-}
+  plugins: [require("daisyui")],
+  daisyui: {
+    themes: [
+      {
+        dark: {
+          ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
+          accent: "#46CB9C",
+          "base-100": "#353535",
+        },
+      },
+    ],
+  },
+};
