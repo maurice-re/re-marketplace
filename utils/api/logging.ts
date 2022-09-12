@@ -1,5 +1,5 @@
 export function logApi(route: string, success?: boolean, message? : string) {
-    fetch("/api/logging/log-api", {
+    fetch(`${process.env.NEXTAUTH_URL}/api/logging/log-api`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
