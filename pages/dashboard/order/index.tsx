@@ -2,12 +2,11 @@ import { User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
+import Link from "next/link";
 import Sidebar from "../../../components/dashboard/sidebar";
 import prisma from "../../../constants/prisma";
 import {
-  addDays,
   dayMonthYear,
-  monthDayYear,
   OrderCustomerLocation,
 } from "../../../utils/dashboard/dashboardUtils";
 import { authOptions } from "../../api/auth/[...nextauth]";
@@ -31,14 +30,6 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
         </main>
       </div>
     );
-  }
-
-  function formatDate(date: Date): string {
-    const day = new Date(date);
-    const month = day.toLocaleDateString("en-us", {
-      month: "long",
-    });
-    return day.getDay() + " " + month + " " + day.getFullYear();
   }
 
   return (
@@ -90,9 +81,16 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
                     </div>
                   </div>
                   <div className="card-actions justify-end">
-                    <button className="btn btn-sm btn-accent btn-outline font-theinhardt-500 text-xs tracking-wide">
-                      Re-order
-                    </button>
+                    <Link
+                      href={{
+                        pathname: "/dashboard/checkout",
+                        query: { orderId: order.id },
+                      }}
+                    >
+                      <button className="btn btn-sm btn-accent btn-outline font-theinhardt-500 text-xs tracking-wide">
+                        Re-order
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
