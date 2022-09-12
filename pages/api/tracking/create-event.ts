@@ -1,4 +1,6 @@
+import { Company, EventType, Sku, UntrackedInventory } from "@prisma/client";
 import type { Request, Response } from "express";
+import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/api/logging";
 
 async function createEvent(req: Request, res: Response) {
