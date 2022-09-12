@@ -1,15 +1,12 @@
-import { Company, EventType, Sku, UntrackedInventory } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/api/logging";
 
 async function createEvent(req: Request, res: Response) {
     // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Apikey")) {
-    console.log(authorization);
     logApi("create-event", false, "Invalid API key format");
-    res.status(401).send("Invalid API key format");
+    res.status(401).send(`Invalid API key format: ${authorization}`);
     return;
   }
   
@@ -30,9 +27,8 @@ async function createEvent(req: Request, res: Response) {
   })
 
   if (!apiWithCompany || apiWithCompany.company == undefined) {
-    console.log(apiWithCompany);
     logApi("create-event", false, "Unauthorized access");
-    res.status(401).send("Unauthorized access/API key invalid");
+    res.status(401).send(`Unauthorized access/API key invalid: ${JSON.stringify(apiWithCompany)}`);
     return;
   }
 
