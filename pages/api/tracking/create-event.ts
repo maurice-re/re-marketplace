@@ -7,7 +7,7 @@ async function createEvent(req: Request, res: Response) {
     // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Apikey")) {
-    logApi("create-event", false, "Invalid API key format");
+    logApi("create-event", false, `Invalid API key format: ${authorization}`);
     res.status(401).send(`Invalid API key format: ${authorization}`);
     return;
   }
@@ -29,7 +29,7 @@ async function createEvent(req: Request, res: Response) {
   })
 
   if (!apiWithCompany || apiWithCompany.company == undefined) {
-    logApi("create-event", false, "Unauthorized access");
+    await logApi("create-event", false, `Unauthorized access/API key invalid: ${JSON.stringify(apiWithCompany)}`);
     res.status(401).send(`Unauthorized access/API key invalid: ${JSON.stringify(apiWithCompany)}`);
     return;
   }
@@ -52,8 +52,8 @@ async function createEvent(req: Request, res: Response) {
   const company = apiWithCompany.company;
 
   if (company == undefined) {
+    await logApi(type.toLowerCase(), false, "API Key Invalid/outdated")
     res.status(400).send("API Key invalid/outdated");
-    logApi(type.toLowerCase(), false, "API Key Invalid/outdated")
     return;
   }
   const skus = await prisma.sku.findMany();
@@ -80,7 +80,7 @@ async function createEvent(req: Request, res: Response) {
   });
   res.status(200).send("Successfully tracked event");
   // updateUntracked(itemId, company, sku!.id);
-  logApi(type.toLowerCase())
+  await logApi(type.toLowerCase())
 }
 
 export default createEvent;
