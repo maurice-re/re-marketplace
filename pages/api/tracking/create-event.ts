@@ -6,9 +6,9 @@ import { logApi } from "../../../utils/api/logging";
 async function createEvent(req: Request, res: Response) {
     // Check API Key Format
   const { authorization } = req.headers;
-  if (!authorization || !authorization?.startsWith("Apikey")) {
-    logApi("create-event", false, `Invalid API key format: ${authorization}`);
-    res.status(401).send(`Invalid API key format: ${authorization}`);
+  if (!authorization || !authorization?.startsWith("Bearer")) {
+    await logApi("create-event", false, `Missing or Invalid API key: ${authorization}`);
+    res.status(401).send(`Invalid API key format`);
     return;
   }
   
@@ -58,13 +58,15 @@ async function createEvent(req: Request, res: Response) {
   }
   const skus = await prisma.sku.findMany();
 
+  // TODO: HANDLE RE MADE QR CODES
   const sku: Sku | undefined = authorization.startsWith("Apikey re_")
     ?  skus.find(sku => sku.id == "TODO")
     :  skus.find(sku => sku.id == skuId);
 
 
     if (sku == undefined) {
-        res.status(400).send("Sku ID field undefined or invalid")
+        await logApi(type.toLowerCase(), false, "SkuId undefined or invalid")
+        res.status(400).send("SkuId undefined or invalid")
         return;
     }
 
