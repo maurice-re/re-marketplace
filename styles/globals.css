@@ -33,3 +33,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+:root {
+  color-scheme: dark;
+}
