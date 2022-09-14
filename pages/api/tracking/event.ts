@@ -4,6 +4,12 @@ import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/api/logging";
 
 async function createEvent(req: Request, res: Response) {
+
+  //Check method
+  if (req.method != "POST") {
+    await logApi(`${req.method} event`, false, "HTTP Operation not supported")
+    res.status(401).send("Bad Request")
+  } 
     // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Bearer")) {

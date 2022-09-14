@@ -4,14 +4,14 @@ import { getSkusFromProduct } from "../../../utils/prisma/seedUtils";
 
 
 async function sku(req: Request, res: Response) {
-    if (req.body == undefined || req.method != "Post") {
+    if (req.method != "Post") {
         res.status(400).send()
         return;
     }
     
-    const skus = getSkusFromProduct(req.body);
     await prisma.sku.deleteMany({});
-    console.log("deleted");
+    
+    const skus = getSkusFromProduct(await prisma.product.findMany({}));
     await prisma.sku.createMany({
         data: skus
     })
