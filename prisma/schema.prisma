@@ -33,8 +33,8 @@ model Account {
 
 model ApiKey {
   id            String      @id
-  company       Company?    @relation(fields: [companyId], references: [id])
-  companyId     String?     @unique
+  company       Company     @relation(fields: [companyId], references: [id])
+  companyId     String      @unique
   admin         Boolean     @default(false)
 
 }
@@ -64,6 +64,7 @@ model Company {
 
 model Event {
   id                String      @default(cuid()) @id
+  action            Action
   company           Company     @relation(fields: [companyId], references: [id])
   companyId         String
   consumerId        String?
@@ -74,14 +75,13 @@ model Event {
   skuId             String
   timestamp         DateTime    @default(now())
   trackingLocation  String?
-  type              EventType
 }
 
-enum EventType {
-  BORROWED
+enum Action {
+  BORROW
   EOL
   LOST
-  RETURNED
+  RETURN
 }
 
 model Image {

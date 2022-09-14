@@ -1,4 +1,4 @@
-import { Company, EventType, Sku, UntrackedInventory } from "@prisma/client";
+import { Action, Company, Sku, UntrackedInventory } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/api/logging";
@@ -40,19 +40,19 @@ async function createEvent(req: Request, res: Response) {
     itemId,
     locationId,
     skuId,
-    type
+    action
   }: {
+    action: Action;
     consumerId: string;
     itemId: string;
     locationId: string;
     skuId: string | undefined;
-    type: EventType;
   } = req.body;
 
   const company = apiWithCompany.company;
 
   if (company == undefined) {
-    await logApi(type.toLowerCase(), false, "API Key Invalid/outdated")
+    await logApi(action, false, "API Key Invalid/outdated")
     res.status(400).send("API Key invalid/outdated");
     return;
   }
@@ -65,24 +65,24 @@ async function createEvent(req: Request, res: Response) {
 
 
     if (sku == undefined) {
-        await logApi(type.toLowerCase(), false, "SkuId undefined or invalid")
+        await logApi(action.toLowerCase(), false, "SkuId undefined or invalid")
         res.status(400).send("SkuId undefined or invalid")
         return;
     }
 
   await prisma.event.create({
     data: {
+      action: action,
       companyId: company.id,
       consumerId: consumerId,
       itemId: itemId,
       skuId: sku!.id,
       trackingLocation: locationId,
-      type: type,
     },
   });
-  res.status(200).send("Successfully tracked event");
+  await logApi(action.toLowerCase())
+  res.status(200).send({success: `successfully tracked ${itemId}`});
   // updateUntracked(itemId, company, sku!.id);
-  await logApi(type.toLowerCase())
 }
 
 export default createEvent;

@@ -1,0 +1,102 @@
+openapi: 3.0.3
+info: 
+  title: Admin API
+  description: This is for internal Re use only!
+  version: 0.0.1
+tags:
+  - name: Company
+    description: Everything about companies
+  - name: Catalog
+    description: Everything about the product catalog
+paths:
+  /admin/company:
+    post:
+      tags:
+        - Company
+      summary: Create an empty company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEvent'
+      responses:
+        200:
+          description: "OK"
+  /tracking/api-key:
+    post:
+      tags:
+        - Company
+      summary: Create an Api Key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - companyId
+              properties:
+                companyId:
+                  type: string
+      responses:
+        200:
+          description: "OK"
+  /admin/sku:
+    post:
+      tags:
+        - Catalog
+      summary: Create Skus from product JSON
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        200:
+          description: "OK"
+components:
+    schemas:
+      CreateEvent:
+        type: object
+        required:
+        - action
+        - id
+        properties:
+          id:
+            type: string
+            description: ID of container from QR code
+          action:
+            type: string
+            enum:
+            - borrow
+            - eol
+            - lost
+            - return
+          consumerId:
+            type: string
+          locationId:
+            type: string
+          skuId:
+            type: string
+            description: ID of container used, not necessary if serialization by Re Company
+            example: SB21.5RPPG
+      Product:
+        type: array
+        items:
+          type: object
+          properties:
+            id: 
+              type: string
+            colors:
+              type: string
+            mainImage:
+              type: string
+            name:
+              type: string
+            priceTable:
+              type: string
+            sizes:
+              type: string
+            materials:
+              type: string
+            
+          
