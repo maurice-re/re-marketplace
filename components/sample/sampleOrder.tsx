@@ -4,30 +4,12 @@ import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
 
 function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
-  const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
-    []
-  );
 
   function handleItemPress(skuSelected: SkuProduct) {
-    const isSelected = selected.find((s) => s.id == skuSelected.id);
-    if (isSelected) {
-      setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
-      setSkuIdQuantity((prev) => prev.filter((s) => s[0].id != skuSelected.id));
-    } else {
-      setSelected((prev) => [...prev, skuSelected]);
-      setSkuIdQuantity((prev) => [...prev, [skuSelected, "0"]]);
+    if (selected) {
+      setSelected([]);
     }
-  }
-
-  function handleQuantityChange(val: string, skuSelected: SkuProduct) {
-    setSkuIdQuantity((prev) => {
-      return prev.map((tup) => {
-        if (tup[0].id == skuSelected.id) {
-          tup[1] = val;
-        }
-        return tup;
-      });
-    });
+    setSelected([skuSelected]);
   }
 
   return (
@@ -86,6 +68,19 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
                   <div className="text-xs">
                     {sku.size + " | " + sku.materialShort}
                   </div>
+                </div>
+                <div className="w-1/2 h-full">
+                  {/* {clientSecret && (
+            // eslint-disable-next-line
+            <Elements options={options} stripe={stripePromise}>
+              <CheckoutInfo
+                order={order}
+                transaction={transaction}
+                paymentMethods={paymentMethods}
+                paymentId={paymentId}
+              />
+            </Elements>
+          )} */}
                 </div>
               </div>
             ))}
