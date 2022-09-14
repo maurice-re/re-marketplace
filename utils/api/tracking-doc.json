@@ -1,0 +1,93 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Re API Docs",
+    "description": "This is used to monitor tracking status and health of containers sold by Re Company",
+    "version": "0.0.1"
+  },
+  "tags": [
+    {
+      "name": "Tracking",
+      "description": "Everything track your package"
+    }
+  ],
+  "paths": {
+    "/api/event": {
+      "post": {
+        "tags": [
+          "Tracking"
+        ],
+        "summary": "Create a Tracking event",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Event"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Missing or Invalid Api key"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Event": {
+        "type": "object",
+        "required": [
+          "action",
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID of container from QR code"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "borrow",
+              "eol",
+              "lost",
+              "return"
+            ]
+          },
+          "consumerId": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string"
+          },
+          "skuId": {
+            "type": "string",
+            "description": "ID of container used, not necessary if serialization by Re Company",
+            "example": "SB21.5RPPG"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

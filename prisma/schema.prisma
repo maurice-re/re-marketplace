@@ -10,6 +10,7 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
+  binaryTargets = ["debian-openssl-1.1.x", "darwin-arm64"]
 }
 
 model Account {
@@ -30,15 +31,25 @@ model Account {
   @@unique([provider, providerId])
 }
 
+model ApiKey {
+  id            String      @id
+  company       Company     @relation(fields: [companyId], references: [id])
+  companyId     String      @unique
+  admin         Boolean     @default(false)
+
+}
+
 model ApiLogging {
   id              Int       @id @default(autoincrement())
   calledAt        DateTime  @default(now())
+  message         String?
   route           String
+  success         Boolean
 }
 
 model Company {
   id                String              @default(cuid()) @id
-  apiKey            String?             @unique
+  apiKey            ApiKey?
   createdAt         DateTime
   customerId        String
   events            Event[]
@@ -53,6 +64,7 @@ model Company {
 
 model Event {
   id                String      @default(cuid()) @id
+  action            Action
   company           Company     @relation(fields: [companyId], references: [id])
   companyId         String
   consumerId        String?
@@ -63,14 +75,13 @@ model Event {
   skuId             String
   timestamp         DateTime    @default(now())
   trackingLocation  String?
-  type              EventType
 }
 
-enum EventType {
-  BORROWED
+enum Action {
+  BORROW
   EOL
   LOST
-  RETURNED
+  RETURN
 }
 
 model Image {
