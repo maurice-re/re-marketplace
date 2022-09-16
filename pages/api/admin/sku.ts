@@ -4,7 +4,7 @@ import { getSkusFromProduct } from "../../../utils/prisma/seedUtils";
 
 
 async function sku(req: Request, res: Response) {
-    if (req.method != "Post") {
+    if (req.method != "POST") {
         res.status(400).send()
         return;
     }
