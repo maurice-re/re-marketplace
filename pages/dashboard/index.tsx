@@ -54,9 +54,6 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
     router.push("/");
   }
 
-  const locationsOrdered = separateByLocationId(user.transactions[0].orders);
-  console.log(locationsOrdered);
-
   const head = (
     <Head>
       <title>Dashboard</title>
@@ -65,15 +62,16 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
     </Head>
   );
   if (user) {
+    const locationsOrdered = separateByLocationId(user.transactions[0].orders);
     return (
       <Sidebar>
         <div className="w-full h-screen bg-black flex overflow-auto">
           {head}
           <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
             <div className="flex justify-between px-1">
-                <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
-                  user.firstName == "Phil" ? "Agent Coulson" : user.firstName
-                }!`}</h1>
+              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
+                user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
               <div className="flex items-center">
                 <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
                 <div className="bg-white w-px h-5/6 mx-2" />
@@ -156,7 +154,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                                   </div>
                                 </div>
                               </div>
-                                <div className="flex items-center font-theinhardt-300 text-md">{`x ${o.quantity}`}</div>
+                              <div className="flex items-center font-theinhardt-300 text-md">{`x ${o.quantity}`}</div>
                               <div className="flex mb-3 items-center">
                                 <div className="flex-col justify-center text-center">
                                   <div className="font-theinhardt uppercase tracking-wide text-xs text-re-green-600">
@@ -210,9 +208,11 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
               </div>
               <div className="flex flex-col my-4 ml-4 mr-1 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl h-5/6 self-center">
                 <div>Set up tracking</div>
-                <button className=" bg-re-gray-400 rounded-10 text-white px-2 py-2 font-theinhardt my-2 hover:bg-re-green-600 hover:text-black text-base">
-                  Get started
-                </button>
+                <Link href={"/api-doc"}>
+                  <button className=" bg-re-gray-400 rounded-10 text-white px-2 py-2 font-theinhardt my-2 hover:bg-re-green-600 hover:text-black text-base">
+                    Get started
+                  </button>
+                </Link>
               </div>
             </div>
           </main>
@@ -221,6 +221,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
     );
   }
 
+  // TODO: Change redirect to SignIn
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden">
       {head}
@@ -235,10 +236,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
             placeholder={"Email"}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button
-            className=" w-full px-2 py-3 border-2 rounded-10 hover:border-re-green-500 text-lg"
-            onClick={handleLogin}
-          >
+          <button className=" w-full btn btn-accent" onClick={handleLogin}>
             Login
           </button>
         </div>

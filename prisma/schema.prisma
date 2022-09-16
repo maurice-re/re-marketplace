@@ -136,6 +136,7 @@ model Order {
 
 model Product {
   id              String        @default(cuid()) @id
+  actvie          Boolean       @default(true)
   colors          String
   mainImage       String
   materials       String
