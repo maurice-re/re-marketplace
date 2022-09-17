@@ -1,6 +1,7 @@
 [
     {
         "id": "SC1",
+        "active": true,
         "colors": "green, white",
         "mainImage": "/images/swapcup_main.png",
         "name": "Swap Cup",
@@ -10,6 +11,7 @@
     },
     {
         "id": "SB2",
+        "active": false,
         "colors": "green, white",
         "mainImage": "/images/swapbox_main.png",
         "name": "Swap Box",

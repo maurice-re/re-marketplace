@@ -8,10 +8,8 @@ async function sku(req: Request, res: Response) {
         res.status(400).send()
         return;
     }
-    
-    await prisma.sku.deleteMany({});
-    
     const skus = getSkusFromProduct(await prisma.product.findMany({}));
+    // await prisma.sku.deleteMany({})
     await prisma.sku.createMany({
         data: skus
     })
