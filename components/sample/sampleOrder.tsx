@@ -1,15 +1,67 @@
+import { Status } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
-import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
+import {
+  skuName,
+  SkuProduct,
+  totalFromOrders,
+} from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample
+import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
+import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
+import Link from "next/link";
 
 function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
+
+  // TODO(Suhana): Only allows one sample to be ordered at a time right now - may have to change
 
   function handleItemPress(skuSelected: SkuProduct) {
     if (selected) {
       setSelected([]);
     }
     setSelected([skuSelected]);
+  }
+
+  function handleBuyNow(): string {
+    const now = new Date();
+
+    const orders = selected.map((sku) => {
+      return {
+        id: "",
+        amount: calculatePriceFromCatalog(sku, sku.product, sku.id, 1),
+        comments: null,
+        company: {
+          customerId: "",
+        },
+        companyId: "",
+        createdAt: now,
+        location: "",
+        locationId: "",
+        quantity: 1,
+        qrCode: false,
+        shippedAt: now,
+        receivedAt: now,
+        status: Status.PROCESSING,
+        skuId: sku.id,
+        sku: sku,
+        sampleTransactionId: "",
+        userId: "",
+        sample: true,
+      };
+    });
+
+    console.log("ORDERS HERE");
+    console.log(orders);
+
+    // TODO(Suhana): Stop using SampleTransactionOrders if redundant
+    const transaction: SampleTransactionOrders = {
+      id: "",
+      amount: totalFromOrders(orders),
+      createdAt: now,
+      orders: orders,
+      status: Status.PROCESSING,
+    };
+    return JSON.stringify(transaction);
   }
 
   return (
@@ -70,17 +122,20 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
                   </div>
                 </div>
                 <div className="w-1/2 h-full">
-                  {/* {clientSecret && (
-            // eslint-disable-next-line
-            <Elements options={options} stripe={stripePromise}>
-              <CheckoutInfo
-                order={order}
-                transaction={transaction}
-                paymentMethods={paymentMethods}
-                paymentId={paymentId}
-              />
-            </Elements>
-          )} */}
+                  <Link
+                    href={{
+                      pathname: "/sample/checkout",
+                      query: { orders: handleBuyNow() },
+                    }}
+                    as={`/sample/checkout/${new Date().getTime()}`}
+                  >
+                    <button
+                      className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
+                      onClick={handleBuyNow}
+                    >
+                      Buy now
+                    </button>
+                  </Link>
                 </div>
               </div>
             ))}
