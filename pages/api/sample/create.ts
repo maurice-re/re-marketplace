@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { allLocations, calculateAmount } from "../../../utils/prisma/cart";
+import { allLocations, calculateAmount } from "../../../utils/prisma/sample";
 import { SampleTransactionOrders } from "../../../utils/sample/sampleUtils";
 
 async function create(req: Request, res: Response) {

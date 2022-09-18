@@ -4,7 +4,6 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import CheckoutInfo from "../../components/sample/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
 import {
