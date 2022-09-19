@@ -61,7 +61,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
   );
-  if (user) {
+  if (user.transactions.length > 0) {
     const locationsOrdered = separateByLocationId(user.transactions[0].orders);
     return (
       <Sidebar>
@@ -207,6 +207,54 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                 />
               </div>
               <div className="flex flex-col my-4 ml-4 mr-1 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl h-5/6 self-center">
+                <div>Set up tracking</div>
+                <Link href={"/api-doc"}>
+                  <button className=" bg-re-gray-400 rounded-10 text-white px-2 py-2 font-theinhardt my-2 hover:bg-re-green-600 hover:text-black text-base">
+                    Get started
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </main>
+        </div>
+      </Sidebar>
+    );
+  }
+
+  if (user) {
+    return (
+      <Sidebar>
+        <div className="w-full h-screen bg-black flex overflow-auto">
+          {head}
+          <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
+            <div className="flex justify-between px-1">
+              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
+                user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
+              <div className="flex items-center">
+                <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
+                <div className="bg-white w-px h-5/6 mx-2" />
+                <h1 className=" font-theinhardt text-3xl">
+                  {user.company.name}
+                </h1>
+                <button
+                  className="ml-6 px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+            <div className="flex mt-4">
+              <div className="flex flex-col w-3/5 justify-between pb-4">
+                <QuickOrder
+                  userId={user.id}
+                  customerId={user.company.customerId}
+                  locations={locations}
+                  skus={skus}
+                />
+              </div>
+              <div className="flex flex-col my-4 ml-4 mr-1 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl">
                 <div>Set up tracking</div>
                 <Link href={"/api-doc"}>
                   <button className=" bg-re-gray-400 rounded-10 text-white px-2 py-2 font-theinhardt my-2 hover:bg-re-green-600 hover:text-black text-base">

@@ -26,7 +26,9 @@ function QuickOrder({
   const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
     []
   );
-  const [location, setLocation] = useState<string>(locations[0].id);
+  const [location, setLocation] = useState<string>(
+    locations.length > 0 ? locations[0].id : ""
+  );
   const router = useRouter();
 
   function handleItemPress(skuSelected: SkuProduct) {
