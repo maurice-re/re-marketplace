@@ -48,18 +48,19 @@ model ApiLogging {
 }
 
 model Company {
-  id                String              @default(cuid()) @id
-  apiKey            ApiKey?
-  createdAt         DateTime
-  customerId        String
-  events            Event[]
-  locations         Location[]
-  name              String
-  orders            Order[]
-  subscriptionType  SubscriptionType    @default(FREE)
-  transactions      Transaction[]
-  untracked         UntrackedInventory[]
-  users             User[]
+  id                      String              @default(cuid()) @id
+  apiKey                  ApiKey?
+  createdAt               DateTime
+  customerId              String
+  events                  Event[]
+  locations               Location[]
+  name                    String
+  orders                  Order[]
+  subscriptionType        SubscriptionType    @default(FREE)
+  transactions            Transaction[]
+  sampleTransactions      SampleTransaction[]
+  untracked               UntrackedInventory[]
+  users                   User[]
 }
 
 model Event {
@@ -207,6 +208,17 @@ model Transaction {
   untracked       UntrackedInventory[]
   user            User                  @relation(fields: [userId], references: [id])
   userId          String
+}
+
+model SampleTransaction {
+  id              String                @default(cuid()) @id
+  quantity        Int
+  amount          Float
+  company         Company               @relation(fields: [companyId], references: [id])
+  companyId       String
+  createdAt       DateTime
+  skuIds          String
+  status          Status                @default(SUBMITTED)
 }
 
 model UntrackedInventory {
