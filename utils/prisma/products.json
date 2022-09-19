@@ -6,7 +6,8 @@
         "name": "Swap Cup",
         "priceTable": "1000:8, 0:10",
         "sizes": "8 oz, 12 oz, 16 oz",
-        "materials": "Polypropylene, Recycled Polypropylene"
+        "materials": "Polypropylene, Recycled Polypropylene",
+        "active": true
     },
     {
         "id": "SB2",
@@ -15,6 +16,7 @@
         "name": "Swap Box",
         "priceTable": "1000:8, 0:10",
         "sizes": "1 L, 1.5 L",
-        "materials": "Polypropylene, Recycled Polypropylene"
+        "materials": "Polypropylene, Recycled Polypropylene",
+        "active": true
     }
 ]
