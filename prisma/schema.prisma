@@ -94,23 +94,24 @@ model Image {
 }
 
 model Location {
-  id                String        @default(cuid()) @id
-  city              String
-  country           String
-  company           Company       @relation(fields: [companyId], references: [id])
-  companyId         String
-  displayName       String?
-  events            Event[]       @relation(fields: [])
-  lastOrderDate     DateTime
-  line1             String
-  line2             String?
-  orders            Order[]
-  shippingName      String
-  state             String
-  user              User          @relation(fields: [userId], references: [id])
-  userId            String
-  trackingLocation  String?
-  zip               String
+  id                  String        @default(cuid()) @id
+  city                String
+  country             String
+  company             Company       @relation(fields: [companyId], references: [id])
+  companyId           String
+  displayName         String?
+  events              Event[]       @relation(fields: [])
+  lastOrderDate       DateTime
+  line1               String
+  line2               String?
+  orders              Order[]
+  shippingName        String
+  state               String
+  user                User          @relation(fields: [userId], references: [id])
+  userId              String
+  sampleTransactions  SampleTransaction[]
+  trackingLocation    String?
+  zip                 String
 }
 
 model Order {
@@ -214,6 +215,8 @@ model SampleTransaction {
   id              String                @default(cuid()) @id
   quantity        Int
   amount          Float
+  location        Location              @relation(fields: [locationId], references: [id])
+  locationId      String
   company         Company               @relation(fields: [companyId], references: [id])
   companyId       String
   createdAt       DateTime
