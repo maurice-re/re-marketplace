@@ -71,8 +71,8 @@ model Event {
   itemId            String
   location          Location?   @relation(fields: [locationId], references: [id])
   locationId        String?
-  sku               Sku         @relation(fields: [skuId], references: [id])
-  skuId             String
+  sku               Sku?         @relation(fields: [skuId], references: [id])
+  skuId             String?
   timestamp         DateTime    @default(now())
   trackingLocation  String?
 }
@@ -136,6 +136,7 @@ model Order {
 
 model Product {
   id              String        @default(cuid()) @id
+  active          Boolean       @default(true)
   colors          String
   mainImage       String
   materials       String

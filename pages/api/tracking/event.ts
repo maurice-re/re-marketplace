@@ -65,16 +65,9 @@ async function createEvent(req: Request, res: Response) {
   const skus = await prisma.sku.findMany();
 
   // TODO: HANDLE RE MADE QR CODES
-  const sku: Sku | undefined = authorization.startsWith("Apikey re_")
+  const sku: Sku | undefined = authorization.startsWith("Bearer re_")
     ?  skus.find(sku => sku.id == "TODO")
     :  skus.find(sku => sku.id == skuId);
-
-
-    if (sku == undefined) {
-        await logApi(action.toLowerCase(), false, "SkuId undefined or invalid")
-        res.status(400).send("SkuId undefined or invalid")
-        return;
-    }
 
   await prisma.event.create({
     data: {
@@ -82,7 +75,7 @@ async function createEvent(req: Request, res: Response) {
       companyId: company.id,
       consumerId: consumerId,
       itemId: itemId,
-      skuId: sku!.id,
+      skuId: sku?.id,
       trackingLocation: locationId,
     },
   });
