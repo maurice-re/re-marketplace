@@ -2,80 +2,79 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
-  binaryTargets = ["debian-openssl-1.1.x", "darwin-arm64"]
+  binaryTargets   = ["debian-openssl-1.1.x", "darwin-arm64"]
 }
 
 model Account {
-  id              String        @id @default(cuid())
-  access_token    String?       @db.Text
-  expires_at      Int?
-  id_token        String?       @db.Text
-  provider        String
-  providerId      String
-  refresh_token   String?       @db.Text
-  scope           String?
-  session_state   String?
-  token_type      String?
-  type            String
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String
+  id            String  @id @default(cuid())
+  access_token  String? @db.Text
+  expires_at    Int?
+  id_token      String? @db.Text
+  provider      String
+  providerId    String
+  refresh_token String? @db.Text
+  scope         String?
+  session_state String?
+  token_type    String?
+  type          String
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
 
   @@unique([provider, providerId])
 }
 
 model ApiKey {
-  id            String      @id
-  company       Company     @relation(fields: [companyId], references: [id])
-  companyId     String      @unique
-  admin         Boolean     @default(false)
-
+  id        String  @id
+  company   Company @relation(fields: [companyId], references: [id])
+  companyId String  @unique
+  admin     Boolean @default(false)
 }
 
 model ApiLogging {
-  id              Int       @id @default(autoincrement())
-  calledAt        DateTime  @default(now())
-  message         String?
-  route           String
-  success         Boolean
+  id       Int      @id @default(autoincrement())
+  calledAt DateTime @default(now())
+  message  String?
+  route    String
+  success  Boolean
 }
 
 model Company {
-  id                      String              @default(cuid()) @id
-  apiKey                  ApiKey?
-  createdAt               DateTime
-  customerId              String
-  events                  Event[]
-  locations               Location[]
-  name                    String
-  orders                  Order[]
-  subscriptionType        SubscriptionType    @default(FREE)
-  transactions            Transaction[]
-  sampleTransactions      SampleTransaction[]
-  untracked               UntrackedInventory[]
-  users                   User[]
+  id                 String               @id @default(cuid())
+  apiKey             ApiKey?
+  createdAt          DateTime
+  customerId         String
+  events             Event[]
+  locations          Location[]
+  name               String
+  orders             Order[]
+  subscriptionType   SubscriptionType     @default(FREE)
+  transactions       Transaction[]
+  sampleTransactions SampleTransaction[]
+  untracked          UntrackedInventory[]
+  users              User[]
 }
 
 model Event {
-  id                String      @default(cuid()) @id
-  action            Action
-  company           Company     @relation(fields: [companyId], references: [id])
-  companyId         String
-  consumerId        String?
-  itemId            String
-  location          Location?   @relation(fields: [locationId], references: [id])
-  locationId        String?
-  sku               Sku         @relation(fields: [skuId], references: [id])
-  skuId             String
-  timestamp         DateTime    @default(now())
-  trackingLocation  String?
+  id               String    @id @default(cuid())
+  action           Action
+  company          Company   @relation(fields: [companyId], references: [id])
+  companyId        String
+  consumerId       String?
+  itemId           String
+  location         Location? @relation(fields: [locationId], references: [id])
+  locationId       String?
+  sku              Sku       @relation(fields: [skuId], references: [id])
+  skuId            String
+  timestamp        DateTime  @default(now())
+  trackingLocation String?
 }
 
 enum Action {
@@ -85,67 +84,73 @@ enum Action {
   RETURN
 }
 
+enum Type {
+  SHIPPING
+  SAMPLE
+  TRACKING
+}
+
 model Image {
-  id              Int           @default(autoincrement()) @id
-  rank            Int
-  skus            Sku[]
-  skuId           Int
-  uri             String
+  id    Int    @id @default(autoincrement())
+  rank  Int
+  skus  Sku[]
+  skuId Int
+  uri   String
 }
 
 model Location {
-  id                  String        @default(cuid()) @id
-  city                String
-  country             String
-  company             Company       @relation(fields: [companyId], references: [id])
-  companyId           String
-  displayName         String?
-  events              Event[]       @relation(fields: [])
-  lastOrderDate       DateTime
-  line1               String
-  line2               String?
-  orders              Order[]
-  shippingName        String
-  state               String
-  user                User          @relation(fields: [userId], references: [id])
-  userId              String
-  sampleTransactions  SampleTransaction[]
-  trackingLocation    String?
-  zip                 String
+  id                 String              @id @default(cuid())
+  city               String?
+  country            String?
+  company            Company?            @relation(fields: [companyId], references: [id])
+  companyId          String?
+  displayName        String?
+  events             Event[]             @relation(fields: [])
+  line1              String?
+  line2              String?
+  orders             Order[]
+  shippingName       String?
+  state              String?
+  user               User?               @relation(fields: [userId], references: [id])
+  userId             String?
+  sampleTransactions SampleTransaction[]
+  trackingLocation   String?
+  type               Type                @default(SHIPPING)
+  zip                String?
 }
 
 model Order {
-  id              String        @default(cuid()) @id
-  amount          Float
-  comments        String?
-  company         Company       @relation(fields: [companyId], references: [id])
-  companyId       String
-  createdAt       DateTime
-  location        Location      @relation(fields: [locationId], references: [id])
-  locationId      String
-  quantity        Int
-  qrCode          Boolean       @default(false)
-  receivedAt      DateTime?
-  shippedAt       DateTime?
-  sku             Sku           @relation(fields: [skuId], references: [id])
-  skuId           String
-  status          Status        @default(SUBMITTED)
-  transaction     Transaction   @relation(fields: [transactionId], references: [id])
-  transactionId   String
-  user            User          @relation(fields: [userId], references: [id])
-  userId          String
+  id            String      @id @default(cuid())
+  amount        Float
+  comments      String?
+  company       Company     @relation(fields: [companyId], references: [id])
+  companyId     String
+  createdAt     DateTime
+  location      Location    @relation(fields: [locationId], references: [id])
+  locationId    String
+  quantity      Int
+  qrCode        Boolean     @default(false)
+  receivedAt    DateTime?
+  shippedAt     DateTime?
+  sku           Sku         @relation(fields: [skuId], references: [id])
+  skuId         String
+  status        Status      @default(SUBMITTED)
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
 }
 
 model Product {
-  id              String        @default(cuid()) @id
-  active          Boolean       @default(true)
-  colors          String
-  mainImage       String
-  materials       String
-  name            String
-  priceTable      String
-  sizes           String
-  skus            Sku[]
+  id         String  @id @default(cuid())
+  active     Boolean @default(true)
+  colors     String
+  mainImage  String
+  materials  String
+  name       String
+  priceTable String
+  sizes      String
+  skus       Sku[]
 }
 
 enum Region {
@@ -159,29 +164,29 @@ enum Role {
 }
 
 model Session {
-  id           String           @id @default(cuid())
-  sessionToken String           @unique
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Sku {
-  id              String        @default(cuid()) @id
-  color           String
-  colorPrice      Float
-  events          Event[]
-  images          Image[]
-  mainImage       String
-  material        String
-  materialPrice   Float
-  materialShort   String
-  orders          Order[]
-  product         Product       @relation(fields: [productId], references: [id])
-  productId       String
-  untracked       UntrackedInventory[]
-  size            String
-  sizePrice       Float
+  id            String               @id @default(cuid())
+  color         String
+  colorPrice    Float
+  events        Event[]
+  images        Image[]
+  mainImage     String
+  material      String
+  materialPrice Float
+  materialShort String
+  orders        Order[]
+  product       Product              @relation(fields: [productId], references: [id])
+  productId     String
+  untracked     UntrackedInventory[]
+  size          String
+  sizePrice     Float
 }
 
 enum Status {
@@ -200,65 +205,65 @@ enum SubscriptionType {
 }
 
 model Transaction {
-  id              String                @default(cuid()) @id
-  amount          Float
-  company         Company               @relation(fields: [companyId], references: [id])
-  companyId       String
-  createdAt       DateTime
-  orders          Order[]
-  status          Status                @default(SUBMITTED)
-  untracked       UntrackedInventory[]
-  user            User                  @relation(fields: [userId], references: [id])
-  userId          String
+  id        String               @id @default(cuid())
+  amount    Float
+  company   Company              @relation(fields: [companyId], references: [id])
+  companyId String
+  createdAt DateTime
+  orders    Order[]
+  status    Status               @default(SUBMITTED)
+  untracked UntrackedInventory[]
+  user      User                 @relation(fields: [userId], references: [id])
+  userId    String
 }
 
 model SampleTransaction {
-  id              String                @default(cuid()) @id
-  quantity        Int
-  amount          Float
-  location        Location              @relation(fields: [locationId], references: [id])
-  locationId      String
-  company         Company               @relation(fields: [companyId], references: [id])
-  companyId       String
-  createdAt       DateTime
-  skuIds          String
-  status          Status                @default(SUBMITTED)
+  id         String   @id @default(cuid())
+  quantity   Int
+  amount     Float
+  location   Location @relation(fields: [locationId], references: [id])
+  locationId String
+  company    Company  @relation(fields: [companyId], references: [id])
+  companyId  String
+  createdAt  DateTime
+  skuIds     String
+  status     Status   @default(SUBMITTED)
 }
 
 model UntrackedInventory {
-  company         Company       @relation(fields: [companyId], references: [id])
-  companyId       String
-  sku             Sku           @relation(fields: [skuId], references: [id])
-  skuId           String
-  transaction     Transaction   @relation(fields: [transactionId], references: [id])
-  transactionId   String
-  quantity        Int
+  company       Company     @relation(fields: [companyId], references: [id])
+  companyId     String
+  sku           Sku         @relation(fields: [skuId], references: [id])
+  skuId         String
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String
+  quantity      Int
 
   @@unique([companyId, skuId])
 }
 
 model User {
-  id              String        @default(cuid()) @id
-  accounts        Account[]
-  company         Company       @relation(fields: [companyId], references: [id])
-  companyId       String         
-  createdAt       DateTime
-  email           String        @unique()
-  emailVerified   DateTime?
-  firstName       String?
-  lastName        String?
-  locations       Location[]
-  manufacturer    Boolean       @default(false)
-  orders          Order[]
-  reEmployee      Boolean       @default(false)
-  role            Role
-  sessions        Session[]
-  transactions    Transaction[]
+  id            String        @id @default(cuid())
+  accounts      Account[]
+  company       Company       @relation(fields: [companyId], references: [id])
+  companyId     String
+  createdAt     DateTime
+  email         String        @unique()
+  emailVerified DateTime?
+  firstName     String?
+  lastName      String?
+  locations     Location[]
+  manufacturer  Boolean       @default(false)
+  orders        Order[]
+  reEmployee    Boolean       @default(false)
+  role          Role
+  sessions      Session[]
+  transactions  Transaction[]
 }
 
 model VerificationToken {
   identifier String
-  token      String             @unique
+  token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
