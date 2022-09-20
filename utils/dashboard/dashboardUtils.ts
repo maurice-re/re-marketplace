@@ -7,7 +7,7 @@ export type OrderSkuProduct = Order & {
   };
   location: {
     displayName: string | null;
-    city: string;
+    city: string | null;
 };
 };
 
@@ -77,7 +77,7 @@ export function getLocationNames(orders: OrderSkuProduct[]): string[] {
         return prev;
         } else {
         ids.push(curr.locationId);
-        return [...prev, curr.location.displayName ?? curr.location.city];
+        return [...prev, curr.location.displayName ?? curr.location.city!];
         }
     }, [] as string[]);
 }
