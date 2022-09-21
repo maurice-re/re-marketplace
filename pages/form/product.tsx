@@ -24,7 +24,6 @@ const emptyProduct = {
   materials: "",
   priceTable: "",
   mainImage: "/images/swapbox_main.png",
-  active: true,
 };
 
 const Product: NextPage = () => {

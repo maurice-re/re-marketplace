@@ -69,16 +69,22 @@ async function createEvent(req: Request, res: Response) {
     ?  skus.find(sku => sku.id == "TODO")
     :  skus.find(sku => sku.id == skuId);
 
-  await prisma.event.create({
-    data: {
-      action: action,
-      companyId: company.id,
-      consumerId: consumerId,
-      itemId: itemId,
-      skuId: sku?.id,
-      trackingLocation: locationId,
-    },
-  });
+  if (company !== undefined && sku !== undefined) {
+    await prisma.event.create({
+      data: {
+        action: action,
+        companyId: company.id,
+        consumerId: consumerId,
+        itemId: itemId,
+        skuId: sku?.id,
+        trackingLocation: locationId,
+      },
+    });
+  } else {
+    await logApi(action, false, "Company/Sku invalid/outdated")
+    res.status(400).send("Company/Sku invalid/outdated");
+  }
+
   await logApi(action.toLowerCase())
   res.status(200).send({success: `successfully tracked ${itemId}`});
   // updateUntracked(itemId, company, sku!.id);
