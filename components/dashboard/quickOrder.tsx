@@ -103,7 +103,7 @@ function QuickOrder({
       <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
         Quick Order
       </h1>
-      <div className=" h-px bg-white mb-4 w-full" />
+      <div className="h-px bg-white mb-4 w-full" />
       <div className="flex justify-between w-full gap-4">
         <div
           className={`grid gap-4 h-96 overflow-y-auto w-full pr-1 items-start ${
