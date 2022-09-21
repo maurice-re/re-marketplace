@@ -26,7 +26,9 @@ function QuickOrder({
   const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
     []
   );
-  const [location, setLocation] = useState<string>(locations[0].id);
+  const [location, setLocation] = useState<string>(
+    locations.length > 0 ? locations[0].id : ""
+  );
   const router = useRouter();
 
   function handleItemPress(skuSelected: SkuProduct) {
@@ -112,35 +114,37 @@ function QuickOrder({
               : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
           }`}
         >
-          {skus.map((sku) => (
-            <div
-              key={sku.id}
-              className="flex flex-col items-center mx-1 mb-2 group"
-            >
-              <button
-                className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
-                  selected.includes(sku)
-                    ? "border-re-green-600 border-3"
-                    : "border"
-                }`}
-                onClick={() => handleItemPress(sku)}
+          {skus
+            .filter((s) => s.product.active)
+            .map((sku) => (
+              <div
+                key={sku.id}
+                className="flex flex-col items-center mx-1 mb-2 group"
               >
-                <Image
-                  src={sku.mainImage}
-                  height={96}
-                  width={96}
-                  alt={skuName(sku)}
-                />
-              </button>
-              <div className="flex text-xs text-center mt-1">
-                <div>{sku.size}</div>
-                <div className="w-1" />
-                <div>|</div>
-                <div className="w-1" />
-                <div>{sku.materialShort}</div>
+                <button
+                  className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
+                    selected.includes(sku)
+                      ? "border-re-green-600 border-3"
+                      : "border"
+                  }`}
+                  onClick={() => handleItemPress(sku)}
+                >
+                  <Image
+                    src={sku.mainImage}
+                    height={96}
+                    width={96}
+                    alt={skuName(sku)}
+                  />
+                </button>
+                <div className="flex text-xs text-center mt-1">
+                  <div>{sku.size}</div>
+                  <div className="w-1" />
+                  <div>|</div>
+                  <div className="w-1" />
+                  <div>{sku.materialShort}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
         {selected.length > 0 && (
           <div className="flex flex-col justify-start">

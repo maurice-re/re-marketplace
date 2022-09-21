@@ -12,7 +12,7 @@ const SwaggerUI = dynamic<SwaggerUIProps>(() => import("swagger-ui-react"), {
 
 function ApiDoc({ spec }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <div className="w-screen h-screen bg-white pt-2">
+    <div className="w-screen h-full bg-white pt-2 pb-8">
       <Head>
         <title>Api Docs</title>
         <meta name="account" content="Manage your account" />

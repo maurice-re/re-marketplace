@@ -17,6 +17,7 @@ import { useFormState } from "../../context/form-context";
 
 const emptyProduct = {
   id: "",
+  active: true,
   colors: "",
   name: "",
   sizes: "",

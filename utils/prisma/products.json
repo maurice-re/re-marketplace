@@ -1,7 +1,8 @@
 [
     {
         "id": "SC1",
-        "colors": "green, white",
+        "active": true,
+        "colors": "gray",
         "mainImage": "/images/swapcup_main.png",
         "name": "Swap Cup",
         "priceTable": "1000:8, 0:10",
@@ -10,10 +11,11 @@
         "active": true
     },
     {
-        "id": "SB2",
-        "colors": "green, white",
+        "id": "SB1",
+        "active": true,
+        "colors": "gray",
         "mainImage": "/images/swapbox_main.png",
-        "name": "Swap Box",
+        "name": "Swap Cup",
         "priceTable": "1000:8, 0:10",
         "sizes": "1 L, 1.5 L",
         "materials": "Polypropylene, Recycled Polypropylene",
