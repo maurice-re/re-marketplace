@@ -19,6 +19,10 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
     []
   );
 
+  function calculateAmount(sku: SkuProduct): number {
+    return calculatePriceFromCatalog(sku, sku.id, 1, 1.07);
+  }
+
   // TODO(Suhana): Remove redundancies between this and quickOrder
 
   // TODO(Suhana): quantity field in SampleTransaction is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
@@ -27,45 +31,11 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
     if (isSelected) {
       setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
-      console.log("1");
-      console.log(
-        calculatePriceFromCatalog(
-          skuSelected,
-          skuSelected.product,
-          skuSelected.id,
-          1
-        )
-      );
-      setAmount(
-        amount +
-          calculatePriceFromCatalog(
-            skuSelected,
-            skuSelected.product,
-            skuSelected.id,
-            1
-          )
-      );
+      setAmount(amount - calculateAmount(skuSelected));
       setSkuIdQuantity((prev) => prev.filter((s) => s[0].id != skuSelected.id));
     } else {
       setSelected((prev) => [...prev, skuSelected]);
-      console.log("2");
-      console.log(
-        calculatePriceFromCatalog(
-          skuSelected,
-          skuSelected.product,
-          skuSelected.id,
-          1
-        )
-      );
-      setAmount(
-        amount +
-          calculatePriceFromCatalog(
-            skuSelected,
-            skuSelected.product,
-            skuSelected.id,
-            1
-          )
-      );
+      setAmount(amount + calculateAmount(skuSelected));
       setSkuIdQuantity((prev) => [...prev, [skuSelected, "0"]]);
     }
   }
@@ -188,23 +158,23 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
             ))}
             <div className="flex justify-between mb-2">
               <div>Total:</div>
-              <div>{`\ $${amount.toFixed(2)}`}</div>
+              <div>{`\$${amount.toFixed(2)}`}</div>
             </div>
             <div className="h-px mb-3 bg-white bg-opacity-70" />
-            {/* <Link
-                    href={{
-                      pathname: "/sample/checkout",
-                      query: { orders: handleBuyNow() },
-                    }}
-                    as={`/sample/checkout/${new Date().getTime()}`}
-                  > */}
-            <button
-              className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
-              onClick={handleBuyNow}
+            <Link
+              href={{
+                pathname: "/sample/checkout",
+                query: { transaction: handleBuyNow() },
+              }}
+              as={`/sample/checkout/${new Date().getTime()}`}
             >
-              Buy now
-            </button>
-            {/* </Link> */}
+              <button
+                className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
+                onClick={handleBuyNow}
+              >
+                Buy now
+              </button>
+            </Link>
           </div>
         )}
       </div>

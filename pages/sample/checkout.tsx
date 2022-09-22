@@ -11,6 +11,7 @@ import {
   OrderSkuProduct,
   separateByLocationId,
   totalFromOrders,
+  SkuProduct,
 } from "../../utils/dashboard/dashboardUtils";
 import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
 
@@ -19,22 +20,24 @@ import {
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
 import CheckoutForm from "../../components/sample/checkoutForm";
+import { Sku } from "@prisma/client";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
 type CheckoutProps = {
-  transaction?: SampleTransactionOrders;
-  order?: OrderCustomerLocation;
+  transaction: SampleTransactionOrders;
+  skus: Sku[];
 };
 
 const SampleCheckout: NextPage<CheckoutProps> = ({
-  order,
   transaction,
+  skus,
 }: CheckoutProps) => {
   console.log("IN CHECKOUT");
   console.log(transaction);
+  console.log(skus);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentId, setPaymentId] = useState("");
   const [paymentMethods, setPaymentMethods] = useState<
@@ -42,22 +45,17 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
   >();
   const total = (): number => {
     if (transaction) {
-      return totalFromOrders(transaction.orders);
-    }
-    if (order) {
-      return totalFromOrders([order]);
+      return transaction.amount;
     }
     return 0;
   };
 
   useEffect(() => {
-    const taxTotal = parseFloat((total() * 1.07).toFixed(2));
-    console.log(taxTotal);
     fetch("/api/payment/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        cost: taxTotal,
+        cost: total(),
         id: "cus_M9eeBtGCJfNxeZ",
       }),
     })
@@ -83,76 +81,61 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
   };
 
   let items: (JSX.Element | JSX.Element[])[] = [];
-  const orders = (): OrderSkuProduct[][] => {
-    if (transaction) {
-      return separateByLocationId(transaction.orders);
-    }
-    if (order) {
-      return separateByLocationId([order]);
-    }
-    return [];
-  };
+  // const orders = (): OrderSkuProduct[][] => {
+  //   if (transaction) {
+  //     return separateByLocationId(transaction.orders);
+  //   }
+  //   return [];
+  // };
 
-  orders().forEach((cityArr) => {
-    items.push(
-      cityArr.map((order) => {
-        return (
-          <div
-            className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
-            key={order.sku.id + cityArr[0].locationId}
-          >
-            <div className="flex columns-2 justify-start items-center">
-              <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
-                <Image
-                  src={order.sku.mainImage}
-                  alt={order.sku.product.name}
-                  height={"100%"}
-                  width={"100%"}
-                />
-              </div>
-              <div>
-                <div className="text-sm font-semibold mb-0.5">
-                  {order.sku.size +
-                    " " +
-                    order.sku.materialShort +
-                    " " +
-                    order.sku.product.name}
-                </div>
-                <div className="text-xs text-gray-300">{`Qty ${order.quantity}`}</div>
-              </div>
-            </div>
-            <div>
-              <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
-                order.sku,
-                order.sku.product,
-                order.sku.id,
-                order.quantity
-              )}`}</div>
-              <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
-                order.sku.product.priceTable,
-                order.quantity
-              )} each`}</div>
-            </div>
-          </div>
-        );
-      })
-    );
+  skus.forEach((sku) => {
     items.push(
       <div
-        className="flex columns-2 pl-16 justify-between mr-6 mb-8"
-        key={"tax" + cityArr[0].locationId}
+        className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
+        key={sku.id}
       >
-        <div className="">
-          <div className="text-sm font-semibold mb-0.5">Shipping</div>
-          {/* TODO(Suhana): Fix the following */}
-          <div className="text-xs text-gray-300">{`Shenzen to your location 7-10 days`}</div>
+        <div className="flex columns-2 justify-start items-center">
+          <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
+            <Image
+              src={sku.mainImage}
+              // alt={sku.product.name}
+              height={"100%"}
+              width={"100%"}
+            />
+          </div>
+          <div>
+            <div className="text-sm font-semibold mb-0.5">
+              {sku.size + " " + sku.materialShort + " "}
+              {/* TODO(Suhana): Add sku.product.name and uncomment both */}
+            </div>
+            <div className="text-xs text-gray-300">{`Qty ${transaction.quantity}`}</div>
+          </div>
         </div>
-        <div className="">
-          <div className="text-sm font-semibold mb-0.5">Calculated later</div>
+        <div>
+          <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
+            sku,
+            sku.id,
+            transaction.quantity
+          )}`}</div>
+          {/* <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+                sku.product.priceTable,
+                transaction.quantity
+              )} each`}</div> */}
         </div>
       </div>
     );
   });
+  items.push(
+    <div className="flex columns-2 pl-16 justify-between mr-6 mb-8" key={"tax"}>
+      <div>
+        <div className="text-sm font-semibold mb-0.5">Shipping</div>
+        <div className="text-xs text-gray-300">{`Shenzen to your location 7-10 days`}</div>
+      </div>
+      <div>
+        <div className="text-sm font-semibold mb-0.5">Calculated later</div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
@@ -166,38 +149,38 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
-          <h1 className=" text-4xl font-semibold pb-4">{`$${(
-            total() * 1.07
-          ).toFixed(2)}`}</h1>
+          <h1 className=" text-4xl font-semibold pb-4">{`$${total().toFixed(
+            2
+          )}`}</h1>
           <h2 className="text-md">Sample orders</h2>
-
           {items}
           <div className="ml-16 mr-6 border my-4" />
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200">
-            <div className="">
+            <div>
               <div className="text-sm font-semibold mb-0.5">Subtotal</div>
             </div>
-            <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${total().toFixed(
-                2
-              )}`}</div>
+            <div>
+              <div className="text-sm font-semibold mb-0.5">{`$${(
+                total() / 1.07
+              ).toFixed(2)}`}</div>
             </div>
           </div>
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300">
-            <div className="">
+            <div>
               <div className="text-xs font-semibold mb-0.5">Tax (7%)</div>
             </div>
-            <div className="">
+            <div>
               <div className="text-xs font-semibold mb-0.5">{`$${(
-                total() * 0.07
+                total() -
+                total() / 1.07
               ).toFixed(2)}`}</div>
             </div>
           </div>
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-8">
-            <div className="">
+            <div>
               <div className="text-sm font-semibold mb-0.5">Total due</div>
             </div>
-            <div className="">
+            <div>
               <div className="text-sm font-semibold mb-0.5">{`$${(
                 total() * 1.07
               ).toFixed(2)}`}</div>
@@ -224,68 +207,52 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { orderId, orders, test, sampleTransactionId } = context.query;
+  const { transaction } = context.query;
 
-  if (typeof sampleTransactionId == "string") {
-    const sampleTransaction = await prisma.sampleTransaction.findUnique({
+  if (typeof transaction == "string") {
+    const skuIds: string[] = JSON.parse(transaction).skuIds.split(", ");
+    console.log(skuIds);
+    // var sku;
+    // const skus: Sku[] = [];
+
+    const skus = await prisma.sku.findMany({
       where: {
-        id: sampleTransactionId,
-      },
-      include: {
-        orders: {
-          include: {
-            sku: {
-              include: {
-                product: true,
-              },
-            },
-            location: true,
-          },
-        },
+        id: { in: skuIds },
       },
     });
+
+    // skuIds.forEach(async (skuId) => {
+    //   sku = await prisma.sku.findUnique({
+    //     where: {
+    //       id: skuId,
+    //     },
+    //   });
+    //   console.log("Got:");
+    //   console.log(sku);
+    //   if (sku !== null) {
+    //     console.log("Here");
+    //     skus.push(sku);
+    //     console.log(skus);
+    //   }
+    // });
+
+    // const allSkus = await prisma.sku.findUnique({
+    //   where: {
+    //     id: transaction,
+    //   },
+    // });
+
+    console.log("ATT THE END");
+    console.log(skus);
+
     return {
       props: {
-        transaction: JSON.parse(JSON.stringify(sampleTransaction)),
+        transaction: JSON.parse(transaction),
+        skus: skus,
       },
     };
   }
 
-  if (typeof orderId == "string") {
-    const order = await prisma.order.findUnique({
-      where: {
-        id: orderId,
-      },
-      include: {
-        company: {
-          select: {
-            customerId: true,
-          },
-        },
-        sku: {
-          include: {
-            product: true,
-          },
-        },
-        location: true,
-        sample: true,
-      },
-    });
-    return {
-      props: {
-        order: JSON.parse(JSON.stringify(order)),
-      },
-    };
-  }
-
-  if (typeof orders == "string") {
-    console.log(orders);
-    return {
-      props: {
-        transaction: JSON.parse(orders),
-      },
-    };
-  }
   return { props: {} };
 };
 
