@@ -9,7 +9,7 @@ const Store: NextPage = () => {
   async function addToTracking() {
     setLoading(true);
     const options = {
-      method: "POST",
+      method: "DELETE",
       headers: {
         Authorization:
           "Bearer YWZTgtFhd9aCRjyYryWVjE7YH2fDGPSTbXba7Z4mn8VELoHSI9C4sMXjE11tEMYV",
@@ -18,7 +18,7 @@ const Store: NextPage = () => {
       body: '{"locationId":"SPS-CSC","skuId":"SB21.5RPPG","action":"BORROW","itemId":"cvAOfWT6kuvHQrL1Z8vSN"}',
     };
 
-    await fetch("http://localhost:3000/api/admin/sku", options);
+    await fetch("http://localhost:3000/api/order", options);
     setLoading(false);
   }
 
@@ -32,13 +32,13 @@ const Store: NextPage = () => {
         </Head>
         <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
           <div className="text-white font-theinhardt text-28">Coming Soon</div>
-          {/* <button
+          <button
             className={`btn btn-accent btn-outline ${loading ? "loading" : ""}`}
             onClick={addToTracking}
           >
             {" "}
             Update Skus
-          </button> */}
+          </button>
         </main>
       </div>
     </Sidebar>

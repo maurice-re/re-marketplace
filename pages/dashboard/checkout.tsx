@@ -1,72 +1,57 @@
+import { Company, Location, Product, Sku, User } from "@prisma/client";
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
 import type { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import CheckoutInfo from "../../components/dashboard/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
-import {
-  OrderCustomerLocation,
-  OrderSkuProduct,
-  separateByLocationId,
-  totalFromOrders,
-  TransactionCustomerOrders,
-} from "../../utils/dashboard/dashboardUtils";
+import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
 type CheckoutProps = {
-  transaction?: TransactionCustomerOrders;
-  order?: OrderCustomerLocation;
+  company: Company | null;
+  locations: Location[];
+  orderString: string;
+  products: Product[];
+  skus: Sku[];
+  user: User | null;
 };
 
 const DashboardCheckout: NextPage<CheckoutProps> = ({
-  order,
-  transaction,
+  company,
+  locations,
+  orderString,
+  products,
+  skus,
+  user,
 }: CheckoutProps) => {
-  console.log(order);
   const [clientSecret, setClientSecret] = useState("");
   const [paymentId, setPaymentId] = useState("");
   const [paymentMethods, setPaymentMethods] = useState<
     PaymentMethod[] | undefined
   >();
-  const total = (): number => {
-    if (transaction) {
-      return totalFromOrders(transaction.orders);
-    }
-    if (order) {
-      return totalFromOrders([order]);
-    }
-    return 0;
-  };
 
-  const customerId = (): string => {
-    if (transaction) {
-      return transaction.company.customerId;
-    }
-    if (order) {
-      return order.company.customerId;
-    }
-    return "";
-  };
-
+  const subtotal = getOrderStringTotal(orderString, skus, products);
+  const total = getOrderStringTotal(orderString, skus, products, 1.07);
   useEffect(() => {
-    const taxTotal = parseFloat((total() * 1.07).toFixed(2));
-    console.log(taxTotal);
     fetch("/api/payment/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        cost: taxTotal,
-        id: customerId(),
+        cost: total,
+        id: company ? company.customerId : "",
       }),
     })
       .then((res) => res.json())
@@ -91,63 +76,58 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
   };
 
   let items: (JSX.Element | JSX.Element[])[] = [];
-  const orders = (): OrderSkuProduct[][] => {
-    if (transaction) {
-      return separateByLocationId(transaction.orders);
-    }
-    if (order) {
-      return separateByLocationId([order]);
-    }
-    return [];
-  };
 
-  orders().forEach((cityArr) => {
-    if (true) {
+  orderString.split("*").forEach((ordersByLocation) => {
+    const locationId = ordersByLocation.split("_")[0];
+    const lineItems = ordersByLocation.split("_").slice(1);
+    const location = locations?.find((loc) => loc.id == locationId);
+
+    if (orderString.split("*").length > 1) {
       items.push(
-        <div key={"name" + cityArr[0].id}>
+        <div key={"name " + locationId}>
           <div>{`${
-            cityArr[0].location.displayName ?? cityArr[0].location.city
+            location ? location.displayName ?? location.city : location
           } orders`}</div>
         </div>
       );
     }
     items.push(
-      cityArr.map((order) => {
+      lineItems.map((lineItem) => {
+        const [skuId, quantity] = lineItem.split("~");
+        console.log(orderString);
+        const sku: Sku = skus.find((s) => s.id == skuId)!;
+        const product: Product = products.find((p) => (p.id = sku.productId))!;
         return (
           <div
             className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
-            key={order.sku.id + cityArr[0].locationId}
+            key={skuId + location ?? locationId}
           >
             <div className="flex columns-2 justify-start items-center">
               <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
                 <Image
-                  src={order.sku.mainImage}
-                  alt={order.sku.product.name}
+                  src={sku.mainImage}
+                  alt={product.name}
                   height={"100%"}
                   width={"100%"}
                 />
               </div>
               <div>
                 <div className="text-sm font-semibold mb-0.5">
-                  {order.sku.size +
-                    " " +
-                    order.sku.materialShort +
-                    " " +
-                    order.sku.product.name}
+                  {sku.size + " " + sku.materialShort + " " + product.name}
                 </div>
-                <div className="text-xs text-gray-300">{`Qty ${order.quantity}`}</div>
+                <div className="text-xs text-gray-300">{`Qty ${quantity}`}</div>
               </div>
             </div>
             <div>
               <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
-                order.sku,
-                order.sku.product,
-                order.sku.id,
-                order.quantity
+                sku,
+                product,
+                sku.id,
+                quantity
               )}`}</div>
               <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
-                order.sku.product.priceTable,
-                order.quantity
+                product.priceTable,
+                quantity
               )} each`}</div>
             </div>
           </div>
@@ -157,11 +137,15 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
     items.push(
       <div
         className="flex columns-2 pl-16 justify-between mr-6 mb-8"
-        key={"tax" + cityArr[0].locationId}
+        key={"tax " + locationId}
       >
         <div className="">
           <div className="text-sm font-semibold mb-0.5">Shipping</div>
-          <div className="text-xs text-gray-300">{`Shenzen to ${cityArr[0].location.city} 7-10 days`}</div>
+          <div className="text-xs text-gray-300">
+            {location
+              ? `Shenzen to ${location.city} 7-10 days`
+              : `Ships from Shenzen 7-14 days`}
+          </div>
         </div>
         <div className="">
           <div className="text-sm font-semibold mb-0.5">Calculated later</div>
@@ -182,9 +166,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
-          <h1 className=" text-4xl font-semibold pb-4">{`$${(
-            total() * 1.07
-          ).toFixed(2)}`}</h1>
+          <h1 className=" text-4xl font-semibold pb-4">{`$${total}`}</h1>
           {items}
           <div className="ml-16 mr-6 border my-4" />
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200">
@@ -192,9 +174,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
               <div className="text-sm font-semibold mb-0.5">Subtotal</div>
             </div>
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${total().toFixed(
-                2
-              )}`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${subtotal}`}</div>
             </div>
           </div>
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300">
@@ -202,9 +182,9 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
               <div className="text-xs font-semibold mb-0.5">Tax (7%)</div>
             </div>
             <div className="">
-              <div className="text-xs font-semibold mb-0.5">{`$${(
-                total() * 0.07
-              ).toFixed(2)}`}</div>
+              <div className="text-xs font-semibold mb-0.5">{`$${
+                total - subtotal
+              }`}</div>
             </div>
           </div>
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-8">
@@ -212,9 +192,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
               <div className="text-sm font-semibold mb-0.5">Total due</div>
             </div>
             <div className="">
-              <div className="text-sm font-semibold mb-0.5">{`$${(
-                total() * 1.07
-              ).toFixed(2)}`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${total}`}</div>
             </div>
           </div>
         </div>
@@ -223,10 +201,14 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
               <CheckoutInfo
-                order={order}
-                transaction={transaction}
+                company={company != null ? company : ({} as Company)}
+                locations={locations}
+                orderString={orderString}
                 paymentMethods={paymentMethods}
                 paymentId={paymentId}
+                products={products}
+                skus={skus}
+                user={user != null ? user : ({} as User)}
               />
             </Elements>
           )}
@@ -237,72 +219,42 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { orderId, orders, test, transactionId } = context.query;
-
-  if (typeof transactionId == "string") {
-    const transaction = await prisma.transaction.findUnique({
+  const { orderString } = context.query;
+  if (typeof orderString == "string") {
+    const session = await unstable_getServerSession(
+      context.req,
+      context.res,
+      authOptions
+    );
+    const user = await prisma.user.findFirst({
       where: {
-        id: transactionId,
+        email: session?.user?.email ?? "",
       },
       include: {
         company: {
-          select: {
-            customerId: true,
-          },
-        },
-        orders: {
           include: {
-            sku: {
-              include: {
-                product: true,
-              },
-            },
-            location: true,
+            locations: true,
           },
         },
       },
     });
+
+    const allSkus = await prisma.sku.findMany();
+    const allProducts = await prisma.product.findMany();
     return {
       props: {
-        transaction: JSON.parse(JSON.stringify(transaction)),
+        company: user
+          ? JSON.parse(JSON.stringify(user.company as Company))
+          : null,
+        user: user ? JSON.parse(JSON.stringify(user as User)) : null,
+        locations: user ? (user.company.locations as Location[]) : [],
+        orderString: orderString,
+        products: allProducts,
+        skus: allSkus,
       },
     };
   }
 
-  if (typeof orderId == "string") {
-    const order = await prisma.order.findUnique({
-      where: {
-        id: orderId,
-      },
-      include: {
-        company: {
-          select: {
-            customerId: true,
-          },
-        },
-        sku: {
-          include: {
-            product: true,
-          },
-        },
-        location: true,
-      },
-    });
-    return {
-      props: {
-        order: JSON.parse(JSON.stringify(order)),
-      },
-    };
-  }
-
-  if (typeof orders == "string") {
-    console.log(orders);
-    return {
-      props: {
-        transaction: JSON.parse(orders),
-      },
-    };
-  }
   return { props: {} };
 };
 

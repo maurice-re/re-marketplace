@@ -1,4 +1,4 @@
-import { Location, Order, Product, Sku, Transaction } from "@prisma/client";
+import { Company, Location, Order, Product, Sku, Transaction, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export type OrderSkuProduct = Order & {
@@ -44,6 +44,14 @@ export type OrderLocationSku = Order & {
   sku: Sku & {
     product: Product;
   };
+}
+
+export type TransactionOrder = Transaction & {
+  orders: Order[]
+}
+
+export type UserCompany = User & {
+  company: Company
 }
 
 
@@ -116,7 +124,10 @@ export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[
     }
 
 
-export function totalFromOrders(orders: OrderLocationSku[]): number {
+export function totalFromOrders(orders: OrderLocationSku[], onlyOrders?: Order[], skus?: Sku[], products? :Product[]): number {
+  if (onlyOrders) {
+    return onlyOrders.reduce((prev, order) => prev + calculatePriceFromCatalog(skus ?? [], products ?? [], order.skuId, order.quantity), 0);
+  }
   return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.sku.product, order.skuId, order.quantity), 0);
 }
 
