@@ -25,7 +25,7 @@ async function handler(req: Request, res: Response) {
         ordersForLocation.forEach(order => {
             const [skuId, quantity] = order.split("~");
             orders.push({
-                amount: calculatePriceFromCatalog(skus, products, skuId, quantity, 1.07),
+                amount: calculatePriceFromCatalog(skus, skuId, quantity, 1.07),
                 companyId: companyId,
                 createdAt: now,
                 locationId: locationId,

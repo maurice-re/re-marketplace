@@ -121,12 +121,11 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
             <div>
               <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
                 sku,
-                product,
                 sku.id,
                 quantity
               )}`}</div>
               <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
-                product.priceTable,
+                sku.priceTable,
                 quantity
               )} each`}</div>
             </div>

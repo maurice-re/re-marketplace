@@ -43,7 +43,7 @@ function SkuQuantityField({
         </div>
         {canCheckout && (
           <div className="text-white text-xs font-theinhardt-300">{`(\$${getPriceFromTable(
-            product.priceTable,
+            sku.priceTable,
             quantity
           )} each)`}</div>
         )}

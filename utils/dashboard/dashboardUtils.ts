@@ -126,9 +126,9 @@ export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[
 
 export function totalFromOrders(orders: OrderLocationSku[], onlyOrders?: Order[], skus?: Sku[], products? :Product[]): number {
   if (onlyOrders) {
-    return onlyOrders.reduce((prev, order) => prev + calculatePriceFromCatalog(skus ?? [], products ?? [], order.skuId, order.quantity), 0);
+    return onlyOrders.reduce((prev, order) => prev + calculatePriceFromCatalog(skus ?? [], order.skuId, order.quantity), 0);
   }
-  return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.sku.product, order.skuId, order.quantity), 0);
+  return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.skuId, order.quantity), 0);
 }
 
 export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {

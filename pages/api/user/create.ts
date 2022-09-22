@@ -72,7 +72,7 @@ async function create(req: Request, res: Response) {
       if(order.location == city) {
         await prisma.order.create({
             data: {
-                amount: calculatePriceFromCatalog(order.sku, order.product, order.sku.id, order.quantity, tax),
+                amount: calculatePriceFromCatalog(order.sku, order.sku.id, order.quantity, tax),
                 companyId: company.id,
                 createdAt: now,
                 locationId: location.id,

@@ -146,7 +146,6 @@ model Product {
   mainImage  String
   materials  String
   name       String
-  priceTable String
   sizes      String
   skus       Sku[]
 }
@@ -172,19 +171,17 @@ model Session {
 model Sku {
   id            String               @id @default(cuid())
   color         String
-  colorPrice    Float
   events        Event[]
   images        Image[]
   mainImage     String
   material      String
-  materialPrice Float
   materialShort String
   orders        Order[]
   product       Product              @relation(fields: [productId], references: [id])
   productId     String
+  priceTable    String               @default("0:10")
   untracked     UntrackedInventory[]
   size          String
-  sizePrice     Float
 }
 
 enum Status {

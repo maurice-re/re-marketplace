@@ -30,13 +30,11 @@ export const getSkusFromProduct = (productCatalog: Product[]): Sku[] => productC
           id: [product.id, size.split(" ")[0],short, color.toUpperCase()].join('-'),
           mainImage: getMainImage(product.id, color),
           color: color,
-          colorPrice: 0,
           material: material,
-          materialPrice: 0,
           materialShort: short,
           productId: product.id,
+          priceTable: "0:10",
           size: size,
-          sizePrice: 0,
         });
       })
     )

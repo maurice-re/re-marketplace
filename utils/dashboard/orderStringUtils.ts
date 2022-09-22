@@ -10,6 +10,6 @@ export function getOrderStringTotal(orderString: string, skus: Sku[], products: 
     const orders = ordersByLocation.reduce((_orders, orderByLoc) => _orders.concat(orderByLoc.split("_").slice(1)), [] as String[]);
     return orders.reduce((total, order) => {
       const [skuId, quantity] = order.split("~");
-      return total + calculatePriceFromCatalog(skus, products, skuId, parseInt(quantity), tax)
+      return total + calculatePriceFromCatalog(skus, skuId, parseInt(quantity), tax)
     }, 0)
   }

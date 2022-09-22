@@ -131,7 +131,7 @@ function QuickOrder({
                 </div>
                 <div className="text-sm font-theinhardt text-center">
                   {`\$${getPriceFromTable(
-                    sku.product.priceTable,
+                    sku.priceTable,
                     getQuantityOfSku(sku.id)
                   )}`}
                 </div>
@@ -153,7 +153,6 @@ function QuickOrder({
                     (prev, [sku, quantity]) =>
                       calculatePriceFromCatalog(
                         sku,
-                        sku.product,
                         sku.id,
                         quantity == "" ? 0 : quantity
                       ) + prev,
