@@ -28,7 +28,7 @@ const stripePromise = loadStripe(
 
 type CheckoutProps = {
   transaction: SampleTransactionOrders;
-  skus: Sku[];
+  skus: SkuProduct[];
 };
 
 const SampleCheckout: NextPage<CheckoutProps> = ({
@@ -98,14 +98,14 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
           <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
             <Image
               src={sku.mainImage}
-              // alt={sku.product.name}
+              alt={sku.product.name}
               height={"100%"}
               width={"100%"}
             />
           </div>
           <div>
             <div className="text-sm font-semibold mb-0.5">
-              {sku.size + " " + sku.materialShort + " "}
+              {sku.size + " " + sku.materialShort + " " + sku.product.name}
               {/* TODO(Suhana): Add sku.product.name and uncomment both */}
             </div>
             <div className="text-xs text-gray-300">{`Qty ${transaction.quantity}`}</div>
@@ -117,21 +117,21 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
             sku.id,
             transaction.quantity
           )}`}</div>
-          {/* <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
-                sku.product.priceTable,
-                transaction.quantity
-              )} each`}</div> */}
+          <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+            sku.priceTable,
+            transaction.quantity
+          )} each`}</div>
         </div>
       </div>
     );
   });
   items.push(
-    <div className="flex columns-2 pl-16 justify-between mr-6 mb-8" key={"tax"}>
+    <div className="flex columns-2 pl-16 justify-between mr-4 mb-8" key={"tax"}>
       <div>
         <div className="text-sm font-semibold mb-0.5">Shipping</div>
-        <div className="text-xs text-gray-300">{`Shenzen to your location 7-10 days`}</div>
+        <div className="text-xs text-gray-300">{`Shenzen to you 7-10 days`}</div>
       </div>
-      <div>
+      <div className="text-right ">
         <div className="text-sm font-semibold mb-0.5">Calculated later</div>
       </div>
     </div>
@@ -154,8 +154,8 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
           )}`}</h1>
           <h2 className="text-md">Sample orders</h2>
           {items}
-          <div className="ml-16 mr-6 border my-4" />
-          <div className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200">
+          <div className="ml-16 mr-4 border my-4" />
+          <div className="flex columns-2 pl-16 justify-between mr-4 mb-0.5 text-gray-200">
             <div>
               <div className="text-sm font-semibold mb-0.5">Subtotal</div>
             </div>
@@ -165,7 +165,7 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
               ).toFixed(2)}`}</div>
             </div>
           </div>
-          <div className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300">
+          <div className="flex columns-2 pl-16 justify-between mr-4 mb-4 text-gray-300">
             <div>
               <div className="text-xs font-semibold mb-0.5">Tax (7%)</div>
             </div>
@@ -176,14 +176,14 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
               ).toFixed(2)}`}</div>
             </div>
           </div>
-          <div className="flex columns-2 pl-16 justify-between mr-6 mb-8">
+          <div className="flex columns-2 pl-16 justify-between mr-4 mb-8">
             <div>
               <div className="text-sm font-semibold mb-0.5">Total due</div>
             </div>
             <div>
-              <div className="text-sm font-semibold mb-0.5">{`$${(
-                total() * 1.07
-              ).toFixed(2)}`}</div>
+              <div className="text-sm font-semibold mb-0.5">{`$${total().toFixed(
+                2
+              )}`}</div>
             </div>
           </div>
         </div>
@@ -218,6 +218,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const skus = await prisma.sku.findMany({
       where: {
         id: { in: skuIds },
+      },
+      include: {
+        product: true,
       },
     });
 
