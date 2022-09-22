@@ -1,4 +1,4 @@
-import { Company, Location, Product, Sku, User } from "@prisma/client";
+import { Company, Location, Product, Sku, Type, User } from "@prisma/client";
 import {
   PaymentElement,
   useElements,
@@ -121,7 +121,7 @@ export default function CheckoutInfo({
         trackingLocation: "",
         shippingName: formElements[0].value,
         state: formElements[6].value,
-        type: "SHIPPING",
+        type: Type.SHIPPING,
         zip: formElements[5].value,
       };
       newLocationId = await addOrRemoveLocation("add", newLocation, undefined);
