@@ -84,7 +84,7 @@ enum Action {
   RETURN
 }
 
-enum Type {
+enum LocationType {
   SHIPPING
   SAMPLE
   TRACKING
@@ -113,7 +113,7 @@ model Location {
   state              String?
   sampleTransactions SampleTransaction[]
   trackingLocation   String?
-  type               Type                @default(SHIPPING)
+  type               LocationType                @default(SHIPPING)
   zip                String?
 }
 

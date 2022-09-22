@@ -12,55 +12,118 @@ import Link from "next/link";
 
 function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
+  const [skuIds, setSkuIds] = useState<string[]>([]);
+  const [amount, setAmount] = useState<number>(0);
 
-  // TODO(Suhana): Only allows one sample to be ordered at a time right now - may have to change
+  const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
+    []
+  );
+
+  // TODO(Suhana): Remove redundancies between this and quickOrder
+
+  // TODO(Suhana): quantity field in SampleTransaction is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
 
   function handleItemPress(skuSelected: SkuProduct) {
-    if (selected) {
-      setSelected([]);
+    const isSelected = selected.find((s) => s.id == skuSelected.id);
+    if (isSelected) {
+      setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
+      console.log("1");
+      console.log(
+        calculatePriceFromCatalog(
+          skuSelected,
+          skuSelected.product,
+          skuSelected.id,
+          1
+        )
+      );
+      setAmount(
+        amount +
+          calculatePriceFromCatalog(
+            skuSelected,
+            skuSelected.product,
+            skuSelected.id,
+            1
+          )
+      );
+      setSkuIdQuantity((prev) => prev.filter((s) => s[0].id != skuSelected.id));
+    } else {
+      setSelected((prev) => [...prev, skuSelected]);
+      console.log("2");
+      console.log(
+        calculatePriceFromCatalog(
+          skuSelected,
+          skuSelected.product,
+          skuSelected.id,
+          1
+        )
+      );
+      setAmount(
+        amount +
+          calculatePriceFromCatalog(
+            skuSelected,
+            skuSelected.product,
+            skuSelected.id,
+            1
+          )
+      );
+      setSkuIdQuantity((prev) => [...prev, [skuSelected, "0"]]);
     }
-    setSelected([skuSelected]);
   }
 
   function handleBuyNow(): string {
+    // Pass the new SampleTransaction
+
     const now = new Date();
 
-    const orders = selected.map((sku) => {
-      return {
-        id: "",
-        amount: calculatePriceFromCatalog(sku, sku.product, sku.id, 1),
-        comments: null,
-        company: {
-          customerId: "",
-        },
-        companyId: "",
-        createdAt: now,
-        location: "",
-        locationId: "",
-        quantity: 1,
-        qrCode: false,
-        shippedAt: now,
-        receivedAt: now,
-        status: Status.PROCESSING,
-        skuId: sku.id,
-        sku: sku,
-        sampleTransactionId: "",
-        userId: "",
-        sample: true,
-      };
-    });
+    // {
+    //   id: "",
+    //   amount: calculatePriceFromCatalog(sku, sku.product, sku.id, 1),
+    //   comments: null,
+    //   company: {
+    //     customerId: "",
+    //   },
+    //   companyId: "",
+    //   createdAt: now,
+    //   location: "",
+    //   locationId: "",
+    //   quantity: 1,
+    //   qrCode: false,
+    //   shippedAt: now,
+    //   receivedAt: now,
+    //   status: Status.PROCESSING,
+    //   skuId: sku.id,
+    //   sku: sku,
+    //   sampleTransactionId: "",
+    //   userId: "",
+    //   sample: true,
+    // };
 
-    console.log("ORDERS HERE");
-    console.log(orders);
+    const skuIds = selected
+      .map((sku) => {
+        return sku.id;
+      })
+      .join(", ");
 
-    // TODO(Suhana): Stop using SampleTransactionOrders if redundant
+    console.log("SKUIDS HERE");
+    console.log(skuIds);
+
+    console.log("AMOUNT W/OUT TAX");
+    console.log(amount);
+
     const transaction: SampleTransactionOrders = {
       id: "",
-      amount: totalFromOrders(orders),
+      amount,
       createdAt: now,
-      orders: orders,
+      quantity: 1,
+      locationId: "",
+      companyId: "",
+      skuIds,
       status: Status.PROCESSING,
     };
+
+    console.log("FULLY FORMED TRANSACTION");
+    console.log(transaction);
+
     return JSON.stringify(transaction);
   }
 
@@ -121,24 +184,27 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
                     {sku.size + " | " + sku.materialShort}
                   </div>
                 </div>
-                <div className="w-1/2 h-full">
-                  <Link
+              </div>
+            ))}
+            <div className="flex justify-between mb-2">
+              <div>Total:</div>
+              <div>{`\ $${amount.toFixed(2)}`}</div>
+            </div>
+            <div className="h-px mb-3 bg-white bg-opacity-70" />
+            {/* <Link
                     href={{
                       pathname: "/sample/checkout",
                       query: { orders: handleBuyNow() },
                     }}
                     as={`/sample/checkout/${new Date().getTime()}`}
-                  >
-                    <button
-                      className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
-                      onClick={handleBuyNow}
-                    >
-                      Buy now
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            ))}
+                  > */}
+            <button
+              className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
+              onClick={handleBuyNow}
+            >
+              Buy now
+            </button>
+            {/* </Link> */}
           </div>
         )}
       </div>

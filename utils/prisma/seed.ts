@@ -1,4 +1,4 @@
-import { PrismaClient, Role, SubscriptionType, Type } from '@prisma/client';
+import { PrismaClient, Role, SubscriptionType, LocationType } from '@prisma/client';
 import allProducts from "./products.json";
 import { getSkusFromProduct } from './seedUtils';
 
@@ -61,7 +61,7 @@ getSkusFromProduct(allProducts).map(async (sku) => await prisma.sku.upsert({
     state: "New York",
     userId: phil.id.toString(),
     zip: "10036",
-    type: Type.SHIPPING
+    type: LocationType.SHIPPING
   }
   const Headquarters = await prisma.location.upsert({
     where: {id: "219"}, update: testLocation1, create: testLocation1
@@ -78,7 +78,7 @@ getSkusFromProduct(allProducts).map(async (sku) => await prisma.sku.upsert({
     state: "Virginia",
     userId: phil.id,
     zip: "22134",
-    type: Type.SHIPPING
+    type: LocationType.SHIPPING
   }
   const playground = await prisma.location.upsert({
     where: {id: "3250"}, update: testLocation2, create: testLocation2
