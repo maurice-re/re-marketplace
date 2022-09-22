@@ -31,7 +31,6 @@ export function calculateAmount(cart: CartOrder[], tax: number): number {
       total +
       calculatePriceFromCatalog(
         cartOrder.sku,
-        cartOrder.product,
         cartOrder.sku.id,
         cartOrder.quantity,
         tax

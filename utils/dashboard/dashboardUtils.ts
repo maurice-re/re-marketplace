@@ -1,4 +1,4 @@
-import { Location, Order, Product, Sku, Transaction } from "@prisma/client";
+import { Company, Location, Order, Product, Sku, Transaction, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export type OrderSkuProduct = Order & {
@@ -7,7 +7,7 @@ export type OrderSkuProduct = Order & {
   };
   location: {
     displayName: string | null;
-    city: string;
+    city: string | null;
 };
 };
 
@@ -46,6 +46,14 @@ export type OrderLocationSku = Order & {
   };
 }
 
+export type TransactionOrder = Transaction & {
+  orders: Order[]
+}
+
+export type UserCompany = User & {
+  company: Company
+}
+
 
 export function getUniqueSkus(orders: OrderSkuProduct[]): SkuProduct[] {
   let ids: string[] = [];
@@ -77,7 +85,7 @@ export function getLocationNames(orders: OrderSkuProduct[]): string[] {
         return prev;
         } else {
         ids.push(curr.locationId);
-        return [...prev, curr.location.displayName ?? curr.location.city];
+        return [...prev, curr.location.displayName ?? curr.location.city!];
         }
     }, [] as string[]);
 }
@@ -116,8 +124,11 @@ export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[
     }
 
 
-export function totalFromOrders(orders: OrderLocationSku[]): number {
-  return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.sku.product, order.skuId, order.quantity), 0);
+export function totalFromOrders(orders: OrderLocationSku[], onlyOrders?: Order[], skus?: Sku[], products? :Product[]): number {
+  if (onlyOrders) {
+    return onlyOrders.reduce((prev, order) => prev + calculatePriceFromCatalog(skus ?? [], order.skuId, order.quantity), 0);
+  }
+  return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.skuId, order.quantity), 0);
 }
 
 export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {

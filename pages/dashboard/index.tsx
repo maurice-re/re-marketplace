@@ -200,10 +200,11 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                   </div>
                 </div>
                 <QuickOrder
-                  userId={user.id}
+                  companyId={user.companyId}
                   customerId={user.company.customerId}
                   locations={locations}
                   skus={skus}
+                  userId={user.id}
                 />
               </div>
               <div className="flex flex-col my-4 ml-4 mr-1 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl h-5/6 self-center">
@@ -248,10 +249,11 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
             <div className="flex mt-4">
               <div className="flex flex-col w-3/5 justify-between pb-4">
                 <QuickOrder
-                  userId={user.id}
+                  companyId={user.companyId}
                   customerId={user.company.customerId}
                   locations={locations}
                   skus={skus}
+                  userId={user.id}
                 />
               </div>
               <div className="flex flex-col my-4 ml-4 mr-1 px-4 py-4 w-2/5 bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl">

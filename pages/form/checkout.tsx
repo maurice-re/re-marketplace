@@ -94,7 +94,7 @@ const Checkout: NextPage = () => {
                 order.quantity
               )}`}</div>
               <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
-                order.product.priceTable,
+                order.sku.priceTable,
                 order.quantity
               )} each`}</div>
             </div>
