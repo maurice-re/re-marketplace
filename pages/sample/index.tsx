@@ -4,8 +4,6 @@ import ReLogo from "../../components/form/re-logo";
 import SampleOrder from "../../components/sample/sampleOrder";
 import prisma from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
-import { authOptions } from "../api/auth/[...nextauth]";
-import { unstable_getServerSession } from "next-auth";
 
 type HomeProps = {
   skus: SkuProduct[];
@@ -41,7 +39,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       skus: JSON.parse(JSON.stringify(skus)),
     },
   };
-  return { props: {} };
 };
 
 export default Home;

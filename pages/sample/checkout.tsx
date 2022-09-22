@@ -6,13 +6,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
-import {
-  OrderCustomerLocation,
-  OrderSkuProduct,
-  separateByLocationId,
-  totalFromOrders,
-  SkuProduct,
-} from "../../utils/dashboard/dashboardUtils";
+import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
 import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
 
 import {
@@ -20,7 +14,6 @@ import {
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
 import CheckoutForm from "../../components/sample/checkoutForm";
-import { Sku } from "@prisma/client";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -35,14 +28,11 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
   transaction,
   skus,
 }: CheckoutProps) => {
-  console.log("IN CHECKOUT");
-  console.log(transaction);
-  console.log(skus);
   const [clientSecret, setClientSecret] = useState("");
-  const [paymentId, setPaymentId] = useState("");
-  const [paymentMethods, setPaymentMethods] = useState<
-    PaymentMethod[] | undefined
-  >();
+  // const [paymentId, setPaymentId] = useState("");
+  // const [paymentMethods, setPaymentMethods] = useState<
+  //   PaymentMethod[] | undefined
+  // >();
   const total = (): number => {
     if (transaction) {
       return transaction.amount;
@@ -62,8 +52,8 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
       .then((res) => res.json())
       .then((data) => {
         setClientSecret(data.clientSecret);
-        setPaymentId(data.paymentId);
-        setPaymentMethods(data.paymentMethods);
+        // setPaymentId(data.paymentId);
+        // setPaymentMethods(data.paymentMethods);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -81,12 +71,6 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
   };
 
   let items: (JSX.Element | JSX.Element[])[] = [];
-  // const orders = (): OrderSkuProduct[][] => {
-  //   if (transaction) {
-  //     return separateByLocationId(transaction.orders);
-  //   }
-  //   return [];
-  // };
 
   skus.forEach((sku) => {
     items.push(
@@ -106,7 +90,6 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
           <div>
             <div className="text-sm font-semibold mb-0.5">
               {sku.size + " " + sku.materialShort + " " + sku.product.name}
-              {/* TODO(Suhana): Add sku.product.name and uncomment both */}
             </div>
             <div className="text-xs text-gray-300">{`Qty ${transaction.quantity}`}</div>
           </div>
@@ -191,12 +174,6 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
           {clientSecret && (
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
-              {/* <CheckoutInfo
-                order={order}
-                transaction={transaction}
-                paymentMethods={paymentMethods}
-                paymentId={paymentId}
-              /> */}
               <CheckoutForm transaction={transaction} />
             </Elements>
           )}
@@ -211,9 +188,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (typeof transaction == "string") {
     const skuIds: string[] = JSON.parse(transaction).skuIds.split(", ");
-    console.log(skuIds);
-    // var sku;
-    // const skus: Sku[] = [];
 
     const skus = await prisma.sku.findMany({
       where: {
@@ -223,30 +197,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         product: true,
       },
     });
-
-    // skuIds.forEach(async (skuId) => {
-    //   sku = await prisma.sku.findUnique({
-    //     where: {
-    //       id: skuId,
-    //     },
-    //   });
-    //   console.log("Got:");
-    //   console.log(sku);
-    //   if (sku !== null) {
-    //     console.log("Here");
-    //     skus.push(sku);
-    //     console.log(skus);
-    //   }
-    // });
-
-    // const allSkus = await prisma.sku.findUnique({
-    //   where: {
-    //     id: transaction,
-    //   },
-    // });
-
-    console.log("ATT THE END");
-    console.log(skus);
 
     return {
       props: {

@@ -1,84 +1,40 @@
 import { Status } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
-import {
-  skuName,
-  SkuProduct,
-  totalFromOrders,
-} from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample
+import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample
 import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
 import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
 import Link from "next/link";
 
 function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
-  const [skuIds, setSkuIds] = useState<string[]>([]);
   const [amount, setAmount] = useState<number>(0);
-
-  const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
-    []
-  );
 
   function calculateAmount(sku: SkuProduct): number {
     return calculatePriceFromCatalog(sku, sku.id, 1, 1.07);
   }
 
-  // TODO(Suhana): Remove redundancies between this and quickOrder
-
-  // TODO(Suhana): quantity field in SampleTransaction is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
+  // TODO(Suhana): Quantity field in SampleTransaction is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
 
   function handleItemPress(skuSelected: SkuProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
     if (isSelected) {
       setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
       setAmount(amount - calculateAmount(skuSelected));
-      setSkuIdQuantity((prev) => prev.filter((s) => s[0].id != skuSelected.id));
     } else {
       setSelected((prev) => [...prev, skuSelected]);
       setAmount(amount + calculateAmount(skuSelected));
-      setSkuIdQuantity((prev) => [...prev, [skuSelected, "0"]]);
     }
   }
 
   function handleBuyNow(): string {
-    // Pass the new SampleTransaction
-
     const now = new Date();
-
-    // {
-    //   id: "",
-    //   amount: calculatePriceFromCatalog(sku, sku.product, sku.id, 1),
-    //   comments: null,
-    //   company: {
-    //     customerId: "",
-    //   },
-    //   companyId: "",
-    //   createdAt: now,
-    //   location: "",
-    //   locationId: "",
-    //   quantity: 1,
-    //   qrCode: false,
-    //   shippedAt: now,
-    //   receivedAt: now,
-    //   status: Status.PROCESSING,
-    //   skuId: sku.id,
-    //   sku: sku,
-    //   sampleTransactionId: "",
-    //   userId: "",
-    //   sample: true,
-    // };
 
     const skuIds = selected
       .map((sku) => {
         return sku.id;
       })
       .join(", ");
-
-    console.log("SKUIDS HERE");
-    console.log(skuIds);
-
-    console.log("AMOUNT W/OUT TAX");
-    console.log(amount);
 
     const transaction: SampleTransactionOrders = {
       id: "",
@@ -90,9 +46,6 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
       skuIds,
       status: Status.PROCESSING,
     };
-
-    console.log("FULLY FORMED TRANSACTION");
-    console.log(transaction);
 
     return JSON.stringify(transaction);
   }

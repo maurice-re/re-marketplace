@@ -4,8 +4,6 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import React, { FormEvent, useState } from "react";
-import { useFormState } from "../../context/form-context";
-import { OrderCustomerLocation } from "../../utils/dashboard/dashboardUtils";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
 import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
 import AddressField from "../form/address-field";
@@ -64,8 +62,6 @@ export default function CheckoutForm({
       shippingInfo.push(formElements[i].value);
     }
 
-    console.log("Saving transaction to local storage");
-    console.log(transaction);
     saveToLocalStorage(
       [transaction, shippingInfo],
       ["transaction", "shipping"]
@@ -89,37 +85,6 @@ export default function CheckoutForm({
       }
       setIsLoading(false);
     }
-    // else if (stripe) {
-    //   console.log("yeppp");
-    //   await fetch("/api/payment/confirm", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({
-    //       paymentId: "paymentId",
-    //       paymentMethod: "paymentMethod",
-    //     }),
-    //   })
-    //     .then((res) => res.json())
-    //     .then(async (data) => {
-    //       if (data.status == "succeeded") {
-    //         if (transaction && shippingInfo) {
-    //           await fetch("/api/sample/create", {
-    //             method: "POST",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify({
-    //               transaction: transaction,
-    //               form: shippingInfo,
-    //             }),
-    //           });
-    //         }
-    //         // router.replace("/dashboard");
-    //       }
-    //     })
-    //     .catch((error) => setMessage(error));
-    //   setIsLoading(false);
-    // }
-
-    console.log("successful submission");
   };
 
   const addresses = (
