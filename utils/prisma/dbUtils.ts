@@ -2,7 +2,6 @@ import { Sku } from "@prisma/client";
 
 export function getPriceFromTable(_priceTable: string, _quantity: number | string): number {
   const quantity: number = typeof _quantity == "string" ? parseInt(_quantity) : _quantity
-  if (_priceTable && quantity) {  
     const priceTable = _priceTable.split(", ");
       const [moq, price] = priceTable[0].split(":");
       if (quantity >= parseInt(moq)){
@@ -10,9 +9,6 @@ export function getPriceFromTable(_priceTable: string, _quantity: number | strin
       } else {
           return getPriceFromTable(priceTable.splice(1).join(", "), quantity)
       }
-  } else {
-    return 0;
-  }
 }
 
 export function calculatePriceFromCatalog(skus: Sku | Sku[], id: string, _quantity: number | string, tax?: number): number {
