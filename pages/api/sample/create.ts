@@ -1,4 +1,4 @@
-import { LocationType } from "@prisma/client";
+import { LocationType, Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { SampleTransactionOrders } from "../../../utils/sample/sampleUtils";
@@ -6,10 +6,12 @@ import { SampleTransactionOrders } from "../../../utils/sample/sampleUtils";
 async function create(req: Request, res: Response) {
   const {
     transaction,
-    form
+    form,
+    customerId
     } : {
       transaction: SampleTransactionOrders,
-      form: string[]
+      form: string[],
+      customerId: string
     } = req.body;
   
   if (!transaction || !form) {
@@ -23,7 +25,18 @@ async function create(req: Request, res: Response) {
     data: {
       createdAt: now,
       name: form[3],
-      customerId: "sample"
+      customerId: customerId
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      companyId: company.id,
+      createdAt: now,
+      email: form[2],
+      firstName: form[0],
+      lastName: form[1],
+      role: Role.USER
     },
   });
 

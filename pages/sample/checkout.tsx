@@ -14,6 +14,7 @@ import {
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
 import CheckoutForm from "../../components/sample/checkoutForm";
+import { saveToLocalStorage } from "../../utils/form/localStorage";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -46,14 +47,13 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cost: total(),
-        id: "cus_M9eeBtGCJfNxeZ",
+        id: "",
       }),
     })
       .then((res) => res.json())
       .then((data) => {
         setClientSecret(data.clientSecret);
-        // setPaymentId(data.paymentId);
-        // setPaymentMethods(data.paymentMethods);
+        saveToLocalStorage([data.customerId], ["customerId"]);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

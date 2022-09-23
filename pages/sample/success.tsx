@@ -9,16 +9,21 @@ const Summary: NextPage = () => {
     // Retrieve from local storage
     const transaction: string | null = localStorage.getItem("transaction");
     const shippingInfo: string | null = localStorage.getItem("shipping");
+    const customerId: string | null = localStorage.getItem("customerId");
     // Send to Firebase
     if (transaction != null && shippingInfo != null) {
       const jTransaction: SampleTransactionOrders = JSON.parse(transaction);
       const jForm: string[] = JSON.parse(shippingInfo);
-      create(jTransaction, jForm);
+      create(jTransaction, jForm, customerId);
       localStorage.clear();
     }
   }, []);
 
-  async function create(transaction: SampleTransactionOrders, form: string[]) {
+  async function create(
+    transaction: SampleTransactionOrders,
+    form: string[],
+    customerId: string | null
+  ) {
     if (transaction && form) {
       await fetch("/api/sample/create", {
         method: "POST",
@@ -26,6 +31,7 @@ const Summary: NextPage = () => {
         body: JSON.stringify({
           transaction: transaction,
           form: form,
+          customerId: customerId,
         }),
       })
         .then((res) => {
