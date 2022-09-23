@@ -1,4 +1,4 @@
-import { Role, Type } from "@prisma/client";
+import { Role, LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../context/form-context";
@@ -65,7 +65,7 @@ async function create(req: Request, res: Response) {
         shippingName: shippingInfo[0 + 7 * formIndex],
         state: shippingInfo[6 + 7 * formIndex],
         zip: shippingInfo[5 + 7 * formIndex],
-        type: Type.SHIPPING,
+        type: LocationType.SHIPPING,
       },
     });
     cart.forEach( async (order) => {
