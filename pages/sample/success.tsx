@@ -54,13 +54,12 @@ const Summary: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col container mx-auto items-center py-4 text-white">
+      <main className="flex flex-col container mx-auto items-center py-4 text-white my-auto">
         <Confetti width={1800} height={1200} />
         <h1 className="text-5xl font-theinhardt text-white text-center">
           Congrats on your purchase!
         </h1>
-        {/* <div className=" mt-16 border-2 rounded-xl px-8 pt-8">{items}</div> */}
-        <div className="border-2 border-white px-8 py-4 mt-4 text-center rounded-md">
+        <div className="border-2 border-white px-8 py-4 mt-10 text-center rounded-md">
           <div>Your sample order is on the way</div>
         </div>
       </main>
