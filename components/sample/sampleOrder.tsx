@@ -3,7 +3,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample
 import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
-import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
+import {
+  calculatePriceFromCatalog,
+  getPriceFromTable,
+} from "../../utils/prisma/dbUtils";
 import Link from "next/link";
 
 function SampleOrder({ skus }: { skus: SkuProduct[] }) {
@@ -51,17 +54,15 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   }
 
   return (
-    <div className="flex flex-col mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
-      <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
-        Quick Order
+    <div className="flex flex-col w-full mx-1 p-6 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
+      <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2">
+        Products
       </h1>
-      <div className=" h-px bg-white mb-4 w-full" />
+      <div className="h-px bg-white mb-6 w-full" />
       <div className="flex justify-between w-full gap-4">
         <div
-          className={`grid gap-4 h-96 overflow-y-scroll w-full pr-1 items-start ${
-            selected.length == 0
-              ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
-              : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
+          className={`flex flex-wrap h-full w-full pr-1 items-start space-x-8 ${
+            selected.length == 0 ? "w-full" : "w-5/6"
           }`}
         >
           {skus.map((sku) => (
@@ -95,7 +96,7 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
           ))}
         </div>
         {selected.length > 0 && (
-          <div className="flex flex-col justify-start">
+          <div className="flex flex-col justify-start w-1/6 border-l-2 pl-6">
             {selected.map((sku) => (
               <div
                 className="flex justify-between items-center mb-4"
@@ -107,13 +108,16 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
                     {sku.size + " | " + sku.materialShort}
                   </div>
                 </div>
+                <div className="text-sm font-theinhardt text-center">
+                  {`\$${getPriceFromTable(sku.priceTable, 1)}`}
+                </div>
               </div>
             ))}
             <div className="flex justify-between mb-2">
               <div>Total:</div>
-              <div>{`\$${amount.toFixed(2)}`}</div>
+              <div>{`\$${(amount / 1.07).toFixed(2)}`}</div>
             </div>
-            <div className="h-px mb-3 bg-white bg-opacity-70" />
+            <div className="h-px mb-4 bg-white bg-opacity-70" />
             <Link
               href={{
                 pathname: "/sample/checkout",

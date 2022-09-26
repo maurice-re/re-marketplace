@@ -95,7 +95,7 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
           </div>
         </div>
         <div>
-          <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
+          <div className="text-sm font-semibold mb-0.5 text-right">{`$${calculatePriceFromCatalog(
             sku,
             sku.id,
             transaction.quantity
