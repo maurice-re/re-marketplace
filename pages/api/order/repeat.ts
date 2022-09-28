@@ -20,7 +20,7 @@ async function repeat(req: Request, res: Response) {
 
   const transaction = await prisma.transaction.create({
     data: {
-      amount: calculatePriceFromCatalog(order.sku, order.sku.product, order.sku.id, order.quantity, 1.07),
+      amount: calculatePriceFromCatalog(order.sku, order.sku.id, order.quantity, 1.07),
       companyId: order.companyId,
       createdAt: now,
       userId: order.userId,

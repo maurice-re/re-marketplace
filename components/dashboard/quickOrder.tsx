@@ -1,22 +1,22 @@
-import { Location, Status } from "@prisma/client";
+import { Location } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
 import {
-  skuName,
-  SkuProduct,
-  totalFromOrders,
-  TransactionCustomerOrders,
-} from "../../utils/dashboard/dashboardUtils";
-import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
+  calculatePriceFromCatalog,
+  getPriceFromTable,
+} from "../../utils/prisma/dbUtils";
 
 function QuickOrder({
+  companyId,
   customerId,
   locations,
   userId,
   skus,
 }: {
+  companyId: string;
   customerId: string;
   locations: Location[];
   userId: string;
@@ -26,7 +26,10 @@ function QuickOrder({
   const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
     []
   );
-  const [location, setLocation] = useState<string>(locations[0].id);
+  console.log(skuIdQuantity);
+  const [location, setLocation] = useState<string>(
+    locations.length > 1 ? locations[0].id : "new"
+  );
   const router = useRouter();
 
   function handleItemPress(skuSelected: SkuProduct) {
@@ -40,6 +43,14 @@ function QuickOrder({
     }
   }
 
+  function getQuantityOfSku(skuId: string): string {
+    const tuple = skuIdQuantity.find((tup) => tup[0].id == skuId);
+    if (tuple) {
+      return tuple[1] == "0" || tuple[1] == "" ? "1" : tuple[1];
+    }
+    return "1";
+  }
+
   function handleQuantityChange(val: string, skuSelected: SkuProduct) {
     setSkuIdQuantity((prev) => {
       return prev.map((tup) => {
@@ -51,51 +62,12 @@ function QuickOrder({
     });
   }
 
-  function handleBuyNow(): string {
-    const now = new Date();
-    const selectedLocation = locations.find((loc) => loc.id == location);
-
-    if (selectedLocation) {
-      const orders = skuIdQuantity.map(([sku, quantity]) => {
-        return {
-          id: "",
-          amount: calculatePriceFromCatalog(sku, sku.product, sku.id, quantity),
-          comments: null,
-          company: {
-            customerId: customerId,
-          },
-          companyId: selectedLocation.companyId,
-          createdAt: now,
-          location: selectedLocation,
-          locationId: selectedLocation.id,
-          quantity: parseInt(quantity),
-          qrCode: false,
-          shippedAt: now,
-          receivedAt: now,
-          status: Status.PROCESSING,
-          skuId: sku.id,
-          sku: sku,
-          transactionId: "",
-          userId: userId,
-        };
-      });
-
-      const transaction: TransactionCustomerOrders = {
-        id: "",
-        amount: totalFromOrders(orders),
-        company: {
-          customerId: customerId,
-        },
-        companyId: selectedLocation.companyId,
-        createdAt: now,
-        orders: orders,
-        status: Status.PROCESSING,
-        userId: userId,
-      };
-      return JSON.stringify(transaction);
-    }
-
-    return "";
+  function createOrderString(): string {
+    let orderString = location == "New Location" ? "new" : location;
+    return skuIdQuantity.reduce((orders, tuple) => {
+      const [sku, quantity] = tuple;
+      return orders + "_" + [sku.id, quantity].join("~");
+    }, orderString);
   }
 
   return (
@@ -103,47 +75,49 @@ function QuickOrder({
       <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
         Quick Order
       </h1>
-      <div className=" h-px bg-white mb-4 w-full" />
+      <div className="h-px bg-white mb-4 w-full" />
       <div className="flex justify-between w-full gap-4">
         <div
-          className={`grid gap-4 h-96 overflow-y-scroll w-full pr-1 items-start ${
+          className={`grid gap-4 h-96 overflow-y-auto w-full pr-1 items-start ${
             selected.length == 0
               ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
               : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
           }`}
         >
-          {skus.map((sku) => (
-            <div
-              key={sku.id}
-              className="flex flex-col items-center mx-1 mb-2 group"
-            >
-              <button
-                className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
-                  selected.includes(sku)
-                    ? "border-re-green-600 border-3"
-                    : "border"
-                }`}
-                onClick={() => handleItemPress(sku)}
+          {skus
+            .filter((s) => s.product.active)
+            .map((sku) => (
+              <div
+                key={sku.id}
+                className="flex flex-col items-center mx-1 mb-2 group"
               >
-                <Image
-                  src={sku.mainImage}
-                  height={96}
-                  width={96}
-                  alt={skuName(sku)}
-                />
-              </button>
-              <div className="flex text-xs text-center mt-1">
-                <div>{sku.size}</div>
-                <div className="w-1" />
-                <div>|</div>
-                <div className="w-1" />
-                <div>{sku.materialShort}</div>
+                <button
+                  className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
+                    selected.includes(sku)
+                      ? "border-re-green-600 border-3"
+                      : "border"
+                  }`}
+                  onClick={() => handleItemPress(sku)}
+                >
+                  <Image
+                    src={sku.mainImage}
+                    height={96}
+                    width={96}
+                    alt={skuName(sku)}
+                  />
+                </button>
+                <div className="flex text-xs text-center mt-1">
+                  <div>{sku.size}</div>
+                  <div className="w-1" />
+                  <div>|</div>
+                  <div className="w-1" />
+                  <div>{sku.materialShort}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
         {selected.length > 0 && (
-          <div className="flex flex-col justify-start">
+          <div className="flex flex-col justify-start min-w-[11rem]">
             {selected.map((sku) => (
               <div
                 className="flex justify-between items-center mb-4"
@@ -156,11 +130,9 @@ function QuickOrder({
                   </div>
                 </div>
                 <div className="text-sm font-theinhardt text-center">
-                  {`\$${calculatePriceFromCatalog(
-                    sku,
-                    sku.product,
-                    sku.id,
-                    1
+                  {`\$${getPriceFromTable(
+                    sku.priceTable,
+                    getQuantityOfSku(sku.id)
                   )}`}
                 </div>
                 <input
@@ -168,7 +140,7 @@ function QuickOrder({
                     skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
                   }
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
-                  className="bg-re-gray-500 rounded-lg py-0.5 bg-opacity-70 px-2 w-11 text-xs text-center flex"
+                  className="bg-re-gray-500 rounded-lg py-0.5 bg-opacity-70 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
                 />
               </div>
             ))}
@@ -181,7 +153,6 @@ function QuickOrder({
                     (prev, [sku, quantity]) =>
                       calculatePriceFromCatalog(
                         sku,
-                        sku.product,
                         sku.id,
                         quantity == "" ? 0 : quantity
                       ) + prev,
@@ -202,19 +173,22 @@ function QuickOrder({
                     {loc.displayName ?? loc.city}
                   </option>
                 ))}
+                <option key="new" value={"new"}>
+                  New Location
+                </option>
               </select>
             </div>
             <Link
               href={{
                 pathname: "/dashboard/checkout",
-                query: { orders: handleBuyNow() },
+                query: {
+                  orderString: createOrderString(),
+                  companyId: companyId,
+                },
               }}
               as={`/dashboard/checkout/${new Date().getTime()}`}
             >
-              <button
-                className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
-                onClick={handleBuyNow}
-              >
+              <button className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black">
                 Buy now
               </button>
             </Link>

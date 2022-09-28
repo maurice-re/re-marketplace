@@ -4,6 +4,12 @@ import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/api/logging";
 
 async function createEvent(req: Request, res: Response) {
+
+  //Check method
+  if (req.method != "POST") {
+    await logApi(`${req.method} event`, false, "HTTP Operation not supported")
+    res.status(401).send("Bad Request")
+  } 
     // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Bearer")) {
@@ -59,27 +65,26 @@ async function createEvent(req: Request, res: Response) {
   const skus = await prisma.sku.findMany();
 
   // TODO: HANDLE RE MADE QR CODES
-  const sku: Sku | undefined = authorization.startsWith("Apikey re_")
+  const sku: Sku | undefined = authorization.startsWith("Bearer re_")
     ?  skus.find(sku => sku.id == "TODO")
     :  skus.find(sku => sku.id == skuId);
 
+  if (company !== undefined && sku !== undefined) {
+    await prisma.event.create({
+      data: {
+        action: action,
+        companyId: company.id,
+        consumerId: consumerId,
+        itemId: itemId,
+        skuId: sku?.id,
+        trackingLocation: locationId,
+      },
+    });
+  } else {
+    await logApi(action, false, "Company/Sku invalid/outdated")
+    res.status(400).send("Company/Sku invalid/outdated");
+  }
 
-    if (sku == undefined) {
-        await logApi(action.toLowerCase(), false, "SkuId undefined or invalid")
-        res.status(400).send("SkuId undefined or invalid")
-        return;
-    }
-
-  await prisma.event.create({
-    data: {
-      action: action,
-      companyId: company.id,
-      consumerId: consumerId,
-      itemId: itemId,
-      skuId: sku!.id,
-      trackingLocation: locationId,
-    },
-  });
   await logApi(action.toLowerCase())
   res.status(200).send({success: `successfully tracked ${itemId}`});
   // updateUntracked(itemId, company, sku!.id);

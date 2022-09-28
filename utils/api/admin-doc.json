@@ -73,16 +73,7 @@
         "tags": [
           "Catalog"
         ],
-        "summary": "Create Skus from product JSON",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Product"
-              }
-            }
-          }
-        },
+        "summary": "Update SKUs from product table",
         "responses": {
           "200": {
             "description": "OK"

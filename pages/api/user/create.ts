@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Role, Type } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../context/form-context";
@@ -60,20 +60,19 @@ async function create(req: Request, res: Response) {
         city: shippingInfo[4 + 7 * formIndex],
         country: shippingInfo[1 + 7 * formIndex],
         companyId: company.id,
-        lastOrderDate: now,
         line1: shippingInfo[2 + 7 * formIndex],
         line2: shippingInfo[3 + 7 * formIndex],
         shippingName: shippingInfo[0 + 7 * formIndex],
         state: shippingInfo[6 + 7 * formIndex],
-        userId: user.id,
         zip: shippingInfo[5 + 7 * formIndex],
+        type: Type.SHIPPING,
       },
     });
     cart.forEach( async (order) => {
       if(order.location == city) {
         await prisma.order.create({
             data: {
-                amount: calculatePriceFromCatalog(order.sku, order.product, order.sku.id, order.quantity, tax),
+                amount: calculatePriceFromCatalog(order.sku, order.sku.id, order.quantity, tax),
                 companyId: company.id,
                 createdAt: now,
                 locationId: location.id,

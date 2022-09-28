@@ -4,7 +4,7 @@ import { nanoid } from "../../../utils/api/apiUtils";
 
 async function createApiKey(req: Request, res: Response) {
 
-  if (req.method == "Put") {
+  if (req.method == "PUT") {
     const { companyId } = req.query;
     const { admin } : {admin: boolean } = req.body;
 
@@ -21,7 +21,7 @@ async function createApiKey(req: Request, res: Response) {
     res.status(200).send()
   }
 
-  if (req.method == "Post") {
+  if (req.method == "POST") {
     const { companyId }: { companyId: string } = req.body;
     if (!companyId) {
       res.status(400).send();

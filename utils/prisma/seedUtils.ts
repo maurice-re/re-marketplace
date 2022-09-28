@@ -1,6 +1,5 @@
 import { Product, Sku } from "@prisma/client";
 import { nanoid } from "../api/apiUtils";
-import internalProducts from "./products.json";
 
 
 function getMaterialShort(material: string): string {
@@ -20,7 +19,7 @@ function getMainImage(product: string, color: string): string {
   }
 }
 
-export const getSkusFromProduct = (productCatalog: Product[]): Sku[] => internalProducts.reduce((prev, product) => {
+export const getSkusFromProduct = (productCatalog: Product[]): Sku[] => productCatalog.reduce((prev, product) => {
   const options: Sku[] = [];
 
   product.colors.split(", ").forEach((color) =>
@@ -28,16 +27,14 @@ export const getSkusFromProduct = (productCatalog: Product[]): Sku[] => internal
       product.materials.split(", ").forEach((material) => {
         const short = getMaterialShort(material);
         options.push({
-          id: product.id + size.split(" ")[0] + short + color[0].toUpperCase(),
+          id: [product.id, size.split(" ")[0],short, color.toUpperCase()].join('-'),
           mainImage: getMainImage(product.id, color),
           color: color,
-          colorPrice: 0,
           material: material,
-          materialPrice: 0,
           materialShort: short,
           productId: product.id,
+          priceTable: "0:10",
           size: size,
-          sizePrice: 0,
         });
       })
     )

@@ -17,6 +17,7 @@ import { useFormState } from "../../context/form-context";
 
 const emptyProduct = {
   id: "",
+  active: true,
   colors: "",
   name: "",
   sizes: "",
@@ -41,7 +42,7 @@ const Product: NextPage = () => {
   const { id, city } = router.query;
   useEffect(() => {
     if (productCatalog) {
-      const productId = id == "swapcup" ? "SC1" : "SB2";
+      const productId = id == "swapcup" ? "SC1" : "SB1";
       const _product =
         productCatalog.find((p) => productId == p.id) ?? emptyProduct;
       setProduct(_product);
