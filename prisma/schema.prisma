@@ -55,7 +55,7 @@ model Company {
   locations           Location[]
   name                String
   orders              Order[]
-  sampleTransactions  SampleOrder[]
+  sampleOrders        SampleOrder[]
   subscriptionType    SubscriptionType      @default(FREE)
   untracked           UntrackedInventory[]
   users               User[]
