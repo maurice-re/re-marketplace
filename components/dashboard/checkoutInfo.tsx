@@ -1,4 +1,11 @@
-import { Company, Location, Product, Sku, Type, User } from "@prisma/client";
+import {
+  Company,
+  Location,
+  LocationType,
+  Product,
+  Sku,
+  User,
+} from "@prisma/client";
 import {
   PaymentElement,
   useElements,
@@ -121,7 +128,7 @@ export default function CheckoutInfo({
         trackingLocation: "",
         shippingName: formElements[0].value,
         state: formElements[6].value,
-        type: Type.SHIPPING,
+        type: LocationType.SHIPPING,
         zip: formElements[5].value,
       };
       newLocationId = await addOrRemoveLocation("add", newLocation, undefined);
@@ -154,7 +161,7 @@ export default function CheckoutInfo({
         if (locationIds.includes("new") && newLocationId) {
           _orderString = _orderString.replace(/new/g, newLocationId);
         }
-        await fetch("/api/transaction", {
+        await fetch("/api/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -187,7 +194,7 @@ export default function CheckoutInfo({
             if (locationIds.includes("new") && newLocationId) {
               _orderString = _orderString.replace(/new/g, newLocationId);
             }
-            await fetch("/api/transaction", {
+            await fetch("/api/order", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({

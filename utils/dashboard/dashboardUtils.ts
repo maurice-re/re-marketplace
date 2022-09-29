@@ -1,7 +1,7 @@
-import { Company, Location, Order, Product, Sku, Transaction, User } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
-export type OrderSkuProduct = Order & {
+export type ItemSkuProduct = OrderItem & {
   sku: Sku & {
     product: Product;
   };
@@ -15,12 +15,12 @@ export type SkuProduct = Sku & {
     product: Product;
   };
 
-export type TransactionCustomerOrders = Transaction & {
+export type OrderCustomerOrderItems = Order & {
   company: {
     name?: string;
     customerId: string;
   };
-  orders: (Order & {
+  orderItems: (OrderItem & {
     location: Location;
     sku: Sku & {
       product: Product;
@@ -28,26 +28,31 @@ export type TransactionCustomerOrders = Transaction & {
   })[];
 };
 
-export type OrderCustomerLocation = Order & {
-  company: {
-      name?: string;
-      customerId: string;
-  };
+export type OrderWithItemsLocationSku = Order & {
+  items: ItemLocationSku[];
+};
+
+export type ItemLocationSku = OrderItem & {
+  location: Location;
+  sku: Sku;
+}
+
+export type OrderItemLocation = OrderItem & {
   location: Location;
   sku: Sku & {
       product: Product;
   };
 };
 
-export type OrderLocationSku = Order & {
+export type ItemLocationSkuProduct = OrderItem & {
   location: Location;
   sku: Sku & {
     product: Product;
   };
 }
 
-export type TransactionOrder = Transaction & {
-  orders: Order[]
+export type OrderWithItems = Order & {
+  items: OrderItem[]
 }
 
 export type UserCompany = User & {
@@ -55,7 +60,7 @@ export type UserCompany = User & {
 }
 
 
-export function getUniqueSkus(orders: OrderSkuProduct[]): SkuProduct[] {
+export function getUniqueSkus(orders: ItemSkuProduct[]): SkuProduct[] {
   let ids: string[] = [];
   return orders.reduce((prev, curr) => {
     if (ids.includes(curr.skuId)) {
@@ -68,7 +73,7 @@ export function getUniqueSkus(orders: OrderSkuProduct[]): SkuProduct[] {
 }
 
 
-export function numItemsBySkuId(orders: OrderSkuProduct[], id: string): number {
+export function numItemsBySkuId(orders: ItemSkuProduct[], id: string): number {
     return orders.reduce((prev, curr) => {
         if(curr.skuId == id) {
             return prev + curr.quantity
@@ -78,7 +83,7 @@ export function numItemsBySkuId(orders: OrderSkuProduct[], id: string): number {
     }, 0)
 }
 
-export function getLocationNames(orders: OrderSkuProduct[]): string[] {
+export function getLocationNames(orders: ItemSkuProduct[]): string[] {
     let ids: string[] = [];
     return orders.reduce((prev, curr) => {
         if (ids.includes(curr.locationId)) {
@@ -100,7 +105,7 @@ export function skuName(sku: SkuProduct): string {
     return sku.size + " " + sku.materialShort + " " + sku.product.name
 }
 
-function getLocationIds(orders: OrderSkuProduct[]): string[]{
+function getLocationIds(orders: OrderItem[]): string[]{
     console.log(orders)
     return orders.reduce((prev, curr) => {
         if(prev.includes(curr.locationId)) {
@@ -111,10 +116,10 @@ function getLocationIds(orders: OrderSkuProduct[]): string[]{
     }, [] as string[])
 } 
 
-export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[][]  {
+export function separateByLocationId(orders: OrderItem[]):OrderItem[][]  {
     const locationIds = getLocationIds(orders);
     console.log(locationIds)
-    let output: OrderSkuProduct[][] = [];
+    let output: OrderItem[][] = [];
     locationIds.forEach(loc => {   
         const or = orders.filter(o => o.locationId == loc);
         output.push(or)
@@ -124,15 +129,15 @@ export function separateByLocationId(orders: OrderSkuProduct[]):OrderSkuProduct[
     }
 
 
-export function totalFromOrders(orders: OrderLocationSku[], onlyOrders?: Order[], skus?: Sku[], products? :Product[]): number {
+export function totalFromOrders(orderItems: ItemLocationSkuProduct[], onlyOrders?: OrderItem[], skus?: Sku[], products? :Product[]): number {
   if (onlyOrders) {
-    return onlyOrders.reduce((prev, order) => prev + calculatePriceFromCatalog(skus ?? [], order.skuId, order.quantity), 0);
+    return onlyOrders.reduce((prev, item) => prev + calculatePriceFromCatalog(skus ?? [], item.skuId, item.quantity), 0);
   }
-  return orders.reduce((prev, order) => prev + calculatePriceFromCatalog(order.sku, order.skuId, order.quantity), 0);
+  return orderItems.reduce((prev, item) => prev + calculatePriceFromCatalog(item.sku, item.skuId, item.quantity), 0);
 }
 
-export function getLocationsFromOrders(orders: OrderLocationSku[]): Location[] {
-  return orders.reduce((prev, curr) => {
+export function getLocationsFromOrders(orderItems: ItemLocationSkuProduct[]): Location[] {
+  return orderItems.reduce((prev, curr) => {
     if(prev.find(l => l.id == curr.locationId)){
       return prev;
     } else {
@@ -168,6 +173,6 @@ export function monthDayYear(d: Date) : string {
   return month + "/" + day + "/" + year;
 }
 
-export function fullProductName(order: OrderSkuProduct): string {
+export function fullProductName(order: ItemSkuProduct): string {
   return order.sku.size + " " + order.sku.materialShort + " " + order.sku.product.name
 }

@@ -1,14 +1,13 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { OrderCustomerLocation } from "../../../utils/dashboard/dashboardUtils";
-import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";
+import { OrderCustomerOrderItems } from "../../../utils/dashboard/dashboardUtils";
 
 
 async function repeat(req: Request, res: Response) {
   const {
-    order
+    order,
   } : {
-      order: OrderCustomerLocation
+      order: OrderCustomerOrderItems;
   } = req.body;
   
   const now = new Date();
@@ -18,28 +17,32 @@ async function repeat(req: Request, res: Response) {
   }
 
 
-  const transaction = await prisma.transaction.create({
+  const newOrder = await prisma.order.create({
     data: {
-      amount: calculatePriceFromCatalog(order.sku, order.sku.id, order.quantity, 1.07),
+      amount: order.amount,
       companyId: order.companyId,
       createdAt: now,
       userId: order.userId,
     },
   });
 
+  const orderItems = order.orderItems.map(item => {
+      return {
+          amount: item.amount,
+          comments: item.comments,
+          createdAt: now,
+          locationId: item.locationId,
+          orderId: newOrder.id,
+          quantity: item.quantity,
+          qrCode: item.qrCode,
+          skuId: item.sku.id,
+      }
+  })
+
+  await prisma.orderItem.createMany({
+    data: orderItems
+  })
   
-    await prisma.order.create({
-        data: {
-            amount: order.amount,
-            companyId: order.companyId,
-            createdAt: now,
-            locationId: order.locationId,
-            quantity: order.quantity,
-            skuId: order.sku.id,
-            transactionId: transaction.id,
-            userId: order.userId
-        }
-    })
   res.status(200).send();
 }
 

@@ -1,4 +1,5 @@
 import { Sku } from "@prisma/client";
+import { ItemLocationSku, OrderWithItemsLocationSku } from "../dashboard/dashboardUtils";
 
 export function getPriceFromTable(_priceTable: string, _quantity: number | string): number {
   const quantity: number = typeof _quantity == "string" ? parseInt(_quantity) : _quantity
@@ -20,4 +21,12 @@ export function calculatePriceFromCatalog(skus: Sku | Sku[], id: string, _quanti
       return parseFloat((price * quantity * tax).toFixed(2));
     }
     return parseFloat((price * quantity).toFixed(2));
+}
+
+export function getItemsFromOrder(orders: OrderWithItemsLocationSku[]): ItemLocationSku[] {
+  const orderItems: ItemLocationSku[] = [];
+  orders.forEach((order) => {
+    orderItems.push(...order.items);
+  });
+  return orderItems;
 }

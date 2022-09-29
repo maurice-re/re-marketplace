@@ -101,7 +101,7 @@ model Location {
   events            Event[]       @relation(fields: [])
   line1             String?
   line2             String?
-  orders            OrderItem[]
+  orderItems        OrderItem[]
   sampleOrders      SampleOrder[]
   shippingName      String?
   state             String?
