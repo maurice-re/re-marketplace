@@ -46,13 +46,15 @@ async function createEvent(req: Request, res: Response) {
     itemId,
     locationId,
     skuId,
-    action
+    action,
+    timestamp
   }: {
     action: Action;
     consumerId: string;
     itemId: string;
     locationId: string;
     skuId: string | undefined;
+    timestamp: string;
   } = req.body;
 
   const company = apiWithCompany.company;
@@ -78,6 +80,7 @@ async function createEvent(req: Request, res: Response) {
         itemId: itemId,
         skuId: sku?.id,
         trackingLocation: locationId,
+        timestamp: timestamp ? new Date(timestamp) : new Date()
       },
     });
   } else {
