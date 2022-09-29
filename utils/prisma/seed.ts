@@ -1,4 +1,4 @@
-import { PrismaClient, Role, SubscriptionType, Type } from '@prisma/client';
+import { LocationType, PrismaClient, Role, SubscriptionType } from '@prisma/client';
 import allProducts from "./products.json";
 import { getSkusFromProduct } from './seedUtils';
 
@@ -39,15 +39,15 @@ getSkusFromProduct(allProducts).map(async (sku) => await prisma.sku.upsert({
     where: {email: "pcoulson@myyahoo.com"}, update: testAdmin, create: testAdmin
   })
 
-  const testTransaction = {
+  const testOrder = {
     id: "616",
     amount: 20000,
     companyId: testCompany.id,
     createdAt: now,
     userId: phil.id
   }
-  const transaction = await prisma.transaction.upsert({
-    where: {id: "616"}, update: testTransaction, create: testTransaction
+  const order = await prisma.order.upsert({
+    where: {id: "616"}, update: testOrder, create: testOrder
   })
 
   const testLocation1 = {
@@ -59,9 +59,8 @@ getSkusFromProduct(allProducts).map(async (sku) => await prisma.sku.upsert({
     line1: "219 W 47th St",
     shippingName: "S.H.I.E.L.D",
     state: "New York",
-    userId: phil.id.toString(),
-    zip: "10036",
-    type: Type.SHIPPING
+    type: LocationType.SHIPPING,
+    zip: "10036"
   }
   const Headquarters = await prisma.location.upsert({
     where: {id: "219"}, update: testLocation1, create: testLocation1
@@ -76,57 +75,50 @@ getSkusFromProduct(allProducts).map(async (sku) => await prisma.sku.upsert({
     line1: "3250 Catlin Ave",
     shippingName: "S.H.I.E.L.D",
     state: "Virginia",
-    userId: phil.id,
-    zip: "22134",
-    type: Type.SHIPPING
+    type: LocationType.SHIPPING,
+    zip: "22134"
   }
   const playground = await prisma.location.upsert({
     where: {id: "3250"}, update: testLocation2, create: testLocation2
   })
 
-  const testOrder1 = {
+  const testOrderItem1 = {
       id: "00001",
       amount: 10000,
-      companyId: testCompany.id,
       createdAt: now,
-      locationId: Headquarters.id,
+      locationId: "219",
+      orderId: "616",
       quantity: 1000,
-      skuId: "SB21.5RPPG",
-      transactionId: "616",
-      userId: phil.id
+      skuId: "SB1-1.5-RPP-GRAY",
   }
-  await prisma.order.upsert({
-    where: {id: "00001"}, update: testOrder1, create: testOrder1
+  await prisma.orderItem.upsert({
+    where: {id: "00001"}, update: testOrderItem1, create: testOrderItem1
   })
   
-  const testOrder2 = {
+  const testOrderItem2 = {
     id: "00002",
     amount: 5000,
-    companyId: testCompany.id,
     createdAt: now,
-    locationId: Headquarters.id,
+    locationId: "219",
+    orderId: "616",
     quantity: 500,
-    skuId: "SB21RPPW",
-    transactionId: "616",
-    userId: phil.id
+    skuId: "SB1-1-RPP-GRAY",
   }
-  await prisma.order.upsert({
-    where: {id: "00002"}, update: testOrder2, create: testOrder2
+  await prisma.orderItem.upsert({
+    where: {id: "00002"}, update: testOrderItem2, create: testOrderItem2
   })
 
-  const testOrder3 = {
+  const testOrderItem3 = {
     id: "00003",
     amount: 5000,
-    companyId: testCompany.id,
     createdAt: now,
-    locationId: playground.id,
+    locationId: "3250",
+    orderId: "616",
     quantity: 500,
-    skuId: "SB21.5RPPG",
-    transactionId: "616",
-    userId: phil.id
+    skuId: "SB1-1.5-RPP-GRAY",
   }
-  await prisma.order.upsert({
-    where: {id: "00003"}, update: testOrder3, create: testOrder3
+  await prisma.orderItem.upsert({
+    where: {id: "00003"}, update: testOrderItem3, create: testOrderItem3
   })
 
 }

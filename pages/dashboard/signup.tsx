@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 
-const Signup: NextPage = () => {
+const SignUp: NextPage = () => {
   const router = useRouter();
   const { companyId } = router.query;
   const [hasCompany, setHasCompany] = useState<boolean>(false);
@@ -20,7 +20,7 @@ const Signup: NextPage = () => {
     }
   }, [companyId]);
 
-  async function signup(e: FormEvent<HTMLFormElement>) {
+  async function signUp(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
     setLoading(true);
@@ -78,7 +78,7 @@ const Signup: NextPage = () => {
       </div>
       <main className="flex flex-col container mx-auto h-full justify-center py-3 items-center font-theinhardt">
         <h1 className="text-3xl text-white font-bold mb-4">Sign Up</h1>
-        <form className="bg-re-gray-500 rounded-xl p-6 w-96" onSubmit={signup}>
+        <form className="bg-re-gray-500 rounded-xl p-6 w-96" onSubmit={signUp}>
           <div className="flex">
             <input
               required
@@ -160,4 +160,4 @@ const Signup: NextPage = () => {
   );
 };
 
-export default Signup;
+export default SignUp;
