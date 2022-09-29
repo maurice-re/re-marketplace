@@ -9,15 +9,6 @@ productSkuIdPairs = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB
 
 apiUrl = "http://localhost:3000/api/tracking/event"
 
-# To get timestamp with 00:00:00
-# timestamp = datetime.datetime.strptime("May 25, 2022", "%B %d, %Y").strftime("%Y-%m-%d")
-# timestamp = timestamp[:10] + 'T' + '00:00:00Z'
-
-# To create test event
-# event = {"itemId": "0dff7feb-f0fc-4893-bba3-b76e207c4c4b", "locationId": "SSP-CPS", "skuId": "SB1-1-RPP-GRAY", "action": "BORROW", "timestamp": "Sep 25, 2022"}
-# headers = {"content-type":"application/json", "authorization": "Bearer NrL3uRqdnUsbUZs1iJbhKiYrPqS6k1RXuXWBRwjlcgyYTjxA74n3lLuySOcWUg3u"}
-# response = requests.post(apiUrl, data=json.dumps(event), headers=headers)
-
 events = []
 
 fileName = "MuuseEventDataWithDates.csv"
