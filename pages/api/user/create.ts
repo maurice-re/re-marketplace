@@ -1,4 +1,4 @@
-import { Role, LocationType } from "@prisma/client";
+import { LocationType, Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../context/form-context";
@@ -44,7 +44,7 @@ async function create(req: Request, res: Response) {
     },
   });
 
-  const transaction = await prisma.transaction.create({
+  const order = await prisma.order.create({
     data: {
       amount: calculateAmount(cart, tax),
       companyId: company.id,
@@ -68,18 +68,16 @@ async function create(req: Request, res: Response) {
         type: LocationType.SHIPPING,
       },
     });
-    cart.forEach( async (order) => {
-      if(order.location == city) {
-        await prisma.order.create({
+    cart.forEach( async (orderItem) => {
+      if(orderItem.location == city) {
+        await prisma.orderItem.create({
             data: {
-                amount: calculatePriceFromCatalog(order.sku, order.sku.id, order.quantity, tax),
-                companyId: company.id,
+                amount: calculatePriceFromCatalog(orderItem.sku, orderItem.sku.id, orderItem.quantity, tax),
                 createdAt: now,
                 locationId: location.id,
-                quantity: order.quantity,
-                skuId: order.sku.id,
-                transactionId: transaction.id,
-                userId: user.id
+                orderId: order.id,
+                quantity: orderItem.quantity,
+                skuId: orderItem.sku.id,
             }
         })
       }

@@ -1,5 +1,6 @@
-import { Product, Sku } from "@prisma/client";
+import { OrderItem, Product, Sku } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
+import { OrderWithItems, separateByLocationId } from "./dashboardUtils";
 
 // ORDER STRING
 //locationId _ skuId ~ quantity _ skuId ~ quantity * locationId...
@@ -13,3 +14,20 @@ export function getOrderStringTotal(orderString: string, skus: Sku[], products: 
       return total + calculatePriceFromCatalog(skus, skuId, parseInt(quantity), tax)
     }, 0)
   }
+
+export function getOrderString(order?: OrderWithItems, orderItem?: OrderItem) {
+    if (order) {
+      const orderItemsByLocation = separateByLocationId(order.items);
+      return orderItemsByLocation.reduce((orderString, itemsByLocation) => {
+        const items = itemsByLocation.reduce((itemString, item) => {
+          return itemString + `_${item.skuId}~${item.quantity}`
+        }, "")
+        console.log(items)
+        return orderString + (orderString == "" ? "" : "*") +`${itemsByLocation[0].locationId}${items}`
+      }, "")
+    }
+    if (orderItem) {
+      return `${orderItem.locationId}_${orderItem.skuId}~${orderItem.quantity}`
+    }
+    return "";
+}

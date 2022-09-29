@@ -1,9 +1,9 @@
 import {
   Company,
   Location,
+  LocationType,
   Product,
   Sku,
-  LocationType,
   User,
 } from "@prisma/client";
 import {
@@ -161,7 +161,7 @@ export default function CheckoutInfo({
         if (locationIds.includes("new") && newLocationId) {
           _orderString = _orderString.replace(/new/g, newLocationId);
         }
-        await fetch("/api/transaction", {
+        await fetch("/api/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -194,7 +194,7 @@ export default function CheckoutInfo({
             if (locationIds.includes("new") && newLocationId) {
               _orderString = _orderString.replace(/new/g, newLocationId);
             }
-            await fetch("/api/transaction", {
+            await fetch("/api/order", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
