@@ -82,9 +82,9 @@ const OrderHome: NextPage<OrderProps> = ({
                   <div className="h-px bg-white my-1 w-full" />
                   <div className="flex flex-col w-full">
                     <div>
-                      {item.quantity + " " + item.sku.id.startsWith("SC")
-                        ? "SwapCup"
-                        : "SwapBox"}
+                      {item.quantity +
+                        " " +
+                        (item.sku.id.startsWith("SC") ? "SwapCup" : "SwapBox")}
                     </div>
                     <div className="font-theinhardt-300 text-sm text-gray-200 leading-none">
                       {item.sku.size + " | " + item.sku.materialShort}

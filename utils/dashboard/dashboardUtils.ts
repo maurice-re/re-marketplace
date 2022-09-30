@@ -59,6 +59,10 @@ export type UserCompany = User & {
   company: Company
 }
 
+export type LocationWithOneItem = Location & {
+  orderItems: OrderItem[]
+}
+
 
 export function getUniqueSkus(orders: ItemSkuProduct[]): SkuProduct[] {
   let ids: string[] = [];

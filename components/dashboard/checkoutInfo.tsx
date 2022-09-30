@@ -122,7 +122,7 @@ export default function CheckoutInfo({
         city: formElements[4].value,
         country: formElements[1].value,
         companyId: company.id,
-        displayName: "",
+        displayName: null,
         line1: formElements[2].value,
         line2: formElements[3].value,
         trackingLocation: "",
@@ -296,7 +296,7 @@ export default function CheckoutInfo({
             >{`${method.card?.brand} – ${method.card?.last4}`}</option>
           ))}
           <option value="new" key="new">
-            Use a new card
+            New payment method
           </option>
         </select>
       )}
