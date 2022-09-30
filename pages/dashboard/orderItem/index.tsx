@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Company, User } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
@@ -8,15 +8,22 @@ import Sidebar from "../../../components/dashboard/sidebar";
 import prisma from "../../../constants/prisma";
 import {
   dayMonthYear,
-  OrderCustomerLocation,
+  ItemLocationSku,
 } from "../../../utils/dashboard/dashboardUtils";
+import { getOrderString } from "../../../utils/dashboard/orderStringUtils";
+import { getItemsFromOrder } from "../../../utils/prisma/dbUtils";
 import { authOptions } from "../../api/auth/[...nextauth]";
 type OrderProps = {
-  orders: OrderCustomerLocation[];
+  company: Company;
+  orderItems: ItemLocationSku[];
 };
 
-const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
-  if (!orders || orders.length == 0) {
+const OrderHome: NextPage<OrderProps> = ({
+  company,
+  orderItems,
+}: OrderProps) => {
+  console.log(company);
+  if (!orderItems || orderItems.length == 0 || !company) {
     return (
       <Sidebar>
         <div className="w-screen h-screen bg-black flex">
@@ -47,9 +54,7 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
         <main className="flex flex-col container mx-auto py-6 px-1 w-full text-white font-theinhardt">
           <div className="flex justify-between">
             <h1 className="font-theinhardt text-3xl">Orders</h1>
-            <h1 className="font-theinhardt text-3xl">
-              {orders[0].company.name}
-            </h1>
+            <h1 className="font-theinhardt text-3xl">{company.name}</h1>
           </div>
           <div className="form-control mx-auto my-4">
             <div className="input-group w-96">
@@ -64,31 +69,35 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
             </div>
           </div>
           <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch">
-            {orders.map((order) => (
+            {orderItems.map((item) => (
               <div
-                key={order.id}
+                key={item.id}
                 className="card w-full h-72 my-3 bg-base-100 shadow-xl font-theinhardt justify-center"
               >
                 <div className="card-body justify-center">
                   <h2 className="card-title leading-none">
-                    {dayMonthYear(order.createdAt)}
+                    {dayMonthYear(item.createdAt)}
                   </h2>
-                  <div className="flex w-full leading-none">{`Order ID: ${order.id}`}</div>
+                  <div className="flex w-full leading-none">{`Order Item ID: ${item.id}`}</div>
                   <div className="h-px bg-white my-1 w-full" />
                   <div className="flex flex-col w-full">
-                    <div>{order.quantity + " " + order.sku.product.name}</div>
+                    <div>
+                      {item.quantity +
+                        " " +
+                        (item.sku.id.startsWith("SC") ? "SwapCup" : "SwapBox")}
+                    </div>
                     <div className="font-theinhardt-300 text-sm text-gray-200 leading-none">
-                      {order.sku.size + " | " + order.sku.materialShort}
+                      {item.sku.size + " | " + item.sku.materialShort}
                     </div>
                   </div>
                   <div className="flex w-full">
-                    {order.location.displayName ?? order.location.city}
+                    {item.location.displayName ?? item.location.city}
                   </div>
                   <div className="flex items-center text-sm font-theinhardt-300 gap-1">
-                    <div className="text-re-green-600">{order.status}</div>
+                    <div className="text-re-green-600">{item.status}</div>
                     <div className="text-gray-200">
                       {` — Est. shipping ${new Date(
-                        order.createdAt
+                        item.createdAt
                       ).toLocaleDateString("en-us", {
                         day: "numeric",
                         month: "short",
@@ -99,7 +108,7 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
                     <Link
                       href={{
                         pathname: "/dashboard/checkout",
-                        query: { orderId: order.id },
+                        query: { orderString: getOrderString(undefined, item) },
                       }}
                     >
                       <button className="btn btn-sm btn-accent btn-outline font-theinhardt-500 text-xs tracking-wide">
@@ -118,7 +127,6 @@ const OrderHome: NextPage<OrderProps> = ({ orders }: OrderProps) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { test } = context.query;
   const session = await unstable_getServerSession(
     context.req,
     context.res,
@@ -130,16 +138,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         companyId: (session?.user as User).companyId,
       },
       include: {
-        company: {
-          select: {
-            name: true,
-            customerId: true,
-          },
-        },
-        location: true,
-        sku: {
+        company: true,
+        items: {
           include: {
-            product: true,
+            sku: true,
+            location: true,
           },
         },
       },
@@ -147,11 +150,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         createdAt: "desc",
       },
     });
-    return {
-      props: {
-        orders: JSON.parse(JSON.stringify(orders ?? null)),
-      },
-    };
+
+    if (orders.length > 0) {
+      return {
+        props: {
+          company: JSON.parse(JSON.stringify(orders[0].company)),
+          orderItems: JSON.parse(JSON.stringify(getItemsFromOrder(orders))),
+        },
+      };
+    }
   }
   return { props: {} };
 };

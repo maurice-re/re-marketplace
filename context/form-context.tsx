@@ -161,13 +161,7 @@ export function FormStateProvider({ children }: { children: ReactNode }) {
     quantity: number | string,
     tax?: number
   ): number {
-    return calculatePriceFromCatalog(
-      skuCatalog,
-      productCatalog,
-      id,
-      quantity,
-      tax
-    );
+    return calculatePriceFromCatalog(skuCatalog, id, quantity, tax);
   }
 
   function calculateTotal(): number {
