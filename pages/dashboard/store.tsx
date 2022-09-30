@@ -32,12 +32,10 @@ const Store: NextPage<StoreProps> = ({
   const [productId, setProductId] = useState<string | undefined>(undefined);
   const [skuId, setSkuId] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState<string>("");
-  console.log(locations);
 
   const addToCart = useCartStore((state) => state.addToCart);
 
   function changeSize(newSize: string) {
-    console.log(newSize);
     if (skuId == undefined) {
       return;
     }
@@ -60,7 +58,6 @@ const Store: NextPage<StoreProps> = ({
   const handleAddLocation = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    console.log(formElements);
     setIsLoading(true);
 
     const newLocation: Location = {
@@ -77,7 +74,6 @@ const Store: NextPage<StoreProps> = ({
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
     };
-    console.log(newLocation);
 
     await fetch("/api/location", {
       method: "POST",
@@ -194,7 +190,7 @@ const Store: NextPage<StoreProps> = ({
                 <h1 className="text-center text-3xl text-white">
                   Which location are you shopping for?
                 </h1>
-                <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch">
+                <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
                   {locationCards}
                   <div
                     key={"new"}
@@ -226,7 +222,7 @@ const Store: NextPage<StoreProps> = ({
       .map((product) => (
         <div
           key={product.id}
-          className="card card-compact w-full h-72 my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-base-200 cursor-pointer"
+          className="card card-compact w-full my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-base-200 cursor-pointer"
           onClick={() => {
             setSkuId(skus.find((sku) => sku.productId == product.id)?.id);
             setProductId(product.id);
@@ -272,7 +268,7 @@ const Store: NextPage<StoreProps> = ({
                 >
                   Back
                 </button>
-                <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch">
+                <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
                   {productCards}
                 </div>
               </div>
@@ -305,7 +301,7 @@ const Store: NextPage<StoreProps> = ({
             </div>
             <div className="flex h-full justify-between">
               <div className="flex flex-col w-full">
-                <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-4 overflow-y-auto pt-2 pb-4 items-stretch flex flex-col mx-4">
+                <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-4 overflow-y-auto pt-4 pb-4 items-stretch flex flex-col mx-4">
                   <button
                     className="btn btn-square btn-outline"
                     onClick={() => {

@@ -112,8 +112,6 @@ function Cart({
           orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
-            console.log(locationId);
-            console.log(locations);
             const location = locations.find(
               (location) => location.id == locationId
             );
