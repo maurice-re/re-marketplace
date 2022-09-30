@@ -5,14 +5,14 @@ import {
 } from "@stripe/react-stripe-js";
 import React, { FormEvent, useState } from "react";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
-import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
+import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
 
 export default function CheckoutForm({
   transaction,
 }: {
-  transaction: SampleTransactionOrders;
+  transaction: SampleOrderWithSkuID;
 }) {
   const stripe = useStripe();
   const elements = useElements();

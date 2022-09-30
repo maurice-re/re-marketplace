@@ -1,7 +1,7 @@
 import { LocationType, Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { SampleTransactionOrders } from "../../../utils/sample/sampleUtils";
+import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";
 
 async function create(req: Request, res: Response) {
   const {
@@ -9,7 +9,7 @@ async function create(req: Request, res: Response) {
     form,
     customerId
     } : {
-      transaction: SampleTransactionOrders,
+      transaction: SampleOrderWithSkuID,
       form: string[],
       customerId: string
     } = req.body;
@@ -55,7 +55,7 @@ async function create(req: Request, res: Response) {
     },
   });
 
-  await prisma.sampleTransaction.create({
+  await prisma.sampleOrder.create({
     data: {
       quantity: transaction.quantity,
       amount: transaction.amount,

@@ -1,13 +1,13 @@
 import { Status } from "@prisma/client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample
-import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
-import Link from "next/link";
+import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 
 function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
@@ -39,7 +39,7 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
       })
       .join(", ");
 
-    const transaction: SampleTransactionOrders = {
+    const transaction: SampleOrderWithSkuID = {
       id: "",
       amount,
       createdAt: now,
