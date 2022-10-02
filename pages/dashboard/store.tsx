@@ -1,14 +1,15 @@
 import { Company, Location, LocationType, Product, Sku } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import { FormEvent, useState } from "react";
-import Cart, { useCartStore } from "../../components/dashboard/cart";
+import Cart from "../../components/dashboard/cart";
 import Sidebar from "../../components/dashboard/sidebar";
 import AddressField from "../../components/form/address-field";
 import DoubleAddressField from "../../components/form/double-address-field";
 import prisma from "../../constants/prisma";
+import { useCartStore } from "../../stores/cartStore";
 import { LocationWithOneItem } from "../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../utils/prisma/dbUtils";
 import { authOptions } from "../api/auth/[...nextauth]";

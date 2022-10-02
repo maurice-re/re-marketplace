@@ -1,7 +1,7 @@
-import { useFormState } from "../../context/form-context";
+import { useFormStore } from "../../stores/formStore";
 
 function ProgressBar({ pageName }: { pageName: string }) {
-  const { routes } = useFormState();
+  const routes = useFormStore((state) => state.routes);
   const currentRouteIndex = routes.findIndex(
     (route) => route.name == pageName.replace("%20", " ")
   );

@@ -1,14 +1,14 @@
 import { loadStripe } from "@stripe/stripe-js";
 import type { NextPage } from "next";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
-import { useFormState } from "../../context/form-context";
-import { allLocations } from "../../utils/prisma/cart";
+import { useFormStore } from "../../stores/formStore";
+import { allLocations } from "../../utils/form/cart";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -16,7 +16,11 @@ const stripePromise = loadStripe(
 
 const Summary: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
-  const { calculateTotal, cart, locations, skipToCheckout } = useFormState();
+  const { calculateTotal, cart, skipToCheckout } = useFormStore((state) => ({
+    calculateTotal: state.calculateTotal,
+    cart: state.cart,
+    skipToCheckout: state.skipToCheckout,
+  }));
   const router = useRouter();
 
   const { checkout } = router.query;
@@ -147,7 +151,7 @@ const Summary: NextPage = () => {
         <Link href={"checkout"}>
           <button
             className={
-              "bg-re-green-500 w-124 text-25 font-theinhardt rounded-10 py-2 disabled:bg-gray-300"
+              "bg-re-green-500 w-124 text-25 font-theinhardt rounded-10 py-2 disabled:bg-gray-300 text-black"
             }
             type="submit"
             role="link"

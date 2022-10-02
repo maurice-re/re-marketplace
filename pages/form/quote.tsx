@@ -1,18 +1,22 @@
 import type { NextPage } from "next";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import AddressField from "../../components/form/address-field";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
-import { useFormState } from "../../context/form-context";
-import { allLocations } from "../../utils/prisma/cart";
+import { useFormStore } from "../../stores/formStore";
+import { allLocations } from "../../utils/form/cart";
 
 const Quote: NextPage = () => {
   const [eol, checkEol] = useState<boolean>(false);
-  const { calculateTotal, cart, locations, skipToCheckout } = useFormState();
+  const { cart, locations, skipToCheckout } = useFormStore((state) => ({
+    cart: state.cart,
+    locations: state.locations,
+    skipToCheckout: state.skipToCheckout,
+  }));
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
