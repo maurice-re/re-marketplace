@@ -17,25 +17,10 @@ import {
   separateByLocationId,
   skuName,
   SkuProduct,
+  UserOrderItems,
 } from "../../utils/dashboard/dashboardUtils";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
-
-type UserOrderItems = User & {
-  company: {
-    name: string;
-    customerId: string;
-  };
-  orders: (Order & {
-    items: (OrderItem & {
-      sku: SkuProduct;
-      location: {
-        displayName: string | null;
-        city: string;
-      };
-    })[];
-  })[];
-};
 
 type HomeProps = {
   locations: Location[];
