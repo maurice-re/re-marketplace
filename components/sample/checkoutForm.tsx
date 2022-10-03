@@ -19,7 +19,6 @@ export default function CheckoutForm({
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const { cart, locations, customerId } = useFormState();
 
   React.useEffect(() => {
     if (!stripe) {

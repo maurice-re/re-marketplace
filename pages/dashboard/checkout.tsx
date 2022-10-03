@@ -3,8 +3,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import CheckoutInfo from "../../components/dashboard/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
@@ -107,8 +107,8 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
                 <Image
                   src={sku.mainImage}
                   alt={product.name}
-                  height={"100%"}
-                  width={"100%"}
+                  height={48}
+                  width={48}
                 />
               </div>
               <div>

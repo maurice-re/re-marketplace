@@ -1,5 +1,5 @@
 import { Status } from "@prisma/client";
-import Image from "next/image";
+import Image from "next/future/image";
 import Link from "next/link";
 import { useState } from "react";
 import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useFormState } from "../../context/form-context";
+import { useFormStore } from "../../stores/formStore";
 
 function FormNextButton({
   onClick,
@@ -14,7 +14,10 @@ function FormNextButton({
   option?: boolean;
   green?: boolean;
 }) {
-  const { nextRoute, routes } = useFormState();
+  const { nextRoute, routes } = useFormStore((state) => ({
+    nextRoute: state.nextRoute,
+    routes: state.routes,
+  }));
   const currentRouteIndex = routes.findIndex(
     (route) => route.name == pageName.replace("%20", " ")
   );

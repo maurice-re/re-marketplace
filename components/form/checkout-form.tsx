@@ -4,7 +4,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import React, { FormEvent, useState } from "react";
-import { useFormState } from "../../context/form-context";
+import { useFormStore } from "../../stores/formStore";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
 import AddressField from "./address-field";
 import DoubleAddressField from "./double-address-field";
@@ -15,7 +15,11 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { cart, locations, customerId } = useFormState();
+  const { cart, locations, customerId } = useFormStore((state) => ({
+    cart: state.cart,
+    locations: state.locations,
+    customerId: state.customerId,
+  }));
 
   React.useEffect(() => {
     if (!stripe) {
