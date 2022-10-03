@@ -5,7 +5,10 @@ import Head from "next/head";
 import Sidebar from "../../../components/dashboard/sidebar";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import prisma from "../../../constants/prisma";
-import { getProductsInUseBySku } from "../../../utils/tracking/trackingUtils";
+import {
+  getCurrentBorrowedProductsBySku,
+  getLifetimeBorrowedProducts,
+} from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -83,7 +86,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
   user,
   skus,
 }: TrackingProps) => {
-  const productsInUse = getProductsInUseBySku(events, skus[1]);
+  const productsInUse = getCurrentBorrowedProductsBySku(events, skus[1]);
+  const lifetimeBorrowedProducts = getLifetimeBorrowedProducts(events);
 
   return (
     <Sidebar>
