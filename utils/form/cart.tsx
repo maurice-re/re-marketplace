@@ -1,5 +1,5 @@
-import { CartOrder } from "../../context/form-context";
-import { calculatePriceFromCatalog } from "./dbUtils";
+import { CartOrder } from "../../stores/formStore";
+import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export function numLocations(cart: CartOrder[]): number {
   let locations: string[] = [];

@@ -1,13 +1,13 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
 import type { NextPage } from "next";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import CheckoutForm from "../../components/form/checkout-form";
 import ReLogo from "../../components/form/re-logo";
-import { useFormState } from "../../context/form-context";
-import { allLocations } from "../../utils/prisma/cart";
+import { useFormStore } from "../../stores/formStore";
+import { allLocations } from "../../utils/form/cart";
 import { getPriceFromTable } from "../../utils/prisma/dbUtils";
 
 const stripePromise = loadStripe(
@@ -17,7 +17,13 @@ const stripePromise = loadStripe(
 const Checkout: NextPage = () => {
   const [clientSecret, setClientSecret] = useState("");
   const { calculatePrice, calculateTotal, cart, locations, setCustomerId } =
-    useFormState();
+    useFormStore((state) => ({
+      calculatePrice: state.calculatePrice,
+      calculateTotal: state.calculateTotal,
+      cart: state.cart,
+      locations: state.locations,
+      setCustomerId: state.setCustomerId,
+    }));
   const total = calculateTotal();
 
   useEffect(() => {
@@ -73,8 +79,8 @@ const Checkout: NextPage = () => {
                 <Image
                   src={order.product.mainImage}
                   alt={"takeout front"}
-                  height={"100%"}
-                  width={"100%"}
+                  width={48}
+                  height={48}
                 />
               </div>
               <div>

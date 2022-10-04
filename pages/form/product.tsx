@@ -1,7 +1,7 @@
 import { Product } from "@prisma/client";
 import type { NextPage } from "next";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import FormNextButton from "../../components/form/next-button";
@@ -9,11 +9,7 @@ import FormOptionButton from "../../components/form/option-button";
 import ProgressBar from "../../components/form/progress-bar";
 import SkuQuantityField from "../../components/form/quantity_input";
 import ReLogo from "../../components/form/re-logo";
-import { useFormState } from "../../context/form-context";
-
-// type ProductProps = {
-//   products: Product[];
-// };
+import { useFormStore } from "../../stores/formStore";
 
 const emptyProduct = {
   id: "",
@@ -28,7 +24,10 @@ const emptyProduct = {
 
 const Product: NextPage = () => {
   const router = useRouter();
-  const { locations, productCatalog } = useFormState();
+  const { locations, productCatalog } = useFormStore((state) => ({
+    locations: state.locations,
+    productCatalog: state.productCatalog,
+  }));
 
   const [product, setProduct] = useState<Product>(emptyProduct);
   const [chosenSizes, setChosenSizes] = useState<string[]>([]);
@@ -122,14 +121,13 @@ const Product: NextPage = () => {
         </div>
         <div className="flex justify-evenly">
           <div className="w-124 h-124 relative">
-            <div className="w-120 h-120 bg-re-blue right-1 bottom-0 absolute rounded-2xl"></div>
+            <div className="w-120 h-120 bg-re-blue right-1 bottom-0 absolute z-0 rounded-2xl"></div>
             <Image
               src={product.mainImage}
               width={484}
               height={484}
               alt={product.name}
-              priority
-              className="rounded-2xl"
+              className="rounded-2xl z-10 relative"
             />
           </div>
           <div id="options" className="w-124">
