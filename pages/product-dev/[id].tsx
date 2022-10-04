@@ -26,7 +26,7 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({ productDev }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          cost: (productDev.developmentFee + productDev.researchFee) * 0.8,
+          cost: (productDev.developmentFee + productDev.researchFee) * 0.5,
           id: "",
         }),
       })
@@ -56,6 +56,26 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({ productDev }) => {
     );
   }
 
+  if (productDev.initiationPaid) {
+    return (
+      <div className="w-screen h-screen bg-black flex">
+        <Head>
+          <title>Product Development</title>
+          <meta name="locations" content="Manage your account" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <main className="flex flex-col container mx-auto h-full justify-center py-3 items-center">
+          <div className="text-white font-theinhardt text-28">
+            This has already been paid for
+          </div>
+          <div className="text-white font-theinhardt text-28 mt-3">
+            {"We'll be in touch!"}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   const appearance: Appearance = {
     theme: "night",
     variables: {
@@ -70,7 +90,7 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({ productDev }) => {
 
   const total = (
     (productDev.developmentFee + productDev.researchFee) *
-    0.8
+    0.5
   ).toFixed(2);
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
@@ -139,21 +159,21 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({ productDev }) => {
           <div className="ml-16 mr-6 border my-4" />
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200 text-xs">
             <div className="">
-              <div className="mb-0.5">80% due on initiation</div>
+              <div className="mb-0.5">50% due on initiation</div>
             </div>
             <div className="">
               <div className="mb-0.5">{`\$${
-                (productDev.developmentFee + productDev.researchFee) * 0.8
+                (productDev.developmentFee + productDev.researchFee) * 0.5
               }`}</div>
             </div>
           </div>
           <div className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200">
             <div className="">
-              <div className="text-xs mb-0.5">20% due on completion</div>
+              <div className="text-xs mb-0.5">50% due on completion</div>
             </div>
             <div className="">
               <div className="text-xs mb-0.5">{`\$${
-                (productDev.developmentFee + productDev.researchFee) * 0.2
+                (productDev.developmentFee + productDev.researchFee) * 0.5
               }`}</div>
             </div>
           </div>
