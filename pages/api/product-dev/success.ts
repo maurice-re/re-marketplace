@@ -30,6 +30,7 @@ export default async function handler(req: Request, res: Response) {
             data: {
                 companyId: company.id,
                 status: "PROCESSING",
+                initiationPaid: true
             }
         });
         res.status(200).send();
