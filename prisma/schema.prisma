@@ -55,7 +55,6 @@ model Company {
   locations           Location[]
   name                String
   orders              Order[]
-  productDevelopments ProductDevelopment[]
   sampleOrders        SampleOrder[]
   subscriptionType    SubscriptionType      @default(FREE)
   untracked           UntrackedInventory[]
@@ -159,19 +158,6 @@ model Product {
   skus       Sku[]
 }
 
-model ProductDevelopment {
-  id              String   @id
-  company         Company? @relation(fields: [companyId], references: [id])
-  companyId       String?
-  companyName     String
-  completionPaid  Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  developmentFee  Float
-  initiationPaid  Boolean  @default(false)
-  researchFee     Float
-  status          Status   @default(PROPOSED)
-}
-
 enum Region {
   NORTH_AMERICA
   ASIA
@@ -220,7 +206,6 @@ model Sku {
 }
 
 enum Status {
-  PROPOSED
   SUBMITTED
   ACCEPTED
   PROCESSING
