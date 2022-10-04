@@ -123,7 +123,9 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({ productDev }) => {
                   />
                 </svg>
               </div>
-              <div className="text-sm font-semibold mb-0.5">Research Fee</div>
+              <div className="text-sm font-semibold mb-0.5">
+                Design Research
+              </div>
             </div>
             <div className="text-sm font-semibold mb-0.5">{`$${productDev.researchFee}`}</div>
           </div>
