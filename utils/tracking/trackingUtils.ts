@@ -9,6 +9,8 @@ type Totals = {
     eol: number;
 }
 
+type ItemIdToLifetimeBorrowedProducts = Record<string, number>;
+
 function getTotalsBySku(events: Event[], sku: Sku): Totals {
     /* Given an array of Events, returns the total number of borrowed,
     returned, EOL'ed, and lost products of the given sku, in a Totals object. */
@@ -50,7 +52,7 @@ function getTotalsBySku(events: Event[], sku: Sku): Totals {
 }
 
 function getUniqueItemIds(events: Event[]): string[] {
-    /* Filters given events by unique itemId, and returns all unique item ids. */
+    /* Filters given events to return an array of events with distinct itemIds. */
 
     // Uncomment to get an array of uniqueItemId events instead
     // const uniqueItemIds: string[] = events.filter(
@@ -102,13 +104,49 @@ export function getLifetimeBorrowedProducts(events: Event[]): number {
     let lifetimeBorrowedProducts = 0;
     let uniqueItemIds: string[] = getUniqueItemIds(events);
 
-    console.log("uniqueItemIds:");
-    console.log(uniqueItemIds);
-
     const numUniqueItemIds = uniqueItemIds.length;
 
-    // TODO: For each unique ID, count the number of times a "BORROW" event occurred for that item
+    console.log("numUniqueItemIds:");
+    console.log(numUniqueItemIds);
 
+    // For each unique ID, count the number of times a "BORROW" event occurred for that item
+
+    // let itemIdToLifetimeBorrowedProducts : { [key:string]:number; } = {};
+    // let currBorrowed;
+
+    // events.forEach(event => {   
+    //     if (event.action == Action.BORROW) {
+    //         currBorrowed = 0;
+    //         if (itemIdToLifetimeBorrowedProducts[event.itemId]) {
+    //             currBorrowed = itemIdToLifetimeBorrowedProducts[event.itemId];
+    //         }
+    //         itemIdToLifetimeBorrowedProducts[event.itemId] = currBorrowed + 1;
+    //     }
+    // })
+
+    const itemIdToLifetimeBorrowedProducts: ItemIdToLifetimeBorrowedProducts = {};
+    let currBorrowed;
+
+    events.forEach(event => {   
+        if (event.action == Action.BORROW) {
+            currBorrowed = 0;
+            if (itemIdToLifetimeBorrowedProducts[event.itemId]) {
+                currBorrowed = itemIdToLifetimeBorrowedProducts[event.itemId];
+            }
+            itemIdToLifetimeBorrowedProducts[event.itemId] = currBorrowed + 1;
+        }
+    })
+    
+    console.log("itemIdToLifetimeBorrowedProducts:");
+    console.log(itemIdToLifetimeBorrowedProducts);
+
+    console.log("Object.keys(itemIdToLifetimeBorrowedProducts).length:");
+    console.log(Object.keys(itemIdToLifetimeBorrowedProducts).length);
+
+    Object.keys(itemIdToLifetimeBorrowedProducts).forEach(itemId => {
+        lifetimeBorrowedProducts += itemIdToLifetimeBorrowedProducts[itemId];
+    })
+    
     console.log("lifetimeBorrowedProducts: ", lifetimeBorrowedProducts);
 
     return lifetimeBorrowedProducts;
