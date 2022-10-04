@@ -6,8 +6,12 @@ import Sidebar from "../../../components/dashboard/sidebar";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import prisma from "../../../constants/prisma";
 import {
-  getCurrentBorrowedProductsBySku,
-  getLifetimeBorrowedProducts,
+  getItemsInUse,
+  getItemsInUseBySku,
+  getLifetimeUses,
+  getItemIds,
+  getReturnRate,
+  getReturnRateBySku,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -86,8 +90,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
   user,
   skus,
 }: TrackingProps) => {
-  const productsInUse = getCurrentBorrowedProductsBySku(events, skus[1]);
-  const lifetimeBorrowedProducts = getLifetimeBorrowedProducts(events);
+  const itemsInUseBySku = getItemsInUseBySku(events, skus[1]);
+  const itemsInUse = getItemsInUse(events);
+  const lifetimeUses = getLifetimeUses(events);
+  const numItemIds = getItemIds(events).length;
+  const returnRate = getReturnRate(events);
+  for (let i = 0; i < skus.length; i++) {
+    let returnRateBySku = getReturnRateBySku(events, skus[i]);
+  }
 
   return (
     <Sidebar>
