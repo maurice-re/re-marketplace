@@ -246,10 +246,43 @@ export function getItemsBorrowedByDay(month: number, year: number, daysInPastMon
     return itemsBorrowedByDay;
 }
 
-export function getDaysInPastMonth(month: number, year: number, events: Event[]): number[] {
+export function getItemsByDay(month: number, year: number, daysInPastMonth: number[], events: Event[], action: Action): number[] {
+    /* Returns an array of the number of items borrowed, returned, lost, or EOL'd day-by-day for 
+    the given month and year. Forms the "y-axis array" to be passed to chart-js. */
+    
+    console.log("In getItemsByDay");
+
+    let itemsByDay: number[] = new Array(daysInPastMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
+    let date: Date;
+    let matchedEvents: Event[];
+
+    daysInPastMonth.forEach(day => {
+        date = new Date(year, month-1, day); // month-1 b/c January is 0
+        matchedEvents = events.filter(event =>
+            ((new Date(event.timestamp)).getTime() === date.getTime()) && (event.action === action)
+        );
+
+        if (matchedEvents.length > 0) {
+            itemsByDay[day-1] += matchedEvents.length;
+        }
+    })
+
+    // let i = 0;
+    // itemsByDay.forEach(items => {
+    //     console.log("For day: ", i+1, ", items borrowed/returned/EOL'd/lost: ", items);
+    //     i++;
+    // })
+
+    console.log("itemsByDay: ");
+    console.log(itemsByDay);
+
+    return itemsByDay;
+}
+
+export function getDaysInMonth(month: number, year: number, events: Event[]): number[] {
     /* Returns an array of the days in the given month and year. Forms the "x-axis array" to be 
     passed to chart-js. */
-    console.log("In getDaysInPastMonth");
+    console.log("In getDaysInMonth");
 
     const days = new Date(year, month, 0).getDate();
     const daysInPastMonth = Array.from({length: days}, (_, i) => i + 1)

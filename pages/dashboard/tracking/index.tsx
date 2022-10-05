@@ -1,4 +1,4 @@
-import { Company, Event, Sku, User } from "@prisma/client";
+import { Company, Event, Sku, User, Action } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
@@ -12,8 +12,9 @@ import {
   getItemIds,
   getReturnRate,
   getReturnRateBySku,
-  getDaysInPastMonth,
+  getDaysInMonth,
   getItemsBorrowedByDay,
+  getItemsByDay,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -45,7 +46,7 @@ export const options = {
     },
     title: {
       display: true,
-      text: "Chart.js Line Chart",
+      text: "June Day-by-Day", // TODO: Figure out dynamic title
     },
   },
 };
@@ -69,17 +70,36 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const numItemIds = getItemIds(events).length;
   const returnRate = getReturnRate(events);
   const returnRateBySku = getReturnRateBySku(events, skus[1]);
-  let xAxis = getDaysInPastMonth(6, 2022, events);
-  let yAxis = getItemsBorrowedByDay(6, 2022, xAxis, events);
+  let daysInMonth = getDaysInMonth(6, 2022, events);
+  let itemsBorrowedDayByDay = getItemsByDay(
+    6,
+    2022,
+    daysInMonth,
+    events,
+    Action.BORROW
+  );
+  let itemsReturnedDayByDay = getItemsByDay(
+    6,
+    2022,
+    daysInMonth,
+    events,
+    Action.RETURN
+  );
 
   let dayByDayData = {
-    labels: xAxis,
+    labels: daysInMonth,
     datasets: [
       {
-        label: "Borrows Day-by-Day",
-        data: yAxis,
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        label: "Borrows",
+        data: itemsBorrowedDayByDay,
+        borderColor: "rgb(138, 254, 213)",
+        backgroundColor: "rgba(138, 254, 213, 0.5)",
+      },
+      {
+        label: "Returns",
+        data: itemsReturnedDayByDay,
+        borderColor: "rgb(61, 177, 137)",
+        backgroundColor: "rgba(61, 177, 137, 0.5)",
       },
     ],
   };
