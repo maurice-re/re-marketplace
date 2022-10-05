@@ -219,38 +219,29 @@ export function getItemsBorrowedByDay(month: number, year: number, daysInPastMon
     
     console.log("In getItemsBorrowedByDay");
 
-    let itemsBorrowedByDay: number[] = [];
+    let itemsBorrowedByDay: number[] = new Array(daysInPastMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
     let date: Date;
-    let event: Event;
-
-    console.log("Example");
-    console.log(events[0].timestamp);
-    console.log(new Date(events[0].timestamp));
+    let matchedEvents: Event[];
 
     daysInPastMonth.forEach(day => {
         date = new Date(year, month-1, day); // month-1 b/c January is 0
-        event = events.find(event => {
-            // console.log(event.timestamp); 
-            // console.log((new Date(event.timestamp)).getTime() === date.getTime());
-            return (new Date(event.timestamp)).getTime() === date.getTime();
-        });
+        matchedEvents = events.filter(event =>
+            ((new Date(event.timestamp)).getTime() === date.getTime()) && (event.action === Action.BORROW)
+        );
 
-        console.log(date);
-
-        if (event) {
-            console.log("Yes")
-            console.log(event)
-        } else {
-            console.log("No")
+        if (matchedEvents.length > 0) {
+            itemsBorrowedByDay[day-1] += matchedEvents.length;
         }
     })
 
     // let i = 0;
-    // events.forEach(event => {
-    //     // If the month, day, year matches what it needs to be, add to array
-    //     date = new Date(year, month-1, daysInPastMonth[i]);
-
+    // itemsBorrowedByDay.forEach(itemsBorrowed => {
+    //     console.log("For day: ", i+1, ", items borrowed: ", itemsBorrowed);
+    //     i++;
     // })
+
+    console.log("itemsBorrowedByDay: ");
+    console.log(itemsBorrowedByDay);
 
     return itemsBorrowedByDay;
 }
