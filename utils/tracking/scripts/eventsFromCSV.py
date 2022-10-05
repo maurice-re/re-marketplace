@@ -1,7 +1,5 @@
-from sqlite3 import Timestamp
 import requests
 import json
-import datetime
 import csv
 
 productSkuIdPairs = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB1-1.5-RPP-GRAY",

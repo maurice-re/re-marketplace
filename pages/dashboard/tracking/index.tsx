@@ -12,6 +12,8 @@ import {
   getItemIds,
   getReturnRate,
   getReturnRateBySku,
+  getDaysInPastMonth,
+  getItemsBorrowedByDay,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -95,9 +97,9 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const lifetimeUses = getLifetimeUses(events);
   const numItemIds = getItemIds(events).length;
   const returnRate = getReturnRate(events);
-  for (let i = 0; i < skus.length; i++) {
-    let returnRateBySku = getReturnRateBySku(events, skus[i]);
-  }
+  const returnRateBySku = getReturnRateBySku(events, skus[1]);
+  const xAxis = getDaysInPastMonth(5, 2022, events);
+  const yAxis = getItemsBorrowedByDay(5, 2022, xAxis, events);
 
   return (
     <Sidebar>

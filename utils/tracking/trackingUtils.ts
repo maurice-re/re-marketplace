@@ -10,8 +10,6 @@ type Totals = {
     eol: number;
 }
 
-type ItemIdToLifetimeBorrowedProducts = Record<string, number>;
-
 function getTotalsBySku(events: Event[], sku: Sku): Totals {
     /* Given an array of Events, returns the total number of borrowed,
     returned, EOL'ed, and lost products of the given sku, in a Totals object. */
@@ -134,7 +132,6 @@ export function getItemsInUse(events: Event[]): number {
     return itemsInUse;
 }
 
-// productsUsed, itemsInUse, numItemIds
 export function getItemsInUseBySku(events: Event[], sku: Sku): number {
     /* Returns the number of products borrowed that haven't currently been lost, 
     returned, or EOL'ed, for a given sku. */
@@ -180,11 +177,10 @@ export function getLifetimeUses(events: Event[]): number {
 }
 
 export function getReturnRate(events: Event[]): number {
-    /* Returns an average (approximation) of cumulative return rate by considering
-    all the borrowed and returned items. */
+    /* Returns an average (approximation) of cumulative return rate (%) by considering
+    all the borrowed and returned items. Expects that totalBorrowed and totalReturned are
+    greater than 0 (if not, returns NaN - to be handled in frontend). */
     
-    // TODO: handle 0 total borrowed
-
     console.log("In getReturnRate");
 
     const totals = getTotals(events);
@@ -200,9 +196,8 @@ export function getReturnRate(events: Event[]): number {
 }
 
 export function getReturnRateBySku(events: Event[], sku: Sku): number {
-    /* Returns the return rate for a particular sku. */
-
-    // TODO: handle 0 total borrowed
+    /* Returns the return rate (%) for a particular sku. Assumes that totalBorrowed and totalReturned
+    are both greater than 0 (if not, returns NaN - to be handled in frontend). */
 
     console.log("In getReturnRateBySku");
 
@@ -218,7 +213,58 @@ export function getReturnRateBySku(events: Event[], sku: Sku): number {
     return returnRateBySku;
 }
 
-export function getDailyBorrowedProducts(events: Event[]) {
-    /* Returns an array of the number of products borrowed day-by-day based on the passed Events. */
+export function getItemsBorrowedByDay(month: number, year: number, daysInPastMonth: number[], events: Event[]): number[] {
+    /* Returns an array of the number of items borrowed day-by-day for the given month and year. 
+    Forms the "y-axis array" to be passed to chart-js. */
     
+    console.log("In getItemsBorrowedByDay");
+
+    let itemsBorrowedByDay: number[] = [];
+    let date: Date;
+    let event: Event;
+
+    console.log("Example");
+    console.log(events[0].timestamp);
+    console.log(new Date(events[0].timestamp));
+
+    daysInPastMonth.forEach(day => {
+        date = new Date(year, month-1, day); // month-1 b/c January is 0
+        event = events.find(event => {
+            // console.log(event.timestamp); 
+            // console.log((new Date(event.timestamp)).getTime() === date.getTime());
+            return (new Date(event.timestamp)).getTime() === date.getTime();
+        });
+
+        console.log(date);
+
+        if (event) {
+            console.log("Yes")
+            console.log(event)
+        } else {
+            console.log("No")
+        }
+    })
+
+    // let i = 0;
+    // events.forEach(event => {
+    //     // If the month, day, year matches what it needs to be, add to array
+    //     date = new Date(year, month-1, daysInPastMonth[i]);
+
+    // })
+
+    return itemsBorrowedByDay;
+}
+
+export function getDaysInPastMonth(month: number, year: number, events: Event[]): number[] {
+    /* Returns an array of the days in the given month and year. Forms the "x-axis array" to be 
+    passed to chart-js. */
+    console.log("In getDaysInPastMonth");
+
+    const days = new Date(year, month, 0).getDate();
+    const daysInPastMonth = Array.from({length: days}, (_, i) => i + 1)
+    
+    console.log("daysInPastMonth:");
+    console.log(daysInPastMonth)
+    
+    return daysInPastMonth;
 }
