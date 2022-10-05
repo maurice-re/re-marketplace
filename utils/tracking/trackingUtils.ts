@@ -214,17 +214,17 @@ export function getReturnRateBySku(events: Event[], sku: Sku): number {
 }
 
 
-export function getItemsByDay(month: number, year: number, daysInPastMonth: number[], events: Event[], action: Action): number[] {
+export function getItemsByDay(month: number, year: number, daysInMonth: number[], events: Event[], action: Action): number[] {
     /* Returns an array of the number of items borrowed, returned, lost, or EOL'd day-by-day for 
     the given month and year. Forms the "y-axis array" to be passed to chart-js. */
     
     console.log("In getItemsByDay");
 
-    let itemsByDay: number[] = new Array(daysInPastMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
+    let itemsByDay: number[] = new Array(daysInMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
     let date: Date;
     let matchedEvents: Event[];
 
-    daysInPastMonth.forEach(day => {
+    daysInMonth.forEach(day => {
         date = new Date(year, month-1, day); // month-1 b/c January is 0
         matchedEvents = events.filter(event =>
             ((new Date(event.timestamp)).getTime() === date.getTime()) && (event.action === action)
@@ -247,16 +247,59 @@ export function getItemsByDay(month: number, year: number, daysInPastMonth: numb
     return itemsByDay;
 }
 
-export function getDaysInMonth(month: number, year: number, events: Event[]): number[] {
+export function getItemsByMonth(year: number, events: Event[], action: Action): number[] {
+    /* Returns an array of the number of items borrowed, returned, lost, or EOL'd month-by-month for 
+    the given year. Forms the "y-axis array" to be passed to chart-js. */
+    
+    console.log("In getItemsByDay");
+
+    let itemsByMonth: number[] = new Array(12).fill(0); // index 0 = "January"
+    let daysInMonth;
+    
+    for (let i=1; i<13; i++) { 
+        // getItemsByDay and getDaysInMonth follow the convention that month #1 = "January", but we 
+        // want index 0 of our array to have January's data
+        // so, we iterate from [1,12], but add to [0,11] respectively
+        daysInMonth = getDaysInMonth(i, year);
+
+        // TODO: For each month, calculate the total borrows and returns
+    }
+
+    // monthsInYear.forEach(day => {
+    //     date = new Date(year, month-1, day); // month-1 b/c January is 0
+    //     matchedEvents = events.filter(event =>
+    //         ((new Date(event.timestamp)).getTime() === date.getTime()) && (event.action === action)
+    //     );
+
+    //     if (matchedEvents.length > 0) {
+    //         itemsByMonth[day-1] += matchedEvents.length;
+    //     }
+    // })
+
+    console.log("itemsByMonth: ");
+    console.log(itemsByMonth);
+
+    return itemsByMonth;
+}
+
+export function getDaysInMonth(month: number, year: number): number[] {
     /* Returns an array of the days in the given month and year. Forms the "x-axis array" to be 
     passed to chart-js. */
     console.log("In getDaysInMonth");
 
     const days = new Date(year, month, 0).getDate();
-    const daysInPastMonth = Array.from({length: days}, (_, i) => i + 1)
+    const daysInMonth = Array.from({length: days}, (_, i) => i + 1)
     
-    console.log("daysInPastMonth:");
-    console.log(daysInPastMonth)
+    console.log("daysInMonth:");
+    console.log(daysInMonth)
     
-    return daysInPastMonth;
+    return daysInMonth;
+}
+
+export function getMonthsInYear(): string[] {
+    /* Returns an array of the months in a year. Forms the "x-axis array" to be 
+    passed to chart-js. */
+    console.log("In getMonthsInYear");
+    
+    return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 }

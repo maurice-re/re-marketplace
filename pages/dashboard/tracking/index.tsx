@@ -69,7 +69,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const numItemIds = getItemIds(events).length;
   const returnRate = getReturnRate(events);
   const returnRateBySku = getReturnRateBySku(events, skus[1]);
-  let daysInMonth = getDaysInMonth(6, 2022, events);
+  let daysInMonth = getDaysInMonth(6, 2022);
   let itemsBorrowedDayByDay = getItemsByDay(
     6,
     2022,
