@@ -26,7 +26,6 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import faker from "faker";
 
 ChartJS.register(
   CategoryScale,
@@ -51,34 +50,6 @@ export const options = {
   },
 };
 
-const labels = ["January", "February", "March", "April", "May", "June", "July"];
-
-const sample1 = labels.map(() =>
-  faker.datatype.number({ min: -1000, max: 1000 })
-);
-const sample2 = labels.map(() =>
-  faker.datatype.number({ min: -1000, max: 1000 })
-);
-console.log(sample1);
-console.log(sample2);
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: "Dataset 1",
-      data: sample1,
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-    },
-    {
-      label: "Dataset 2",
-      data: sample2,
-      borderColor: "rgb(53, 162, 235)",
-      backgroundColor: "rgba(53, 162, 235, 0.5)",
-    },
-  ],
-};
-
 type TrackingProps = {
   events: Event[];
   user: User & {
@@ -98,8 +69,22 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const numItemIds = getItemIds(events).length;
   const returnRate = getReturnRate(events);
   const returnRateBySku = getReturnRateBySku(events, skus[1]);
-  const xAxis = getDaysInPastMonth(5, 2022, events);
-  const yAxis = getItemsBorrowedByDay(5, 2022, xAxis, events);
+  let xAxis = getDaysInPastMonth(6, 2022, events);
+  let yAxis = getItemsBorrowedByDay(6, 2022, xAxis, events);
+
+  let dayByDayData = {
+    labels: xAxis,
+    datasets: [
+      {
+        label: "Borrows Day-by-Day",
+        data: yAxis,
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  };
+
+  console.log(dayByDayData);
 
   return (
     <Sidebar>
@@ -113,7 +98,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
           <div className="text-white font-theinhardt text-28">
             Track your products here, {user?.firstName}
           </div>
-          <Line options={options} data={data} />
+          <Line options={options} data={dayByDayData} />
         </main>
       </div>
     </Sidebar>
