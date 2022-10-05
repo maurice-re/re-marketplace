@@ -213,38 +213,6 @@ export function getReturnRateBySku(events: Event[], sku: Sku): number {
     return returnRateBySku;
 }
 
-export function getItemsBorrowedByDay(month: number, year: number, daysInPastMonth: number[], events: Event[]): number[] {
-    /* Returns an array of the number of items borrowed day-by-day for the given month and year. 
-    Forms the "y-axis array" to be passed to chart-js. */
-    
-    console.log("In getItemsBorrowedByDay");
-
-    let itemsBorrowedByDay: number[] = new Array(daysInPastMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
-    let date: Date;
-    let matchedEvents: Event[];
-
-    daysInPastMonth.forEach(day => {
-        date = new Date(year, month-1, day); // month-1 b/c January is 0
-        matchedEvents = events.filter(event =>
-            ((new Date(event.timestamp)).getTime() === date.getTime()) && (event.action === Action.BORROW)
-        );
-
-        if (matchedEvents.length > 0) {
-            itemsBorrowedByDay[day-1] += matchedEvents.length;
-        }
-    })
-
-    // let i = 0;
-    // itemsBorrowedByDay.forEach(itemsBorrowed => {
-    //     console.log("For day: ", i+1, ", items borrowed: ", itemsBorrowed);
-    //     i++;
-    // })
-
-    console.log("itemsBorrowedByDay: ");
-    console.log(itemsBorrowedByDay);
-
-    return itemsBorrowedByDay;
-}
 
 export function getItemsByDay(month: number, year: number, daysInPastMonth: number[], events: Event[], action: Action): number[] {
     /* Returns an array of the number of items borrowed, returned, lost, or EOL'd day-by-day for 

@@ -13,7 +13,6 @@ import {
   getReturnRate,
   getReturnRateBySku,
   getDaysInMonth,
-  getItemsBorrowedByDay,
   getItemsByDay,
 } from "../../../utils/tracking/trackingUtils";
 import {
