@@ -16,6 +16,7 @@ import {
   getMonthsInYear,
   getReuseRate,
   getEventsBySku,
+  getAvgDaysBetweenBorrowAndReturn,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -74,6 +75,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const reuseRateBySku = getReuseRate(eventsBySku);
   const returnRate = getReturnRate(events);
   const returnRateBySku = getReturnRate(eventsBySku);
+  const avgDaysBetweenBorrowAndReturn =
+    getAvgDaysBetweenBorrowAndReturn(events);
 
   let daysInMonth = getDaysInMonth(6, 2022);
   let itemsBorrowedDayByDay = getItemsByDay(

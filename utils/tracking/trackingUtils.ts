@@ -47,6 +47,32 @@ function getTotals(events: Event[]): Totals {
     return totals;
 }
 
+function getEventsByAction(events: Event[], action: Action): Event[] {
+    const eventsByAction = events.filter(event =>
+        event.action === action
+    );
+    return eventsByAction;
+}
+
+function sortByDate(events: Event[]): Event[] {
+    let aDate;
+    let bDate;
+    const sortedEvents = events.sort(
+        (a, b) => {
+            aDate = (new Date(a.timestamp)).getTime();
+            bDate = (new Date(b.timestamp)).getTime();
+            return (aDate > bDate) ? 1 : (aDate < bDate) ? -1 : 0;
+        }
+    );
+    return sortedEvents;
+}
+
+function sum(arr: number[]): number {
+    return arr.reduce((a, b) => {
+        return a + b;
+    }, 0)
+}
+
 export function getEventsBySku(events: Event[], sku: Sku): Event[] {
     const eventsBySku = events.filter(event =>
         event.skuId === sku.id
@@ -211,9 +237,7 @@ export function getItemsByMonth(year: number, events: Event[], action: Action): 
         // so, we iterate from [1,12], but modify [0,11] of the array respectively
         daysInMonth = getDaysInMonth(i, year);
         itemsByDay = getItemsByDay(i, year, daysInMonth, events, action);
-        itemsByMonth[i-1] = itemsByDay.reduce((a, b) => {
-            return a + b;
-        }, 0);
+        itemsByMonth[i-1] = sum(itemsByDay);
     }
 
     console.log("itemsByMonth: ");
@@ -242,4 +266,59 @@ export function getMonthsInYear(): string[] {
     console.log("In getMonthsInYear");
     
     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+}
+
+export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
+    /* Returns the average number of days between when an item is borrowed and returned. */
+
+    console.log("In getAvgDaysBetweenBorrowAndReturn");
+
+    let daysBetweenBorrowAndReturn: number[] = [];
+    let avgDaysBetweenBorrowAndReturn = 0;
+
+    // Consider all borrow-return pairs (included those for the same item)
+
+    // 1. Get all borrowEvents
+    // 2. Get all returnEvents
+    // 3. Sort the borrowEvents and returnEvents by time - first one in array is earliest date
+    // 4. For each borrowEvent, look for the earliest returnEvent with the same itemId
+        // If found, then add difference between dates for the borrow and return to array, and delete returnEvent
+    // 5. Once you've gone through each borrowEvent (with a gradually-reducing array of returnEvents),
+    // you may be left w some returnEvents w no corresponding borrow, and not all borrowEvents will have contributed
+    // to the daysBetweenBorrowAndReturn array - this is fine, just find the avg
+    
+    // Sort by time in case they aren't already
+    let borrowEvents = sortByDate(getEventsByAction(events, Action.BORROW));
+    let returnEvents = sortByDate(getEventsByAction(events, Action.RETURN));
+
+    let matchedReturnEvent;
+    let daysDiff = 0;
+    let returnTimestamp;
+    let borrowTimestamp;
+    borrowEvents.forEach(borrowEvent => {
+        matchedReturnEvent = returnEvents.find(returnEvent =>
+            returnEvent.itemId === borrowEvent.itemId
+        );
+        if (matchedReturnEvent) {
+            borrowTimestamp = (new Date(borrowEvent.timestamp)).getTime();
+            returnTimestamp = (new Date(matchedReturnEvent.timestamp)).getTime();
+            daysDiff = (returnTimestamp - borrowTimestamp) / (1000 * 60 * 60 * 24);
+            if (daysDiff >= 0) {
+                console.log("daysDiff ", daysDiff);
+                // Remove matchedReturnEvent from returnEvents
+                returnEvents.splice(returnEvents.indexOf(matchedReturnEvent), 1);
+                daysBetweenBorrowAndReturn.push(daysDiff);
+            }
+        }
+    })
+
+    console.log("daysBetweenBorrowAndReturn:");
+    console.log(daysBetweenBorrowAndReturn);
+
+    avgDaysBetweenBorrowAndReturn = sum(daysBetweenBorrowAndReturn) / daysBetweenBorrowAndReturn.length || 0;
+
+    console.log("avgDaysBetweenBorrowAndReturn:");
+    console.log(avgDaysBetweenBorrowAndReturn);
+
+    return avgDaysBetweenBorrowAndReturn;
 }
