@@ -180,39 +180,32 @@ export function getReuseRate(events: Event[]): number {
     /* Returns an average (approximation) of cumulative reuse rate (%), by dividing 
     items reused at least once by the total items used. Assumes that totalItems is greater
     than 0 (if not, returns NaN - to be handled in frontend). */
+    
+    console.log("In getReuseRate");
 
     let reuseRate = 0;
 
-    console.log("In getReuseRate");
-
-    let itemsUsed = getItemIds(events);
+    // to get itemsReused: calculate # of distinct items that appear at least twice
+    // to get itemsUsed: calculate # of distinct items
+    let itemsUsed = getItemIds(events); // arr of unique item ids
     let itemsReused = 0; 
-    let matchedEvents;
 
-    console.log(itemsUsed);
+    let matchedEvents;
 
     itemsUsed.forEach(itemId => {
         matchedEvents = events.filter(event =>
             event.itemId === itemId
         );
-
         if (matchedEvents.length >= 2) {
-            console.log("y");
             itemsReused += 1;
-        } else {
-            console.log("n")
-        }
+        } 
     })
 
-    // to get itemsReused: calculate # of distinct items that appear at least twice
-    // to get itemsUsed: calculate # of distinct items
+    reuseRate = (itemsReused/(itemsUsed.length)) * 100;
 
     console.log("reuseRate: ", reuseRate);
 
-
     return reuseRate;
-
-    // TODO
 }
 
 export function getReuseRateBySku(events: Event[], sku: Sku): number {
@@ -220,10 +213,35 @@ export function getReuseRateBySku(events: Event[], sku: Sku): number {
     the total items of that sku. Assumes that totalItems is greater than 0 (if not, returns NaN - 
     to be handled in frontend). */
 
-    let reuseRateBySku = 0;
-    return reuseRateBySku;
+    console.log("In getReuseRateBySku");
 
-    // TODO
+    let reuseRateBySku = 0;
+    
+    const skuEvents = events.filter(event =>
+        event.skuId === sku.id
+    );
+    
+    // to get itemsReusedBySku: calculate # of distinct items of this sku that appear at least twice
+    // to get itemsUsedBySku: calculate # of distinct items of this particular sku
+    let itemsUsedBySku = getItemIds(skuEvents); // arr of unique item ids of this particular sku
+    let itemsReusedBySku = 0; 
+
+    let matchedEvents;
+
+    itemsUsedBySku.forEach(itemId => {
+        matchedEvents = skuEvents.filter(event =>
+            event.itemId === itemId
+        );
+        if (matchedEvents.length >= 2) {
+            itemsReusedBySku += 1;
+        } 
+    })
+
+    reuseRateBySku = (itemsReusedBySku/(itemsUsedBySku.length)) * 100;
+
+    console.log("reuseRateBySku: ", reuseRateBySku);
+
+    return reuseRateBySku;
 }
 
 export function getReturnRate(events: Event[]): number {
