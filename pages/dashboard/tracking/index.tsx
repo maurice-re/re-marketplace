@@ -14,6 +14,8 @@ import {
   getReturnRateBySku,
   getDaysInMonth,
   getItemsByDay,
+  getItemsByMonth,
+  getMonthsInYear,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -84,7 +86,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
     events,
     Action.RETURN
   );
-
   let dayByDayData = {
     labels: daysInMonth,
     datasets: [
@@ -102,8 +103,28 @@ const TrackingHome: NextPage<TrackingProps> = ({
       },
     ],
   };
-
   console.log(dayByDayData);
+
+  let monthsInYear = getMonthsInYear();
+  let itemsBorrowedMonthByMonth = getItemsByMonth(2022, events, Action.BORROW);
+  let itemsReturnedMonthByMonth = getItemsByMonth(2022, events, Action.RETURN);
+  let monthByMonthData = {
+    labels: monthsInYear,
+    datasets: [
+      {
+        label: "Borrows",
+        data: itemsBorrowedMonthByMonth,
+        borderColor: "rgb(138, 254, 213)",
+        backgroundColor: "rgba(138, 254, 213, 0.5)",
+      },
+      {
+        label: "Returns",
+        data: itemsReturnedMonthByMonth,
+        borderColor: "rgb(61, 177, 137)",
+        backgroundColor: "rgba(61, 177, 137, 0.5)",
+      },
+    ],
+  };
 
   return (
     <Sidebar>
@@ -117,7 +138,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
           <div className="text-white font-theinhardt text-28">
             Track your products here, {user?.firstName}
           </div>
-          <Line options={options} data={dayByDayData} />
+          <Line options={options} data={monthByMonthData} />
         </main>
       </div>
     </Sidebar>
