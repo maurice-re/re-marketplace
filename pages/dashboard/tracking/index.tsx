@@ -16,6 +16,7 @@ import {
   getItemsByDay,
   getItemsByMonth,
   getMonthsInYear,
+  getReuseRate,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -69,6 +70,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const itemsInUse = getItemsInUse(events);
   const lifetimeUses = getLifetimeUses(events);
   const numItemIds = getItemIds(events).length;
+  const reuseRate = getReuseRate(events);
   const returnRate = getReturnRate(events);
   const returnRateBySku = getReturnRateBySku(events, skus[1]);
   let daysInMonth = getDaysInMonth(6, 2022);

@@ -176,6 +176,56 @@ export function getLifetimeUses(events: Event[]): number {
     return lifetimeUses;
 }
 
+export function getReuseRate(events: Event[]): number {
+    /* Returns an average (approximation) of cumulative reuse rate (%), by dividing 
+    items reused at least once by the total items used. Assumes that totalItems is greater
+    than 0 (if not, returns NaN - to be handled in frontend). */
+
+    let reuseRate = 0;
+
+    console.log("In getReuseRate");
+
+    let itemsUsed = getItemIds(events);
+    let itemsReused = 0; 
+    let matchedEvents;
+
+    console.log(itemsUsed);
+
+    itemsUsed.forEach(itemId => {
+        matchedEvents = events.filter(event =>
+            event.itemId === itemId
+        );
+
+        if (matchedEvents.length >= 2) {
+            console.log("y");
+            itemsReused += 1;
+        } else {
+            console.log("n")
+        }
+    })
+
+    // to get itemsReused: calculate # of distinct items that appear at least twice
+    // to get itemsUsed: calculate # of distinct items
+
+    console.log("reuseRate: ", reuseRate);
+
+
+    return reuseRate;
+
+    // TODO
+}
+
+export function getReuseRateBySku(events: Event[], sku: Sku): number {
+    /* Returns the reuse rate (%) for a particular sku, by dividing items reused at least once by
+    the total items of that sku. Assumes that totalItems is greater than 0 (if not, returns NaN - 
+    to be handled in frontend). */
+
+    let reuseRateBySku = 0;
+    return reuseRateBySku;
+
+    // TODO
+}
+
 export function getReturnRate(events: Event[]): number {
     /* Returns an average (approximation) of cumulative return rate (%) by considering
     all the borrowed and returned items. Expects that totalBorrowed and totalReturned are
@@ -196,8 +246,8 @@ export function getReturnRate(events: Event[]): number {
 }
 
 export function getReturnRateBySku(events: Event[], sku: Sku): number {
-    /* Returns the return rate (%) for a particular sku. Assumes that totalBorrowed and totalReturned
-    are both greater than 0 (if not, returns NaN - to be handled in frontend). */
+    /* Returns the return rate (%) for a particular sku, by dividing total returns by total borrows. 
+    Assumes that totalBorrowed is greater than 0 (if not, returns NaN - to be handled in frontend). */
 
     console.log("In getReturnRateBySku");
 
