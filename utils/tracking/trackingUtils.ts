@@ -1,53 +1,12 @@
 import { Action, Event, Sku } from "@prisma/client";
 
 // TODO: Make it so the totals only need to be calculate once (by sku and in total)
-// TODO: Abstract common functionalities between "BySku" vs. "in total"
 
 type Totals = {
     borrow: number;
     return: number;
     lost: number;
     eol: number;
-}
-
-function getTotalsBySku(events: Event[], sku: Sku): Totals {
-    /* Given an array of Events, returns the total number of borrowed,
-    returned, EOL'ed, and lost products of the given sku, in a Totals object. */
-
-    let totalLost = 0;
-    let totalBorrowed = 0;
-    let totalReturned = 0;
-    let totalEol = 0;
-
-    events.forEach(event => {   
-        if (event.skuId == sku.id) {
-            switch (event.action) {
-                case Action.BORROW:
-                    totalBorrowed += 1;
-                    break;
-                case Action.RETURN:
-                    totalReturned += 1;
-                    break;
-                case Action.EOL:
-                    totalEol += 1;
-                    break;
-                case Action.LOST:
-                    totalLost += 1;
-                    break;
-                default:
-                    break;
-            }
-        }
-    })
-
-    const totalsBySku: Totals = {
-        borrow: totalBorrowed,
-        return: totalReturned,
-        lost: totalLost,
-        eol: totalEol,
-    };
-
-    return totalsBySku;
 }
 
 function getTotals(events: Event[]): Totals {
@@ -88,6 +47,12 @@ function getTotals(events: Event[]): Totals {
     return totals;
 }
 
+export function getEventsBySku(events: Event[], sku: Sku): Event[] {
+    const eventsBySku = events.filter(event =>
+        event.skuId === sku.id
+    );
+    return eventsBySku;
+}
 
 export function getItemIds(events: Event[]): string[] {
     /* Filters given events to return an array of the distinct itemIds among the events. */
@@ -111,14 +76,14 @@ export function getItemsInUse(events: Event[]): number {
 
     console.log("In getItemsInUse");
 
-    const totalsBySku = getTotals(events);
+    const totals = getTotals(events);
 
     let itemsInUse;
 
-    const totalBorrowed = totalsBySku.borrow;
-    const totalLost = totalsBySku.lost;
-    const totalEol = totalsBySku.eol;
-    const totalReturned = totalsBySku.return;
+    const totalBorrowed = totals.borrow;
+    const totalLost = totals.lost;
+    const totalEol = totals.eol;
+    const totalReturned = totals.return;
 
     console.log("totalBorrowed: ", totalBorrowed);
     console.log("totalReturned: ", totalReturned);
@@ -132,44 +97,14 @@ export function getItemsInUse(events: Event[]): number {
     return itemsInUse;
 }
 
-export function getItemsInUseBySku(events: Event[], sku: Sku): number {
-    /* Returns the number of products borrowed that haven't currently been lost, 
-    returned, or EOL'ed, for a given sku. */
-    
-    // For a particular sku:
-    // # currently borrowed = (total # borrowed) - (total # returned) - (total # lost) - (total # EOL)
-
-    console.log("In getItemsInUseBySku");
-
-    const totalsBySku = getTotalsBySku(events, sku);
-
-    let itemsInUseBySku;
-
-    const totalBorrowed = totalsBySku.borrow;
-    const totalLost = totalsBySku.lost;
-    const totalEol = totalsBySku.eol;
-    const totalReturned = totalsBySku.return;
-
-    console.log("totalBorrowed: ", totalBorrowed);
-    console.log("totalReturned: ", totalReturned);
-    console.log("totalLost: ", totalLost);
-    console.log("totalEol: ", totalEol);
-
-    itemsInUseBySku = totalBorrowed - totalReturned - totalLost - totalEol;
-
-    console.log("itemsInUseBySku: ", itemsInUseBySku);
-
-    return itemsInUseBySku;
-}
-
 export function getLifetimeUses(events: Event[]): number {
     /* Returns the total number of times a BORROW event occurred. */
     
     console.log("In getLifetimeUses");
 
-    const totalsBySku = getTotals(events);
+    const totals = getTotals(events);
 
-    const lifetimeUses = totalsBySku.borrow;
+    const lifetimeUses = totals.borrow;
 
     console.log("lifetimeUses: ", lifetimeUses);
 
@@ -208,42 +143,6 @@ export function getReuseRate(events: Event[]): number {
     return reuseRate;
 }
 
-export function getReuseRateBySku(events: Event[], sku: Sku): number {
-    /* Returns the reuse rate (%) for a particular sku, by dividing items reused at least once by
-    the total items of that sku. Assumes that totalItems is greater than 0 (if not, returns NaN - 
-    to be handled in frontend). */
-
-    console.log("In getReuseRateBySku");
-
-    let reuseRateBySku = 0;
-    
-    const skuEvents = events.filter(event =>
-        event.skuId === sku.id
-    );
-    
-    // to get itemsReusedBySku: calculate # of distinct items of this sku that appear at least twice
-    // to get itemsUsedBySku: calculate # of distinct items of this particular sku
-    let itemsUsedBySku = getItemIds(skuEvents); // arr of unique item ids of this particular sku
-    let itemsReusedBySku = 0; 
-
-    let matchedEvents;
-
-    itemsUsedBySku.forEach(itemId => {
-        matchedEvents = skuEvents.filter(event =>
-            event.itemId === itemId
-        );
-        if (matchedEvents.length >= 2) {
-            itemsReusedBySku += 1;
-        } 
-    })
-
-    reuseRateBySku = (itemsReusedBySku/(itemsUsedBySku.length)) * 100;
-
-    console.log("reuseRateBySku: ", reuseRateBySku);
-
-    return reuseRateBySku;
-}
-
 export function getReturnRate(events: Event[]): number {
     /* Returns an average (approximation) of cumulative return rate (%) by considering
     all the borrowed and returned items. Expects that totalBorrowed and totalReturned are
@@ -262,25 +161,6 @@ export function getReturnRate(events: Event[]): number {
 
     return returnRate;
 }
-
-export function getReturnRateBySku(events: Event[], sku: Sku): number {
-    /* Returns the return rate (%) for a particular sku, by dividing total returns by total borrows. 
-    Assumes that totalBorrowed is greater than 0 (if not, returns NaN - to be handled in frontend). */
-
-    console.log("In getReturnRateBySku");
-
-    const totalsBySku = getTotalsBySku(events, sku);
-
-    const totalBorrowed = totalsBySku.borrow;
-    const totalReturned = totalsBySku.return;
-
-    const returnRateBySku = (totalReturned/totalBorrowed) * 100;
-
-    console.log("returnRateBySku: ", returnRateBySku);
-
-    return returnRateBySku;
-}
-
 
 export function getItemsByDay(month: number, year: number, daysInMonth: number[], events: Event[], action: Action): number[] {
     /* Returns an array of the number of items borrowed, returned, lost, or EOL'd day-by-day for 

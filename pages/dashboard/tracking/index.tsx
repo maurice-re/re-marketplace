@@ -7,17 +7,15 @@ import { authOptions } from "../../api/auth/[...nextauth]";
 import prisma from "../../../constants/prisma";
 import {
   getItemsInUse,
-  getItemsInUseBySku,
   getLifetimeUses,
   getItemIds,
   getReturnRate,
-  getReturnRateBySku,
   getDaysInMonth,
   getItemsByDay,
   getItemsByMonth,
   getMonthsInYear,
   getReuseRate,
-  getReuseRateBySku,
+  getEventsBySku,
 } from "../../../utils/tracking/trackingUtils";
 import {
   Chart as ChartJS,
@@ -67,14 +65,16 @@ const TrackingHome: NextPage<TrackingProps> = ({
   user,
   skus,
 }: TrackingProps) => {
-  const itemsInUseBySku = getItemsInUseBySku(events, skus[1]);
+  const eventsBySku = getEventsBySku(events, skus[1]);
+  const itemsInUseBySku = getItemsInUse(eventsBySku);
   const itemsInUse = getItemsInUse(events);
   const lifetimeUses = getLifetimeUses(events);
   const numItemIds = getItemIds(events).length;
   const reuseRate = getReuseRate(events);
-  const reuseRateBySku = getReuseRateBySku(events, skus[1]);
+  const reuseRateBySku = getReuseRate(eventsBySku);
   const returnRate = getReturnRate(events);
-  const returnRateBySku = getReturnRateBySku(events, skus[1]);
+  const returnRateBySku = getReturnRate(eventsBySku);
+
   let daysInMonth = getDaysInMonth(6, 2022);
   let itemsBorrowedDayByDay = getItemsByDay(
     6,
