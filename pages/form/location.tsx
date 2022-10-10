@@ -1,4 +1,3 @@
-import { Product, Sku } from "@prisma/client";
 import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
 import Image from "next/future/image";
@@ -9,18 +8,9 @@ import FormNextButton from "../../components/form/next-button";
 import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
 import { cities } from "../../constants/cities";
-import prisma from "../../constants/prisma";
 import { useFormStore } from "../../stores/formStore";
 
-type LocationProps = {
-  _skus: Sku[] | null;
-  _products: Product[] | null;
-};
-
-const LocationPage: NextPage<LocationProps> = ({
-  _skus,
-  _products,
-}: LocationProps) => {
+const LocationPage: NextPage = () => {
   const {
     addLocation,
     addSummary,
@@ -41,10 +31,13 @@ const LocationPage: NextPage<LocationProps> = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (_skus != null && _products != null) {
-      initializeCatalog(_skus, _products);
-    }
-  }, [_skus, _products, initializeCatalog]);
+    const fetchCatalog = async () => {
+      const products = await fetch("/api/product").then((res) => res.json());
+      const skus = await fetch("/api/sku").then((res) => res.json());
+      initializeCatalog(skus, products);
+    };
+    fetchCatalog();
+  }, [initializeCatalog]);
 
   useEffect(() => {
     if (router.query.checkout == "false") {
@@ -170,15 +163,3 @@ const LocationPage: NextPage<LocationProps> = ({
 };
 
 export default LocationPage;
-
-export async function getStaticProps() {
-  const products = await prisma.product.findMany();
-  const skus = await prisma.sku.findMany();
-
-  return {
-    props: {
-      _skus: JSON.parse(JSON.stringify(skus ?? null)),
-      _products: JSON.parse(JSON.stringify(products ?? null)),
-    },
-  };
-}
