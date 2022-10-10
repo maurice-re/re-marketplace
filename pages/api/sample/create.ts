@@ -1,11 +1,7 @@
 import { LocationType, Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-<<<<<<< HEAD
-import { SampleOrderOrders } from "../../../utils/sample/sampleUtils";
-=======
 import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";
->>>>>>> dev
 
 async function create(req: Request, res: Response) {
   const {
@@ -13,11 +9,7 @@ async function create(req: Request, res: Response) {
     form,
     customerId
     } : {
-<<<<<<< HEAD
-      transaction: SampleOrderOrders,
-=======
       transaction: SampleOrderWithSkuID,
->>>>>>> dev
       form: string[],
       customerId: string
     } = req.body;
