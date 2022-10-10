@@ -141,12 +141,18 @@ const TrackingHome: NextPage<TrackingProps> = ({
           <meta name="locations" content="Manage locations" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+        {events && events.length > 0 ? (
+          <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+            <div className="text-white font-theinhardt text-28">
+              Track your products here, {user?.firstName}
+            </div>
+            <Line options={options} data={monthByMonthData} />
+          </main>
+        ) : (
           <div className="text-white font-theinhardt text-28">
-            Track your products here, {user?.firstName}
+            You will see tracking data here once products are in circulation
           </div>
-          <Line options={options} data={monthByMonthData} />
-        </main>
+        )}
       </div>
     </Sidebar>
   );
