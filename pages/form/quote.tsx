@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import Image from "next/future/image";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 import AddressField from "../../components/form/address-field";
 import ProgressBar from "../../components/form/progress-bar";
@@ -11,28 +10,13 @@ import { useFormStore } from "../../stores/formStore";
 import { allLocations } from "../../utils/form/cart";
 
 const Quote: NextPage = () => {
-  const [eol, checkEol] = useState<boolean>(false);
-  const { cart, locations, skipToCheckout } = useFormStore((state) => ({
+  const { cart, locations, prettyString } = useFormStore((state) => ({
     cart: state.cart,
     locations: state.locations,
-    skipToCheckout: state.skipToCheckout,
+    prettyString: state.prettyString,
   }));
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  const { checkout } = router.query;
-
-  useEffect(() => {
-    if (typeof checkout == "string") {
-      skipToCheckout(checkout);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkout]);
-
-  const eolBorderColor = eol
-    ? " border-re-green-500 group-hover:border-re-green-700"
-    : " border-white group-hover:border-re-green-500";
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -56,9 +40,11 @@ const Quote: NextPage = () => {
       shippingInfo.push(formElements[i].value);
     }
     setIsLoading(true);
-    const message = `Customer info: ${shippingInfo} \n Cart ${JSON.stringify(
-      cart
-    )}`;
+    const message = `New quote requested through product matching tool! \n Name: ${
+      shippingInfo[0]
+    } \n Email: ${shippingInfo[1]} \n Company Name: ${
+      shippingInfo[2]
+    } \n Cart: ${prettyString()}`;
 
     await fetch("/api/mail/send-quote", {
       method: "POST",
@@ -143,25 +129,6 @@ const Quote: NextPage = () => {
           {items}
         </div>
         <div className="group relative px-2 pt-2">
-          {eol && (
-            <div className="bg-re-green-500 h-6 w-6 z-10 rounded-full pl-1 absolute right-0 top-0 group-hover:bg-re-green-700">
-              <Image
-                src="/icons/check.png"
-                height={10}
-                width={15}
-                alt="check mark"
-              />
-            </div>
-          )}
-          {/* <button
-            className={
-              "border-2 text-25 text-white font-theinhardt-300 py-1 px-6 rounded-10" +
-              eolBorderColor
-            }
-            onClick={() => checkEol((prev) => !prev)}
-          >
-            View EOL policy
-          </button> */}
           <form id="quote form" onSubmit={handleSubmit}>
             <div className=" w-96">
               <div className="pb-4 text-white">

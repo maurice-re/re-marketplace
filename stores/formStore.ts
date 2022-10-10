@@ -39,6 +39,7 @@ interface FormStore {
     getCity: (name: string) => string;
     initializeCatalog: (skus: Sku[], products: Product[]) => void;
     nextRoute: (index: number) => string;
+    prettyString: () => string;
     removeLocation: (location: string) => void;
     setCustomerId: (id: string) => void;
     skipToCheckout: (checkout: string) => void;
@@ -188,6 +189,11 @@ interface FormStore {
             return nextRoute.name;
         }
         return "";
+    },
+    prettyString: () => {
+        return get().cart.map((order) => {
+            return `${order.location}: ${order.quantity}x ${order.sku.size} ${order.product.name}`;
+        }).join(", ");
     },
     removeLocation: (location: string) =>
         set((state) => {

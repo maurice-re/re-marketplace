@@ -14,8 +14,8 @@ export default async function handler(req: Request, res: Response) {
   });
   const email = {
     from: "Maurice @ RE",
-    to: "maurice@re.company",
-    subject: "New Quote Requested",
+    to: "maurice@re.company, maddie@re.company, matt@re.company",
+    subject: "Product Matching Quote Requested",
     text: message,
   };
   await transporter.sendMail(email).catch(e => console.log(e));
