@@ -17,7 +17,7 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
     return calculatePriceFromCatalog(sku, sku.id, 1, 1.07);
   }
 
-  // TODO(Suhana): Quantity field in SampleTransaction is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
+  // TODO(Suhana): Quantity field in SampleOrder is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
 
   function handleItemPress(skuSelected: SkuProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);

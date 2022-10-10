@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, useState } from "react";
-
+import { TbCurrentLocation } from "react-icons/tb";
 type Route = {
   icon: JSX.Element;
   link: string;
@@ -62,6 +62,11 @@ function Sidebar({ children }: { children: ReactNode }) {
       ),
       link: "/dashboard/location",
       title: "Locations",
+    },
+    {
+      icon: <TbCurrentLocation size={20} />,
+      link: "/dashboard/tracking",
+      title: "Tracking",
     },
     {
       icon: (

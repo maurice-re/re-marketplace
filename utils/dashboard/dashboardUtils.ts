@@ -1,6 +1,22 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
+export type UserOrderItems = User & {
+  company: {
+    name: string;
+    customerId: string;
+  };
+  orders: (Order & {
+    items: (OrderItem & {
+      sku: SkuProduct;
+      location: {
+        displayName: string | null;
+        city: string;
+      };
+    })[];
+  })[];
+};
+
 export type ItemSkuProduct = OrderItem & {
   sku: Sku & {
     product: Product;
