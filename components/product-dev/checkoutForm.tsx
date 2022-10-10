@@ -3,23 +3,26 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
-import { useFormStore } from "../../stores/formStore";
-import { saveToLocalStorage } from "../../utils/form/localStorage";
-import AddressField from "./address-field";
-import DoubleAddressField from "./double-address-field";
+import AddressField from "../form/address-field";
+import DoubleAddressField from "../form/double-address-field";
 
-export default function CheckoutForm() {
+export default function CheckoutForm({
+  companyName,
+  customerId,
+  id,
+}: {
+  companyName: string;
+  customerId: string;
+  id: string;
+}) {
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { cart, locations, customerId } = useFormStore((state) => ({
-    cart: state.cart,
-    locations: state.locations,
-    customerId: state.customerId,
-  }));
 
   React.useEffect(() => {
     if (!stripe) {
@@ -57,15 +60,7 @@ export default function CheckoutForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    let shippingInfo: string[] = [];
-    for (let i = 0; i < formElements.length - 1; i++) {
-      shippingInfo.push(formElements[i].value);
-    }
-
-    saveToLocalStorage(
-      [cart, shippingInfo, locations, customerId],
-      ["cart", "shipping", "locations", "customerId"]
-    );
+    console.log(formElements);
 
     setIsLoading(true);
     if (stripe && elements) {
@@ -73,39 +68,35 @@ export default function CheckoutForm() {
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: window.location.origin + "/form/success",
+          return_url: window.location.origin + "/product-dev/success",
         },
+        redirect: "if_required",
       });
-
-      // This will only be reached if there is a payment error
-      if (error.type === "card_error" || error.type === "validation_error") {
-        setMessage(error.message ?? "error");
+      if (error) {
+        // This will only be reached if there is a payment error
+        if (error.type === "card_error" || error.type === "validation_error") {
+          setMessage(error.message ?? "error");
+        } else {
+          setMessage("An unexpected error occurred.");
+        }
       } else {
-        setMessage("An unexpected error occurred.");
+        await fetch("/api/product-dev/success", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: id,
+            companyName: companyName,
+            customerId: customerId,
+            firstName: formElements[0].value,
+            lastName: formElements[1].value,
+            email: formElements[2].value,
+          }),
+        });
+        router.replace("/product-dev/success");
       }
       setIsLoading(false);
     }
   };
-
-  const addresses = locations.map((city) => (
-    <div className="py-4" key={city}>
-      {locations.length > 1 ? (
-        <div className="text-lg font-semibold">{`${city} Shipping Address`}</div>
-      ) : (
-        <div className="text-lg font-semibold">{`Shipping Address`}</div>
-      )}
-      <AddressField placeholder="Name" top required />
-      <AddressField placeholder="Country" required />
-      <AddressField placeholder="Address Line 1" required />
-      <AddressField placeholder="Address Line 2" />
-      <DoubleAddressField
-        leftPlaceholder="City"
-        rightPlaceholder="Zip"
-        required
-      />
-      <AddressField placeholder="State" bottom required />
-    </div>
-  ));
 
   return (
     <form
@@ -123,10 +114,14 @@ export default function CheckoutForm() {
             required
           />
           <AddressField placeholder="Email" required />
-          <AddressField placeholder="Company Name" bottom required />
+          <AddressField
+            placeholder="Company Name"
+            bottom
+            required
+            value={companyName}
+          />
         </div>
       </div>
-      <div>{addresses}</div>
       <PaymentElement id="payment-element" className="my-4" />
       <div className="flex w-full place-content-center">
         <button

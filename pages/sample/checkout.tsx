@@ -1,27 +1,27 @@
 import { Elements } from "@stripe/react-stripe-js";
-import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
+import { Appearance, loadStripe } from "@stripe/stripe-js";
 import type { GetServerSideProps, NextPage } from "next";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
-import { SampleOrderOrders } from "../../utils/sample/sampleUtils";
+import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 
+import CheckoutForm from "../../components/sample/checkoutForm";
+import { saveToLocalStorage } from "../../utils/form/localStorage";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
-import CheckoutForm from "../../components/sample/checkoutForm";
-import { saveToLocalStorage } from "../../utils/form/localStorage";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
 type CheckoutProps = {
-  transaction: SampleOrderOrders;
+  transaction: SampleOrderWithSkuID;
   skus: SkuProduct[];
 };
 

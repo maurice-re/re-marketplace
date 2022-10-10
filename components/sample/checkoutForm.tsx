@@ -5,21 +5,20 @@ import {
 } from "@stripe/react-stripe-js";
 import React, { FormEvent, useState } from "react";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
-import { SampleOrderOrders } from "../../utils/sample/sampleUtils";
+import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
 
 export default function CheckoutForm({
   transaction,
 }: {
-  transaction: SampleOrderOrders;
+  transaction: SampleOrderWithSkuID;
 }) {
   const stripe = useStripe();
   const elements = useElements();
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const { cart, locations, customerId } = useFormState();
 
   React.useEffect(() => {
     if (!stripe) {

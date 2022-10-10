@@ -1,5 +1,5 @@
 import { SampleOrder } from "@prisma/client";
 
-export type SampleOrderOrders = SampleOrder & {
+export type SampleOrderWithSkuID = SampleOrder & {
   skuIds: string;
 };

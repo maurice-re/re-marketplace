@@ -1,8 +1,8 @@
 import { Product, Sku } from "@prisma/client";
 import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import Image from "next/future/image";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import FormNextButton from "../../components/form/next-button";
@@ -10,7 +10,7 @@ import ProgressBar from "../../components/form/progress-bar";
 import ReLogo from "../../components/form/re-logo";
 import { cities } from "../../constants/cities";
 import prisma from "../../constants/prisma";
-import { useFormState } from "../../context/form-context";
+import { useFormStore } from "../../stores/formStore";
 
 type LocationProps = {
   _skus: Sku[];
@@ -28,7 +28,14 @@ const LocationPage: NextPage<LocationProps> = ({
     initializeCatalog,
     locations,
     removeLocation,
-  } = useFormState();
+  } = useFormStore((state) => ({
+    addLocation: state.addLocation,
+    addSummary: state.addSummary,
+    disableCheckout: state.disableCheckout,
+    initializeCatalog: state.initializeCatalog,
+    locations: state.locations,
+    removeLocation: state.removeLocation,
+  }));
   const [query, setQuery] = useState<string>("");
   const [drawerOpen, toggleDrawer] = useState<boolean>();
   const router = useRouter();

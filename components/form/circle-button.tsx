@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/future/image";
 
 function FormCircleButton({
   handleClick,
@@ -39,7 +39,6 @@ function FormCircleButton({
             src={image}
             height={112}
             width={112}
-            objectFit={"cover"}
             alt={title}
             priority
             className=" invert"

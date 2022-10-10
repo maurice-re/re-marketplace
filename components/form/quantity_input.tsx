@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useFormState } from "../../context/form-context";
+import { useFormStore } from "../../stores/formStore";
 import { getPriceFromTable } from "../../utils/prisma/dbUtils";
 
 function SkuQuantityField({
@@ -12,14 +12,14 @@ function SkuQuantityField({
   productId: string;
   size: string;
 }) {
-  const {
-    addToCart,
-    calculatePrice,
-    canCheckout,
-    cart,
-    skuCatalog,
-    productCatalog,
-  } = useFormState();
+  const { addToCart, canCheckout, cart, skuCatalog, productCatalog } =
+    useFormStore((state) => ({
+      addToCart: state.addToCart,
+      canCheckout: state.canCheckout,
+      cart: state.cart,
+      skuCatalog: state.skuCatalog,
+      productCatalog: state.productCatalog,
+    }));
   const router = useRouter();
   const { city } = router.query;
 

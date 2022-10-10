@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import Confetti from "react-confetti";
-import { SampleOrderOrders } from "../../utils/sample/sampleUtils";
+import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 
 const Summary: NextPage = () => {
   useEffect(() => {
@@ -12,7 +12,7 @@ const Summary: NextPage = () => {
     const customerId: string | null = localStorage.getItem("customerId");
     // Send to Firebase
     if (transaction != null && shippingInfo != null) {
-      const jTransaction: SampleOrderOrders = JSON.parse(transaction);
+      const jTransaction: SampleOrderWithSkuID = JSON.parse(transaction);
       const jForm: string[] = JSON.parse(shippingInfo);
       create(jTransaction, jForm, customerId);
       localStorage.clear();
@@ -20,7 +20,7 @@ const Summary: NextPage = () => {
   }, []);
 
   async function create(
-    transaction: SampleOrderOrders,
+    transaction: SampleOrderWithSkuID,
     form: string[],
     customerId: string | null
   ) {

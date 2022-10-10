@@ -13,7 +13,6 @@ function Sidebar({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   function isActivePage(route: string): boolean {
-    console.log(router.pathname);
     return router.pathname == route;
   }
 
