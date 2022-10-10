@@ -1,5 +1,5 @@
-import { SampleTransaction } from "@prisma/client";
+import { SampleOrder } from "@prisma/client";
 
-export type SampleTransactionOrders = SampleTransaction & {
+export type SampleOrderOrders = SampleOrder & {
   skuIds: string;
 };

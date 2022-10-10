@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
-import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
+import { SampleOrderOrders } from "../../utils/sample/sampleUtils";
 
 import {
   calculatePriceFromCatalog,
@@ -21,7 +21,7 @@ const stripePromise = loadStripe(
 );
 
 type CheckoutProps = {
-  transaction: SampleTransactionOrders;
+  transaction: SampleOrderOrders;
   skus: SkuProduct[];
 };
 

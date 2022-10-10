@@ -2,7 +2,7 @@ import { Status } from "@prisma/client";
 import Image from "next/image";
 import { useState } from "react";
 import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils"; // TODO(Suhana): Stop using dashboardUtils for sample
-import { SampleTransactionOrders } from "../../utils/sample/sampleUtils";
+import { SampleOrderOrders } from "../../utils/sample/sampleUtils";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
@@ -17,7 +17,7 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
     return calculatePriceFromCatalog(sku, sku.id, 1, 1.07);
   }
 
-  // TODO(Suhana): Quantity field in SampleTransaction is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
+  // TODO(Suhana): Quantity field in SampleOrder is not used, and '1' is hardcoded as the quantity for each sku sample here - fix
 
   function handleItemPress(skuSelected: SkuProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
@@ -39,7 +39,7 @@ function SampleOrder({ skus }: { skus: SkuProduct[] }) {
       })
       .join(", ");
 
-    const transaction: SampleTransactionOrders = {
+    const transaction: SampleOrderOrders = {
       id: "",
       amount,
       createdAt: now,
