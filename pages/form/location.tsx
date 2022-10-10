@@ -13,8 +13,8 @@ import prisma from "../../constants/prisma";
 import { useFormStore } from "../../stores/formStore";
 
 type LocationProps = {
-  _skus: Sku[];
-  _products: Product[];
+  _skus: Sku[] | null;
+  _products: Product[] | null;
 };
 
 const LocationPage: NextPage<LocationProps> = ({
@@ -41,7 +41,9 @@ const LocationPage: NextPage<LocationProps> = ({
   const router = useRouter();
 
   useEffect(() => {
-    initializeCatalog(_skus, _products);
+    if (_skus != null && _products != null) {
+      initializeCatalog(_skus, _products);
+    }
   }, [_skus, _products, initializeCatalog]);
 
   useEffect(() => {
@@ -175,8 +177,8 @@ export async function getStaticProps() {
 
   return {
     props: {
-      _skus: JSON.parse(JSON.stringify(skus)),
-      _products: JSON.parse(JSON.stringify(products)),
+      _skus: JSON.parse(JSON.stringify(skus ?? null)),
+      _products: JSON.parse(JSON.stringify(products ?? null)),
     },
   };
 }
