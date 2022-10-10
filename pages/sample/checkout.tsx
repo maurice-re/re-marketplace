@@ -48,6 +48,7 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
       body: JSON.stringify({
         cost: total(),
         id: "",
+        sample: true,
       }),
     })
       .then((res) => res.json())
@@ -83,8 +84,8 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
             <Image
               src={sku.mainImage}
               alt={sku.product.name}
-              height={"100%"}
-              width={"100%"}
+              height={48}
+              width={48}
             />
           </div>
           <div>
