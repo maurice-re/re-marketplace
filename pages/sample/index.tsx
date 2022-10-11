@@ -5,11 +5,11 @@ import SampleOrder from "../../components/sample/sampleOrder";
 import prisma from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
 
-type HomeProps = {
+type SampleProps = {
   skus: SkuProduct[];
 };
 
-const Home: NextPage<HomeProps> = ({ skus }: HomeProps) => {
+const SampleHome: NextPage<SampleProps> = ({ skus }: SampleProps) => {
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
       <Head>
@@ -44,4 +44,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-export default Home;
+export default SampleHome;

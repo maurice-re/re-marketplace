@@ -1,4 +1,4 @@
-import { Location, Order, OrderItem, User } from "@prisma/client";
+import { Location } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
@@ -17,25 +17,10 @@ import {
   separateByLocationId,
   skuName,
   SkuProduct,
+  UserOrderItems,
 } from "../../utils/dashboard/dashboardUtils";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
-
-type UserOrderItems = User & {
-  company: {
-    name: string;
-    customerId: string;
-  };
-  orders: (Order & {
-    items: (OrderItem & {
-      sku: SkuProduct;
-      location: {
-        displayName: string | null;
-        city: string;
-      };
-    })[];
-  })[];
-};
 
 type HomeProps = {
   locations: Location[];
@@ -55,8 +40,6 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
     await signOut({ redirect: false });
     router.push("/");
   }
-  console.log("HELLO");
-  console.log(getOrderString(user.orders[0], undefined));
 
   const head = (
     <Head>
