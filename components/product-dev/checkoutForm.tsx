@@ -1,21 +1,27 @@
+import { Company } from "@prisma/client";
 import {
   PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
+import { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import React, { FormEvent, useState } from "react";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
 
 export default function CheckoutForm({
+  company,
   companyName,
   customerId,
   id,
+  paymentMethods,
 }: {
+  company: Company | null;
   companyName: string;
   customerId: string;
   id: string;
+  paymentMethods: PaymentMethod[];
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -23,6 +29,7 @@ export default function CheckoutForm({
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [dropdown, setDropdown] = useState<string>("");
 
   React.useEffect(() => {
     if (!stripe) {
@@ -122,6 +129,31 @@ export default function CheckoutForm({
           />
         </div>
       </div>
+      {company != null && (
+        <select
+          className={`w-full bg-stripe-gray border-white border rounded py-2 ${
+            dropdown == "new" ? "mb-2" : "mb-6"
+          }`}
+          value={dropdown}
+          onChange={(e) => setDropdown(e.target.value)}
+        >
+          <option value="" key="placeholder">
+            Choose a payment method
+          </option>
+          {paymentMethods.map((method) => (
+            <option
+              key={method.id}
+              value={method.id}
+            >{`${method.card?.brand} – ${method.card?.last4}`}</option>
+          ))}
+          <option value="new" key="new">
+            New payment method
+          </option>
+        </select>
+      )}
+      {dropdown == "new" && (
+        <PaymentElement id="payment-element" className="my-4" />
+      )}
       <PaymentElement id="payment-element" className="my-4" />
       <div className="flex w-full place-content-center">
         <button

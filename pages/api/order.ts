@@ -11,7 +11,7 @@ async function handler(req: Request, res: Response) {
   if (req.method == "POST") {
     const newOrder = await prisma.order.create({
         data: {
-            amount: getOrderStringTotal(orderString, skus, products, 1.07),
+            amount: getOrderStringTotal(orderString, products, skus, 1.07),
             companyId: companyId,
             createdAt: now,
             userId: userId

@@ -8,7 +8,12 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     async redirect({ url, baseUrl }) {
-      return `${baseUrl}/dashboard`
+      console.log(`url: ${url}`);
+      console.log(`base: ${baseUrl}`);
+      if (url.includes("/product-dev")) {
+        return url;
+      }
+      return `${baseUrl}`
     },
     async session({ session, user, token}) {
       session.user = user;

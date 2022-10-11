@@ -160,16 +160,18 @@ model Product {
 }
 
 model ProductDevelopment {
-  id              String   @id
-  company         Company? @relation(fields: [companyId], references: [id])
-  companyId       String?
-  companyName     String
-  completionPaid  Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  developmentFee  Float
-  initiationPaid  Boolean  @default(false)
-  researchFee     Float
-  status          Status   @default(PROPOSED)
+  id                String   @id
+  company           Company? @relation(fields: [companyId], references: [id])
+  companyId         String?
+  companyName       String
+  completionPaid    Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  developmentFee    Float
+  initiationPaid    Boolean  @default(false)
+  initiationPaidAt  DateTime?
+  researchFee       Float
+  split             Float    @default(0.7)
+  status            Status   @default(PROPOSED)
 }
 
 enum Region {

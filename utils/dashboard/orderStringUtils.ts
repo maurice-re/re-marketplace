@@ -6,7 +6,7 @@ import { OrderWithItems, separateByLocationId } from "./dashboardUtils";
 //locationId _ skuId ~ quantity _ skuId ~ quantity * locationId...
 
 
-export function getOrderStringTotal(orderString: string, skus: Sku[], products: Product[], tax?: number) {
+export function getOrderStringTotal(orderString: string, products: Product[], skus: Sku[], tax?: number) {
     const ordersByLocation = orderString.split("*");
     const orders = ordersByLocation.reduce((_orders, orderByLoc) => _orders.concat(orderByLoc.split("_").slice(1)), [] as String[]);
     return orders.reduce((total, order) => {
