@@ -173,9 +173,6 @@ function QuickOrder({
                     {loc.displayName ?? loc.city}
                   </option>
                 ))}
-                <option key="new" value={"new"}>
-                  New Location
-                </option>
               </select>
             </div>
             <Link

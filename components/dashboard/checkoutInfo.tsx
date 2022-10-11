@@ -1,8 +1,8 @@
 import {
   Company,
   Location,
-  LocationType,
   Product,
+  ProductDevelopment,
   Sku,
   User,
 } from "@prisma/client";
@@ -13,28 +13,35 @@ import {
 } from "@stripe/react-stripe-js";
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
-import React, { FormEvent, useState } from "react";
-import AddressField from "../form/address-field";
-import DoubleAddressField from "../form/double-address-field";
+import { FormEvent, useEffect, useState } from "react";
+import { CheckoutType } from "../../pages/dashboard/checkout";
+import Addresses from "../checkout/addresses";
+import Info from "../checkout/info";
 
 export default function CheckoutInfo({
   company,
+  customerId,
   locations,
   orderString,
-  paymentId,
+  paymentIntentId,
   paymentMethods,
+  productDevelopment,
   products,
   skus,
+  type,
   user,
 }: {
-  company: Company;
-  locations: Location[];
+  company: Company | null;
+  customerId: string;
+  locations: Location[] | null;
   orderString: string;
-  paymentId: string;
+  paymentIntentId: string;
   paymentMethods?: PaymentMethod[];
-  products: Product[];
-  skus: Sku[];
-  user: User;
+  productDevelopment: ProductDevelopment | null;
+  products: Product[] | null;
+  skus: Sku[] | null;
+  type: CheckoutType;
+  user: User | null;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -44,24 +51,18 @@ export default function CheckoutInfo({
   const [isLoading, setIsLoading] = useState(false);
   const [dropdown, setDropdown] = useState<string>("");
 
-  const ordersByLocation = orderString.split("*");
-  const locationIds = ordersByLocation.map(
-    (orderByLocation) => orderByLocation.split("_")[0]
-  );
+  console.log(paymentMethods);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!stripe) {
       return;
     }
-
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
-
     if (!clientSecret) {
       return;
     }
-
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
       if (paymentIntent) {
         switch (paymentIntent.status) {
@@ -82,65 +83,27 @@ export default function CheckoutInfo({
     });
   }, [stripe]);
 
-  async function addOrRemoveLocation(
-    action: string,
-    location?: Location,
-    locationId?: string
-  ): Promise<string | undefined> {
-    console.log(action);
-    if (action == "add" && location) {
-      const result = await fetch("/api/location", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ location: location }),
-      }).then(async (res) => await res.json());
-      return result.id as string;
-    }
-    if (action == "remove" && locationId) {
-      const result = await fetch("/api/location", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ locationId: locationId }),
-      });
-    }
-    return undefined;
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    console.log(formElements);
-
+    let hasError = false;
     setIsLoading(true);
 
-    // Save New Location
-    let newLocationId: string | undefined = undefined;
-    if (locationIds.includes("new")) {
-      console.log(formElements[0]);
-      const newLocation: Location = {
-        id: "",
-        city: formElements[4].value,
-        country: formElements[1].value,
-        companyId: company.id,
-        displayName: null,
-        line1: formElements[2].value,
-        line2: formElements[3].value,
-        trackingLocation: "",
-        shippingName: formElements[0].value,
-        state: formElements[6].value,
-        type: LocationType.SHIPPING,
-        zip: formElements[5].value,
-      };
-      newLocationId = await addOrRemoveLocation("add", newLocation, undefined);
-    }
+    const useNewPaymentMethod =
+      dropdown == "new" ||
+      (dropdown == "" && type == CheckoutType.SAMPLE) ||
+      (type == CheckoutType.PRODUCT_DEVELOPMENT && company == null);
 
     // Process payment with new payment method
-    if (stripe && elements && dropdown == "new") {
+    if (stripe && elements && useNewPaymentMethod) {
+      const redirectPathName = CheckoutType.ORDER
+        ? "/dashboard"
+        : "/product-dev/success";
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
-          return_url: window.location.origin + "/dashboard",
+          return_url: window.location.origin + redirectPathName,
         },
         redirect: "if_required",
       });
@@ -148,128 +111,74 @@ export default function CheckoutInfo({
       if (error) {
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
+          hasError = true;
           setMessage(error.message ?? "error");
         } else {
+          hasError = true;
           setMessage("An unexpected error occurred.");
         }
-        // Remove newly added location on error
-        if (newLocationId) {
-          await addOrRemoveLocation("remove", undefined, newLocationId);
-        }
-      } else {
-        let _orderString = orderString;
-        if (locationIds.includes("new") && newLocationId) {
-          _orderString = _orderString.replace(/new/g, newLocationId);
-        }
-        await fetch("/api/order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            companyId: company.id,
-            orderString: _orderString,
-            products: products,
-            skus: skus,
-            userId: user.id,
-          }),
-        });
-        router.replace("/dashboard");
+        return;
       }
     }
 
     // Process payment with existing payment method
     if (stripe && dropdown != "new" && dropdown != "") {
-      console.log("yep");
       await fetch("/api/payment/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          paymentId: paymentId,
+          paymentIntentId: paymentIntentId,
           paymentMethod: dropdown,
         }),
-      })
-        .then((res) => res.json())
-        .then(async (data) => {
-          if (data.status == "succeeded") {
-            let _orderString = orderString;
-            if (locationIds.includes("new") && newLocationId) {
-              _orderString = _orderString.replace(/new/g, newLocationId);
-            }
-            await fetch("/api/order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                companyId: company.id,
-                orderString: _orderString,
-                products: products,
-                skus: skus,
-                userId: user.id,
-              }),
-            });
-            router.replace("/dashboard");
-          }
-        })
-        .catch(async (error) => {
-          setMessage(error);
+      }).catch(async (error) => {
+        console.log(error);
+        hasError = true;
+        setMessage(error);
+        return;
+      });
+    }
 
-          // Remove newly added location on error
-          if (newLocationId) {
-            await addOrRemoveLocation("remove", undefined, newLocationId);
-          }
+    if (!hasError) {
+      if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
+        await fetch("/api/product-dev/success", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: productDevelopment.id,
+            companyId: productDevelopment.companyId,
+            companyName: productDevelopment.companyName,
+            customerId: customerId,
+            firstName: formElements[0].value,
+            lastName: formElements[1].value,
+            email: formElements[2].value,
+          }),
+        }).catch(async (error) => {
+          setMessage(error);
+          return;
         });
+        router.replace("/product-dev/success");
+        return;
+      } else if (type == CheckoutType.ORDER && company && user) {
+        await fetch("/api/order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            companyId: company.id,
+            orderString: orderString,
+            products: products,
+            skus: skus,
+            userId: user.id,
+          }),
+        }).catch(async (error) => {
+          setMessage(error);
+          return;
+        });
+      }
+      router.replace("/dashboard");
     }
 
     setIsLoading(false);
   };
-
-  const addresses = locationIds.map((locationId) => {
-    const location: Location | undefined = locations.find(
-      (loc) => loc.id == locationId
-    );
-    return (
-      <div className="py-4" key={locationId + "address"}>
-        {ordersByLocation.length > 1 ? (
-          <div className="text-lg font-semibold">{`${
-            location ? location.displayName ?? location.city : "New Location"
-          } Shipping Address`}</div>
-        ) : (
-          <div className="text-lg font-semibold">{`Shipping Address`}</div>
-        )}
-        <AddressField
-          placeholder="Name"
-          top
-          required
-          value={location?.shippingName!}
-        />
-        <AddressField
-          placeholder="Country"
-          required
-          value={location?.country!}
-        />
-        <AddressField
-          placeholder="Address Line 1"
-          required
-          value={location?.line1!}
-        />
-        <AddressField
-          placeholder="Address Line 2"
-          value={location?.line2 ?? ""}
-        />
-        <DoubleAddressField
-          leftPlaceholder="City"
-          leftValue={location?.city!}
-          rightPlaceholder="Zip"
-          rightValue={location?.zip!}
-          required
-        />
-        <AddressField
-          placeholder="State"
-          bottom
-          required
-          value={location?.state!}
-        />
-      </div>
-    );
-  });
 
   return (
     <form
@@ -277,8 +186,19 @@ export default function CheckoutInfo({
       onSubmit={handleSubmit}
       className="flex-col border-l border-grey-500 rounded px-10 py-4 h-full items-start overflow-auto"
     >
-      <div>{addresses}</div>
-      {paymentMethods && (
+      <div>
+        {Info({
+          productDevelopment: productDevelopment,
+          user: user,
+          type: type,
+        })}
+        {Addresses({
+          locations: locations,
+          orderString: orderString,
+          type: type,
+        })}
+      </div>
+      {company != null && paymentMethods && (
         <select
           className={`w-full bg-stripe-gray border-white border rounded py-2 ${
             dropdown == "new" ? "mb-2" : "mb-6"
@@ -293,14 +213,14 @@ export default function CheckoutInfo({
             <option
               key={method.id}
               value={method.id}
-            >{`${method.card?.brand} – ${method.card?.last4}`}</option>
+            >{`${method.us_bank_account?.account_type} – ${method.us_bank_account?.routing_number}`}</option>
           ))}
           <option value="new" key="new">
             New payment method
           </option>
         </select>
       )}
-      {dropdown == "new" && (
+      {(dropdown == "new" || company == null) && (
         <PaymentElement id="payment-element" className="my-4" />
       )}
       <div className="flex w-full place-content-center">
