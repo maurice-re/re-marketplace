@@ -22,7 +22,6 @@ export function getOrderString(order?: OrderWithItems, orderItem?: OrderItem) {
         const items = itemsByLocation.reduce((itemString, item) => {
           return itemString + `_${item.skuId}~${item.quantity}`
         }, "")
-        console.log(items)
         return orderString + (orderString == "" ? "" : "*") +`${itemsByLocation[0].locationId}${items}`
       }, "")
     }

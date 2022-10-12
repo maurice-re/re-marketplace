@@ -14,13 +14,14 @@ import {
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import { CheckoutType } from "../../pages/dashboard/checkout";
-import Addresses from "../checkout/addresses";
-import Info from "../checkout/info";
+import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
+import Addresses from "./addresses";
+import Info from "./info";
 
-export default function CheckoutInfo({
+export default function CheckoutForm({
   company,
   customerId,
+  eol,
   locations,
   orderString,
   paymentIntentId,
@@ -33,6 +34,7 @@ export default function CheckoutInfo({
 }: {
   company: Company | null;
   customerId: string;
+  eol: boolean;
   locations: Location[] | null;
   orderString: string;
   paymentIntentId: string;
@@ -50,8 +52,6 @@ export default function CheckoutInfo({
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dropdown, setDropdown] = useState<string>("");
-
-  console.log(paymentMethods);
 
   useEffect(() => {
     if (!stripe) {
@@ -99,7 +99,7 @@ export default function CheckoutInfo({
       const redirectPathName = CheckoutType.ORDER
         ? "/dashboard"
         : "/product-dev/success";
-      const { error } = await stripe.confirmPayment({
+      const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
@@ -107,8 +107,10 @@ export default function CheckoutInfo({
         },
         redirect: "if_required",
       });
+      console.log(paymentIntent);
 
       if (error) {
+        console.log("error", error);
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
           hasError = true;
@@ -123,24 +125,34 @@ export default function CheckoutInfo({
 
     // Process payment with existing payment method
     if (stripe && dropdown != "new" && dropdown != "") {
-      await fetch("/api/payment/confirm", {
+      const res = await fetch("/api/payment/charge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          customerId: customerId,
           paymentIntentId: paymentIntentId,
           paymentMethod: dropdown,
+          total: getCheckoutTotal(
+            orderString,
+            productDevelopment,
+            products,
+            skus,
+            type
+          ),
         }),
-      }).catch(async (error) => {
-        console.log(error);
-        hasError = true;
-        setMessage(error);
-        return;
       });
+      if (res.status != 200) {
+        hasError = true;
+        const { message } = await res.json();
+        setMessage(message);
+        setIsLoading(false);
+        return;
+      }
     }
 
     if (!hasError) {
       if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
-        await fetch("/api/product-dev/success", {
+        const res = await fetch("/api/product-development", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -152,11 +164,12 @@ export default function CheckoutInfo({
             lastName: formElements[1].value,
             email: formElements[2].value,
           }),
-        }).catch(async (error) => {
-          setMessage(error);
-          return;
         });
-        router.replace("/product-dev/success");
+        if (res.ok) {
+          router.replace("/product-dev/success");
+        } else {
+          setMessage("An unexpected error occurred.");
+        }
         return;
       } else if (type == CheckoutType.ORDER && company && user) {
         await fetch("/api/order", {
@@ -173,8 +186,8 @@ export default function CheckoutInfo({
           setMessage(error);
           return;
         });
+        router.replace("/dashboard");
       }
-      router.replace("/dashboard");
     }
 
     setIsLoading(false);
@@ -223,21 +236,61 @@ export default function CheckoutInfo({
       {(dropdown == "new" || company == null) && (
         <PaymentElement id="payment-element" className="my-4" />
       )}
+      {type == CheckoutType.ORDER && (
+        <button
+          onClick={() => document.getElementById("eol-modal")?.click()}
+          type="button"
+          disabled={isLoading || !stripe || !elements || dropdown == ""}
+          className={`btn modal-button text-center mb-6 w-full ${
+            eol ? "" : "btn-error btn-outline"
+          }`}
+        >
+          {eol ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.5 12.75l6 6 9-13.5"
+              />
+            </svg>
+          ) : (
+            "EOL Policy"
+          )}
+        </button>
+      )}
       <div className="flex w-full place-content-center">
         <button
-          disabled={isLoading || !stripe || !elements || dropdown == ""}
+          disabled={
+            isLoading ||
+            !stripe ||
+            !elements ||
+            dropdown == "" ||
+            (type == CheckoutType.ORDER && !eol)
+          }
           id="submit"
-          className=" bg-re-green-500 px-4 py-2 w-1/2 mb-4 rounded-md hover:bg-aquamarine-400 place-content-center flex"
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
+            isLoading ? "loading" : ""
+          }`}
         >
-          {isLoading ? (
-            <div className=" animate-spin h-6 w-6 border-t-2 border-l-2 border-black rounded-full" />
-          ) : (
-            <span className="text-black text-base font-medium">Pay now</span>
-          )}
+          Pay Now
         </button>
       </div>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {message && (
+        <div
+          id="payment-message"
+          className="font-theinhardt text-error text-center"
+        >
+          {message}
+        </div>
+      )}
     </form>
   );
 }

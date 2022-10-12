@@ -20,7 +20,6 @@ async function handler(req: Request, res: Response) {
     const orderItems: { amount: number; createdAt: Date; locationId: string; orderId: string, quantity: number; skuId: string; }[] = [];
     orderString.split("*").forEach(ordersByLocation => {
         const locationId = ordersByLocation.split("_")[0];
-        console.log(locationId);
         const ordersForLocation = ordersByLocation.split("_").slice(1);
         ordersForLocation.forEach(order => {
             const [skuId, quantity] = order.split("~");

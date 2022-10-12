@@ -67,7 +67,6 @@ export default function CheckoutForm({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    console.log(formElements);
 
     setIsLoading(true);
     if (stripe && elements) {

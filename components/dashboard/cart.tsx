@@ -79,13 +79,13 @@ function Cart({
         </button>
         <Link
           href={{
-            pathname: "/dashboard/checkout",
+            pathname: "/checkout",
             query: {
               orderString: orderString,
               companyId: companyId,
             },
           }}
-          as={`/dashboard/checkout/${new Date().getTime()}`}
+          as={`/checkout/${new Date().getTime()}`}
         >
           <button
             className="btn btn-sm btn-outline btn-accent"

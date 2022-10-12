@@ -22,7 +22,6 @@ const OrderHome: NextPage<OrderProps> = ({
   company,
   orderItems,
 }: OrderProps) => {
-  console.log(company);
   if (!orderItems || orderItems.length == 0 || !company) {
     return (
       <Sidebar>
@@ -107,7 +106,7 @@ const OrderHome: NextPage<OrderProps> = ({
                   <div className="card-actions justify-end">
                     <Link
                       href={{
-                        pathname: "/dashboard/checkout",
+                        pathname: "/checkout",
                         query: { orderString: getOrderString(undefined, item) },
                       }}
                     >

@@ -126,7 +126,6 @@ export function skuName(sku: SkuProduct): string {
 }
 
 function getLocationIds(orders: OrderItem[]): string[]{
-    console.log(orders)
     return orders.reduce((prev, curr) => {
         if(prev.includes(curr.locationId)) {
             return prev
@@ -138,13 +137,11 @@ function getLocationIds(orders: OrderItem[]): string[]{
 
 export function separateByLocationId(orders: OrderItem[]):OrderItem[][]  {
     const locationIds = getLocationIds(orders);
-    console.log(locationIds)
     let output: OrderItem[][] = [];
     locationIds.forEach(loc => {   
         const or = orders.filter(o => o.locationId == loc);
         output.push(or)
     })
-    console.log(output);
     return output
     }
 

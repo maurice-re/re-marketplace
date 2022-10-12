@@ -36,20 +36,6 @@ const Summary: NextPage = () => {
     ? " border-re-green-500 group-hover:border-re-green-700"
     : " border-white group-hover:border-re-green-500";
 
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-    if (query.get("success")) {
-      console.log("Order placed! You will receive an email confirmation.");
-    }
-
-    if (query.get("canceled")) {
-      console.log(
-        "Order canceled -- continue to shop around and checkout when you’re ready."
-      );
-    }
-  }, []);
-
   let items: JSX.Element[] = [];
   allLocations(cart).forEach((city) => {
     let first = 1;

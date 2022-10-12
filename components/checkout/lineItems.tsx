@@ -1,6 +1,6 @@
 import { Location, Product, ProductDevelopment, Sku } from ".prisma/client";
 import Image from "next/future/image";
-import { CheckoutType } from "../../pages/dashboard/checkout";
+import { CheckoutType } from "../../utils/checkoutUtils";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
@@ -20,8 +20,9 @@ export default function LineItems({
   products: Product[] | null;
   skus: Sku[] | null;
   type: CheckoutType;
-}) {
-  let items: (JSX.Element | JSX.Element[])[] = [];
+}): JSX.Element[] {
+  console.log(orderString);
+  let items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     items.push(
@@ -88,6 +89,7 @@ export default function LineItems({
   }
 
   if (type == CheckoutType.ORDER && products && skus && locations) {
+    console.log("HI");
     orderString.split("*").forEach((ordersByLocation) => {
       const locationId = ordersByLocation.split("_")[0];
       const lineItems = ordersByLocation.split("_").slice(1);
@@ -102,10 +104,9 @@ export default function LineItems({
           </div>
         );
       }
-      items.push(
+      items = items.concat(
         lineItems.map((lineItem) => {
           const [skuId, quantity] = lineItem.split("~");
-          console.log(orderString);
           const sku: Sku = skus.find((s) => s.id == skuId)!;
           const product: Product = products.find(
             (p) => (p.id = sku.productId)
@@ -166,6 +167,7 @@ export default function LineItems({
       );
     });
   }
+  console.log(items);
 
   return items;
 }

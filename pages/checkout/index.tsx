@@ -12,20 +12,14 @@ import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import CheckoutForm from "../../components/checkout/form";
 import LineItems from "../../components/checkout/lineItems";
 import Totals from "../../components/checkout/totals";
-import CheckoutInfo from "../../components/dashboard/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
+import { eolPolicy } from "../../constants/policy";
 import prisma from "../../constants/prisma";
-import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
+import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
-
-export enum CheckoutType {
-  ERROR,
-  ORDER,
-  PRODUCT_DEVELOPMENT,
-  SAMPLE,
-}
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -50,7 +44,7 @@ type CheckoutProps = {
   user: User | null;
 };
 
-const DashboardCheckout: NextPage<CheckoutProps> = ({
+const Checkout: NextPage<CheckoutProps> = ({
   company,
   locations,
   orderString,
@@ -66,39 +60,31 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
   const [customerId, setCustomerId] = useState(
     company ? company.customerId : ""
   );
+  const [eol, setEol] = useState(false);
 
   useEffect(() => {
     fetch("/api/payment/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        cost: getTotal(),
+        cost: getCheckoutTotal(
+          orderString,
+          productDevelopment,
+          products,
+          skus,
+          type
+        ),
         id: customerId,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId ?? "");
         setPaymentMethods(data.paymentMethods ?? []);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function getTotal(): number {
-    if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
-      return (
-        (productDevelopment.developmentFee + productDevelopment.researchFee) *
-        productDevelopment.split
-      );
-    }
-
-    if (type == CheckoutType.ORDER && products && skus) {
-      return getOrderStringTotal(orderString, products, skus, 1.07);
-    }
-    return 0;
-  }
 
   const options = {
     clientSecret,
@@ -112,11 +98,40 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ReLogo />
+      <input type="checkbox" id="eol-modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Agree to our End Of Life Policy</h3>
+          <p className="py-4">{eolPolicy}</p>
+          <div className="modal-action">
+            <label
+              htmlFor="eol-modal"
+              className="btn btn-error btn-outline"
+              onClick={() => setEol(false)}
+            >
+              Disagree
+            </label>
+            <label
+              htmlFor="eol-modal"
+              className="btn btn-accent btn-outline"
+              onClick={() => setEol(true)}
+            >
+              Agree
+            </label>
+          </div>
+        </div>
+      </div>
 
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
-          <h1 className=" text-4xl font-semibold pb-4">{`$${getTotal()}`}</h1>
+          <h1 className=" text-4xl font-semibold pb-4">{`$${getCheckoutTotal(
+            orderString,
+            productDevelopment,
+            products,
+            skus,
+            type
+          )}`}</h1>
           {LineItems({
             locations: locations,
             orderString: orderString,
@@ -138,9 +153,10 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
           {clientSecret && (
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutInfo
+              <CheckoutForm
                 company={company}
                 customerId={customerId}
+                eol={eol}
                 locations={locations}
                 orderString={orderString}
                 paymentMethods={paymentMethods}
@@ -171,7 +187,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       if (productDev == null) {
         return { props: { type: CheckoutType.ERROR } };
       } else if (productDev.companyId == null) {
-        console.log("MEE");
         return {
           props: {
             productDevelopment: JSON.parse(JSON.stringify(productDev)),
@@ -247,4 +262,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: {} };
 };
 
-export default DashboardCheckout;
+export default Checkout;

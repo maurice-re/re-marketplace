@@ -1,5 +1,5 @@
 import { Product, ProductDevelopment, Sku } from ".prisma/client";
-import { CheckoutType } from "../../pages/dashboard/checkout";
+import { CheckoutType } from "../../utils/checkoutUtils";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 
 export default function Totals({
@@ -14,8 +14,8 @@ export default function Totals({
   products: Product[] | null;
   skus: Sku[] | null;
   type: CheckoutType;
-}) {
-  let items: (JSX.Element | JSX.Element[])[] = [];
+}): JSX.Element[] {
+  let items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     const total = (

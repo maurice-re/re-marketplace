@@ -17,7 +17,6 @@ const Summary: NextPage = () => {
     const customerId: string | null = localStorage.getItem("customerId");
     // Send to Firebase
     if (cart != null && shippingInfo != null && customerId != null) {
-      console.log("fetch");
       const jCart: CartOrder[] = JSON.parse(cart);
       const jForm: string[] = JSON.parse(shippingInfo);
       const jId: string = JSON.parse(customerId);
