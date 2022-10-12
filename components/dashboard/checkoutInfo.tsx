@@ -123,24 +123,26 @@ export default function CheckoutInfo({
 
     // Process payment with existing payment method
     if (stripe && dropdown != "new" && dropdown != "") {
-      await fetch("/api/payment/confirm", {
+      const res = await fetch("/api/payment/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           paymentIntentId: paymentIntentId,
           paymentMethod: dropdown,
         }),
-      }).catch(async (error) => {
-        console.log(error);
-        hasError = true;
-        setMessage(error);
-        return;
       });
+      if (res.status != 200) {
+        hasError = true;
+        const { message } = await res.json();
+        setMessage(message);
+        setIsLoading(false);
+        return;
+      }
     }
 
     if (!hasError) {
       if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
-        await fetch("/api/product-dev/success", {
+        const res = await fetch("/api/product-dev/success", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -152,11 +154,12 @@ export default function CheckoutInfo({
             lastName: formElements[1].value,
             email: formElements[2].value,
           }),
-        }).catch(async (error) => {
-          setMessage(error);
-          return;
         });
-        router.replace("/product-dev/success");
+        if (res.ok) {
+          router.replace("/product-dev/success");
+        } else {
+          setMessage("An unexpected error occurred.");
+        }
         return;
       } else if (type == CheckoutType.ORDER && company && user) {
         await fetch("/api/order", {
@@ -173,8 +176,8 @@ export default function CheckoutInfo({
           setMessage(error);
           return;
         });
+        router.replace("/dashboard");
       }
-      router.replace("/dashboard");
     }
 
     setIsLoading(false);
@@ -227,17 +230,22 @@ export default function CheckoutInfo({
         <button
           disabled={isLoading || !stripe || !elements || dropdown == ""}
           id="submit"
-          className=" bg-re-green-500 px-4 py-2 w-1/2 mb-4 rounded-md hover:bg-aquamarine-400 place-content-center flex"
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
+            isLoading ? "loading" : ""
+          }`}
         >
-          {isLoading ? (
-            <div className=" animate-spin h-6 w-6 border-t-2 border-l-2 border-black rounded-full" />
-          ) : (
-            <span className="text-black text-base font-medium">Pay now</span>
-          )}
+          Pay Now
         </button>
       </div>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {message && (
+        <div
+          id="payment-message"
+          className="font-theinhardt text-error text-center"
+        >
+          {message}
+        </div>
+      )}
     </form>
   );
 }

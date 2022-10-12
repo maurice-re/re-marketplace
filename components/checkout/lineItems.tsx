@@ -20,8 +20,8 @@ export default function LineItems({
   products: Product[] | null;
   skus: Sku[] | null;
   type: CheckoutType;
-}) {
-  let items: (JSX.Element | JSX.Element[])[] = [];
+}): JSX.Element[] {
+  let items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     items.push(
@@ -102,7 +102,7 @@ export default function LineItems({
           </div>
         );
       }
-      items.push(
+      items.concat(
         lineItems.map((lineItem) => {
           const [skuId, quantity] = lineItem.split("~");
           console.log(orderString);

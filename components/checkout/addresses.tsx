@@ -11,8 +11,8 @@ export default function Addresses({
   locations: Location[] | null;
   orderString: string;
   type: CheckoutType;
-}) {
-  let items: (JSX.Element | JSX.Element[])[] = [];
+}): JSX.Element[] {
+  let items: JSX.Element[] = [];
 
   if (type == CheckoutType.ORDER && locations) {
     const ordersByLocation = orderString.split("*");
@@ -69,7 +69,7 @@ export default function Addresses({
         </div>
       );
     });
-    items.push(addresses);
+    items.concat(addresses);
   }
 
   return items;

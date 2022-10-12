@@ -7,13 +7,17 @@ export default async function handler(req: Request, res: Response) {
   const { paymentIntentId, paymentMethod } = req.body;
   console.log(`paymentId ${paymentIntentId}`);
   console.log(`paymentMethod ${paymentMethod}`);
-  const paymentIntent = await stripe.paymentIntents.confirm(paymentIntentId, {
+  try {
+
+    await stripe.paymentIntents.confirm(paymentIntentId, {
+      capture_method: "automatic",
     off_session: false,
     payment_method: paymentMethod,
-    setup_future_usage: "off_session",
-  });
-
-  res.send({
-    status: paymentIntent.status,
-  });
+  })
+} catch (error) {
+  res.status(500).send({message: (error as Error).message});
+  return;
+}
+  console.log("success");
+  res.status(200).json({ statusCode: 200, message: "success" }).send();;
 }

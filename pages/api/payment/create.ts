@@ -27,11 +27,11 @@ export default async function handler(req: Request, res: Response) {
       id,
       {type: "us_bank_account"}
     )
+    
     const paymentIntent = await stripe.paymentIntents.create({
       amount: parseInt((cost * 100).toFixed(0)),
       currency: "usd",
       customer: customerId,
-      setup_future_usage: "off_session",
       payment_method_types: ["us_bank_account"],
     });
     res.send({

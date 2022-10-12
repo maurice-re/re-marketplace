@@ -11,8 +11,8 @@ export default function Info({
   productDevelopment: ProductDevelopment | null;
   type: CheckoutType;
   user: User | null;
-}) {
-  let items: (JSX.Element | JSX.Element[])[] = [];
+}): JSX.Element[] {
+  let items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     items.push(
