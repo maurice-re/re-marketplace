@@ -1,5 +1,5 @@
 import { Location } from ".prisma/client";
-import { CheckoutType } from "../../pages/checkout";
+import { CheckoutType } from "../../utils/checkoutUtils";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
 

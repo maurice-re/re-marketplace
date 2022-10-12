@@ -18,15 +18,8 @@ import Totals from "../../components/checkout/totals";
 import ReLogo from "../../components/form/re-logo";
 import { eolPolicy } from "../../constants/policy";
 import prisma from "../../constants/prisma";
-import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
+import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
-
-export enum CheckoutType {
-  ERROR,
-  ORDER,
-  PRODUCT_DEVELOPMENT,
-  SAMPLE,
-}
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -74,7 +67,13 @@ const Checkout: NextPage<CheckoutProps> = ({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        cost: getTotal(),
+        cost: getCheckoutTotal(
+          orderString,
+          productDevelopment,
+          products,
+          skus,
+          type
+        ),
         id: customerId,
       }),
     })
@@ -86,20 +85,6 @@ const Checkout: NextPage<CheckoutProps> = ({
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function getTotal(): number {
-    if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
-      return (
-        (productDevelopment.developmentFee + productDevelopment.researchFee) *
-        productDevelopment.split
-      );
-    }
-
-    if (type == CheckoutType.ORDER && products && skus) {
-      return getOrderStringTotal(orderString, products, skus, 1.07);
-    }
-    return 0;
-  }
 
   const options = {
     clientSecret,
@@ -140,7 +125,13 @@ const Checkout: NextPage<CheckoutProps> = ({
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
           <h2 className="text-lg">Pay Re Company</h2>
-          <h1 className=" text-4xl font-semibold pb-4">{`$${getTotal()}`}</h1>
+          <h1 className=" text-4xl font-semibold pb-4">{`$${getCheckoutTotal(
+            orderString,
+            productDevelopment,
+            products,
+            skus,
+            type
+          )}`}</h1>
           {LineItems({
             locations: locations,
             orderString: orderString,

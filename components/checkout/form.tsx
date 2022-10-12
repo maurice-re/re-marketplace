@@ -14,8 +14,7 @@ import {
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import { CheckoutType } from "../../pages/checkout";
-import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
+import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import Addresses from "./addresses";
 import Info from "./info";
 
@@ -84,20 +83,6 @@ export default function CheckoutForm({
     });
   }, [stripe]);
 
-  function getTotal(): number {
-    if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
-      return (
-        (productDevelopment.developmentFee + productDevelopment.researchFee) *
-        productDevelopment.split
-      );
-    }
-
-    if (type == CheckoutType.ORDER && products && skus) {
-      return getOrderStringTotal(orderString, products, skus, 1.07);
-    }
-    return 0;
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
@@ -147,7 +132,13 @@ export default function CheckoutForm({
           customerId: customerId,
           paymentIntentId: paymentIntentId,
           paymentMethod: dropdown,
-          total: getTotal(),
+          total: getCheckoutTotal(
+            orderString,
+            productDevelopment,
+            products,
+            skus,
+            type
+          ),
         }),
       });
       if (res.status != 200) {
