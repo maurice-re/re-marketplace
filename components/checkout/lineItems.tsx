@@ -105,7 +105,6 @@ export default function LineItems({
       items.concat(
         lineItems.map((lineItem) => {
           const [skuId, quantity] = lineItem.split("~");
-          console.log(orderString);
           const sku: Sku = skus.find((s) => s.id == skuId)!;
           const product: Product = products.find(
             (p) => (p.id = sku.productId)
