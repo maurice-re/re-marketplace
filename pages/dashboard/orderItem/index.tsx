@@ -106,7 +106,7 @@ const OrderHome: NextPage<OrderProps> = ({
                   <div className="card-actions justify-end">
                     <Link
                       href={{
-                        pathname: "/dashboard/checkout",
+                        pathname: "/checkout",
                         query: { orderString: getOrderString(undefined, item) },
                       }}
                     >

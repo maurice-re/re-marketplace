@@ -12,10 +12,11 @@ import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import CheckoutForm from "../../components/checkout/form";
 import LineItems from "../../components/checkout/lineItems";
 import Totals from "../../components/checkout/totals";
-import CheckoutInfo from "../../components/dashboard/checkoutInfo";
 import ReLogo from "../../components/form/re-logo";
+import { eolPolicy } from "../../constants/policy";
 import prisma from "../../constants/prisma";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import { authOptions } from "../api/auth/[...nextauth]";
@@ -50,7 +51,7 @@ type CheckoutProps = {
   user: User | null;
 };
 
-const DashboardCheckout: NextPage<CheckoutProps> = ({
+const Checkout: NextPage<CheckoutProps> = ({
   company,
   locations,
   orderString,
@@ -66,6 +67,7 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
   const [customerId, setCustomerId] = useState(
     company ? company.customerId : ""
   );
+  const [eol, setEol] = useState(false);
 
   useEffect(() => {
     fetch("/api/payment/create", {
@@ -111,6 +113,29 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ReLogo />
+      <input type="checkbox" id="eol-modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Agree to our End Of Life Policy</h3>
+          <p className="py-4">{eolPolicy}</p>
+          <div className="modal-action">
+            <label
+              htmlFor="eol-modal"
+              className="btn btn-error btn-outline"
+              onClick={() => setEol(false)}
+            >
+              Disagree
+            </label>
+            <label
+              htmlFor="eol-modal"
+              className="btn btn-accent btn-outline"
+              onClick={() => setEol(true)}
+            >
+              Agree
+            </label>
+          </div>
+        </div>
+      </div>
 
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
         <div className="flex-column items-start w-1/2 h-full overflow-auto mr-4">
@@ -137,9 +162,10 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
           {clientSecret && (
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutInfo
+              <CheckoutForm
                 company={company}
                 customerId={customerId}
+                eol={eol}
                 locations={locations}
                 orderString={orderString}
                 paymentMethods={paymentMethods}
@@ -245,4 +271,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return { props: {} };
 };
 
-export default DashboardCheckout;
+export default Checkout;

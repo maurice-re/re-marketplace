@@ -1,6 +1,6 @@
 import { Location, Product, ProductDevelopment, Sku } from ".prisma/client";
 import Image from "next/future/image";
-import { CheckoutType } from "../../pages/dashboard/checkout";
+import { CheckoutType } from "../../pages/checkout";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
@@ -21,6 +21,7 @@ export default function LineItems({
   skus: Sku[] | null;
   type: CheckoutType;
 }): JSX.Element[] {
+  console.log(orderString);
   let items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
@@ -88,6 +89,7 @@ export default function LineItems({
   }
 
   if (type == CheckoutType.ORDER && products && skus && locations) {
+    console.log("HI");
     orderString.split("*").forEach((ordersByLocation) => {
       const locationId = ordersByLocation.split("_")[0];
       const lineItems = ordersByLocation.split("_").slice(1);
@@ -102,7 +104,7 @@ export default function LineItems({
           </div>
         );
       }
-      items.concat(
+      items = items.concat(
         lineItems.map((lineItem) => {
           const [skuId, quantity] = lineItem.split("~");
           const sku: Sku = skus.find((s) => s.id == skuId)!;
@@ -165,6 +167,7 @@ export default function LineItems({
       );
     });
   }
+  console.log(items);
 
   return items;
 }

@@ -23,7 +23,6 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({
   productDev,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [signedIn, setSignedIn] = useState(loggedIn);
   const [errorText, setErrorText] = useState("");
   const router = useRouter();
 
@@ -37,15 +36,15 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({
       productDev != null &&
       productDev.initiationPaid == false &&
       productDev.companyId != null &&
-      signedIn;
+      loggedIn;
 
     if (isNewCompany || isLoggedIn) {
       router.push({
-        pathname: "/dashboard/checkout",
+        pathname: "/checkout",
         query: { orderString: `product-development~${productDev.id}` },
       });
     }
-  }, [signedIn, productDev, router]);
+  }, [loggedIn, productDev, router]);
 
   if (productDev == null) {
     return (

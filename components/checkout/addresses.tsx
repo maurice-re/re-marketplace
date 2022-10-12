@@ -1,5 +1,5 @@
 import { Location } from ".prisma/client";
-import { CheckoutType } from "../../pages/dashboard/checkout";
+import { CheckoutType } from "../../pages/checkout";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
 
@@ -69,7 +69,7 @@ export default function Addresses({
         </div>
       );
     });
-    items.concat(addresses);
+    items = items.concat(addresses);
   }
 
   return items;

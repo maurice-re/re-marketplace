@@ -14,13 +14,15 @@ import {
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
-import { CheckoutType } from "../../pages/dashboard/checkout";
-import Addresses from "../checkout/addresses";
-import Info from "../checkout/info";
+import { CheckoutType } from "../../pages/checkout";
+import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
+import Addresses from "./addresses";
+import Info from "./info";
 
-export default function CheckoutInfo({
+export default function CheckoutForm({
   company,
   customerId,
+  eol,
   locations,
   orderString,
   paymentIntentId,
@@ -33,6 +35,7 @@ export default function CheckoutInfo({
 }: {
   company: Company | null;
   customerId: string;
+  eol: boolean;
   locations: Location[] | null;
   orderString: string;
   paymentIntentId: string;
@@ -81,6 +84,20 @@ export default function CheckoutInfo({
     });
   }, [stripe]);
 
+  function getTotal(): number {
+    if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
+      return (
+        (productDevelopment.developmentFee + productDevelopment.researchFee) *
+        productDevelopment.split
+      );
+    }
+
+    if (type == CheckoutType.ORDER && products && skus) {
+      return getOrderStringTotal(orderString, products, skus, 1.07);
+    }
+    return 0;
+  }
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formElements = (e.target as any).elements as HTMLInputElement[];
@@ -97,7 +114,7 @@ export default function CheckoutInfo({
       const redirectPathName = CheckoutType.ORDER
         ? "/dashboard"
         : "/product-dev/success";
-      const { error } = await stripe.confirmPayment({
+      const { paymentIntent, error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
@@ -105,8 +122,10 @@ export default function CheckoutInfo({
         },
         redirect: "if_required",
       });
+      console.log(paymentIntent);
 
       if (error) {
+        console.log("error", error);
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
           hasError = true;
@@ -121,12 +140,14 @@ export default function CheckoutInfo({
 
     // Process payment with existing payment method
     if (stripe && dropdown != "new" && dropdown != "") {
-      const res = await fetch("/api/payment/confirm", {
+      const res = await fetch("/api/payment/charge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          customerId: customerId,
           paymentIntentId: paymentIntentId,
           paymentMethod: dropdown,
+          total: getTotal(),
         }),
       });
       if (res.status != 200) {
@@ -140,7 +161,7 @@ export default function CheckoutInfo({
 
     if (!hasError) {
       if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
-        const res = await fetch("/api/product-dev/success", {
+        const res = await fetch("/api/product-development", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -224,9 +245,44 @@ export default function CheckoutInfo({
       {(dropdown == "new" || company == null) && (
         <PaymentElement id="payment-element" className="my-4" />
       )}
+      {type == CheckoutType.ORDER && (
+        <button
+          onClick={() => document.getElementById("eol-modal")?.click()}
+          type="button"
+          disabled={isLoading || !stripe || !elements || dropdown == ""}
+          className={`btn modal-button text-center mb-6 w-full ${
+            eol ? "" : "btn-error btn-outline"
+          }`}
+        >
+          {eol ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4.5 12.75l6 6 9-13.5"
+              />
+            </svg>
+          ) : (
+            "EOL Policy"
+          )}
+        </button>
+      )}
       <div className="flex w-full place-content-center">
         <button
-          disabled={isLoading || !stripe || !elements || dropdown == ""}
+          disabled={
+            isLoading ||
+            !stripe ||
+            !elements ||
+            dropdown == "" ||
+            (type == CheckoutType.ORDER && !eol)
+          }
           id="submit"
           className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
             isLoading ? "loading" : ""

@@ -1,5 +1,5 @@
 import { Product, ProductDevelopment, Sku } from ".prisma/client";
-import { CheckoutType } from "../../pages/dashboard/checkout";
+import { CheckoutType } from "../../pages/checkout";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 
 export default function Totals({
