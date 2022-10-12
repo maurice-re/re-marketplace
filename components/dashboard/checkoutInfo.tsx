@@ -51,8 +51,6 @@ export default function CheckoutInfo({
   const [isLoading, setIsLoading] = useState(false);
   const [dropdown, setDropdown] = useState<string>("");
 
-  console.log(paymentMethods);
-
   useEffect(() => {
     if (!stripe) {
       return;

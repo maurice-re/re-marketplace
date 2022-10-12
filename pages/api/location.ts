@@ -30,8 +30,6 @@ async function handler(req: Request, res: Response) {
   }
 
   if (req.method == "GET" && typeof companyId == "string") {
-    console.log(withItems)
-    console.log(withItems == "true")
     if (withItems == "true") {
       const locations = await prisma.location.findMany({
         where: {

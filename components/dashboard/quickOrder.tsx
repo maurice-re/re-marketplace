@@ -26,7 +26,6 @@ function QuickOrder({
   const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
     []
   );
-  console.log(skuIdQuantity);
   const [location, setLocation] = useState<string>(
     locations.length > 1 ? locations[0].id : "new"
   );

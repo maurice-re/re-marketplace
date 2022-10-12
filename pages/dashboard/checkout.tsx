@@ -78,7 +78,6 @@ const DashboardCheckout: NextPage<CheckoutProps> = ({
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setClientSecret(data.clientSecret);
         setPaymentIntentId(data.paymentIntentId ?? "");
         setPaymentMethods(data.paymentMethods ?? []);
@@ -171,7 +170,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       if (productDev == null) {
         return { props: { type: CheckoutType.ERROR } };
       } else if (productDev.companyId == null) {
-        console.log("MEE");
         return {
           props: {
             productDevelopment: JSON.parse(JSON.stringify(productDev)),

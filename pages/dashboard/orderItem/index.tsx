@@ -22,7 +22,6 @@ const OrderHome: NextPage<OrderProps> = ({
   company,
   orderItems,
 }: OrderProps) => {
-  console.log(company);
   if (!orderItems || orderItems.length == 0 || !company) {
     return (
       <Sidebar>
