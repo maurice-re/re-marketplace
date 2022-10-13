@@ -26,7 +26,6 @@ function QuickOrder({
   const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
     []
   );
-  console.log(skuIdQuantity);
   const [location, setLocation] = useState<string>(
     locations.length > 1 ? locations[0].id : "new"
   );
@@ -177,13 +176,13 @@ function QuickOrder({
             </div>
             <Link
               href={{
-                pathname: "/dashboard/checkout",
+                pathname: "/checkout",
                 query: {
                   orderString: createOrderString(),
                   companyId: companyId,
                 },
               }}
-              as={`/dashboard/checkout/${new Date().getTime()}`}
+              as={`/checkout/${new Date().getTime()}`}
             >
               <button className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black">
                 Buy now

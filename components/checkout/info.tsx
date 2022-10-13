@@ -1,5 +1,5 @@
 import { ProductDevelopment, User } from "@prisma/client";
-import { CheckoutType } from "../../pages/dashboard/checkout";
+import { CheckoutType } from "../../utils/checkoutUtils";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
 
@@ -11,8 +11,8 @@ export default function Info({
   productDevelopment: ProductDevelopment | null;
   type: CheckoutType;
   user: User | null;
-}) {
-  let items: (JSX.Element | JSX.Element[])[] = [];
+}): JSX.Element[] {
+  let items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     items.push(

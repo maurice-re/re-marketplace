@@ -91,7 +91,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                     </h1>
                     <Link
                       href={{
-                        pathname: "/dashboard/checkout",
+                        pathname: "/checkout",
                         query: { orderString: getOrderString(user.orders[0]) },
                       }}
                     >
@@ -174,7 +174,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                                 <div className="flex items-center mx-6">
                                   <Link
                                     href={{
-                                      pathname: "/dashboard/checkout",
+                                      pathname: "/checkout",
                                       query: {
                                         orderString: getOrderString(
                                           undefined,

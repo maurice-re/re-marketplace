@@ -37,7 +37,6 @@ const SignUp: NextPage = () => {
       }),
     }).then((res) => {
       if (res.status != 200) {
-        console.log(res);
         setErrorText(
           res.status == 409 ? "User already exists" : res.statusText
         );

@@ -1,34 +1,34 @@
-import { Company, Event, Sku, User, Action } from "@prisma/client";
+import { Action, Company, Event, Sku, User } from "@prisma/client";
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+} from "chart.js";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
+import { Line } from "react-chartjs-2";
 import Sidebar from "../../../components/dashboard/sidebar";
-import { authOptions } from "../../api/auth/[...nextauth]";
 import prisma from "../../../constants/prisma";
 import {
-  getItemsInUse,
-  getLifetimeUses,
-  getItemIds,
-  getReturnRate,
+  getAvgDaysBetweenBorrowAndReturn,
   getDaysInMonth,
+  getEventsBySku,
+  getItemIds,
   getItemsByDay,
   getItemsByMonth,
+  getItemsInUse,
+  getLifetimeUses,
   getMonthsInYear,
+  getReturnRate,
   getReuseRate,
-  getEventsBySku,
-  getAvgDaysBetweenBorrowAndReturn,
 } from "../../../utils/tracking/trackingUtils";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 ChartJS.register(
   CategoryScale,
@@ -110,7 +110,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
       },
     ],
   };
-  console.log(dayByDayData);
 
   let monthsInYear = getMonthsInYear();
   let itemsBorrowedMonthByMonth = getItemsByMonth(2022, events, Action.BORROW);

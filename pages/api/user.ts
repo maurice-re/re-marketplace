@@ -7,7 +7,6 @@ const stripe: Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 async function user(req: Request, res: Response) {
   if (req.method != "POST") {
-    console.log(req.method)
     res.status(400).send();
     return;
   }
