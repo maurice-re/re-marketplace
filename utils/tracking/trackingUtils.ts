@@ -332,20 +332,10 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
     const earliestTimestamp = new Date(sortedEvents[0].timestamp);
     const earliestMonth = earliestTimestamp.getMonth() + 1; // change 0-indexing so that 1 means January
     const earliestYear = earliestTimestamp.getFullYear();
-    console.log(earliestMonth);
-    console.log(earliestYear);
 
     const latestTimestamp = new Date(sortedEvents[sortedEvents.length - 1].timestamp);
     const latestMonth = latestTimestamp.getMonth() + 1;
     const latestYear = latestTimestamp.getFullYear();
-    console.log(latestMonth);
-    console.log(latestYear);
-
-    console.log("p");
-    console.log(sortedEvents[sortedEvents.length-1])
-    console.log(new Date(sortedEvents[sortedEvents.length-1].timestamp))
-    console.log(new Date(sortedEvents[sortedEvents.length-1].timestamp).getMonth())
-    console.log("q");
 
     let currMonth = earliestMonth;
     let currYear = earliestYear;
@@ -381,7 +371,48 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
     monthYears.push(monthYear);
 
     // Reverse array so latest is first
-    console.log("monthYears:")
-    console.log(monthYears)
+    monthYears = monthYears.reverse();
+
+    console.log("monthYears:");
+    console.log(monthYears);
     return monthYears;
+}
+
+export function getYearsForMonthlyDropdown(events: Event[]): string[] {
+    console.log("In getYearsForMonthlyDropdown")
+    let years: string[] = [];
+
+    const sortedEvents = sortByDate(events);
+
+    const earliestTimestamp = new Date(sortedEvents[0].timestamp);
+    const earliestYear = earliestTimestamp.getFullYear();
+
+    const latestTimestamp = new Date(sortedEvents[sortedEvents.length - 1].timestamp);
+    const latestYear = latestTimestamp.getFullYear();
+
+    let currYear = earliestYear;
+    let year: string;
+
+    let found;
+    while (!(currYear == latestYear)) {
+        year = currYear.toString();
+        if (!years.includes(year)) {
+            found = sortedEvents.find(event => (new Date(event.timestamp)).getFullYear() === currYear
+            );
+            if (found) {
+                years.push(year);
+            }
+        }
+        currYear++;
+    }
+    // Add last item
+    year = currYear.toString();
+    years.push(year);
+
+    // Reverse array so latest is first
+    years = years.reverse();
+
+    console.log("years:");
+    console.log(years);
+    return years;
 }

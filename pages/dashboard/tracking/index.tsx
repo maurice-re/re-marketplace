@@ -29,6 +29,7 @@ import {
   getMonthYearsForDailyDropdown,
   getReturnRate,
   getReuseRate,
+  getYearsForMonthlyDropdown,
 } from '../../../utils/tracking/trackingUtils'
 import { authOptions } from '../../api/auth/[...nextauth]'
 
@@ -192,6 +193,16 @@ const TrackingHome: NextPage<TrackingProps> = ({
     setData(selectedData)
   }
 
+  function getFormattedMonthYear(monthYear: string): string {
+    // 6,2022 -> June 2022
+    const monthYearArr = monthYear.split(',')
+    const formattedMonthYear =
+      monthsInYear[parseInt(monthYearArr[0]) - 1] +
+      ' ' +
+      parseInt(monthYearArr[1])
+    return formattedMonthYear
+  }
+
   let stats: Statistic[] = []
   stats.push({
     title: 'In-use',
@@ -231,7 +242,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const reuseRateBySku = getReuseRate(eventsBySku)
   const returnRateBySku = getReturnRate(eventsBySku)
 
-  const monthYears = getMonthYearsForDailyDropdown(events)
+  const allMonthYears = getMonthYearsForDailyDropdown(events)
+  const allYears = getYearsForMonthlyDropdown(events)
 
   let options = {
     responsive: true,
@@ -244,9 +256,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
         text:
           graphTimePeriod === 'monthly'
             ? `Month-by-Month for ${yearForMonthly}`
-            : `Day-by-Day for ${
-                monthsInYear[parseInt(monthYearForDaily.split(',')[0]) - 1]
-              } ${parseInt(monthYearForDaily.split(',')[1])}`,
+            : `Day-by-Day for ${getFormattedMonthYear(monthYearForDaily)}`,
       },
     },
   }
@@ -318,8 +328,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
                       </label>
                     </div>
                   </div>
-                  {/* TODO(Suhana): Get these months and days dynamically */}
-                  {/* TODO(Suhana): Make the first one shown the latest one */}
                   {graphTimePeriod === 'monthly' && (
                     <div className="form-control w-full max-w-xs mt-2">
                       <select
@@ -327,8 +335,11 @@ const TrackingHome: NextPage<TrackingProps> = ({
                         value={yearForMonthly}
                         onChange={handleYearForMonthlyChange}
                       >
-                        <option value={'2022'}>2022</option>
-                        <option value={'2023'}>2023</option>
+                        {allYears.map((year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   )}
@@ -339,8 +350,11 @@ const TrackingHome: NextPage<TrackingProps> = ({
                         value={monthYearForDaily}
                         onChange={handleMonthYearForDailyChange}
                       >
-                        <option value={'9,2022'}>09/2022</option>
-                        <option value={'8,2022'}>08/2022</option>
+                        {allMonthYears.map((monthYear) => (
+                          <option key={monthYear} value={monthYear}>
+                            {getFormattedMonthYear(monthYear)}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   )}
