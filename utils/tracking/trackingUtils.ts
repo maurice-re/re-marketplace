@@ -100,7 +100,7 @@ export function getItemsInUse(events: Event[]): number {
     
     // # currently borrowed = (total # borrowed) - (total # returned) - (total # lost) - (total # EOL)
 
-    console.log("In getItemsInUse");
+    // console.log("In getItemsInUse");
 
     const totals = getTotals(events);
 
@@ -111,14 +111,14 @@ export function getItemsInUse(events: Event[]): number {
     const totalEol = totals.eol;
     const totalReturned = totals.return;
 
-    console.log("totalBorrowed: ", totalBorrowed);
-    console.log("totalReturned: ", totalReturned);
-    console.log("totalLost: ", totalLost);
-    console.log("totalEol: ", totalEol);
+    // console.log("totalBorrowed: ", totalBorrowed);
+    // console.log("totalReturned: ", totalReturned);
+    // console.log("totalLost: ", totalLost);
+    // console.log("totalEol: ", totalEol);
 
     itemsInUse = totalBorrowed - totalReturned - totalLost - totalEol;
 
-    console.log("itemsInUse: ", itemsInUse);
+    // console.log("itemsInUse: ", itemsInUse);
 
     return itemsInUse;
 }
@@ -126,13 +126,13 @@ export function getItemsInUse(events: Event[]): number {
 export function getLifetimeUses(events: Event[]): number {
     /* Returns the total number of times a BORROW event occurred. */
     
-    console.log("In getLifetimeUses");
+    // console.log("In getLifetimeUses");
 
     const totals = getTotals(events);
 
     const lifetimeUses = totals.borrow;
 
-    console.log("lifetimeUses: ", lifetimeUses);
+    // console.log("lifetimeUses: ", lifetimeUses);
 
     return lifetimeUses;
 }
@@ -142,7 +142,7 @@ export function getReuseRate(events: Event[]): number {
     items reused at least once by the total items used. Assumes that totalItems is greater
     than 0 (if not, returns NaN - to be handled in frontend). */
     
-    console.log("In getReuseRate");
+    // console.log("In getReuseRate");
 
     let reuseRate = 0;
 
@@ -164,7 +164,7 @@ export function getReuseRate(events: Event[]): number {
 
     reuseRate = (itemsReused/(itemsUsed.length)) * 100;
 
-    console.log("reuseRate: ", reuseRate);
+    // console.log("reuseRate: ", reuseRate);
 
     return reuseRate;
 }
@@ -174,7 +174,7 @@ export function getReturnRate(events: Event[]): number {
     all the borrowed and returned items. Expects that totalBorrowed and totalReturned are
     greater than 0 (if not, returns NaN - to be handled in frontend). */
     
-    console.log("In getReturnRate");
+    // console.log("In getReturnRate");
 
     const totals = getTotals(events);
 
@@ -183,7 +183,7 @@ export function getReturnRate(events: Event[]): number {
 
     const returnRate = (totalReturned/totalBorrowed) * 100;
 
-    console.log("returnRate: ", returnRate);
+    // console.log("returnRate: ", returnRate);
 
     return returnRate;
 }
@@ -225,7 +225,7 @@ export function getItemsByMonth(year: number, events: Event[], action: Action): 
     /* Returns an array of the number of items borrowed, returned, lost, or EOL'd month-by-month for 
     the given year. Forms the "y-axis array" to be passed to chart-js. */
     
-    console.log("In getItemsByMonth");
+    // console.log("In getItemsByMonth");
 
     let itemsByMonth: number[] = new Array(12).fill(0); // index 0 = "January"
     let daysInMonth;
@@ -240,8 +240,8 @@ export function getItemsByMonth(year: number, events: Event[], action: Action): 
         itemsByMonth[i-1] = sum(itemsByDay);
     }
 
-    console.log("itemsByMonth: ");
-    console.log(itemsByMonth);
+    // console.log("itemsByMonth: ");
+    // console.log(itemsByMonth);
 
     return itemsByMonth;
 }
@@ -263,7 +263,7 @@ export function getDaysInMonth(month: number, year: number): number[] {
 export function getMonthsInYear(): string[] {
     /* Returns an array of the months in a year. Forms the "x-axis array" to be 
     passed to chart-js. */
-    console.log("In getMonthsInYear");
+    // console.log("In getMonthsInYear");
     
     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 }
@@ -271,7 +271,7 @@ export function getMonthsInYear(): string[] {
 export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
     /* Returns the average number of days between when an item is borrowed and returned. */
 
-    console.log("In getAvgDaysBetweenBorrowAndReturn");
+    // console.log("In getAvgDaysBetweenBorrowAndReturn");
 
     let daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
@@ -304,7 +304,7 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
             returnTimestamp = (new Date(matchedReturnEvent.timestamp)).getTime();
             daysDiff = (returnTimestamp - borrowTimestamp) / (1000 * 60 * 60 * 24);
             if (daysDiff >= 0) {
-                console.log("daysDiff ", daysDiff);
+                // console.log("daysDiff ", daysDiff);
                 // Remove matchedReturnEvent from returnEvents
                 returnEvents.splice(returnEvents.indexOf(matchedReturnEvent), 1);
                 daysBetweenBorrowAndReturn.push(daysDiff);
@@ -312,13 +312,13 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
         }
     })
 
-    console.log("daysBetweenBorrowAndReturn:");
-    console.log(daysBetweenBorrowAndReturn);
+    // console.log("daysBetweenBorrowAndReturn:");
+    // console.log(daysBetweenBorrowAndReturn);
 
     avgDaysBetweenBorrowAndReturn = sum(daysBetweenBorrowAndReturn) / daysBetweenBorrowAndReturn.length || 0;
 
-    console.log("avgDaysBetweenBorrowAndReturn:");
-    console.log(avgDaysBetweenBorrowAndReturn);
+    // console.log("avgDaysBetweenBorrowAndReturn:");
+    // console.log(avgDaysBetweenBorrowAndReturn);
 
     return avgDaysBetweenBorrowAndReturn;
 }

@@ -9,11 +9,10 @@ import {
   Title,
   Tooltip,
 } from 'chart.js'
-import { info } from 'console'
 import type { GetServerSideProps, NextPage } from 'next'
 import { unstable_getServerSession } from 'next-auth'
 import Head from 'next/head'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import Sidebar from '../../../components/dashboard/sidebar'
 import prisma from '../../../constants/prisma'
@@ -63,22 +62,131 @@ const TrackingHome: NextPage<TrackingProps> = ({
   skus,
 }: TrackingProps) => {
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly')
-  const [monthYearForDaily, setMonthYearForDaily] = useState<number[]>([
-    6,
-    2022,
-  ])
+  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('6,2022')
   const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
 
+  const monthsInYear = getMonthsInYear()
+  // TODO(Suhana): Set default year that's shown to the latest one, instead of hard-coded 2022
+  const defaultItemsBorrowedMonthly = getItemsByMonth(
+    2022,
+    events,
+    Action.BORROW,
+  )
+  const defaultItemsReturnedMonthly = getItemsByMonth(
+    2022,
+    events,
+    Action.RETURN,
+  )
+  // TODO(Suhana): Set default year that's shown to the latest one, instead of hard-coded Sep 2022
+  const defaultDaysInMonth = getDaysInMonth(9, 2022)
+  const defaultItemsBorrowedDaily = getItemsByDay(
+    9,
+    2022,
+    defaultDaysInMonth,
+    events,
+    Action.BORROW,
+  )
+  const defaultItemsReturnedDaily = getItemsByDay(
+    9,
+    2022,
+    defaultDaysInMonth,
+    events,
+    Action.RETURN,
+  )
+  let selectedData = {
+    labels: monthsInYear,
+    datasets: [
+      {
+        label: 'Borrows',
+        data: defaultItemsBorrowedMonthly,
+        borderColor: 'rgb(138, 254, 213)',
+        backgroundColor: 'rgba(138, 254, 213, 0.5)',
+      },
+      {
+        label: 'Returns',
+        data: defaultItemsReturnedMonthly,
+        borderColor: 'rgb(61, 177, 137)',
+        backgroundColor: 'rgba(61, 177, 137, 0.5)',
+      },
+    ],
+  }
+
+  const [data, setData] = useState(selectedData)
+
   const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log('In handleTimePeriodChange')
     const newGraphTimePeriod = event.target.value
     console.log(newGraphTimePeriod)
     setGraphTimePeriod(newGraphTimePeriod)
+
+    if (newGraphTimePeriod === 'monthly') {
+      selectedData.labels = monthsInYear
+      selectedData.datasets[0].data = defaultItemsBorrowedMonthly
+      selectedData.datasets[1].data = defaultItemsReturnedMonthly
+      console.log('Defaulting to monthly data')
+    } else if (newGraphTimePeriod === 'daily') {
+      selectedData.labels = defaultDaysInMonth //TODO(Suhana): Address that labels can take both string[] and number[]
+      selectedData.datasets[0].data = defaultItemsBorrowedDaily
+      selectedData.datasets[1].data = defaultItemsReturnedDaily
+      console.log('Defaulting to daily data')
+    }
+    setData(selectedData)
+    console.log(data)
   }
 
-  const handleYearForMonthlyChange = (event: any) => {
-    event.preventDefault()
-    setYearForMonthly(event.target.value)
-    event.preventDefault()
+  const handleMonthYearForDailyChange = (
+    event: ChangeEvent<HTMLSelectElement>,
+  ) => {
+    console.log('In handleMonthYearForDailyChange')
+    const newMonthYearForDaily = event.target.value
+    console.log(newMonthYearForDaily)
+    setMonthYearForDaily(newMonthYearForDaily)
+
+    const monthYear = newMonthYearForDaily.split(',')
+    const month = parseInt(monthYear[0])
+    const year = parseInt(monthYear[1])
+
+    const daysInMonth = getDaysInMonth(month, year)
+    const itemsBorrowedDaily = getItemsByDay(
+      month,
+      year,
+      daysInMonth,
+      events,
+      Action.BORROW,
+    )
+    const itemsReturnedDaily = getItemsByDay(
+      month,
+      year,
+      daysInMonth,
+      events,
+      Action.RETURN,
+    )
+    selectedData.labels = daysInMonth
+    selectedData.datasets[0].data = itemsBorrowedDaily
+    selectedData.datasets[1].data = itemsReturnedDaily
+
+    console.log('Setting data to dailyData')
+    setData(selectedData)
+  }
+
+  const handleYearForMonthlyChange = (
+    event: ChangeEvent<HTMLSelectElement>,
+  ) => {
+    console.log('In handleYearForMonthlyChange')
+    const newYearForMonthly = event.target.value
+    console.log(newYearForMonthly)
+    setYearForMonthly(newYearForMonthly)
+
+    const year = parseInt(newYearForMonthly)
+
+    let itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW)
+    let itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN)
+
+    selectedData.datasets[0].data = itemsBorrowedMonthly
+    selectedData.datasets[1].data = itemsReturnedMonthly
+
+    console.log('Setting data to monthlyData')
+    setData(selectedData)
   }
 
   let stats: Statistic[] = []
@@ -130,59 +238,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
         text: '2022 Month-by-Month', // TODO: Figure out dynamic title
       },
     },
-  }
-  let daysInMonth = getDaysInMonth(6, 2022)
-  let itemsBorrowedDayByDay = getItemsByDay(
-    6,
-    2022,
-    daysInMonth,
-    events,
-    Action.BORROW,
-  )
-  let itemsReturnedDayByDay = getItemsByDay(
-    6,
-    2022,
-    daysInMonth,
-    events,
-    Action.RETURN,
-  )
-  let dayByDayData = {
-    labels: daysInMonth,
-    datasets: [
-      {
-        label: 'Borrows',
-        data: itemsBorrowedDayByDay,
-        borderColor: 'rgb(138, 254, 213)',
-        backgroundColor: 'rgba(138, 254, 213, 0.5)',
-      },
-      {
-        label: 'Returns',
-        data: itemsReturnedDayByDay,
-        borderColor: 'rgb(61, 177, 137)',
-        backgroundColor: 'rgba(61, 177, 137, 0.5)',
-      },
-    ],
-  }
-
-  let monthsInYear = getMonthsInYear()
-  let itemsBorrowedMonthByMonth = getItemsByMonth(2022, events, Action.BORROW)
-  let itemsReturnedMonthByMonth = getItemsByMonth(2022, events, Action.RETURN)
-  let monthByMonthData = {
-    labels: monthsInYear,
-    datasets: [
-      {
-        label: 'Borrows',
-        data: itemsBorrowedMonthByMonth,
-        borderColor: 'rgb(138, 254, 213)',
-        backgroundColor: 'rgba(138, 254, 213, 0.5)',
-      },
-      {
-        label: 'Returns',
-        data: itemsReturnedMonthByMonth,
-        borderColor: 'rgb(61, 177, 137)',
-        backgroundColor: 'rgba(61, 177, 137, 0.5)',
-      },
-    ],
   }
 
   return (
@@ -248,39 +303,10 @@ const TrackingHome: NextPage<TrackingProps> = ({
                         />
                       </label>
                     </div>
-                    {/* <div className="form-control w-full max-w-xs">
-                      <select className="select w-full max-w-xs">
-                        <option disabled selected>
-                          Pick a month
-                        </option>
-                        <option>Homer</option>
-                        <option>Marge</option>
-                        <option>Bart</option>
-                        <option>Lisa</option>
-                        <option>Maggie</option>
-                      </select>
-                    </div> */}
                   </div>
+                  {/* TODO(Suhana): Get these months and days dynamically */}
+                  {/* TODO(Suhana): Make the first one shown the latest one */}
                   {graphTimePeriod === 'monthly' && (
-                    <>
-                      <div>
-                        <label>
-                          What do we eat?
-                          <select
-                            value={yearForMonthly}
-                            onChange={handleYearForMonthlyChange}
-                          >
-                            <option value="fruit">Fruit</option>
-                            <option value="vegetable">Vegetable</option>
-                            <option value="meat">Meat</option>
-                          </select>
-                        </label>
-
-                        <p>We eat {yearForMonthly}!</p>
-                      </div>
-                    </>
-                  )}
-                  {graphTimePeriod === 'daily' && (
                     <div className="form-control w-full max-w-xs">
                       <select
                         className="select w-full max-w-xs"
@@ -292,10 +318,22 @@ const TrackingHome: NextPage<TrackingProps> = ({
                       </select>
                     </div>
                   )}
+                  {graphTimePeriod === 'daily' && (
+                    <div className="form-control w-full max-w-xs">
+                      <select
+                        className="select w-full max-w-xs"
+                        value={monthYearForDaily}
+                        onChange={handleMonthYearForDailyChange}
+                      >
+                        <option value={'6,2022'}>06/2022</option>
+                        <option value={'7,2022'}>07/2022</option>
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 <div className="w-5/6">
-                  <Line options={options} data={monthByMonthData} />
+                  <Line options={options} data={data} />
                 </div>
               </div>
               <div className="py-6"></div>
