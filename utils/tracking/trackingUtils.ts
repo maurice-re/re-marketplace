@@ -322,3 +322,66 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
 
     return avgDaysBetweenBorrowAndReturn;
 }
+
+export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
+    console.log("In getMonthYearsForDailyDropdown")
+    let monthYears: string[] = [];
+
+    const sortedEvents = sortByDate(events);
+
+    const earliestTimestamp = new Date(sortedEvents[0].timestamp);
+    const earliestMonth = earliestTimestamp.getMonth() + 1; // change 0-indexing so that 1 means January
+    const earliestYear = earliestTimestamp.getFullYear();
+    console.log(earliestMonth);
+    console.log(earliestYear);
+
+    const latestTimestamp = new Date(sortedEvents[sortedEvents.length - 1].timestamp);
+    const latestMonth = latestTimestamp.getMonth() + 1;
+    const latestYear = latestTimestamp.getFullYear();
+    console.log(latestMonth);
+    console.log(latestYear);
+
+    console.log("p");
+    console.log(sortedEvents[sortedEvents.length-1])
+    console.log(new Date(sortedEvents[sortedEvents.length-1].timestamp))
+    console.log(new Date(sortedEvents[sortedEvents.length-1].timestamp).getMonth())
+    console.log("q");
+
+    let currMonth = earliestMonth;
+    let currYear = earliestYear;
+    let monthYear: string;
+
+    let currTimestamp;
+    let found;
+    while (!((currYear == latestYear) && (currMonth == latestMonth))) {
+        monthYear = currMonth.toString() + ',' + currYear.toString();
+        if (!monthYears.includes(monthYear)) {
+            found = sortedEvents.find(event => {
+                currTimestamp = new Date(event.timestamp);
+                if (currTimestamp.getMonth() == currMonth && currTimestamp.getFullYear() == currYear) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            if (found) {
+                monthYears.push(monthYear);
+            }
+        }
+        console.log(monthYear);
+        if (currMonth == 12) {
+            currMonth = 1;
+            currYear++;
+        } else {
+            currMonth++;
+        }
+    }
+    // Add last item
+    monthYear = currMonth.toString() + ',' + currYear.toString();
+    monthYears.push(monthYear);
+
+    // Reverse array so latest is first
+    console.log("monthYears:")
+    console.log(monthYears)
+    return monthYears;
+}

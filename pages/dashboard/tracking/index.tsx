@@ -26,6 +26,7 @@ import {
   getItemsInUse,
   getLifetimeUses,
   getMonthsInYear,
+  getMonthYearsForDailyDropdown,
   getReturnRate,
   getReuseRate,
 } from '../../../utils/tracking/trackingUtils'
@@ -62,7 +63,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   skus,
 }: TrackingProps) => {
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly')
-  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('6,2022')
+  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('9,2022')
   const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
 
   const monthsInYear = getMonthsInYear()
@@ -145,6 +146,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
     const monthYear = newMonthYearForDaily.split(',')
     const month = parseInt(monthYear[0])
     const year = parseInt(monthYear[1])
+    console.log(month)
+    console.log(year)
 
     const daysInMonth = getDaysInMonth(month, year)
     const itemsBorrowedDaily = getItemsByDay(
@@ -221,11 +224,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
     isPercent: false,
   })
 
+  // TODO(Suhana): Create interface for toggling by sku and location
   const eventsBySku = getEventsBySku(events, skus[1])
   const itemsInUseBySku = getItemsInUse(eventsBySku)
   const numItemIds = getItemIds(events).length
   const reuseRateBySku = getReuseRate(eventsBySku)
   const returnRateBySku = getReturnRate(eventsBySku)
+
+  const monthYears = getMonthYearsForDailyDropdown(events)
 
   let options = {
     responsive: true,
@@ -235,7 +241,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
       },
       title: {
         display: true,
-        text: '2022 Month-by-Month', // TODO: Figure out dynamic title
+        text:
+          graphTimePeriod === 'monthly'
+            ? `Month-by-Month for ${yearForMonthly}`
+            : `Day-by-Day for ${
+                monthsInYear[parseInt(monthYearForDaily.split(',')[0]) - 1]
+              } ${parseInt(monthYearForDaily.split(',')[1])}`,
       },
     },
   }
@@ -252,7 +263,10 @@ const TrackingHome: NextPage<TrackingProps> = ({
           {events && events.length > 0 ? (
             <div>
               <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
-              <div className="flex w-full items-center justify-between my-8">
+              <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
+                Lifetime Statistics
+              </h1>
+              <div className="flex w-full items-center justify-between mt-4 mb-8">
                 {stats.map((stat) => (
                   <div
                     className="tooltip tooltip-bottom !pb-2"
@@ -307,7 +321,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
                   {/* TODO(Suhana): Get these months and days dynamically */}
                   {/* TODO(Suhana): Make the first one shown the latest one */}
                   {graphTimePeriod === 'monthly' && (
-                    <div className="form-control w-full max-w-xs">
+                    <div className="form-control w-full max-w-xs mt-2">
                       <select
                         className="select w-full max-w-xs"
                         value={yearForMonthly}
@@ -319,14 +333,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
                     </div>
                   )}
                   {graphTimePeriod === 'daily' && (
-                    <div className="form-control w-full max-w-xs">
+                    <div className="form-control w-full max-w-xs mt-2">
                       <select
                         className="select w-full max-w-xs"
                         value={monthYearForDaily}
                         onChange={handleMonthYearForDailyChange}
                       >
-                        <option value={'6,2022'}>06/2022</option>
-                        <option value={'7,2022'}>07/2022</option>
+                        <option value={'9,2022'}>09/2022</option>
+                        <option value={'8,2022'}>08/2022</option>
                       </select>
                     </div>
                   )}
