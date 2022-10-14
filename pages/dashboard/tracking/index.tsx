@@ -13,6 +13,7 @@ import { info } from 'console'
 import type { GetServerSideProps, NextPage } from 'next'
 import { unstable_getServerSession } from 'next-auth'
 import Head from 'next/head'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import { Line } from 'react-chartjs-2'
 import Sidebar from '../../../components/dashboard/sidebar'
 import prisma from '../../../constants/prisma'
@@ -41,19 +42,6 @@ ChartJS.register(
   Legend,
 )
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'June Month-by-Month', // TODO: Figure out dynamic title
-    },
-  },
-}
-
 type Statistic = {
   title: string
   value: number
@@ -74,6 +62,25 @@ const TrackingHome: NextPage<TrackingProps> = ({
   user,
   skus,
 }: TrackingProps) => {
+  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly')
+  const [monthYearForDaily, setMonthYearForDaily] = useState<number[]>([
+    6,
+    2022,
+  ])
+  const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
+
+  const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newGraphTimePeriod = event.target.value
+    console.log(newGraphTimePeriod)
+    setGraphTimePeriod(newGraphTimePeriod)
+  }
+
+  const handleYearForMonthlyChange = (event: any) => {
+    event.preventDefault()
+    setYearForMonthly(event.target.value)
+    event.preventDefault()
+  }
+
   let stats: Statistic[] = []
   stats.push({
     title: 'In-use',
@@ -112,6 +119,18 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const reuseRateBySku = getReuseRate(eventsBySku)
   const returnRateBySku = getReturnRate(eventsBySku)
 
+  let options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: '2022 Month-by-Month', // TODO: Figure out dynamic title
+      },
+    },
+  }
   let daysInMonth = getDaysInMonth(6, 2022)
   let itemsBorrowedDayByDay = getItemsByDay(
     6,
@@ -203,7 +222,82 @@ const TrackingHome: NextPage<TrackingProps> = ({
               <h1 className="ml-1 py-2 font-theinhardt text-2xl">
                 Borrows and Returns
               </h1>
-              <Line options={options} data={monthByMonthData} />
+              <div className="flex w-full gap-8">
+                <div className="flex-col w-1/6">
+                  <div onChange={handleTimePeriodChange}>
+                    <div className="form-control">
+                      <label className="label cursor-pointer">
+                        <span className="label-text">Monthly</span>
+                        <input
+                          type="radio"
+                          name="radio-6"
+                          value="monthly"
+                          className="radio checked:bg-re-green-500"
+                          defaultChecked
+                        />
+                      </label>
+                    </div>
+                    <div className="form-control">
+                      <label className="label cursor-pointer">
+                        <span className="label-text">Daily</span>
+                        <input
+                          type="radio"
+                          name="radio-6"
+                          value="daily"
+                          className="radio checked:bg-re-green-500"
+                        />
+                      </label>
+                    </div>
+                    {/* <div className="form-control w-full max-w-xs">
+                      <select className="select w-full max-w-xs">
+                        <option disabled selected>
+                          Pick a month
+                        </option>
+                        <option>Homer</option>
+                        <option>Marge</option>
+                        <option>Bart</option>
+                        <option>Lisa</option>
+                        <option>Maggie</option>
+                      </select>
+                    </div> */}
+                  </div>
+                  {graphTimePeriod === 'monthly' && (
+                    <>
+                      <div>
+                        <label>
+                          What do we eat?
+                          <select
+                            value={yearForMonthly}
+                            onChange={handleYearForMonthlyChange}
+                          >
+                            <option value="fruit">Fruit</option>
+                            <option value="vegetable">Vegetable</option>
+                            <option value="meat">Meat</option>
+                          </select>
+                        </label>
+
+                        <p>We eat {yearForMonthly}!</p>
+                      </div>
+                    </>
+                  )}
+                  {graphTimePeriod === 'daily' && (
+                    <div className="form-control w-full max-w-xs">
+                      <select
+                        className="select w-full max-w-xs"
+                        value={yearForMonthly}
+                        onChange={handleYearForMonthlyChange}
+                      >
+                        <option value={'2022'}>2022</option>
+                        <option value={'2023'}>2023</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+
+                <div className="w-5/6">
+                  <Line options={options} data={monthByMonthData} />
+                </div>
+              </div>
               <div className="py-6"></div>
             </div>
           ) : (
