@@ -18,6 +18,7 @@ import Sidebar from '../../../components/dashboard/sidebar'
 import prisma from '../../../constants/prisma'
 import {
   getAvgDaysBetweenBorrowAndReturn,
+  getBoundingMonthYear,
   getDaysInMonth,
   getEventsBySku,
   getItemIds,
@@ -30,6 +31,7 @@ import {
   getReturnRate,
   getReuseRate,
   getYearsForMonthlyDropdown,
+  sortByDate,
   UserWithSettings,
 } from '../../../utils/tracking/trackingUtils'
 import { authOptions } from '../../api/auth/[...nextauth]'
@@ -66,32 +68,36 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('9,2022')
   const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
 
-  console.log(user?.company?.settings)
+  const sortedEvents = sortByDate(events)
+  const latestMonthYear = getBoundingMonthYear(sortedEvents, false)
+
+  console.log(latestMonthYear)
 
   const monthsInYear = getMonthsInYear()
-  // TODO(Suhana): Set default year that's shown to the latest one, instead of hard-coded 2022
   const defaultItemsBorrowedMonthly = getItemsByMonth(
-    2022,
+    latestMonthYear[1],
     events,
     Action.BORROW,
   )
   const defaultItemsReturnedMonthly = getItemsByMonth(
-    2022,
+    latestMonthYear[1],
     events,
     Action.RETURN,
   )
-  // TODO(Suhana): Set default year that's shown to the latest one, instead of hard-coded Sep 2022
-  const defaultDaysInMonth = getDaysInMonth(9, 2022)
+  const defaultDaysInMonth = getDaysInMonth(
+    latestMonthYear[0],
+    latestMonthYear[1],
+  )
   const defaultItemsBorrowedDaily = getItemsByDay(
-    9,
-    2022,
+    latestMonthYear[0],
+    latestMonthYear[1],
     defaultDaysInMonth,
     events,
     Action.BORROW,
   )
   const defaultItemsReturnedDaily = getItemsByDay(
-    9,
-    2022,
+    latestMonthYear[0],
+    latestMonthYear[1],
     defaultDaysInMonth,
     events,
     Action.RETURN,

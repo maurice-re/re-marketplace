@@ -60,7 +60,13 @@ function getEventsByAction(events: Event[], action: Action): Event[] {
     return eventsByAction;
 }
 
-function sortByDate(events: Event[]): Event[] {
+function sum(arr: number[]): number {
+    return arr.reduce((a, b) => {
+        return a + b;
+    }, 0)
+}
+
+export function sortByDate(events: Event[]): Event[] {
     let aDate;
     let bDate;
     const sortedEvents = events.sort(
@@ -73,10 +79,11 @@ function sortByDate(events: Event[]): Event[] {
     return sortedEvents;
 }
 
-function sum(arr: number[]): number {
-    return arr.reduce((a, b) => {
-        return a + b;
-    }, 0)
+export function getBoundingMonthYear(events: Event[], earliest: boolean): number[] {
+    /* Given an array of sorted events, returns the month and year of the earliest or latest 
+    event in the array, in [month, year] format. */
+    const timestamp = new Date(events[earliest? 0: (events.length - 1)].timestamp);
+    return [timestamp.getMonth() + 1, timestamp.getFullYear()] // add 1 to month change 0-indexing so that 1 means January
 }
 
 export function getEventsBySku(events: Event[], sku: Sku): Event[] {
@@ -342,13 +349,18 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
 
     const sortedEvents = sortByDate(events);
 
-    const earliestTimestamp = new Date(sortedEvents[0].timestamp);
-    const earliestMonth = earliestTimestamp.getMonth() + 1; // change 0-indexing so that 1 means January
-    const earliestYear = earliestTimestamp.getFullYear();
+    const earliestMonthYear = getBoundingMonthYear(sortedEvents, true);
+    const earliestMonth = earliestMonthYear[0];
+    const earliestYear = earliestMonthYear[1];
 
-    const latestTimestamp = new Date(sortedEvents[sortedEvents.length - 1].timestamp);
-    const latestMonth = latestTimestamp.getMonth() + 1;
-    const latestYear = latestTimestamp.getFullYear();
+    const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
+    const latestMonth = latestMonthYear[0];
+    const latestYear = latestMonthYear[1];
+
+    console.log(earliestMonth);
+    console.log(earliestYear);
+    console.log(latestMonth);
+    console.log(latestYear);
 
     let currMonth = earliestMonth;
     let currYear = earliestYear;
@@ -397,11 +409,11 @@ export function getYearsForMonthlyDropdown(events: Event[]): string[] {
 
     const sortedEvents = sortByDate(events);
 
-    const earliestTimestamp = new Date(sortedEvents[0].timestamp);
-    const earliestYear = earliestTimestamp.getFullYear();
+    const earliestYear = getBoundingMonthYear(sortedEvents, true)[1];
+    const latestYear = getBoundingMonthYear(sortedEvents, false)[1];
 
-    const latestTimestamp = new Date(sortedEvents[sortedEvents.length - 1].timestamp);
-    const latestYear = latestTimestamp.getFullYear();
+    console.log(earliestYear);
+    console.log(latestYear);
 
     let currYear = earliestYear;
     let year: string;
