@@ -284,7 +284,7 @@ export function getMonthsInYear(): string[] {
 export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer: number): number {
     /* Returns the average number of days between when an item is borrowed and returned. */
 
-    console.log("In getAvgDaysBetweenBorrowAndReturn");
+    // console.log("In getAvgDaysBetweenBorrowAndReturn");
 
     let daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
@@ -332,19 +332,19 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer: num
         }
     })
 
-    console.log("daysBetweenBorrowAndReturn:");
-    console.log(daysBetweenBorrowAndReturn);
+    // console.log("daysBetweenBorrowAndReturn:");
+    // console.log(daysBetweenBorrowAndReturn);
 
     avgDaysBetweenBorrowAndReturn = sum(daysBetweenBorrowAndReturn) / daysBetweenBorrowAndReturn.length || 0;
 
-    console.log("avgDaysBetweenBorrowAndReturn:");
-    console.log(avgDaysBetweenBorrowAndReturn);
+    // console.log("avgDaysBetweenBorrowAndReturn:");
+    // console.log(avgDaysBetweenBorrowAndReturn);
 
     return avgDaysBetweenBorrowAndReturn;
 }
 
 export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
-    console.log("In getMonthYearsForDailyDropdown")
+    // console.log("In getMonthYearsForDailyDropdown")
     let monthYears: string[] = [];
 
     const sortedEvents = sortByDate(events);
@@ -357,10 +357,10 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
     const latestMonth = latestMonthYear[0];
     const latestYear = latestMonthYear[1];
 
-    console.log(earliestMonth);
-    console.log(earliestYear);
-    console.log(latestMonth);
-    console.log(latestYear);
+    // console.log(earliestMonth);
+    // console.log(earliestYear);
+    // console.log(latestMonth);
+    // console.log(latestYear);
 
     let currMonth = earliestMonth;
     let currYear = earliestYear;
@@ -398,13 +398,13 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
     // Reverse array so latest is first
     monthYears = monthYears.reverse();
 
-    console.log("monthYears:");
-    console.log(monthYears);
+    // console.log("monthYears:");
+    // console.log(monthYears);
     return monthYears;
 }
 
 export function getYearsForMonthlyDropdown(events: Event[]): string[] {
-    console.log("In getYearsForMonthlyDropdown")
+    // console.log("In getYearsForMonthlyDropdown")
     let years: string[] = [];
 
     const sortedEvents = sortByDate(events);
@@ -437,7 +437,7 @@ export function getYearsForMonthlyDropdown(events: Event[]): string[] {
     // Reverse array so latest is first
     years = years.reverse();
 
-    console.log("years:");
-    console.log(years);
+    // console.log("years:");
+    // console.log(years);
     return years;
 }

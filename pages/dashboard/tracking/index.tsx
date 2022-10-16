@@ -71,8 +71,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const sortedEvents = sortByDate(events)
   const latestMonthYear = getBoundingMonthYear(sortedEvents, false)
 
-  console.log(latestMonthYear)
-
   const monthsInYear = getMonthsInYear()
   const defaultItemsBorrowedMonthly = getItemsByMonth(
     latestMonthYear[1],
@@ -134,7 +132,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
       selectedData.datasets[1].data = defaultItemsReturnedMonthly
       console.log('Defaulting to monthly data')
     } else if (newGraphTimePeriod === 'daily') {
-      selectedData.labels = defaultDaysInMonth //TODO(Suhana): Address that labels can take both string[] and number[]
+      selectedData.labels = defaultDaysInMonth.map(String)
       selectedData.datasets[0].data = defaultItemsBorrowedDaily
       selectedData.datasets[1].data = defaultItemsReturnedDaily
       console.log('Defaulting to daily data')
@@ -172,7 +170,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
       events,
       Action.RETURN,
     )
-    selectedData.labels = daysInMonth
+    selectedData.labels = daysInMonth.map(String)
     selectedData.datasets[0].data = itemsBorrowedDaily
     selectedData.datasets[1].data = itemsReturnedDaily
 
