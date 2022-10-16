@@ -64,38 +64,43 @@ const TrackingHome: NextPage<TrackingProps> = ({
   user,
   skus,
 }: TrackingProps) => {
-  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly')
-  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('9,2022')
-  const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
+  // TODO(Suhana): Fix switch to default days
 
   const sortedEvents = sortByDate(events)
   const latestMonthYear = getBoundingMonthYear(sortedEvents, false)
+  const latestMonth = latestMonthYear[0]
+  const latestYear = latestMonthYear[1]
+
+  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly')
+  const [monthYearForDaily, setMonthYearForDaily] = useState<string>(
+    latestMonthYear.map(String).join(','),
+  )
+  const [yearForMonthly, setYearForMonthly] = useState<string>(
+    latestYear.toString(),
+  )
 
   const monthsInYear = getMonthsInYear()
   const defaultItemsBorrowedMonthly = getItemsByMonth(
-    latestMonthYear[1],
+    latestYear,
     events,
     Action.BORROW,
   )
   const defaultItemsReturnedMonthly = getItemsByMonth(
-    latestMonthYear[1],
+    latestYear,
     events,
     Action.RETURN,
   )
-  const defaultDaysInMonth = getDaysInMonth(
-    latestMonthYear[0],
-    latestMonthYear[1],
-  )
+  const defaultDaysInMonth = getDaysInMonth(latestMonth, latestYear)
   const defaultItemsBorrowedDaily = getItemsByDay(
-    latestMonthYear[0],
-    latestMonthYear[1],
+    latestMonth,
+    latestYear,
     defaultDaysInMonth,
     events,
     Action.BORROW,
   )
   const defaultItemsReturnedDaily = getItemsByDay(
-    latestMonthYear[0],
-    latestMonthYear[1],
+    latestMonth,
+    latestYear,
     defaultDaysInMonth,
     events,
     Action.RETURN,
@@ -237,7 +242,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
     title: 'Avg Lifecycle',
     value: getAvgDaysBetweenBorrowAndReturn(
       events,
-      user?.company?.settings?.borrowReturnBuffer,
+      user?.company?.settings?.borrowReturnBuffer ?? undefined,
     ),
     info: 'days between borrow and return',
     isPercent: false,
@@ -287,13 +292,11 @@ const TrackingHome: NextPage<TrackingProps> = ({
               <div className="flex w-full items-center justify-between mt-4 mb-8">
                 {stats.map((stat) => (
                   <div
+                    key={stat.title}
                     className="tooltip tooltip-bottom !pb-2"
                     data-tip={stat.info}
                   >
-                    <button
-                      key={stat.title}
-                      className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300"
-                    >
+                    <button className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300">
                       <div className="font-thin text-md uppercase tracking-wide leading-none">
                         {stat.title}
                       </div>
