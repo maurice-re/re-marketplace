@@ -1,6 +1,12 @@
-import { Action, Event, Sku } from "@prisma/client";
+import { Action, Company, Event, Sku, User, Settings } from "@prisma/client";
 
 // TODO: Make it so the totals only need to be calculate once (by sku and in total)
+
+export type UserWithSettings = User & {
+    company: Company & {
+        settings: Settings
+    }
+  };
 
 type Totals = {
     borrow: number;
@@ -268,13 +274,18 @@ export function getMonthsInYear(): string[] {
     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 }
 
-export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
+export function getAvgDaysBetweenBorrowAndReturn(events: Event[], user: UserWithSettings): number {
     /* Returns the average number of days between when an item is borrowed and returned. */
 
-    // console.log("In getAvgDaysBetweenBorrowAndReturn");
+    console.log("In getAvgDaysBetweenBorrowAndReturn");
 
     let daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
+
+    let buffer = user.company.settings?.borrowReturnBuffer ?? 10; // by default, only consider dayDiffs > 10
+
+    console.log("buffer:")
+    console.log(buffer);
 
     // Consider all borrow-return pairs (included those for the same item)
 
@@ -303,7 +314,9 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
             borrowTimestamp = (new Date(borrowEvent.timestamp)).getTime();
             returnTimestamp = (new Date(matchedReturnEvent.timestamp)).getTime();
             daysDiff = (returnTimestamp - borrowTimestamp) / (1000 * 60 * 60 * 24);
-            if (daysDiff >= 0) {
+            // Only want to count days between borrow and return in the avg if it surpasses
+            // the buffer period 
+            if (daysDiff > buffer) {
                 // console.log("daysDiff ", daysDiff);
                 // Remove matchedReturnEvent from returnEvents
                 returnEvents.splice(returnEvents.indexOf(matchedReturnEvent), 1);
@@ -312,13 +325,13 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[]): number {
         }
     })
 
-    // console.log("daysBetweenBorrowAndReturn:");
-    // console.log(daysBetweenBorrowAndReturn);
+    console.log("daysBetweenBorrowAndReturn:");
+    console.log(daysBetweenBorrowAndReturn);
 
     avgDaysBetweenBorrowAndReturn = sum(daysBetweenBorrowAndReturn) / daysBetweenBorrowAndReturn.length || 0;
 
-    // console.log("avgDaysBetweenBorrowAndReturn:");
-    // console.log(avgDaysBetweenBorrowAndReturn);
+    console.log("avgDaysBetweenBorrowAndReturn:");
+    console.log(avgDaysBetweenBorrowAndReturn);
 
     return avgDaysBetweenBorrowAndReturn;
 }

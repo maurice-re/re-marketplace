@@ -30,6 +30,7 @@ import {
   getReturnRate,
   getReuseRate,
   getYearsForMonthlyDropdown,
+  UserWithSettings,
 } from '../../../utils/tracking/trackingUtils'
 import { authOptions } from '../../api/auth/[...nextauth]'
 
@@ -52,9 +53,7 @@ type Statistic = {
 
 type TrackingProps = {
   events: Event[]
-  user: User & {
-    company: Company
-  }
+  user: UserWithSettings
   skus: Sku[]
 }
 
@@ -66,6 +65,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly')
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('9,2022')
   const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
+
+  console.log(user?.company?.settings?.borrowReturnBuffer)
 
   const monthsInYear = getMonthsInYear()
   // TODO(Suhana): Set default year that's shown to the latest one, instead of hard-coded 2022
@@ -230,7 +231,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   })
   stats.push({
     title: 'Avg Lifecycle',
-    value: getAvgDaysBetweenBorrowAndReturn(events),
+    value: getAvgDaysBetweenBorrowAndReturn(events, user),
     info: 'days between borrow and return',
     isPercent: false,
   })
@@ -389,7 +390,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         email: session?.user?.email ?? '',
       },
       include: {
-        company: true,
+        company: {
+          include: {
+            settings: true,
+          },
+        },
       },
     })
     const events = await prisma.event.findMany({
