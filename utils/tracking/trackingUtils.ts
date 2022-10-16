@@ -274,7 +274,7 @@ export function getMonthsInYear(): string[] {
     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 }
 
-export function getAvgDaysBetweenBorrowAndReturn(events: Event[], user: UserWithSettings): number {
+export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer: number): number {
     /* Returns the average number of days between when an item is borrowed and returned. */
 
     console.log("In getAvgDaysBetweenBorrowAndReturn");
@@ -282,7 +282,7 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], user: UserWith
     let daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
 
-    let buffer = user.company.settings?.borrowReturnBuffer ?? 10; // by default, only consider dayDiffs > 10
+    let buffer = setBuffer ?? 10; // by default, only consider dayDiffs > 10
 
     console.log("buffer:")
     console.log(buffer);

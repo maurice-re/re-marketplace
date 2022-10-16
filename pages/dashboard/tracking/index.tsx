@@ -66,7 +66,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('9,2022')
   const [yearForMonthly, setYearForMonthly] = useState<string>('2022')
 
-  console.log(user?.company?.settings?.borrowReturnBuffer)
+  console.log(user?.company?.settings)
 
   const monthsInYear = getMonthsInYear()
   // TODO(Suhana): Set default year that's shown to the latest one, instead of hard-coded 2022
@@ -231,7 +231,10 @@ const TrackingHome: NextPage<TrackingProps> = ({
   })
   stats.push({
     title: 'Avg Lifecycle',
-    value: getAvgDaysBetweenBorrowAndReturn(events, user),
+    value: getAvgDaysBetweenBorrowAndReturn(
+      events,
+      user?.company?.settings?.borrowReturnBuffer,
+    ),
     info: 'days between borrow and return',
     isPercent: false,
   })
