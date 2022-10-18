@@ -65,17 +65,19 @@ model Company {
 }
 
 model Event {
-  id               String    @id @default(cuid())
+  id               String      @id @default(cuid())
   action           Action
-  company          Company   @relation(fields: [companyId], references: [id])
+  company          Company     @relation(fields: [companyId], references: [id])
   companyId        String
   consumerId       String?
   itemId           String
-  location         Location? @relation(fields: [locationId], references: [id])
+  location         Location?   @relation(fields: [locationId], references: [id])
   locationId       String?
-  sku              Sku       @relation(fields: [skuId], references: [id])
+  sku              Sku         @relation(fields: [skuId], references: [id])
   skuId            String
-  timestamp        DateTime  @default(now())
+  subCompany       SubCompany? @relation(fields: [subCompanyId], references: [id])
+  subCompanyId     String  
+  timestamp        DateTime    @default(now())
   trackingLocation String?
 }
 
@@ -84,6 +86,7 @@ model SubCompany {
   company          Company   @relation(fields: [companyId], references: [id])
   companyId        String
   createdAt        DateTime
+  events           Event[]
   location         Location?
   name             String
 }
