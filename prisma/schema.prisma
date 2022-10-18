@@ -58,6 +58,7 @@ model Company {
   productDevelopments ProductDevelopment[]
   settings            Settings?
   sampleOrders        SampleOrder[]
+  subCompanies        SubCompany[]
   subscriptionType    SubscriptionType      @default(FREE)
   untracked           UntrackedInventory[]
   users               User[]
@@ -76,6 +77,15 @@ model Event {
   skuId            String
   timestamp        DateTime  @default(now())
   trackingLocation String?
+}
+
+model SubCompany {
+  id               String    @id @default(cuid())
+  company          Company   @relation(fields: [companyId], references: [id])
+  companyId        String
+  createdAt        DateTime
+  location         Location?
+  name             String
 }
 
 enum Action {
@@ -107,6 +117,8 @@ model Location {
   sampleOrders      SampleOrder[]
   shippingName      String?
   state             String?
+  subCompany        SubCompany    @relation(fields: [subCompanyId], references: [id])
+  subCompanyId      String        @unique
   trackingLocation  String?
   type              LocationType  @default(SHIPPING)
   zip               String?
