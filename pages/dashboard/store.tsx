@@ -49,6 +49,19 @@ const Store: NextPage<StoreProps> = ({
     setSkuId(pId + "-" + newSize.split(" ")[0] + "-" + mShort + "-" + color);
   }
 
+  function changeColor(newColor: string) {
+    if (skuId == undefined) {
+      return;
+    }
+
+    const [pId, size, mShort, color] = skuId.split("-");
+    if (color == newColor.toUpperCase()) {
+      return;
+    }
+
+    setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
+  }
+
   function handleAddToCart() {
     if (locationId == undefined || skuId == undefined || quantity == "") {
       return;
@@ -286,6 +299,8 @@ const Store: NextPage<StoreProps> = ({
     const sku = skus.find((sku) => sku.id === skuId)!;
     const sizes = product.sizes.split(", ");
     const materials = product.materials.split(", ");
+    const colors = product.colors.split(", ");
+    console.log(colors);
 
     return (
       <Sidebar>
@@ -339,6 +354,21 @@ const Store: NextPage<StoreProps> = ({
                               onClick={() => changeSize(size)}
                             >
                               {size}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="h-4" />
+                        <div>Color</div>
+                        <div className="flex flex-wrap">
+                          {colors.map((color) => (
+                            <button
+                              key={color}
+                              className={`btn btn-outline mr-2 ${
+                                sku.color == color ? "btn-accent" : ""
+                              }`}
+                              onClick={() => changeColor(color)}
+                            >
+                              {color}
                             </button>
                           ))}
                         </div>

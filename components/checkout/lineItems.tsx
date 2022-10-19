@@ -129,10 +129,15 @@ export default function LineItems({
                   <div className="text-sm font-semibold mb-0.5">
                     {sku.size + " " + sku.materialShort + " " + product.name}
                   </div>
-                  <div className="text-xs text-gray-300">{`Qty ${quantity}`}</div>
+                  <div className="flex flex-col">
+                    <div className="text-xs text-gray-300">
+                      {sku.color[0].toUpperCase() + sku.color.slice(1)}
+                    </div>
+                    <div className="text-xs text-gray-300">{`Qty ${quantity}`}</div>
+                  </div>
                 </div>
               </div>
-              <div>
+              <div className="flex flex-col justify-center">
                 <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
                   sku,
                   sku.id,
