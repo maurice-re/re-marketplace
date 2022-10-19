@@ -77,51 +77,18 @@ const TrackingHome: NextPage<TrackingProps> = ({
     latestYear.toString()
   );
 
-  // TODO(Suhana): Fix switch to default days
-  if (!events) {
-    return (
-      <Sidebar>
-        <div className="w-screen h-screen bg-black flex">
-          <Head>
-            <title>Tracking</title>
-            <meta name="locations" content="Track your items" />
-            <link rel="icon" href="/favicon.ico" />
-          </Head>
-          <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-            <div className="text-white font-theinhardt text-28">
-              Integrate with our API to track
-            </div>
-          </main>
-        </div>
-      </Sidebar>
-    );
-  }
   const monthsInYear = getMonthsInYear();
   const defaultItemsBorrowedMonthly = getItemsByMonth(
     latestYear,
-    events,
+    events ?? [],
     Action.BORROW
   );
   const defaultItemsReturnedMonthly = getItemsByMonth(
     latestYear,
-    events,
+    events ?? [],
     Action.RETURN
   );
-  const defaultDaysInMonth = getDaysInMonth(latestMonth, latestYear);
-  const defaultItemsBorrowedDaily = getItemsByDay(
-    latestMonth,
-    latestYear,
-    defaultDaysInMonth,
-    events,
-    Action.BORROW
-  );
-  const defaultItemsReturnedDaily = getItemsByDay(
-    latestMonth,
-    latestYear,
-    defaultDaysInMonth,
-    events,
-    Action.RETURN
-  );
+
   let selectedData = {
     labels: monthsInYear,
     datasets: [
@@ -142,6 +109,40 @@ const TrackingHome: NextPage<TrackingProps> = ({
 
   const [data, setData] = useState(selectedData);
 
+  // TODO(Suhana): Fix switch to default days
+  if (!events) {
+    return (
+      <Sidebar>
+        <div className="w-screen h-screen bg-black flex">
+          <Head>
+            <title>Tracking</title>
+            <meta name="locations" content="Track your items" />
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+            <div className="text-white font-theinhardt text-28">
+              Integrate with our API to track
+            </div>
+          </main>
+        </div>
+      </Sidebar>
+    );
+  }
+  const defaultDaysInMonth = getDaysInMonth(latestMonth, latestYear);
+  const defaultItemsBorrowedDaily = getItemsByDay(
+    latestMonth,
+    latestYear,
+    defaultDaysInMonth,
+    events,
+    Action.BORROW
+  );
+  const defaultItemsReturnedDaily = getItemsByDay(
+    latestMonth,
+    latestYear,
+    defaultDaysInMonth,
+    events,
+    Action.RETURN
+  );
   const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
     console.log("In handleTimePeriodChange");
     const newGraphTimePeriod = event.target.value;
@@ -406,7 +407,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  return { props: {} };
   const session = await unstable_getServerSession(
     context.req,
     context.res,
@@ -439,6 +439,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
+  return { props: {} };
 };
 
 export default TrackingHome;
