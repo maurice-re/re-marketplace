@@ -142,11 +142,11 @@ export default function LineItems({
                   sku,
                   sku.id,
                   quantity
-                )}`}</div>
+                ).toFixed(2)}`}</div>
                 <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
                   sku.priceTable,
                   quantity
-                )} each`}</div>
+                ).toFixed(2)} each`}</div>
               </div>
             </div>
           );

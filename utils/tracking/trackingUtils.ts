@@ -1,4 +1,4 @@
-import { Action, Company, Event, Sku, User, Settings } from "@prisma/client";
+import { Action, Company, Event, Settings, Sku, User } from "@prisma/client";
 
 // TODO: Make it so the totals only need to be calculate once (by sku and in total)
 
@@ -67,6 +67,7 @@ function sum(arr: number[]): number {
 }
 
 export function sortByDate(events: Event[]): Event[] {
+    if (events.length == 0) return [];
     let aDate;
     let bDate;
     const sortedEvents = events.sort(
@@ -80,6 +81,7 @@ export function sortByDate(events: Event[]): Event[] {
 }
 
 export function getBoundingMonthYear(events: Event[], earliest: boolean): number[] {
+    if (events.length == 0) return [];
     /* Given an array of sorted events, returns the month and year of the earliest or latest 
     event in the array, in [month, year] format. */
     const timestamp = new Date(events[earliest? 0: (events.length - 1)].timestamp);

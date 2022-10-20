@@ -106,7 +106,9 @@ export default function Totals({
           <div className="text-sm font-semibold mb-0.5">Subtotal</div>
         </div>
         <div className="">
-          <div className="text-sm font-semibold mb-0.5">{`$${subtotal}`}</div>
+          <div className="text-sm font-semibold mb-0.5">{`$${subtotal.toFixed(
+            2
+          )}`}</div>
         </div>
       </div>
     );
@@ -119,9 +121,9 @@ export default function Totals({
           <div className="text-xs font-semibold mb-0.5">Tax (7%)</div>
         </div>
         <div className="">
-          <div className="text-xs font-semibold mb-0.5">{`$${
+          <div className="text-xs font-semibold mb-0.5">{`$${(
             total - subtotal
-          }`}</div>
+          ).toFixed(2)}`}</div>
         </div>
       </div>
     );
@@ -134,7 +136,9 @@ export default function Totals({
           <div className="text-sm font-semibold mb-0.5">Total due</div>
         </div>
         <div className="">
-          <div className="text-sm font-semibold mb-0.5">{`$${total}`}</div>
+          <div className="text-sm font-semibold mb-0.5">{`$${total.toFixed(
+            2
+          )}`}</div>
         </div>
       </div>
     );
