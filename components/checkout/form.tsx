@@ -271,7 +271,7 @@ export default function CheckoutForm({
             isLoading ||
             !stripe ||
             !elements ||
-            dropdown == "" ||
+            (dropdown == "" && company != undefined) ||
             (type == CheckoutType.ORDER && !eol)
           }
           id="submit"
