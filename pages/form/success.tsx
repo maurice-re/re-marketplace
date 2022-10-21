@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
-import Image from "next/future/image";
 import Head from "next/head";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { CartOrder } from "../../stores/formStore";
@@ -72,8 +72,8 @@ const Summary: NextPage = () => {
                 <Image
                   src={order.product.mainImage}
                   alt={"takeout front"}
-                  height={"100%"}
-                  width={"100%"}
+                  height={64}
+                  width={64}
                 />
               </div>
               <div>

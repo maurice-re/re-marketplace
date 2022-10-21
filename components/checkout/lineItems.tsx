@@ -1,5 +1,5 @@
 import { Location, Product, ProductDevelopment, Sku } from ".prisma/client";
-import Image from "next/future/image";
+import Image from "next/image";
 import { CheckoutType } from "../../utils/checkoutUtils";
 import {
   calculatePriceFromCatalog,

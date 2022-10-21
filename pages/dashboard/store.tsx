@@ -1,8 +1,8 @@
 import { Company, Location, LocationType, Product, Sku } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
-import Image from "next/future/image";
 import Head from "next/head";
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import Cart from "../../components/dashboard/cart";
 import Sidebar from "../../components/dashboard/sidebar";
