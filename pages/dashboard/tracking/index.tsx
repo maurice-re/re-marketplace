@@ -54,20 +54,46 @@ type Statistic = {
 };
 
 type TrackingProps = {
-  events: Event[] | null;
   user: UserWithSettings;
   skus: Sku[];
 };
 
-let allEvents;
-
 const TrackingHome: NextPage<TrackingProps> = ({
-  events,
   user,
   skus,
 }: TrackingProps) => {
 
+  const monthsInYear = getMonthsInYear();
+  let selectedData = {
+    labels: monthsInYear,
+    datasets: [
+      {
+        label: 'Borrows',
+        data: [0],
+        borderColor: 'rgb(138, 254, 213)',
+        backgroundColor: 'rgba(138, 254, 213, 0.5)',
+      },
+      {
+        label: 'Returns',
+        data: [0],
+        borderColor: 'rgb(61, 177, 137)',
+        backgroundColor: 'rgba(61, 177, 137, 0.5)',
+      },
+    ],
+  };
+
   const [allEvents, setAllEvents] = useState<Event[]>();
+  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
+  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
+  const [yearForMonthly, setYearForMonthly] = useState<string>('');
+  const [latestMonth, setLatestMonth] = useState<number>(0);
+  const [latestYear, setLatestYear] = useState<number>(0);
+  const [data, setData] = useState(selectedData);
+  const [defaultItemsBorrowedMonthly, setDefaultItemsBorrowedMonthly] = useState([0]);
+  const [defaultItemsReturnedMonthly, setDefaultItemsReturnedMonthly] = useState([0]);
+  const [defaultItemsBorrowedDaily, setDefaultItemsBorrowedDaily] = useState([0]);
+  const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([0]);
+  const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
   useEffect(() => {
     console.log("In useEffect");
@@ -80,65 +106,62 @@ const TrackingHome: NextPage<TrackingProps> = ({
           headers: { "Content-Type": "application/json" },
         }
       ).then(async (res) => await res.json());
-
-      console.log("GOT RESULTS");
-      console.log(results);
       setAllEvents(results.events as Event[]);
     };
 
     fetchData();
   }, []);
 
-  const sortedEvents = sortByDate(allEvents ?? []);
-  console.log("sortedEvents");
-  console.log(sortedEvents);
-  const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
-  const latestMonth = latestMonthYear[0] ?? 0;
-  const latestYear = latestMonthYear[1] ?? 0;
+  useEffect(() => {
+    if (allEvents && allEvents.length > 0) {
+      const sortedEvents = sortByDate(allEvents);
+      const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
+      setMonthYearForDaily(latestMonthYear.map(String).join(','));
+      setYearForMonthly(latestMonthYear[1].toString());
+      setLatestMonth(latestMonthYear[0]);
+      setLatestYear(latestMonthYear[1]);
 
-  console.log(latestMonthYear.map(String).join(','));
+      const borrowedMonthly = getItemsByMonth(
+        latestYear,
+        allEvents,
+        Action.BORROW,
+      );
+      const returnedMonthly = getItemsByMonth(
+        latestYear,
+        allEvents,
+        Action.RETURN,
+      );
 
-  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
-  const [monthYearForDaily, setMonthYearForDaily] = useState<string>(
-    latestMonthYear.map(String).join(','),
-  );
-  const [yearForMonthly, setYearForMonthly] = useState<string>(
-    latestYear.toString(),
-  );
+      selectedData.datasets[0].data = borrowedMonthly;
+      selectedData.datasets[1].data = returnedMonthly;
 
-  const monthsInYear = getMonthsInYear();
-  const defaultItemsBorrowedMonthly = getItemsByMonth(
-    latestYear,
-    allEvents ?? [],
-    Action.BORROW,
-  );
-  const defaultItemsReturnedMonthly = getItemsByMonth(
-    latestYear,
-    allEvents ?? [],
-    Action.RETURN,
-  );
+      setDefaultItemsBorrowedMonthly(borrowedMonthly);
+      setDefaultItemsReturnedMonthly(returnedMonthly);
 
-  let selectedData = {
-    labels: monthsInYear,
-    datasets: [
-      {
-        label: 'Borrows',
-        data: defaultItemsBorrowedMonthly,
-        borderColor: 'rgb(138, 254, 213)',
-        backgroundColor: 'rgba(138, 254, 213, 0.5)',
-      },
-      {
-        label: 'Returns',
-        data: defaultItemsReturnedMonthly,
-        borderColor: 'rgb(61, 177, 137)',
-        backgroundColor: 'rgba(61, 177, 137, 0.5)',
-      },
-    ],
-  };
+      const daysInMonth = getDaysInMonth(latestMonth, latestYear);
+      setDefaultDaysInMonth(daysInMonth);
+      const borrowedDaily = getItemsByDay(
+        latestMonth,
+        latestYear,
+        daysInMonth,
+        allEvents,
+        Action.BORROW,
+      );
+      const returnedDaily = getItemsByDay(
+        latestMonth,
+        latestYear,
+        daysInMonth,
+        allEvents,
+        Action.RETURN,
+      );
 
-  const [data, setData] = useState(selectedData);
+      setDefaultItemsBorrowedDaily(borrowedDaily);
+      setDefaultItemsReturnedDaily(returnedDaily);
 
-  // TODO(Suhana): Fix switch to default days
+      setData(selectedData);
+    }
+  }, [allEvents]);
+
   if (!allEvents || allEvents.length == 0) {
     return (
       <Sidebar>
@@ -157,21 +180,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
       </Sidebar>
     );
   }
-  const defaultDaysInMonth = getDaysInMonth(latestMonth, latestYear);
-  const defaultItemsBorrowedDaily = getItemsByDay(
-    latestMonth,
-    latestYear,
-    defaultDaysInMonth,
-    allEvents,
-    Action.BORROW,
-  );
-  const defaultItemsReturnedDaily = getItemsByDay(
-    latestMonth,
-    latestYear,
-    defaultDaysInMonth,
-    allEvents,
-    Action.RETURN,
-  );
+
   const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
     console.log('In handleTimePeriodChange');
     const newGraphTimePeriod = event.target.value;
@@ -189,6 +198,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
       selectedData.datasets[1].data = defaultItemsReturnedDaily;
       console.log('Defaulting to daily data');
     }
+
+    // Set to default values
+
+    setMonthYearForDaily(latestMonth.toString() + ',' + latestYear.toString());
+    setYearForMonthly(latestYear.toString());
+
     setData(selectedData);
     console.log(data);
   };
@@ -453,15 +468,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       },
     });
-    const events = await prisma.event.findMany({
-      where: {
-        companyId: user?.companyId,
-      },
-    });
     const skus = await prisma.sku.findMany();
     return {
       props: {
-        // events: JSON.parse(JSON.stringify(events)),
         user: JSON.parse(JSON.stringify(user)),
         skus: JSON.parse(JSON.stringify(skus)),
       },
