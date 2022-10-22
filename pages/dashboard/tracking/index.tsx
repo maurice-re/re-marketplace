@@ -82,7 +82,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
     ],
   };
 
-  const [allEvents, setAllEvents] = useState<Event[]>();
+  const [events, setEvents] = useState<Event[]>();
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
   const [yearForMonthly, setYearForMonthly] = useState<string>('');
@@ -96,9 +96,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
   useEffect(() => {
-    console.log("In useEffect");
-    const fetchData = async () => {
-      console.log("In fetchData");
+    const fetchEvents = async () => {
       const results = await fetch(
         `/api/tracking/get-events?companyId=${user?.companyId}`,
         {
@@ -106,15 +104,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
           headers: { "Content-Type": "application/json" },
         }
       ).then(async (res) => await res.json());
-      setAllEvents(results.events as Event[]);
+      setEvents(results.events as Event[]);
     };
-
-    fetchData();
+    fetchEvents();
   }, []);
 
   useEffect(() => {
-    if (allEvents && allEvents.length > 0) {
-      const sortedEvents = sortByDate(allEvents);
+    if (events && events.length > 0) {
+      const sortedEvents = sortByDate(events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
       setMonthYearForDaily(latestMonthYear.map(String).join(','));
       setYearForMonthly(latestMonthYear[1].toString());
@@ -123,12 +120,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
 
       const borrowedMonthly = getItemsByMonth(
         latestYear,
-        allEvents,
+        events,
         Action.BORROW,
       );
       const returnedMonthly = getItemsByMonth(
         latestYear,
-        allEvents,
+        events,
         Action.RETURN,
       );
 
@@ -144,14 +141,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
         latestMonth,
         latestYear,
         daysInMonth,
-        allEvents,
+        events,
         Action.BORROW,
       );
       const returnedDaily = getItemsByDay(
         latestMonth,
         latestYear,
         daysInMonth,
-        allEvents,
+        events,
         Action.RETURN,
       );
 
@@ -160,9 +157,9 @@ const TrackingHome: NextPage<TrackingProps> = ({
 
       setData(selectedData);
     }
-  }, [allEvents]);
+  }, [events]);
 
-  if (!allEvents || allEvents.length == 0) {
+  if (!events || events.length == 0) {
     return (
       <Sidebar>
         <div className="w-screen h-screen bg-black flex">
@@ -182,86 +179,72 @@ const TrackingHome: NextPage<TrackingProps> = ({
   }
 
   const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log('In handleTimePeriodChange');
     const newGraphTimePeriod = event.target.value;
-    console.log(newGraphTimePeriod);
     setGraphTimePeriod(newGraphTimePeriod);
 
     if (newGraphTimePeriod === 'monthly') {
       selectedData.labels = monthsInYear;
       selectedData.datasets[0].data = defaultItemsBorrowedMonthly;
       selectedData.datasets[1].data = defaultItemsReturnedMonthly;
-      console.log('Defaulting to monthly data');
     } else if (newGraphTimePeriod === 'daily') {
       selectedData.labels = defaultDaysInMonth.map(String);
       selectedData.datasets[0].data = defaultItemsBorrowedDaily;
       selectedData.datasets[1].data = defaultItemsReturnedDaily;
-      console.log('Defaulting to daily data');
     }
 
     // Set to default values
-
     setMonthYearForDaily(latestMonth.toString() + ',' + latestYear.toString());
     setYearForMonthly(latestYear.toString());
 
     setData(selectedData);
-    console.log(data);
   };
 
   const handleMonthYearForDailyChange = (
     event: ChangeEvent<HTMLSelectElement>,
   ) => {
-    console.log('In handleMonthYearForDailyChange');
     const newMonthYearForDaily = event.target.value;
-    console.log(newMonthYearForDaily);
     setMonthYearForDaily(newMonthYearForDaily);
 
     const monthYear = newMonthYearForDaily.split(',');
     const month = parseInt(monthYear[0]);
     const year = parseInt(monthYear[1]);
-    console.log(month);
-    console.log(year);
 
     const daysInMonth = getDaysInMonth(month, year);
     const itemsBorrowedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
-      allEvents,
+      events,
       Action.BORROW,
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
-      allEvents,
+      events,
       Action.RETURN,
     );
     selectedData.labels = daysInMonth.map(String);
     selectedData.datasets[0].data = itemsBorrowedDaily;
     selectedData.datasets[1].data = itemsReturnedDaily;
 
-    console.log('Setting data to dailyData');
     setData(selectedData);
   };
 
   const handleYearForMonthlyChange = (
     event: ChangeEvent<HTMLSelectElement>,
   ) => {
-    console.log('In handleYearForMonthlyChange');
     const newYearForMonthly = event.target.value;
-    console.log(newYearForMonthly);
     setYearForMonthly(newYearForMonthly);
 
     const year = parseInt(newYearForMonthly);
 
-    let itemsBorrowedMonthly = getItemsByMonth(year, allEvents, Action.BORROW);
-    let itemsReturnedMonthly = getItemsByMonth(year, allEvents, Action.RETURN);
+    let itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW);
+    let itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN);
 
     selectedData.datasets[0].data = itemsBorrowedMonthly;
     selectedData.datasets[1].data = itemsReturnedMonthly;
 
-    console.log('Setting data to monthlyData');
     setData(selectedData);
   };
 
@@ -278,32 +261,32 @@ const TrackingHome: NextPage<TrackingProps> = ({
   let stats: Statistic[] = [];
   stats.push({
     title: 'In-use',
-    value: getItemsInUse(allEvents),
+    value: getItemsInUse(events),
     info: 'currently borrowed',
     isPercent: false,
   });
   stats.push({
     title: 'Used',
-    value: getLifetimeUses(allEvents),
+    value: getLifetimeUses(events),
     info: 'lifetime borrows',
     isPercent: false,
   });
   stats.push({
     title: 'Reuse Rate',
-    value: getReuseRate(allEvents),
+    value: getReuseRate(events),
     info: '(items used more than once) ÷ (items used)',
     isPercent: true,
   });
   stats.push({
     title: 'Return Rate',
-    value: getReturnRate(allEvents),
+    value: getReturnRate(events),
     info: '(items returned) ÷ (items borrowed)',
     isPercent: true,
   });
   stats.push({
     title: 'Avg Lifecycle',
     value: getAvgDaysBetweenBorrowAndReturn(
-      allEvents,
+      events,
       user?.company?.settings?.borrowReturnBuffer ?? undefined,
     ),
     info: 'days between borrow and return',
@@ -311,14 +294,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-  const eventsBySku = getEventsBySku(allEvents, skus[1]);
+  const eventsBySku = getEventsBySku(events, skus[1]);
   const itemsInUseBySku = getItemsInUse(eventsBySku);
-  const numItemIds = getItemIds(allEvents).length;
+  const numItemIds = getItemIds(events).length;
   const reuseRateBySku = getReuseRate(eventsBySku);
   const returnRateBySku = getReturnRate(eventsBySku);
 
-  const allMonthYears = getMonthYearsForDailyDropdown(allEvents);
-  const allYears = getYearsForMonthlyDropdown(allEvents);
+  const allMonthYears = getMonthYearsForDailyDropdown(events);
+  const allYears = getYearsForMonthlyDropdown(events);
 
   let options = {
     responsive: true,
@@ -345,7 +328,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          {allEvents && allEvents.length > 0 ? (
+          {events && events.length > 0 ? (
             <div>
               <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
               <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
