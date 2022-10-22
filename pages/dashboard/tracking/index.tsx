@@ -89,10 +89,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
     fetchData();
   }, []);
 
-  const sortedEvents = sortByDate(events ?? []);
+  const sortedEvents = sortByDate(allEvents ?? []);
+  console.log("sortedEvents");
+  console.log(sortedEvents);
   const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
   const latestMonth = latestMonthYear[0] ?? 0;
   const latestYear = latestMonthYear[1] ?? 0;
+
+  console.log(latestMonthYear.map(String).join(','));
 
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>(
@@ -105,12 +109,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const monthsInYear = getMonthsInYear();
   const defaultItemsBorrowedMonthly = getItemsByMonth(
     latestYear,
-    events ?? [],
+    allEvents ?? [],
     Action.BORROW,
   );
   const defaultItemsReturnedMonthly = getItemsByMonth(
     latestYear,
-    events ?? [],
+    allEvents ?? [],
     Action.RETURN,
   );
 
@@ -135,7 +139,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [data, setData] = useState(selectedData);
 
   // TODO(Suhana): Fix switch to default days
-  if (!events) {
+  if (!allEvents || allEvents.length == 0) {
     return (
       <Sidebar>
         <div className="w-screen h-screen bg-black flex">
@@ -158,14 +162,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
     latestMonth,
     latestYear,
     defaultDaysInMonth,
-    events,
+    allEvents,
     Action.BORROW,
   );
   const defaultItemsReturnedDaily = getItemsByDay(
     latestMonth,
     latestYear,
     defaultDaysInMonth,
-    events,
+    allEvents,
     Action.RETURN,
   );
   const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -208,14 +212,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
       month,
       year,
       daysInMonth,
-      events,
+      allEvents,
       Action.BORROW,
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
-      events,
+      allEvents,
       Action.RETURN,
     );
     selectedData.labels = daysInMonth.map(String);
@@ -236,8 +240,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
 
     const year = parseInt(newYearForMonthly);
 
-    let itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW);
-    let itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN);
+    let itemsBorrowedMonthly = getItemsByMonth(year, allEvents, Action.BORROW);
+    let itemsReturnedMonthly = getItemsByMonth(year, allEvents, Action.RETURN);
 
     selectedData.datasets[0].data = itemsBorrowedMonthly;
     selectedData.datasets[1].data = itemsReturnedMonthly;
@@ -259,32 +263,32 @@ const TrackingHome: NextPage<TrackingProps> = ({
   let stats: Statistic[] = [];
   stats.push({
     title: 'In-use',
-    value: getItemsInUse(events),
+    value: getItemsInUse(allEvents),
     info: 'currently borrowed',
     isPercent: false,
   });
   stats.push({
     title: 'Used',
-    value: getLifetimeUses(events),
+    value: getLifetimeUses(allEvents),
     info: 'lifetime borrows',
     isPercent: false,
   });
   stats.push({
     title: 'Reuse Rate',
-    value: getReuseRate(events),
+    value: getReuseRate(allEvents),
     info: '(items used more than once) ÷ (items used)',
     isPercent: true,
   });
   stats.push({
     title: 'Return Rate',
-    value: getReturnRate(events),
+    value: getReturnRate(allEvents),
     info: '(items returned) ÷ (items borrowed)',
     isPercent: true,
   });
   stats.push({
     title: 'Avg Lifecycle',
     value: getAvgDaysBetweenBorrowAndReturn(
-      events,
+      allEvents,
       user?.company?.settings?.borrowReturnBuffer ?? undefined,
     ),
     info: 'days between borrow and return',
@@ -292,14 +296,14 @@ const TrackingHome: NextPage<TrackingProps> = ({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-  const eventsBySku = getEventsBySku(events, skus[1]);
+  const eventsBySku = getEventsBySku(allEvents, skus[1]);
   const itemsInUseBySku = getItemsInUse(eventsBySku);
-  const numItemIds = getItemIds(events).length;
+  const numItemIds = getItemIds(allEvents).length;
   const reuseRateBySku = getReuseRate(eventsBySku);
   const returnRateBySku = getReturnRate(eventsBySku);
 
-  const allMonthYears = getMonthYearsForDailyDropdown(events);
-  const allYears = getYearsForMonthlyDropdown(events);
+  const allMonthYears = getMonthYearsForDailyDropdown(allEvents);
+  const allYears = getYearsForMonthlyDropdown(allEvents);
 
   let options = {
     responsive: true,
@@ -326,7 +330,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          {events && events.length > 0 ? (
+          {allEvents && allEvents.length > 0 ? (
             <div>
               <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
               <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
@@ -457,7 +461,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const skus = await prisma.sku.findMany();
     return {
       props: {
-        events: JSON.parse(JSON.stringify(events)),
+        // events: JSON.parse(JSON.stringify(events)),
         user: JSON.parse(JSON.stringify(user)),
         skus: JSON.parse(JSON.stringify(skus)),
       },
