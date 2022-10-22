@@ -5,7 +5,7 @@ import csv
 productSkuIdPairs = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB1-1.5-RPP-GRAY",
                     "Silver Cup (M)":"SC1-12-RPP-GRAY", "Food Container (S)": "SB1-1-RPP-GRAY"}
 
-apiUrl = "http://localhost:3000/api/tracking/event"
+apiUrl = "http://localhost:3000/api/tracking/create-event"
 
 events = []
 
