@@ -87,6 +87,7 @@ const Store: NextPage<StoreProps> = ({
       state: formElements[6].value,
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
+      tagId: "",
     };
 
     await fetch("/api/location", {
@@ -128,16 +129,15 @@ const Store: NextPage<StoreProps> = ({
           <div className="flex items-center text-sm font-theinhardt-300 gap-1">
             <div className="text-re-green-600">{`Last order date`}</div>
             <div className="text-gray-200">
-              {` — ${
-                location.orderItems.length == 0
-                  ? "No orders placed"
-                  : new Date(
-                      location.orderItems[0].createdAt
-                    ).toLocaleDateString("en-us", {
-                      day: "numeric",
-                      month: "short",
-                    })
-              }`}
+              {` — ${location.orderItems.length == 0
+                ? "No orders placed"
+                : new Date(
+                  location.orderItems[0].createdAt
+                ).toLocaleDateString("en-us", {
+                  day: "numeric",
+                  month: "short",
+                })
+                }`}
             </div>
           </div>
         </div>
@@ -183,9 +183,8 @@ const Store: NextPage<StoreProps> = ({
                     Close
                   </button>
                   <button
-                    className={`btn btn-outline btn-accent ${
-                      loading ? "loading" : ""
-                    }`}
+                    className={`btn btn-outline btn-accent ${loading ? "loading" : ""
+                      }`}
                     type="submit"
                   >
                     Add
@@ -348,9 +347,8 @@ const Store: NextPage<StoreProps> = ({
                           {sizes.map((size) => (
                             <button
                               key={size}
-                              className={`btn btn-outline mr-2 ${
-                                sku.size == size ? "btn-accent" : ""
-                              }`}
+                              className={`btn btn-outline mr-2 ${sku.size == size ? "btn-accent" : ""
+                                }`}
                               onClick={() => changeSize(size)}
                             >
                               {size}
@@ -363,9 +361,8 @@ const Store: NextPage<StoreProps> = ({
                           {colors.map((color) => (
                             <button
                               key={color}
-                              className={`btn btn-outline mr-2 ${
-                                sku.color == color ? "btn-accent" : ""
-                              }`}
+                              className={`btn btn-outline mr-2 ${sku.color == color ? "btn-accent" : ""
+                                }`}
                               onClick={() => changeColor(color)}
                             >
                               {color}
@@ -377,9 +374,8 @@ const Store: NextPage<StoreProps> = ({
                         {materials.map((material) => (
                           <button
                             key={material}
-                            className={`btn btn-outline mr-2 ${
-                              sku.material == material ? "btn-accent" : ""
-                            }`}
+                            className={`btn btn-outline mr-2 ${sku.material == material ? "btn-accent" : ""
+                              }`}
                           >
                             {material}
                           </button>

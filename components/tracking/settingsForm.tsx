@@ -69,7 +69,7 @@ export default function SettingsForm({
                 <input type="text" placeholder="Borrow-Return Buffer" className="input input-bordered w-full max-w-xs" value={borrowReturnBuffer} onChange={(e) => handleChange(e.target.value)}
                 />
                 <label className="label">
-                    <span className="label-text-alt">The minimum buffer (in days) between borrow and return to consider in the 'Avg Lifecycle' calculation.</span>
+                    <span className="label-text-alt">The minimum buffer (in days) between borrow and return to consider in the Avg Lifecycle calculation.</span>
                 </label>
             </div>
             <button
