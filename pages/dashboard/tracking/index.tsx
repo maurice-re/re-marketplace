@@ -15,6 +15,7 @@ import Head from 'next/head';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Sidebar from '../../../components/dashboard/sidebar';
+import SettingsForm from '../../../components/tracking/settingsForm';
 import prisma from '../../../constants/prisma';
 import {
   getAvgDaysBetweenBorrowAndReturn,
@@ -418,6 +419,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
                 <div className="w-5/6">
                   <Line options={options} data={data} />
                 </div>
+              </div>
+              <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
+                Configure Settings
+              </h1>
+              <div className="flex w-full gap-8">
+                <SettingsForm user={user} />
               </div>
               <div className="py-6"></div>
             </div>
