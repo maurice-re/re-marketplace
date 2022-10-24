@@ -1,4 +1,4 @@
-import { Action, Event, Sku } from "@prisma/client";
+import { Action, Event, Sku } from '@prisma/client';
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -8,14 +8,15 @@ import {
   PointElement,
   Title,
   Tooltip,
-} from "chart.js";
-import type { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
-import Head from "next/head";
-import { ChangeEvent, useState } from "react";
-import { Line } from "react-chartjs-2";
-import Sidebar from "../../../components/dashboard/sidebar";
-import prisma from "../../../constants/prisma";
+} from 'chart.js';
+import type { GetServerSideProps, NextPage } from 'next';
+import { unstable_getServerSession } from 'next-auth';
+import Head from 'next/head';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import Sidebar from '../../../components/dashboard/sidebar';
+import SettingsForm from '../../../components/tracking/settingsForm';
+import prisma from '../../../constants/prisma';
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -33,8 +34,8 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
   UserWithSettings,
-} from "../../../utils/tracking/trackingUtils";
-import { authOptions } from "../../api/auth/[...nextauth]";
+} from '../../../utils/tracking/trackingUtils';
+import { authOptions } from '../../api/auth/[...nextauth]';
 
 ChartJS.register(
   CategoryScale,
@@ -43,7 +44,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 type Statistic = {
@@ -54,63 +55,133 @@ type Statistic = {
 };
 
 type TrackingProps = {
-  events: Event[] | null;
   user: UserWithSettings;
   skus: Sku[];
 };
 
+const monthsInYear = getMonthsInYear();
+
 const TrackingHome: NextPage<TrackingProps> = ({
-  events,
   user,
   skus,
 }: TrackingProps) => {
-  const sortedEvents = sortByDate(events ?? []);
-  const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
-  const latestMonth = latestMonthYear[0] ?? 0;
-  const latestYear = latestMonthYear[1] ?? 0;
 
-  const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
-  const [monthYearForDaily, setMonthYearForDaily] = useState<string>(
-    latestMonthYear.map(String).join(",")
-  );
-  const [yearForMonthly, setYearForMonthly] = useState<string>(
-    latestYear.toString()
-  );
-
-  const monthsInYear = getMonthsInYear();
-  const defaultItemsBorrowedMonthly = getItemsByMonth(
-    latestYear,
-    events ?? [],
-    Action.BORROW
-  );
-  const defaultItemsReturnedMonthly = getItemsByMonth(
-    latestYear,
-    events ?? [],
-    Action.RETURN
-  );
-
-  let selectedData = {
+  // "Dummy" data that is updated on changes
+  let baseData = {
     labels: monthsInYear,
     datasets: [
       {
-        label: "Borrows",
-        data: defaultItemsBorrowedMonthly,
-        borderColor: "rgb(138, 254, 213)",
-        backgroundColor: "rgba(138, 254, 213, 0.5)",
+        label: 'Borrows',
+        data: [0],
+        borderColor: 'rgb(138, 254, 213)',
+        backgroundColor: 'rgba(138, 254, 213, 0.5)',
       },
       {
-        label: "Returns",
-        data: defaultItemsReturnedMonthly,
-        borderColor: "rgb(61, 177, 137)",
-        backgroundColor: "rgba(61, 177, 137, 0.5)",
+        label: 'Returns',
+        data: [0],
+        borderColor: 'rgb(61, 177, 137)',
+        backgroundColor: 'rgba(61, 177, 137, 0.5)',
       },
     ],
   };
 
-  const [data, setData] = useState(selectedData);
+  const [events, setEvents] = useState<Event[]>();
+  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
+  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
+  const [yearForMonthly, setYearForMonthly] = useState<string>('');
+  const [latestMonth, setLatestMonth] = useState<number>(0);
+  const [latestYear, setLatestYear] = useState<number>(0);
+  const [defaultItemsBorrowedMonthly, setDefaultItemsBorrowedMonthly] = useState([0]);
+  const [defaultItemsReturnedMonthly, setDefaultItemsReturnedMonthly] = useState([0]);
+  const [defaultItemsBorrowedDaily, setDefaultItemsBorrowedDaily] = useState([0]);
+  const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([0]);
+  const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
-  // TODO(Suhana): Fix switch to default days
-  if (!events) {
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const results = await fetch(
+        `/api/tracking/get-events?companyId=${user?.companyId}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ).then(async (res) => await res.json());
+      setEvents(results.events as Event[]);
+    };
+    fetchEvents();
+  }, [user]);
+
+  const [data, setData] = useState(baseData);
+
+  useEffect(() => {
+    if (events && events.length > 0) {
+      const sortedEvents = sortByDate(events);
+      const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
+      setMonthYearForDaily(latestMonthYear.map(String).join(','));
+      setYearForMonthly(latestMonthYear[1].toString());
+      setLatestMonth(latestMonthYear[0]);
+      setLatestYear(latestMonthYear[1]);
+
+      const borrowedMonthly = getItemsByMonth(
+        latestYear,
+        events,
+        Action.BORROW,
+      );
+      const returnedMonthly = getItemsByMonth(
+        latestYear,
+        events,
+        Action.RETURN,
+      );
+
+      let selectedData = {
+        labels: monthsInYear,
+        datasets: [
+          {
+            label: 'Borrows',
+            data: [0],
+            borderColor: 'rgb(138, 254, 213)',
+            backgroundColor: 'rgba(138, 254, 213, 0.5)',
+          },
+          {
+            label: 'Returns',
+            data: [0],
+            borderColor: 'rgb(61, 177, 137)',
+            backgroundColor: 'rgba(61, 177, 137, 0.5)',
+          },
+        ],
+      };
+
+      selectedData.datasets[0].data = borrowedMonthly;
+      selectedData.datasets[1].data = returnedMonthly;
+
+      setDefaultItemsBorrowedMonthly(borrowedMonthly);
+      setDefaultItemsReturnedMonthly(returnedMonthly);
+
+      const daysInMonth = getDaysInMonth(latestMonth, latestYear);
+      setDefaultDaysInMonth(daysInMonth);
+      const borrowedDaily = getItemsByDay(
+        latestMonth,
+        latestYear,
+        daysInMonth,
+        events,
+        Action.BORROW,
+      );
+      const returnedDaily = getItemsByDay(
+        latestMonth,
+        latestYear,
+        daysInMonth,
+        events,
+        Action.RETURN,
+      );
+
+      setDefaultItemsBorrowedDaily(borrowedDaily);
+      setDefaultItemsReturnedDaily(returnedDaily);
+
+      setData(selectedData);
+    }
+  }, [events, latestMonth, latestYear]);
+
+  if (!events || events.length == 0) {
     return (
       <Sidebar>
         <div className="w-screen h-screen bg-black flex">
@@ -128,55 +199,37 @@ const TrackingHome: NextPage<TrackingProps> = ({
       </Sidebar>
     );
   }
-  const defaultDaysInMonth = getDaysInMonth(latestMonth, latestYear);
-  const defaultItemsBorrowedDaily = getItemsByDay(
-    latestMonth,
-    latestYear,
-    defaultDaysInMonth,
-    events,
-    Action.BORROW
-  );
-  const defaultItemsReturnedDaily = getItemsByDay(
-    latestMonth,
-    latestYear,
-    defaultDaysInMonth,
-    events,
-    Action.RETURN
-  );
+
   const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log("In handleTimePeriodChange");
     const newGraphTimePeriod = event.target.value;
-    console.log(newGraphTimePeriod);
     setGraphTimePeriod(newGraphTimePeriod);
 
-    if (newGraphTimePeriod === "monthly") {
-      selectedData.labels = monthsInYear;
-      selectedData.datasets[0].data = defaultItemsBorrowedMonthly;
-      selectedData.datasets[1].data = defaultItemsReturnedMonthly;
-      console.log("Defaulting to monthly data");
-    } else if (newGraphTimePeriod === "daily") {
-      selectedData.labels = defaultDaysInMonth.map(String);
-      selectedData.datasets[0].data = defaultItemsBorrowedDaily;
-      selectedData.datasets[1].data = defaultItemsReturnedDaily;
-      console.log("Defaulting to daily data");
+    if (newGraphTimePeriod === 'monthly') {
+      baseData.labels = monthsInYear;
+      baseData.datasets[0].data = defaultItemsBorrowedMonthly;
+      baseData.datasets[1].data = defaultItemsReturnedMonthly;
+    } else if (newGraphTimePeriod === 'daily') {
+      baseData.labels = defaultDaysInMonth.map(String);
+      baseData.datasets[0].data = defaultItemsBorrowedDaily;
+      baseData.datasets[1].data = defaultItemsReturnedDaily;
     }
-    setData(selectedData);
-    console.log(data);
+
+    // Set to default values
+    setMonthYearForDaily(latestMonth.toString() + ',' + latestYear.toString());
+    setYearForMonthly(latestYear.toString());
+
+    setData(baseData);
   };
 
   const handleMonthYearForDailyChange = (
-    event: ChangeEvent<HTMLSelectElement>
+    event: ChangeEvent<HTMLSelectElement>,
   ) => {
-    console.log("In handleMonthYearForDailyChange");
     const newMonthYearForDaily = event.target.value;
-    console.log(newMonthYearForDaily);
     setMonthYearForDaily(newMonthYearForDaily);
 
-    const monthYear = newMonthYearForDaily.split(",");
+    const monthYear = newMonthYearForDaily.split(',');
     const month = parseInt(monthYear[0]);
     const year = parseInt(monthYear[1]);
-    console.log(month);
-    console.log(year);
 
     const daysInMonth = getDaysInMonth(month, year);
     const itemsBorrowedDaily = getItemsByDay(
@@ -184,29 +237,26 @@ const TrackingHome: NextPage<TrackingProps> = ({
       year,
       daysInMonth,
       events,
-      Action.BORROW
+      Action.BORROW,
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
       events,
-      Action.RETURN
+      Action.RETURN,
     );
-    selectedData.labels = daysInMonth.map(String);
-    selectedData.datasets[0].data = itemsBorrowedDaily;
-    selectedData.datasets[1].data = itemsReturnedDaily;
+    baseData.labels = daysInMonth.map(String);
+    baseData.datasets[0].data = itemsBorrowedDaily;
+    baseData.datasets[1].data = itemsReturnedDaily;
 
-    console.log("Setting data to dailyData");
-    setData(selectedData);
+    setData(baseData);
   };
 
   const handleYearForMonthlyChange = (
-    event: ChangeEvent<HTMLSelectElement>
+    event: ChangeEvent<HTMLSelectElement>,
   ) => {
-    console.log("In handleYearForMonthlyChange");
     const newYearForMonthly = event.target.value;
-    console.log(newYearForMonthly);
     setYearForMonthly(newYearForMonthly);
 
     const year = parseInt(newYearForMonthly);
@@ -214,55 +264,54 @@ const TrackingHome: NextPage<TrackingProps> = ({
     let itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW);
     let itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN);
 
-    selectedData.datasets[0].data = itemsBorrowedMonthly;
-    selectedData.datasets[1].data = itemsReturnedMonthly;
+    baseData.datasets[0].data = itemsBorrowedMonthly;
+    baseData.datasets[1].data = itemsReturnedMonthly;
 
-    console.log("Setting data to monthlyData");
-    setData(selectedData);
+    setData(baseData);
   };
 
   function getFormattedMonthYear(monthYear: string): string {
     // 6,2022 -> June 2022
-    const monthYearArr = monthYear.split(",");
+    const monthYearArr = monthYear.split(',');
     const formattedMonthYear =
       monthsInYear[parseInt(monthYearArr[0]) - 1] +
-      " " +
+      ' ' +
       parseInt(monthYearArr[1]);
     return formattedMonthYear;
   }
 
   let stats: Statistic[] = [];
   stats.push({
-    title: "In-use",
+    title: 'In-use',
     value: getItemsInUse(events),
-    info: "currently borrowed",
+    info: 'currently borrowed',
     isPercent: false,
   });
   stats.push({
-    title: "Used",
+    title: 'Used',
     value: getLifetimeUses(events),
-    info: "lifetime borrows",
+    info: 'lifetime borrows',
     isPercent: false,
   });
   stats.push({
-    title: "Reuse Rate",
+    title: 'Reuse Rate',
     value: getReuseRate(events),
-    info: "(items used more than once) ÷ (items used)",
+    info: '(items used more than once) ÷ (items used)',
     isPercent: true,
   });
   stats.push({
-    title: "Return Rate",
+    title: 'Return Rate',
     value: getReturnRate(events),
-    info: "(items returned) ÷ (items borrowed)",
+    info: '(items returned) ÷ (items borrowed)',
     isPercent: true,
   });
   stats.push({
-    title: "Avg Lifecycle",
+    title: 'Avg Lifecycle',
     value: getAvgDaysBetweenBorrowAndReturn(
       events,
-      user?.company?.settings?.borrowReturnBuffer ?? undefined
+      user?.company?.settings?.borrowReturnBuffer ?? undefined,
     ),
-    info: "days between borrow and return",
+    info: 'days between borrow and return',
     isPercent: false,
   });
 
@@ -280,12 +329,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
+        position: 'top' as const,
       },
       title: {
         display: true,
         text:
-          graphTimePeriod === "monthly"
+          graphTimePeriod === 'monthly'
             ? `Month-by-Month for ${yearForMonthly}`
             : `Day-by-Day for ${getFormattedMonthYear(monthYearForDaily)}`,
       },
@@ -319,9 +368,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
                         {stat.title}
                       </div>
                       <div className="font-theinhardt text-4xl mt-2 text-re-green-500">
-                        {`${Math.round(stat.value * 10) / 10}${
-                          stat.isPercent ? `%` : ``
-                        }`}
+                        {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                          }`}
                       </div>
                     </button>
                   </div>
@@ -357,7 +405,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
                       </label>
                     </div>
                   </div>
-                  {graphTimePeriod === "monthly" && (
+                  {graphTimePeriod === 'monthly' && (
                     <div className="form-control w-full max-w-xs mt-2">
                       <select
                         className="select w-full max-w-xs"
@@ -372,7 +420,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
                       </select>
                     </div>
                   )}
-                  {graphTimePeriod === "daily" && (
+                  {graphTimePeriod === 'daily' && (
                     <div className="form-control w-full max-w-xs mt-2">
                       <select
                         className="select w-full max-w-xs"
@@ -393,6 +441,12 @@ const TrackingHome: NextPage<TrackingProps> = ({
                   <Line options={options} data={data} />
                 </div>
               </div>
+              <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
+                Configure Settings
+              </h1>
+              <div className="flex w-full gap-8">
+                <SettingsForm user={user} />
+              </div>
               <div className="py-6"></div>
             </div>
           ) : (
@@ -410,12 +464,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
     context.res,
-    authOptions
+    authOptions,
   );
   if (session) {
     const user = await prisma.user.findUnique({
       where: {
-        email: session?.user?.email ?? "",
+        email: session?.user?.email ?? '',
       },
       include: {
         company: {
@@ -425,15 +479,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
       },
     });
-    const events = await prisma.event.findMany({
-      where: {
-        companyId: user?.companyId,
-      },
-    });
     const skus = await prisma.sku.findMany();
     return {
       props: {
-        events: JSON.parse(JSON.stringify(events)),
         user: JSON.parse(JSON.stringify(user)),
         skus: JSON.parse(JSON.stringify(skus)),
       },
