@@ -20,30 +20,29 @@ export default function SettingsForm({
         console.log("Got ", borrowReturnBuffer);
         console.log(borrowReturnBuffer);
 
-        if (borrowReturnBuffer && borrowReturnBuffer > 0) {
+        if (borrowReturnBuffer && borrowReturnBuffer > 0 && user) {
             console.log("POST to API");
-            //     const res = await fetch("/api/payment/charge", {
-            //       method: "POST",
-            //       headers: { "Content-Type": "application/json" },
-            //       body: JSON.stringify({
-            //         customerId: customerId,
-            //         paymentIntentId: paymentIntentId,
-            //         paymentMethod: dropdown,
-            //         total: getCheckoutTotal(
-            //           orderString,
-            //           productDevelopment,
-            //           products,
-            //           skus,
-            //           type
-            //         ),
-            //       }),
-            //     });
-            //     if (res.status != 200) {
-            //       const { message } = await res.json();
-            //       setMessage(message);
-            //       setIsLoading(false);
-            //       return;
-            //     }
+            const res = await fetch("/api/tracking/update-settings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    companyId: user.companyId,
+                    borrowReturnBuffer: borrowReturnBuffer,
+                }),
+            });
+            if (res.status != 200) {
+                const { message } = await res.json();
+                setMessage(message);
+                setIsLoading(false);
+                return;
+            }
+            console.log(res);
+            // TODO(Suhana): Need to update this form field and the avg lifecycle calculation after this call updates successfully - getSettings client side in both places
+            console.log("User after post");
+            console.log(user);
+            // if (user.company.settings.borrowReturnBuffer) {
+            //     setBorrowReturnBuffer(user.company.settings.borrowReturnBuffer); // set to new buffer
+            // }
         }
     };
 
