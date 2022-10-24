@@ -1,12 +1,13 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { UserWithSettings } from "../../utils/tracking/trackingUtils";
+
 
 export default function SettingsForm({
     user,
 }: {
     user: UserWithSettings;
 }) {
-
+    const [initial, setInitial] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
     const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
@@ -15,7 +16,7 @@ export default function SettingsForm({
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // setIsLoading(true);
+        setIsLoading(true);
 
         console.log("Got ", borrowReturnBuffer);
         console.log(borrowReturnBuffer);
@@ -33,17 +34,26 @@ export default function SettingsForm({
             if (res.status != 200) {
                 const { message } = await res.json();
                 setMessage(message);
-                setIsLoading(false);
                 return;
+            } else {
+                // user.company.settings.borrowReturnBuffer = borrowReturnBuffer;
+                setInitial(borrowReturnBuffer);
             }
             console.log(res);
             // TODO(Suhana): Need to update this form field and the avg lifecycle calculation after this call updates successfully - getSettings client side in both places
-            console.log("User after post");
-            console.log(user);
-            // if (user.company.settings.borrowReturnBuffer) {
-            //     setBorrowReturnBuffer(user.company.settings.borrowReturnBuffer); // set to new buffer
-            // }
-        }
+            // console.log("User after post");
+            // console.log(user);
+
+            // const settings = await fetch(
+            //     `/api/tracking/get-settings?companyId=${user?.companyId}`,
+            //     {
+            //         method: "GET",
+            //         headers: { "Content-Type": "application/json" },
+            //     }
+            // ).then(async (res) => await res.json());
+
+            setIsLoading(false);
+        };
     };
 
     const handleChange = (borrowReturnBuffer: string) => {
@@ -67,11 +77,10 @@ export default function SettingsForm({
             </div>
             <button
                 disabled={
-
-                    !user || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === user?.company.settings.borrowReturnBuffer
+                    !user || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === initial
                 }
                 id="submit"
-                className={`btn btn-accent btn-outline px-4 py-2 w-1/4 mt-4 mb-4 ${isLoading ? "loading" : ""}`}
+                className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""}`}
             >
                 Update
             </button>
