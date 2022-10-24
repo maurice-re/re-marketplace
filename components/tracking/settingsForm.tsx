@@ -7,7 +7,7 @@ export default function SettingsForm({
 }: {
     user: UserWithSettings;
 }) {
-    const [initial, setInitial] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
+    const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
     const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
@@ -37,13 +37,10 @@ export default function SettingsForm({
                 return;
             } else {
                 // user.company.settings.borrowReturnBuffer = borrowReturnBuffer;
-                setInitial(borrowReturnBuffer);
+                setInitialBorrowReturnBuffer(borrowReturnBuffer);
             }
             console.log(res);
-            // TODO(Suhana): Need to update this form field and the avg lifecycle calculation after this call updates successfully - getSettings client side in both places
-            // console.log("User after post");
-            // console.log(user);
-
+            // TODO(Suhana): Need to update avg lifecycle calculation automatically after this updates (and if moving to client side, then change how this form field updates too)
             // const settings = await fetch(
             //     `/api/tracking/get-settings?companyId=${user?.companyId}`,
             //     {
@@ -77,7 +74,7 @@ export default function SettingsForm({
             </div>
             <button
                 disabled={
-                    !user || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === initial
+                    !user || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === initialBorrowReturnBuffer
                 }
                 id="submit"
                 className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""}`}
