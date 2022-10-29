@@ -1,11 +1,11 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useState, Dispatch, SetStateAction } from "react";
 import { Settings } from '@prisma/client';
 
 export default function SettingsForm({
     settings, setSettings
 }: {
     settings: Settings;
-    setSettings: any;
+    setSettings: Dispatch<SetStateAction<Settings>>;
 }) {
     const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] = useState<number>(settings?.borrowReturnBuffer ?? 0);
     const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(settings?.borrowReturnBuffer ?? 0);
@@ -17,7 +17,7 @@ export default function SettingsForm({
         setIsLoading(true);
 
         if (borrowReturnBuffer && borrowReturnBuffer > 0 && settings) {
-            const res = await fetch("/api/tracking/update-settings", {
+            const res = await fetch("/api/tracking/edit-settings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

@@ -6,9 +6,9 @@ export default function AccountForm({
 }: {
     user: User;
 }) {
-    // TODO(Suhana): Allow submitting of form when any of the options are selected - create everything for admin first, and then add changes for user
+    // TODO(Suhana): Allow submitting of form when any of the options are selected - create everything for admin first, and then add changes for user - add check for admin
     const [initialUser, setInitialUser] = useState<User>(user);
-    const [firstName, setName] = useState<string>(user?.firstName ?? "");
+    const [newUser, setNewUser] = useState<User>(user);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
@@ -17,39 +17,68 @@ export default function AccountForm({
         e.preventDefault();
         setIsLoading(true);
 
-        // if (borrowReturnBuffer && borrowReturnBuffer > 0 && settings) {
-        //     const res = await fetch("/api/tracking/update-settings", {
-        //         method: "POST",
-        //         headers: { "Content-Type": "application/json" },
-        //         body: JSON.stringify({
-        //             companyId: settings.companyId,
-        //             borrowReturnBuffer: borrowReturnBuffer,
-        //         }),
-        //     });
-        //     if (res.status != 200) {
-        //         const { message } = await res.json();
-        //         setMessage(message);
-        //         return;
-        //     } else {
-        //         setInitialBorrowReturnBuffer(borrowReturnBuffer);
-        //     }
+        // const formElements = (e.target as any).elements as HTMLInputElement[];
+        // // let formElements: string[] = [];
+        // for (let i = 0; i < formElements.length - 1; i++) {
+        //     // formElements.push(formElements[i].value);
+        //     console.log(formElements[i]);
+        // }
 
-        //     const settingsRes = await fetch(
-        //         `/api/tracking/get-settings?companyId=${settings?.companyId}`,
-        //         {
-        //             method: "GET",
-        //             headers: { "Content-Type": "application/json" },
-        //         }
-        //     ).then(async (res) => await res.json());
-        //     setSettings(settingsRes.settings as Settings);
+        console.log("Got newUser");
+        console.log(newUser);
 
-        setIsLoading(false);
-        // };
+        // console.log(newUser);
+
+        if (newUser && newUser.firstName && newUser.lastName && newUser.id) {
+            const res = await fetch("/api/user/edit-user", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: newUser.id,
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                }),
+            });
+            if (res.status != 200) {
+                const { message } = await res.json();
+                setMessage(message);
+                return;
+            } else {
+                setInitialUser(prevState => ({
+                    ...prevState,
+                    firstName: newUser.firstName,
+                    lastName: newUser.lastName,
+                }));
+            }
+
+            // TODO(Suhana): Implement upstream data update
+            // const userRes = await fetch(
+            //     `/api/tracking/get-user?companyId=${user?.id}`,
+            //     {
+            //         method: "GET",
+            //         headers: { "Content-Type": "application/json" },
+            //     }
+            // ).then(async (res) => await res.json());
+            // setUser(userRes.user as User);
+
+            setIsLoading(false);
+        };
     };
 
-    const handleChange = (firstName: string) => {
-        setName(firstName);
+    const handleNameChange = (name: string, isFirstName: boolean) => {
+        if (isFirstName) {
+            setNewUser(prevState => ({
+                ...prevState,
+                firstName: name,
+            }));
+        } else {
+            setNewUser(prevState => ({
+                ...prevState,
+                lastName: name,
+            }));
+        }
     };
+
 
     return (
         <form
@@ -60,12 +89,19 @@ export default function AccountForm({
                 <label className="label mt-2">
                     <span className="label-text">First Name</span>
                 </label>
-                <input type="text" placeholder="First Name" className="input input-bordered w-full max-w-xs" value={firstName} onChange={(e) => handleChange(e.target.value)}
+                <input type="text" placeholder="First Name" id="firstName" className="input input-bordered w-full max-w-xs" value={newUser.firstName ?? ""} onChange={(e) => handleNameChange(e.target.value, true)}
+                />
+            </div>
+            <div className="form-control w-full max-w-xs">
+                <label className="label mt-2">
+                    <span className="label-text">First Name</span>
+                </label>
+                <input type="text" placeholder="First Name" id="lastName" className="input input-bordered w-full max-w-xs" value={newUser.lastName ?? ""} onChange={(e) => handleNameChange(e.target.value, false)}
                 />
             </div>
             <button
                 disabled={
-                    !user || !firstName || firstName === "" || firstName === initialUser?.firstName
+                    !user || !newUser?.firstName || !newUser?.lastName || (newUser?.firstName === initialUser?.firstName && newUser?.lastName === initialUser?.lastName)
                 }
                 id="submit"
                 className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""}`}
