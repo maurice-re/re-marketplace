@@ -3,9 +3,10 @@ import { UserWithSettings } from "../../utils/tracking/trackingUtils";
 
 
 export default function SettingsForm({
-    user,
+    user, setRefreshed
 }: {
     user: UserWithSettings;
+    setRefreshed: any;
 }) {
     const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
     const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
@@ -48,6 +49,8 @@ export default function SettingsForm({
             //         headers: { "Content-Type": "application/json" },
             //     }
             // ).then(async (res) => await res.json());
+
+            setRefreshed(true);
 
             setIsLoading(false);
         };

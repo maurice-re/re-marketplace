@@ -1,4 +1,4 @@
-import { Action, Event, Sku } from '@prisma/client';
+import { Action, Event, Settings, Sku } from '@prisma/client';
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -86,6 +86,9 @@ const TrackingHome: NextPage<TrackingProps> = ({
   };
 
   const [events, setEvents] = useState<Event[]>();
+  const [settings, setSettings] = useState<Settings>(user?.company.settings);
+  const [refreshed, setRefreshed] = useState<false>();
+
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
   const [yearForMonthly, setYearForMonthly] = useState<string>('');
@@ -98,18 +101,33 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const results = await fetch(
+    const fetchData = async () => {
+      const eventsRes = await fetch(
         `/api/tracking/get-events?companyId=${user?.companyId}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         }
       ).then(async (res) => await res.json());
-      setEvents(results.events as Event[]);
+      setEvents(eventsRes.events as Event[]);
+
     };
-    fetchEvents();
+    fetchData();
   }, [user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const settingsRes = await fetch(
+        `/api/tracking/get-settings?companyId=${user?.companyId}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      ).then(async (res) => await res.json());
+      setSettings(settingsRes.settings as Settings);
+    };
+    fetchData();
+  }, [refreshed, setRefreshed]);
 
   const [data, setData] = useState(baseData);
 
@@ -309,7 +327,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
     title: 'Avg Lifecycle',
     value: getAvgDaysBetweenBorrowAndReturn(
       events,
-      user?.company?.settings?.borrowReturnBuffer ?? undefined,
+      settings?.borrowReturnBuffer ?? undefined,
     ),
     info: 'days between borrow and return',
     isPercent: false,
@@ -445,7 +463,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
                 Configure Settings
               </h1>
               <div className="flex w-full gap-8">
-                <SettingsForm user={user} />
+                <SettingsForm user={user} setRefreshed={setRefreshed} />
               </div>
               <div className="py-6"></div>
             </div>
