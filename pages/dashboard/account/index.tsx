@@ -6,6 +6,8 @@ import Sidebar from "../../../components/dashboard/sidebar";
 import prisma from "../../../constants/prisma";
 import { authOptions } from "../../api/auth/[...nextauth]";
 import AccountForm from '../../../components/account/accountForm';
+import { useState } from "react";
+import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
 
 type AccountProps = {
   user: User & {
@@ -32,6 +34,9 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
     );
   }
 
+  // TODO(Suhana): Use either user or dynamicUser
+  const [dynamicUser, setDynamicUser] = useState<UserCompany>(user);
+
   return (
     <Sidebar>
       <div className="w-full h-screen bg-black flex overflow-auto">
@@ -44,15 +49,15 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
           <div className="flex w-full justify-between ">
             <div className="flex flex-col font-theinhardt justify-center">
               <h1 className="text-3xl">Manage Your Account</h1>
-              <h3 className="text-xl font-theinhardt-300">{`${user.firstName} ${user.lastName} | ${user.company.name}`}</h3>
+              <h3 className="text-xl font-theinhardt-300">{`${dynamicUser?.firstName} ${dynamicUser?.lastName} | ${dynamicUser?.company?.name}`}</h3>
             </div>
             <div className="avatar placeholder">
               <div className=" bg-re-green-500 text-black rounded-full w-24">
-                <span className="text-3xl">{user.firstName?.charAt(0)}</span>
+                <span className="text-3xl">{dynamicUser.firstName?.charAt(0)}</span>
               </div>
             </div>
           </div>
-          <AccountForm user={user} />
+          <AccountForm user={dynamicUser} setUser={setDynamicUser} />
           <div className="divider" />
         </main>
       </div>

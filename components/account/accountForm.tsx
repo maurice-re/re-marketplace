@@ -1,10 +1,12 @@
-import React, { FormEvent, useState } from "react";
+import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { User } from '@prisma/client';
+import { UserCompany } from "../../utils/dashboard/dashboardUtils";
 
 export default function AccountForm({
-    user
+    user, setUser
 }: {
     user: User;
+    setUser: Dispatch<SetStateAction<UserCompany>>;
 }) {
     // TODO(Suhana): Allow submitting of form when any of the options are selected - create everything for admin first, and then add changes for user - add check for admin
     const [initialUser, setInitialUser] = useState<User>(user);
@@ -52,14 +54,14 @@ export default function AccountForm({
             }
 
             // TODO(Suhana): Implement upstream data update
-            // const userRes = await fetch(
-            //     `/api/tracking/get-user?companyId=${user?.id}`,
-            //     {
-            //         method: "GET",
-            //         headers: { "Content-Type": "application/json" },
-            //     }
-            // ).then(async (res) => await res.json());
-            // setUser(userRes.user as User);
+            const userRes = await fetch(
+                `/api/user/get-user?id=${user?.id}`,
+                {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                }
+            ).then(async (res) => await res.json());
+            setUser(userRes.user as UserCompany);
 
             setIsLoading(false);
         };
