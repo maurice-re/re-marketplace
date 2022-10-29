@@ -12,7 +12,7 @@ import {
 import type { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Sidebar from '../../../components/dashboard/sidebar';
 import SettingsForm from '../../../components/tracking/settingsForm';
@@ -87,7 +87,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
 
   const [events, setEvents] = useState<Event[]>();
   const [settings, setSettings] = useState<Settings>(user?.company.settings);
-  const [refreshed, setRefreshed] = useState<false>();
 
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
@@ -115,19 +114,6 @@ const TrackingHome: NextPage<TrackingProps> = ({
     fetchData();
   }, [user]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const settingsRes = await fetch(
-        `/api/tracking/get-settings?companyId=${user?.companyId}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      ).then(async (res) => await res.json());
-      setSettings(settingsRes.settings as Settings);
-    };
-    fetchData();
-  }, [refreshed, setRefreshed]);
 
   const [data, setData] = useState(baseData);
 
@@ -463,7 +449,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
                 Configure Settings
               </h1>
               <div className="flex w-full gap-8">
-                <SettingsForm user={user} setRefreshed={setRefreshed} />
+                <SettingsForm settings={settings} setSettings={setSettings} />
               </div>
               <div className="py-6"></div>
             </div>
