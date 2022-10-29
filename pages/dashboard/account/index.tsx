@@ -1,4 +1,4 @@
-import { Company, User } from '@prisma/client'
+import { Company, Role, User } from '@prisma/client'
 import type { GetServerSideProps, NextPage } from 'next'
 import { unstable_getServerSession } from 'next-auth'
 import Head from 'next/head'
@@ -69,20 +69,20 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
               </div>
             )}
           </div>
-          <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2 mt-4">
+          <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2 mt-6">
             User Information
           </h1>
           <div className="h-px bg-white mb-2 w-full"></div>
           <UserForm user={dynamicUser} setUser={setDynamicUser} />
-          <div className="flex w-full gap-8 pt-8">
-            <div className="bg-re-gray-500 bg-opacity-70 rounded-2xl px-6 py-8 mb-4 w-full flex flex-col items-start">
+          {user.role === Role.ADMIN && (
+            <div className="bg-re-gray-500 bg-opacity-70 rounded-2xl px-6 py-6 mt-10 w-full flex flex-col items-start">
               <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2">
                 Company Information
               </h1>
               {/* TODO(Suhana): Add Membership form here */}
               <div className="h-px bg-white mb-2 w-full"></div>
             </div>
-          </div>
+          )}
           <div className="divider" />
         </main>
       </div>
