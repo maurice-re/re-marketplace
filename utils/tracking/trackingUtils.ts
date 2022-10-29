@@ -291,6 +291,8 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: nu
     let daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
 
+    console.log("Got ", setBuffer);
+
     let buffer = (setBuffer && setBuffer !== 0) ? setBuffer : 10; // by default, only consider dayDiffs > 10
 
     console.log("buffer:");

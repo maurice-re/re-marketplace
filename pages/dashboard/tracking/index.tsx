@@ -36,6 +36,12 @@ import {
   UserWithSettings,
 } from '../../../utils/tracking/trackingUtils';
 import { authOptions } from '../../api/auth/[...nextauth]';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url, {
+  method: "GET",
+  headers: { "Content-Type": "application/json" },
+}).then((res) => res.json());
 
 ChartJS.register(
   CategoryScale,
@@ -85,9 +91,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
     ],
   };
 
-  const [events, setEvents] = useState<Event[]>();
   const [settings, setSettings] = useState<Settings>(user?.company.settings);
-
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
   const [yearForMonthly, setYearForMonthly] = useState<string>('');
@@ -99,21 +103,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([0]);
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const eventsRes = await fetch(
-        `/api/tracking/get-events?companyId=${user?.companyId}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      ).then(async (res) => await res.json());
-      setEvents(eventsRes.events as Event[]);
-
-    };
-    fetchData();
-  }, [user]);
-
+  const { data: eventData } = useSWR(`/api/tracking/get-events?companyId=${user?.companyId}`, fetcher);
+  let events = eventData?.events;
 
   const [data, setData] = useState(baseData);
 

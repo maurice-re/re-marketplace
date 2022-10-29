@@ -13,20 +13,23 @@ type AccountProps = {
 };
 
 const AccountHome: NextPage<AccountProps> = ({ user }) => {
-  return (
-    <Sidebar>
-      <div className="w-screen h-screen bg-black flex">
-        <Head>
-          <title>Account</title>
-          <meta name="locations" content="Manage your account" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-          <div className="text-white font-theinhardt text-28">Coming Soon</div>
-        </main>
-      </div>
-    </Sidebar>
-  );
+
+  if (!user) {
+    return (
+      <Sidebar>
+        <div className="w-screen h-screen bg-black flex">
+          <Head>
+            <title>Account</title>
+            <meta name="locations" content="Manage your account" />
+            <link rel="icon" href="/favicon.ico" />
+          </Head>
+          <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+            <div className="text-white font-theinhardt text-28">Coming Soon</div>
+          </main>
+        </div>
+      </Sidebar>
+    );
+  }
 
   return (
     <Sidebar>
@@ -40,7 +43,8 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
           <div className="flex w-full justify-between px-8">
             <div className="flex flex-col font-theinhardt justify-center">
               <h1 className="text-3xl">Manage Your Account</h1>
-              <h3 className="text-xl font-theinhardt-300">Name | Company</h3>
+              <h3 className="text-xl font-theinhardt-300">{`${user.firstName} ${user.lastName} | ${user.company.name}`}</h3>
+
             </div>
             <div className="avatar placeholder">
               <div className=" bg-re-green-500 text-black rounded-full w-24">
