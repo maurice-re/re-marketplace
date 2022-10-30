@@ -1,4 +1,10 @@
-import React, { Dispatch, FormEvent, SetStateAction, useState } from 'react'
+import React, {
+  ChangeEvent,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useState,
+} from 'react'
 import { Role, User } from '@prisma/client'
 import { UserCompany } from '../../utils/dashboard/dashboardUtils'
 import e from 'express'
@@ -45,6 +51,7 @@ export default function AddUserForm({ user }: { user: User }) {
 
     console.log('Got newUser')
     console.log(newUser)
+    console.log(user)
 
     // console.log(newUser);
 
@@ -113,6 +120,12 @@ export default function AddUserForm({ user }: { user: User }) {
     }
   }
 
+  const handleRoleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setNewUser((prevState) => ({
+      ...prevState,
+      role: event.target.value === 'ADMIN' ? Role.ADMIN : Role.USER,
+    }))
+  }
   return (
     <form id="account-form" onSubmit={handleSubmit}>
       <div className="form-control w-full max-w-sm">
@@ -153,6 +166,23 @@ export default function AddUserForm({ user }: { user: User }) {
           value={newUser.email ?? ''}
           onChange={(e) => handleChange(e.target.value, '', '')}
         />
+      </div>
+      <div className="form-control w-full max-w-sm">
+        <label className="label mt-1">
+          <span className="label-text">Role</span>
+        </label>
+        <select
+          className="select w-full max-w-xs"
+          value={newUser.role}
+          onChange={handleRoleChange}
+        >
+          <option key={Role.ADMIN} value={Role.ADMIN}>
+            Admin
+          </option>
+          <option key={Role.USER} value={Role.USER}>
+            User
+          </option>
+        </select>
       </div>
       <button
         disabled={
