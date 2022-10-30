@@ -11,9 +11,7 @@ import { UserCompany } from '../../../utils/dashboard/dashboardUtils'
 import AddUserForm from '../../../components/account/addUserForm'
 
 type AccountProps = {
-  user: User & {
-    company: Company
-  }
+  user: UserCompany
 }
 
 const AccountHome: NextPage<AccountProps> = ({ user }) => {

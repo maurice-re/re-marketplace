@@ -5,24 +5,32 @@ import prisma from "../../../constants/prisma";
 
 async function createPeerUser(req: Request, res: Response) {
   const {
-    companyId, firstName, lastName, email, role
+    companyId, firstName, lastName, email, role, newCompanyName, newCompanyCustomerId
   }: {
     companyId: string,
     firstName: string,
     lastName: string,
     email: string,
-    role: Role;
+    role: Role,
+    newCompanyName: string,
+    newCompanyCustomerId: string;
   } = req.body;
 
   const now = new Date();
 
-  // const company = await prisma.company.create({
-  //   data: {
-  //     createdAt: now,
-  //     name: form[3],
-  //     customerId: customerId
-  //   },
-  // });
+  var userCompanyId = companyId;
+
+  // Only create new company if the appropriate details are passed and companyId is empty
+  if (newCompanyName !== '' && newCompanyCustomerId !== '' && (companyId === '' || !companyId)) {
+    const company = await prisma.company.create({
+      data: {
+        createdAt: now,
+        name: newCompanyName,
+        customerId: newCompanyCustomerId
+      },
+    });
+    userCompanyId = company.id;
+  }
 
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -36,7 +44,7 @@ async function createPeerUser(req: Request, res: Response) {
 
   const user = await prisma.user.create({
     data: {
-      companyId: companyId,
+      companyId: userCompanyId,
       createdAt: now,
       email: email,
       firstName: firstName,

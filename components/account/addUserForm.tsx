@@ -1,79 +1,44 @@
-import React, {
-  ChangeEvent,
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useState,
-} from 'react'
-import { Role, User } from '@prisma/client'
-import { UserCompany } from '../../utils/dashboard/dashboardUtils'
-import e from 'express'
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { Company, Role, User } from '@prisma/client';
+import { UserCompany } from '../../utils/dashboard/dashboardUtils';
 
 type NewUser = {
-  email: string
-  firstName: string
-  lastName: string
-  role: Role
-}
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: Role;
+  companyId: string;
+  newCompanyName: string;
+  newCompanyCustomerId: string;
+};
 
-export default function AddUserForm({ user }: { user: User }) {
-  // TODO(Suhana): Allow submitting of form when any of the options are selected - create everything for admin first, and then add changes for user - add check for admin
+export default function AddUserForm({ user }: { user: UserCompany; }) {
   const [newUser, setNewUser] = useState<NewUser>({
     email: '',
     firstName: '',
     lastName: '',
     role: Role.USER,
-  })
-  const [errorUser, setErrorUser] = useState<NewUser>()
-  const [successUser, setSuccessUser] = useState<NewUser>()
+    companyId: user.companyId,
+    newCompanyName: '',
+    newCompanyCustomerId: '',
+  });
+  const [errorUser, setErrorUser] = useState<NewUser>();
+  const [successUser, setSuccessUser] = useState<NewUser>();
 
-  // id            String    @id @default(cuid())
-  // accounts      Account[]
-  // company       Company   @relation(fields: [companyId], references: [id])
-  // companyId     String
-  // createdAt     DateTime
-  // email         String    @unique()
-  // emailVerified DateTime?
-  // firstName     String?
-  // lastName      String?
-  // manufacturer  Boolean   @default(false)
-  // orders        Order[]
-  // reEmployee    Boolean   @default(false)
-  // role          Role
-  // sessions      Session[]
-
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [message, setMessage] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    // TODO(Suhana): This allows them to create a new account for someone
-    // and add them to this company. They should also be able to specify a
-    // diff company name, and they'll have a new (separate) company created
-    // along with the user in that case - existing users already have companies,
-    // so these are the only two cases (i.e. can't add existing users to their company,
-    // as that they would change their company and at that point they need to make
-    // a separate account)
 
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    console.log('Got newUser')
-    console.log(newUser)
-    console.log(user)
-
-    // console.log(newUser);
+    console.log('Got newUser');
+    console.log(newUser);
 
     if (
-      newUser &&
-      newUser.firstName &&
-      newUser.lastName &&
-      newUser.email &&
-      newUser.role &&
-      user
+      newUser && newUser.firstName && newUser.lastName && newUser.email && newUser.role
     ) {
-      // TODO(Suhana): Add response message (whether successful or not); if error, save the current newUser as "erroredUser"
-      // and don't enable submit (i.e. don't remove isError) until the new user differs from the errored one; and if success,
-      // save the current newUser as "successUser" and don't enable submit until the new user differs from the success one
       // TODO(Suhana): Change validation to field-by-field - get UX input
 
       const res = await fetch('/api/user/create-peer-user', {
@@ -81,53 +46,62 @@ export default function AddUserForm({ user }: { user: User }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          companyId: user.companyId,
+          companyId: newUser.companyId,
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           email: newUser.email,
           role: newUser.role,
+          newCompanyName: newUser.newCompanyName,
+          newCompanyCustomerId: newUser.newCompanyCustomerId,
         }),
-      })
+      });
       if (res.status != 200) {
-        setErrorUser(newUser)
+        setErrorUser(newUser);
       } else {
-        setSuccessUser(newUser)
+        setSuccessUser(newUser);
       }
-      const { message } = await res.json()
-      setMessage(message)
+      const { message } = await res.json();
+      setMessage(message);
 
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const handleChange = (email: string, firstName: string, lastName: string) => {
-    /* Pass input value as email, firstName, lastName, with '' for unchanged values */
-    if (email !== '') {
-      setNewUser((prevState) => ({
-        ...prevState,
-        email: email,
-      }))
-    }
-    if (firstName !== '') {
-      setNewUser((prevState) => ({
-        ...prevState,
-        firstName: firstName,
-      }))
-    }
-    if (lastName !== '') {
-      setNewUser((prevState) => ({
-        ...prevState,
-        lastName: lastName,
-      }))
-    }
-  }
+  const handleEmailChange = (email: string) => {
+    setNewUser((prevState) => ({
+      ...prevState,
+      email: email,
+    }));
+  };
+
+  const handleFirstNameChange = (firstName: string) => {
+    setNewUser((prevState) => ({
+      ...prevState,
+      firstName: firstName,
+    }));
+  };
+
+  const handleLastNameChange = (lastName: string) => {
+    setNewUser((prevState) => ({
+      ...prevState,
+      lastName: lastName,
+    }));
+  };
+
+  const handleNewCompanyNameChange = (newCompanyName: string) => {
+    setNewUser((prevState) => ({
+      ...prevState,
+      newCompanyName: newCompanyName,
+      companyId: '',
+    }));
+  };
 
   const handleRoleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setNewUser((prevState) => ({
       ...prevState,
       role: event.target.value === 'ADMIN' ? Role.ADMIN : Role.USER,
-    }))
-  }
+    }));
+  };
   return (
     <form id="account-form" onSubmit={handleSubmit}>
       <div className="form-control w-full max-w-sm">
@@ -135,12 +109,13 @@ export default function AddUserForm({ user }: { user: User }) {
           <span className="label-text">First Name</span>
         </label>
         <input
+          required
           type="text"
           placeholder="First Name"
           id="firstName"
           className="input input-bordered w-full max-w-sm"
           value={newUser.firstName ?? ''}
-          onChange={(e) => handleChange('', e.target.value, '')}
+          onChange={(e) => handleFirstNameChange(e.target.value)}
         />
       </div>
       <div className="form-control w-full max-w-sm">
@@ -148,12 +123,13 @@ export default function AddUserForm({ user }: { user: User }) {
           <span className="label-text">Last Name</span>
         </label>
         <input
+          required
           type="text"
           placeholder="Last Name"
           id="lastName"
           className="input input-bordered w-full max-w-sm"
           value={newUser.lastName ?? ''}
-          onChange={(e) => handleChange('', '', e.target.value)}
+          onChange={(e) => handleLastNameChange(e.target.value)}
         />
       </div>
       <div className="form-control w-full max-w-sm">
@@ -161,12 +137,13 @@ export default function AddUserForm({ user }: { user: User }) {
           <span className="label-text">Email</span>
         </label>
         <input
+          required
           type="text"
           placeholder="Email"
           id="email"
           className="input input-bordered w-full max-w-sm"
           value={newUser.email ?? ''}
-          onChange={(e) => handleChange(e.target.value, '', '')}
+          onChange={(e) => handleEmailChange(e.target.value)}
         />
       </div>
       <div className="form-control w-full max-w-sm">
@@ -186,6 +163,25 @@ export default function AddUserForm({ user }: { user: User }) {
           </option>
         </select>
       </div>
+      <div className="form-control w-full max-w-sm">
+        <label className="label mt-1">
+          <span className="label-text">Company Name</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Company Name"
+          id="newCompanyName"
+          className="input input-bordered w-full max-w-sm"
+          value={newUser.newCompanyName}
+          onChange={(e) => handleNewCompanyNameChange(e.target.value)}
+        />
+        <label className="label">
+          <span className="label-text-alt">
+            Only required if you want to create an account for someone in a
+            separate partner company - not {user.company.name}
+          </span>
+        </label>
+      </div>
       <button
         disabled={
           !user ||
@@ -196,22 +192,20 @@ export default function AddUserForm({ user }: { user: User }) {
           newUser === successUser
         }
         id="submit"
-        className={`btn btn-accent btn-outline w-28 mt-6 ${
-          isLoading ? 'loading' : ''
-        }`}
+        className={`btn btn-accent btn-outline w-28 mt-5 ${isLoading ? 'loading' : ''
+          }`}
       >
         Create
       </button>
       {message && (errorUser === newUser || successUser === newUser) && (
         <div
           id="error-message"
-          className={`font-theinhardt text-left mt-4 ${
-            errorUser === newUser ? 'text-error' : 'text-re-green-500'
-          }`}
+          className={`font-theinhardt text-left mt-4 ${errorUser === newUser ? 'text-error' : 'text-re-green-500'
+            }`}
         >
           {message}
         </div>
       )}
     </form>
-  )
+  );
 }
