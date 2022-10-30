@@ -8,6 +8,7 @@ import { authOptions } from '../../api/auth/[...nextauth]'
 import UserForm from '../../../components/account/userForm'
 import { useState } from 'react'
 import { UserCompany } from '../../../utils/dashboard/dashboardUtils'
+import AddUserForm from '../../../components/account/addUserForm'
 
 type AccountProps = {
   user: User & {
@@ -75,12 +76,15 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
           <div className="h-px bg-white mb-2 w-full"></div>
           <UserForm user={dynamicUser} setUser={setDynamicUser} />
           {user.role === Role.ADMIN && (
-            <div className="bg-re-gray-500 bg-opacity-70 rounded-2xl px-6 py-6 mt-10 w-full flex flex-col items-start">
+            <div className="bg-re-gray-500 bg-opacity-70 rounded-2xl px-6 py-8 mt-10 w-full flex flex-col items-start">
               <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2">
                 Company Information
               </h1>
-              {/* TODO(Suhana): Add Membership form here */}
               <div className="h-px bg-white mb-2 w-full"></div>
+              <div className="w-1/3 pt-3">
+                <AddUserForm user={dynamicUser} />
+              </div>
+              <div className="w-2/3"></div>
             </div>
           )}
           <div className="divider" />
