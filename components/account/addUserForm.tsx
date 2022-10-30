@@ -92,7 +92,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
     setNewUser((prevState) => ({
       ...prevState,
       newCompanyName: newCompanyName,
-      companyId: '',
+      companyId: newCompanyName === '' ? user.companyId : '',
     }));
   };
 

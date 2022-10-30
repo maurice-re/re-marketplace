@@ -21,7 +21,7 @@ async function createPeerUser(req: Request, res: Response) {
   var userCompanyId = companyId;
 
   // Only create new company if the appropriate details are passed and companyId is empty
-  if (newCompanyName !== '' && newCompanyCustomerId !== '' && (companyId === '' || !companyId)) {
+  if (newCompanyName !== '' && (companyId === '' || !companyId)) {
     const company = await prisma.company.create({
       data: {
         createdAt: now,
