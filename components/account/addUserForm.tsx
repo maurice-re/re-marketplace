@@ -46,6 +46,14 @@ export default function AddUserForm({ user }: { user: User }) {
   const [message, setMessage] = useState<string>('')
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    // TODO(Suhana): This allows them to create a new account for someone
+    // and add them to this company. They should also be able to specify a
+    // diff company name, and they'll have a new (separate) company created
+    // along with the user in that case - existing users already have companies,
+    // so these are the only two cases (i.e. can't add existing users to their company,
+    // as that they would change their company and at that point they need to make
+    // a separate account)
+
     e.preventDefault()
     setIsLoading(true)
 
@@ -60,39 +68,33 @@ export default function AddUserForm({ user }: { user: User }) {
       newUser.firstName &&
       newUser.lastName &&
       newUser.email &&
-      newUser.role
+      newUser.role &&
+      user
     ) {
       // TODO(Suhana): Add response message (whether successful or not); if error, save the current newUser as "erroredUser"
       // and don't enable submit (i.e. don't remove isError) until the new user differs from the errored one; and if success,
       // save the current newUser as "successUser" and don't enable submit until the new user differs from the success one
       // TODO(Suhana): Change validation to field-by-field - get UX input
 
-      // const res = await fetch('/api/user/edit-user', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     id: newUser.id,
-      //     firstName: newUser.firstName,
-      //     lastName: newUser.lastName,
-      //   }),
-      // })
-      // if (res.status != 200) {
-      //   const { message } = await res.json()
-      //   setMessage(message)
-      //   return
-      // } else {
-      //   setInitialUser((prevState) => ({
-      //     ...prevState,
-      //     firstName: newUser.firstName,
-      //     lastName: newUser.lastName,
-      //   }))
-      // }
-
-      // const userRes = await fetch(`/api/user/get-user?id=${user?.id}`, {
-      //   method: 'GET',
-      //   headers: { 'Content-Type': 'application/json' },
-      // }).then(async (res) => await res.json())
-      // setUser(userRes.user as UserCompany)
+      const res = await fetch('/api/user/create-peer-user', {
+        //TODO(Suhana): Better name for this?
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyId: user.companyId,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          role: newUser.role,
+        }),
+      })
+      if (res.status != 200) {
+        setErrorUser(newUser)
+      } else {
+        setSuccessUser(newUser)
+      }
+      const { message } = await res.json()
+      setMessage(message)
 
       setIsLoading(false)
     }
@@ -200,10 +202,12 @@ export default function AddUserForm({ user }: { user: User }) {
       >
         Create
       </button>
-      {message && (
+      {message && (errorUser === newUser || successUser === newUser) && (
         <div
-          id="settings-message"
-          className="font-theinhardt text-error text-center"
+          id="error-message"
+          className={`font-theinhardt text-left mt-4 ${
+            errorUser === newUser ? 'text-error' : 'text-re-green-500'
+          }`}
         >
           {message}
         </div>
