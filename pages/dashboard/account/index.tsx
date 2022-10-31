@@ -1,18 +1,18 @@
-import { Company, Role, User } from '@prisma/client'
-import type { GetServerSideProps, NextPage } from 'next'
-import { unstable_getServerSession } from 'next-auth'
-import Head from 'next/head'
-import Sidebar from '../../../components/dashboard/sidebar'
-import prisma from '../../../constants/prisma'
-import { authOptions } from '../../api/auth/[...nextauth]'
-import UserForm from '../../../components/account/userForm'
-import { useState } from 'react'
-import { UserCompany } from '../../../utils/dashboard/dashboardUtils'
-import AddUserForm from '../../../components/account/addUserForm'
+import { Company, Role, User } from '@prisma/client';
+import type { GetServerSideProps, NextPage } from 'next';
+import { unstable_getServerSession } from 'next-auth';
+import Head from 'next/head';
+import Sidebar from '../../../components/dashboard/sidebar';
+import prisma from '../../../constants/prisma';
+import { authOptions } from '../../api/auth/[...nextauth]';
+import UserForm from '../../../components/account/userForm';
+import { useState } from 'react';
+import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
+import AddUserForm from '../../../components/account/addUserForm';
 
 type AccountProps = {
-  user: UserCompany
-}
+  user: UserCompany;
+};
 
 const AccountHome: NextPage<AccountProps> = ({ user }) => {
   if (!user) {
@@ -31,11 +31,11 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
           </main>
         </div>
       </Sidebar>
-    )
+    );
   }
 
   // TODO(Suhana): Use either user or dynamicUser
-  const [dynamicUser, setDynamicUser] = useState<UserCompany>(user)
+  const [dynamicUser, setDynamicUser] = useState<UserCompany>(user);
 
   return (
     <Sidebar>
@@ -69,14 +69,14 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
             )}
           </div>
           <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2 mt-6">
-            User Information
+            Account Information
           </h1>
           <div className="h-px bg-white mb-2 w-full"></div>
           <UserForm user={dynamicUser} setUser={setDynamicUser} />
           {user.role === Role.ADMIN && (
             <div className="bg-re-gray-500 bg-opacity-70 rounded-2xl px-6 py-8 mt-10 w-full flex flex-col items-start">
               <h1 className="text-re-green-500 font-theinhardt text-2xl mb-2">
-                Company Information
+                Add New User
               </h1>
               <div className="h-px bg-white mb-2 w-full"></div>
               <div className="w-1/3 pt-3">
@@ -89,15 +89,15 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
         </main>
       </div>
     </Sidebar>
-  )
-}
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(
     context.req,
     context.res,
     authOptions,
-  )
+  );
   if (session) {
     const user = await prisma.user.findUnique({
       where: {
@@ -106,14 +106,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       include: {
         company: true,
       },
-    })
+    });
     return {
       props: {
         user: JSON.parse(JSON.stringify(user!)),
       },
-    }
+    };
   }
-  return { props: {} }
-}
+  return { props: {} };
+};
 
-export default AccountHome
+export default AccountHome;

@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { Company, Role, User } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { UserCompany } from '../../utils/dashboard/dashboardUtils';
 
 type NewUser = {
@@ -35,24 +35,22 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
 
     console.log('Got newUser');
     console.log(newUser);
+    console.log("Using ", user.companyId);
 
     if (
-      newUser && newUser.firstName && newUser.lastName && newUser.email && newUser.role
+      user && newUser && newUser.firstName && newUser.lastName && newUser.email && newUser.role
     ) {
-      // TODO(Suhana): Change validation to field-by-field - get UX input
-
       const res = await fetch('/api/user/create-peer-user', {
-        //TODO(Suhana): Better name for this?
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          companyId: newUser.companyId,
+          companyId: user.companyId, // newUser.companyId for adding user to diff company
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           email: newUser.email,
           role: newUser.role,
-          newCompanyName: newUser.newCompanyName,
-          newCompanyCustomerId: newUser.newCompanyCustomerId,
+          newCompanyName: '', // newUser.newCompanyName for adding user to diff company
+          newCompanyCustomerId: '', // newUser.newCompanyCustomerId for adding user to diff company
         }),
       });
       if (res.status != 200) {
@@ -151,7 +149,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           <span className="label-text">Role</span>
         </label>
         <select
-          className="select w-full max-w-xs"
+          className="select w-full max-w-sm"
           value={newUser.role}
           onChange={handleRoleChange}
         >
@@ -163,7 +161,8 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           </option>
         </select>
       </div>
-      <div className="form-control w-full max-w-sm">
+      {/* Uncomment the below for adding user to diff company */}
+      {/* <div className="form-control w-full max-w-sm">
         <label className="label mt-1">
           <span className="label-text">Company Name</span>
         </label>
@@ -181,7 +180,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
             separate partner company - not {user.company.name}
           </span>
         </label>
-      </div>
+      </div> */}
       <button
         disabled={
           !user ||
