@@ -11,11 +11,15 @@ import {
 
 function QuickOrder({
   companyId,
+  customerId,
   locations,
+  userId,
   skus,
 }: {
   companyId: string;
+  customerId: string;
   locations: Location[];
+  userId: string;
   skus: SkuProduct[];
 }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);

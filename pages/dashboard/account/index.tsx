@@ -9,13 +9,17 @@ import UserForm from '../../../components/account/userForm';
 import { useState } from 'react';
 import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
 import AddUserForm from '../../../components/account/addUserForm';
+import Image from 'next/image';
 
 type AccountProps = {
   user: UserCompany;
 };
 
 const AccountHome: NextPage<AccountProps> = ({ user }) => {
-  if (!user) {
+  // TODO(Suhana): Use either user or dynamicUser
+  const [dynamicUser, setDynamicUser] = useState<UserCompany>(user);
+
+  if (!dynamicUser) {
     return (
       <Sidebar>
         <div className="w-screen h-screen bg-black flex">
@@ -34,9 +38,6 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
     );
   }
 
-  // TODO(Suhana): Use either user or dynamicUser
-  const [dynamicUser, setDynamicUser] = useState<UserCompany>(user);
-
   return (
     <Sidebar>
       <div className="w-full h-screen bg-black flex overflow-auto">
@@ -54,8 +55,12 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
             {dynamicUser && dynamicUser.firstName === 'Phil' ? (
               <div className="avatar">
                 <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img src="https://c.tenor.com/XyPwco6C7eoAAAAC/captain-marvel-agent-coulson.gif" />
-                  {/* If the gif gets annoying: https://www.gamespot.com/a/uploads/scale_landscape/1578/15789737/3368618-coulson.jpg */}
+                  <Image
+                    src={"/images/philprofilepic.jpeg"}
+                    alt="Phil Coulson Profile Picture"
+                    height={500}
+                    width={500}
+                  />
                 </div>
               </div>
             ) : (
