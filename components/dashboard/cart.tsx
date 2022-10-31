@@ -88,7 +88,7 @@ function Cart({
           as={`/checkout/${new Date().getTime()}`}
         >
           <button
-            className="btn btn-sm btn-outline btn-accent"
+            className="btn btn-sm btn-outline btn-accent w-full"
             disabled={orderString == ""}
           >
             Checkout

@@ -53,7 +53,7 @@ function getTotals(events: Event[]): Totals {
     return totals;
 }
 
-function getEventsByAction(events: Event[], action: Action): Event[] {
+export function getEventsByAction(events: Event[], action: Action): Event[] {
     const eventsByAction = events.filter(event =>
         event.action === action
     );
@@ -444,4 +444,13 @@ export function getYearsForMonthlyDropdown(events: Event[]): string[] {
     // console.log("years:");
     // console.log(years);
     return years;
+}
+
+export function getTotalUsed(events: Event[]): number {
+    /* Returns the total number of items used (borrowed and returned) over the given time period. */
+    const set = new Set<string>();
+    events.forEach(event => {
+        set.add(event.itemId);
+    })
+    return set.size;
 }

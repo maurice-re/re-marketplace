@@ -1,21 +1,14 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { ReactNode, useState } from "react";
 import { TbCurrentLocation } from "react-icons/tb";
+import "tailwindcss/tailwind.css";
+import SidebarIcon from "./sidebarIcon";
+
 type Route = {
   icon: JSX.Element;
   link: string;
   title: string;
 };
 
-function Sidebar({ children }: { children: ReactNode }) {
-  const [opened, setOpened] = useState<boolean>(false);
-  const router = useRouter();
-
-  function isActivePage(route: string): boolean {
-    return router.pathname == route;
-  }
-
+export default function Layout({ children }: { children: React.ReactNode }) {
   const routes: Route[] = [
     {
       icon: (
@@ -126,56 +119,12 @@ function Sidebar({ children }: { children: ReactNode }) {
     },
   ];
 
-  if (!opened) {
-    return (
-      <div className="flex h-screen">
-        <div className="w-20 bg-black flex flex-col items-center text-white">
-          <button
-            className="rounded py-2 hover:text-re-green-800"
-            onClick={() => setOpened(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 5l7 7-7 7M5 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-          {routes.map((route) => (
-            <Link
-              key={route.link}
-              href={{
-                pathname: route.link,
-              }}
-            >
-              <button
-                className={`${
-                  isActivePage(route.link) ? "bg-re-green-700" : ""
-                } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-3 px-3 rounded-10 my-1`}
-              >
-                {route.icon}
-              </button>
-            </Link>
-          ))}
-        </div>
-        {children}
-      </div>
-    );
-  }
   return (
-    <div className="flex h-screen">
-      <div className="w-48 bg-black flex flex-col text-white">
+    <div className="flex h-screen bg-black group">
+      <div className="flex flex-col items-center text-white ml-4 hover:pl-20 group-hover:bg-black group-hover:w-48">
         <button
-          className="rounded py-2 hover:text-re-green-800 mr-2 self-center"
-          onClick={() => setOpened(false)}
+          className="rounded py-2 hover:text-re-green-800"
+          onClick={undefined}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -188,33 +137,47 @@ function Sidebar({ children }: { children: ReactNode }) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+              d="M13 5l7 7-7 7M5 5l7 7-7 7"
             />
           </svg>
+          <div>Go back</div>
         </button>
         {routes.map((route) => (
-          <Link
+          <SidebarIcon
             key={route.link}
-            href={{
-              pathname: route.link,
-            }}
-          >
-            <button
-              className={`${
-                isActivePage(route.link) ? "bg-re-green-700" : ""
-              } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
-            >
-              {route.icon}
-              <div className=" font-theinhardt text-xl py-2 ml-2">
-                {route.title}
-              </div>
-            </button>
-          </Link>
+            icon={route.icon}
+            link={route.link}
+            title={route.title}
+          />
         ))}
       </div>
       {children}
     </div>
   );
+  // return (
+  //   <div className="flex h-screen">
+  //     <div className="w-48 bg-black flex flex-col text-white">
+  //       {routes.map((route) => (
+  //         <Link
+  //           key={route.link}
+  //           href={{
+  //             pathname: route.link,
+  //           }}
+  //         >
+  //           <button
+  //             className={`${
+  //               isActivePage(route.link) ? "bg-re-green-700" : ""
+  //             } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
+  //           >
+  //             {route.icon}
+  //             <div className=" font-theinhardt text-xl py-2 ml-2">
+  //               {route.title}
+  //             </div>
+  //           </button>
+  //         </Link>
+  //       ))}
+  //     </div>
+  //     {children}
+  //   </div>
+  // );
 }
-
-export default Sidebar;
