@@ -1,33 +1,27 @@
-import React, { FormEvent, useEffect, useState } from "react";
-import { UserWithSettings } from "../../utils/tracking/trackingUtils";
-
+import React, { FormEvent, useState, Dispatch, SetStateAction } from "react";
+import { Settings } from '@prisma/client';
 
 export default function SettingsForm({
-    user,
+    settings, setSettings
 }: {
-    user: UserWithSettings;
+    settings: Settings;
+    setSettings: Dispatch<SetStateAction<Settings>>;
 }) {
-    const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
-    const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(user?.company.settings.borrowReturnBuffer ?? 0);
+    const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] = useState<number>(settings?.borrowReturnBuffer ?? 0);
+    const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(settings?.borrowReturnBuffer ?? 0);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
-
-    console.log(user);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
 
-        console.log("Got ", borrowReturnBuffer);
-        console.log(borrowReturnBuffer);
-
-        if (borrowReturnBuffer && borrowReturnBuffer > 0 && user) {
-            console.log("POST to API");
-            const res = await fetch("/api/tracking/update-settings", {
+        if (borrowReturnBuffer && borrowReturnBuffer > 0 && settings) {
+            const res = await fetch("/api/tracking/edit-settings", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    companyId: user.companyId,
+                    companyId: settings.companyId,
                     borrowReturnBuffer: borrowReturnBuffer,
                 }),
             });
@@ -36,18 +30,17 @@ export default function SettingsForm({
                 setMessage(message);
                 return;
             } else {
-                // user.company.settings.borrowReturnBuffer = borrowReturnBuffer;
                 setInitialBorrowReturnBuffer(borrowReturnBuffer);
             }
-            console.log(res);
-            // TODO(Suhana): Need to update avg lifecycle calculation automatically after this updates (and if moving to client side, then change how this form field updates too)
-            // const settings = await fetch(
-            //     `/api/tracking/get-settings?companyId=${user?.companyId}`,
-            //     {
-            //         method: "GET",
-            //         headers: { "Content-Type": "application/json" },
-            //     }
-            // ).then(async (res) => await res.json());
+
+            const settingsRes = await fetch(
+                `/api/tracking/get-settings?companyId=${settings?.companyId}`,
+                {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                }
+            ).then(async (res) => await res.json());
+            setSettings(settingsRes.settings as Settings);
 
             setIsLoading(false);
         };
@@ -74,7 +67,7 @@ export default function SettingsForm({
             </div>
             <button
                 disabled={
-                    !user || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === initialBorrowReturnBuffer
+                    !settings || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === initialBorrowReturnBuffer
                 }
                 id="submit"
                 className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""}`}

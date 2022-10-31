@@ -1,4 +1,4 @@
-import { Action, Event, Sku } from '@prisma/client';
+import { Action, Event, Settings, Sku } from '@prisma/client';
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -12,7 +12,7 @@ import {
 import type { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Sidebar from '../../../components/dashboard/sidebar';
 import SettingsForm from '../../../components/tracking/settingsForm';
@@ -36,6 +36,12 @@ import {
   UserWithSettings,
 } from '../../../utils/tracking/trackingUtils';
 import { authOptions } from '../../api/auth/[...nextauth]';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url, {
+  method: "GET",
+  headers: { "Content-Type": "application/json" },
+}).then((res) => res.json());
 
 ChartJS.register(
   CategoryScale,
@@ -85,7 +91,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
     ],
   };
 
-  const [events, setEvents] = useState<Event[]>();
+  const [settings, setSettings] = useState<Settings>(user?.company.settings);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
   const [yearForMonthly, setYearForMonthly] = useState<string>('');
@@ -97,19 +103,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
   const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([0]);
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const results = await fetch(
-        `/api/tracking/get-events?companyId=${user?.companyId}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      ).then(async (res) => await res.json());
-      setEvents(results.events as Event[]);
-    };
-    fetchEvents();
-  }, [user]);
+  const { data: eventData } = useSWR(`/api/tracking/get-events?companyId=${user?.companyId}`, fetcher);
+  let events = eventData?.events;
 
   const [data, setData] = useState(baseData);
 
@@ -309,7 +304,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
     title: 'Avg Lifecycle',
     value: getAvgDaysBetweenBorrowAndReturn(
       events,
-      user?.company?.settings?.borrowReturnBuffer ?? undefined,
+      settings?.borrowReturnBuffer ?? undefined,
     ),
     info: 'days between borrow and return',
     isPercent: false,
@@ -445,7 +440,7 @@ const TrackingHome: NextPage<TrackingProps> = ({
                 Configure Settings
               </h1>
               <div className="flex w-full gap-8">
-                <SettingsForm user={user} />
+                <SettingsForm settings={settings} setSettings={setSettings} />
               </div>
               <div className="py-6"></div>
             </div>
