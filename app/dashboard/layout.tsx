@@ -1,6 +1,10 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
 import { TbCurrentLocation } from "react-icons/tb";
 import "tailwindcss/tailwind.css";
 import SidebarIcon from "./sidebarIcon";
+import { useRouter } from "next/router";
 
 type Route = {
   icon: JSX.Element;
@@ -9,6 +13,12 @@ type Route = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode; }) {
+  const [opened, setOpened] = useState<boolean>(false);
+  const router = useRouter();
+
+  function isActivePage(route: string): boolean {
+    return router?.pathname == route;
+  }
   const routes: Route[] = [
     {
       icon: (
@@ -67,14 +77,14 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
           className="w-6 h-6"
         >
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
           />
         </svg>
       ),
       link: "/dashboard/lifecycle",
-      title: "Life Cycle",
+      title: "Lifecycle",
     },
     {
       icon: <TbCurrentLocation size={20} />,
@@ -119,12 +129,48 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
     },
   ];
 
+  if (!opened) {
+    return (
+      <div className="flex h-screen bg-black group">
+        <div className="flex flex-col items-center text-white ml-4 hover:pl-20 group-hover:bg-black group-hover:w-48">
+          <button
+            className="rounded py-2 hover:text-re-green-800"
+            onClick={() => setOpened(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 5l7 7-7 7M5 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+          {routes.map((route) => (
+            <SidebarIcon
+              key={route.link}
+              icon={route.icon}
+              link={route.link}
+              title={route.title}
+            />
+          ))}
+        </div>
+        {children}
+      </div>
+    );
+  }
   return (
-    <div className="flex h-screen bg-black group">
-      <div className="flex flex-col items-center text-white ml-4 hover:pl-20 group-hover:bg-black group-hover:w-48">
+    <div className="flex h-screen">
+      <div className="w-48 bg-black flex flex-col text-white">
         <button
-          className="rounded py-2 hover:text-re-green-800"
-          onClick={undefined}
+          className="rounded py-2 hover:text-re-green-800 mr-2 self-center"
+          onClick={() => setOpened(false)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -137,46 +183,30 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
+              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
             />
           </svg>
         </button>
         {routes.map((route) => (
-          <SidebarIcon
+          <Link
             key={route.link}
-            icon={route.icon}
-            link={route.link}
-            title={route.title}
-          />
+            href={{
+              pathname: route.link,
+            }}
+          >
+            <button
+              className={`${isActivePage(route.link) ? "bg-re-green-700" : ""
+                } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
+            >
+              {route.icon}
+              <div className=" font-theinhardt text-xl py-2 ml-2 text-left">
+                {route.title}
+              </div>
+            </button>
+          </Link>
         ))}
       </div>
       {children}
     </div>
   );
-  // return (
-  //   <div className="flex h-screen">
-  //     <div className="w-48 bg-black flex flex-col text-white">
-  //       {routes.map((route) => (
-  //         <Link
-  //           key={route.link}
-  //           href={{
-  //             pathname: route.link,
-  //           }}
-  //         >
-  //           <button
-  //             className={`${
-  //               isActivePage(route.link) ? "bg-re-green-700" : ""
-  //             } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
-  //           >
-  //             {route.icon}
-  //             <div className=" font-theinhardt text-xl py-2 ml-2">
-  //               {route.title}
-  //             </div>
-  //           </button>
-  //         </Link>
-  //       ))}
-  //     </div>
-  //     {children}
-  //   </div>
-  // );
 }

@@ -213,9 +213,8 @@ export default function CheckoutForm({
       </div>
       {company != null && paymentMethods && (
         <select
-          className={`w-full bg-stripe-gray border-white border rounded py-2 ${
-            dropdown == "new" ? "mb-2" : "mb-6"
-          }`}
+          className={`w-full bg-stripe-gray border-white border rounded py-2 ${dropdown == "new" ? "mb-2" : "mb-6"
+            }`}
           value={dropdown}
           onChange={(e) => setDropdown(e.target.value)}
         >
@@ -241,9 +240,8 @@ export default function CheckoutForm({
           onClick={() => document.getElementById("eol-modal")?.click()}
           type="button"
           disabled={isLoading || !stripe || !elements || dropdown == ""}
-          className={`btn modal-button text-center mb-6 w-full ${
-            eol ? "" : "btn-error btn-outline"
-          }`}
+          className={`btn modal-button text-center mb-6 w-full ${eol ? "" : "btn-error btn-outline"
+            }`}
         >
           {eol ? (
             <svg
@@ -275,9 +273,8 @@ export default function CheckoutForm({
             (type == CheckoutType.ORDER && !eol)
           }
           id="submit"
-          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
-            isLoading ? "loading" : ""
-          }`}
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${isLoading ? "loading" : ""
+            }`}
         >
           Pay Now
         </button>
