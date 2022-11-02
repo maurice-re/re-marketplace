@@ -8,7 +8,7 @@ type Route = {
   title: string;
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode; }) {
   const routes: Route[] = [
     {
       icon: (
@@ -140,7 +140,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               d="M13 5l7 7-7 7M5 5l7 7-7 7"
             />
           </svg>
-          <div>Go back</div>
         </button>
         {routes.map((route) => (
           <SidebarIcon
