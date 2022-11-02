@@ -81,7 +81,7 @@ function Sidebar({ children }: { children: ReactNode; }) {
         </svg>
       ),
       link: "/dashboard/lifecycle",
-      title: "Life Cycle",
+      title: "Lifecycle",
     },
     {
       icon: <TbCurrentLocation size={20} />,

@@ -5,6 +5,7 @@ import { TbCurrentLocation } from "react-icons/tb";
 import "tailwindcss/tailwind.css";
 import SidebarIcon from "./sidebarIcon";
 import { useRouter } from "next/router";
+import useSWR from 'swr';
 
 type Route = {
   icon: JSX.Element;
@@ -13,6 +14,8 @@ type Route = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode; }) {
+  // const { data: eventData } = useSWR(`/api/tracking/get-events?companyId=${user?.companyId}`, fetcher);
+
   const [opened, setOpened] = useState<boolean>(false);
   const router = useRouter();
 
