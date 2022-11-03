@@ -70,7 +70,7 @@ export default function SettingsForm({
                     !settings || !borrowReturnBuffer || borrowReturnBuffer === 0 || borrowReturnBuffer === initialBorrowReturnBuffer
                 }
                 id="submit"
-                className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""}`}
+                className={`btn btn-accent btn-outline w-32 mt-4 ${isLoading ? "loading" : ""}`}
             >
                 Update
             </button>
