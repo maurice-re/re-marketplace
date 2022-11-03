@@ -13,9 +13,9 @@ import {
 import Head from 'next/head';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import Sidebar from '../sidebar';
-import SettingsForm from '../../tracking/settingsForm';
-import prisma from '../../../constants/prisma';
+import Sidebar from '../components/dashboard/sidebar';
+import SettingsForm from '../components/tracking/settingsForm';
+import prisma from '../constants/prisma';
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -33,9 +33,10 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
   UserWithSettings,
-} from '../../../utils/tracking/trackingUtils';
-import { authOptions } from '../../../pages/api/auth/[...nextauth]';
+} from '../utils/tracking/trackingUtils';
+import { authOptions } from '../pages/api/auth/[...nextauth]';
 import useSWR from 'swr';
+import { UserSettings } from './dashboard/track/page';
 
 const fetcher = (url: string) => fetch(url, {
   method: "GET",
@@ -61,11 +62,11 @@ type Statistic = {
 
 const monthsInYear = getMonthsInYear();
 
-function TrackingHome({
+function TrackingChart({
   user,
   skus,
 }: {
-  user: UserWithSettings;
+  user: UserSettings;
   skus: Sku[];
 }) {
 
@@ -88,7 +89,7 @@ function TrackingHome({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings>(user?.company.settings);
+  const [settings, setSettings] = useState<Settings>(user?.company.settings!);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
   const [yearForMonthly, setYearForMonthly] = useState<string>('');
@@ -334,123 +335,115 @@ function TrackingHome({
   };
 
   return (
-    <Sidebar>
-      <div className="w-full h-screen bg-black flex overflow-auto">
-        <Head>
-          <title>Tracking</title>
-          <meta name="locations" content="Manage locations" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          {events && events.length > 0 ? (
-            <div>
-              <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
-              <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
-                Lifetime Statistics
-              </h1>
-              <div className="flex w-full items-center justify-between mt-4 mb-8">
-                {stats.map((stat) => (
-                  <div
-                    key={stat.title}
-                    className="tooltip tooltip-bottom !pb-2"
-                    data-tip={stat.info}
-                  >
-                    <button className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300">
-                      <div className="font-thin text-md uppercase tracking-wide leading-none">
-                        {stat.title}
-                      </div>
-                      <div className="font-theinhardt text-4xl mt-2 text-re-green-500">
-                        {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
-                          }`}
-                      </div>
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <h1 className="ml-1 py-2 font-theinhardt text-2xl">
-                Borrows and Returns
-              </h1>
-              <div className="flex w-full gap-8">
-                <div className="flex-col w-1/6">
-                  <div onChange={handleTimePeriodChange}>
-                    <div className="form-control">
-                      <label className="label cursor-pointer">
-                        <span className="label-text">Monthly</span>
-                        <input
-                          type="radio"
-                          name="radio-6"
-                          value="monthly"
-                          className="radio checked:bg-re-green-500"
-                          defaultChecked
-                        />
-                      </label>
-                    </div>
-                    <div className="form-control">
-                      <label className="label cursor-pointer">
-                        <span className="label-text">Daily</span>
-                        <input
-                          type="radio"
-                          name="radio-6"
-                          value="daily"
-                          className="radio checked:bg-re-green-500"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  {graphTimePeriod === 'monthly' && (
-                    <div className="form-control w-full max-w-xs mt-2">
-                      <select
-                        className="select w-full max-w-xs"
-                        value={yearForMonthly}
-                        onChange={handleYearForMonthlyChange}
-                      >
-                        {allYears.map((year) => (
-                          <option key={year} value={year}>
-                            {year}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  {graphTimePeriod === 'daily' && (
-                    <div className="form-control w-full max-w-xs mt-2">
-                      <select
-                        className="select w-full max-w-xs"
-                        value={monthYearForDaily}
-                        onChange={handleMonthYearForDailyChange}
-                      >
-                        {allMonthYears.map((monthYear) => (
-                          <option key={monthYear} value={monthYear}>
-                            {getFormattedMonthYear(monthYear)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
 
-                <div className="w-5/6">
-                  <Line options={options} data={data} />
+    <>
+      {events && events.length > 0 ? (
+        <div>
+          <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
+          <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
+            Lifetime Statistics
+          </h1>
+          <div className="flex w-full items-center justify-between mt-4 mb-8">
+            {stats.map((stat) => (
+              <div
+                key={stat.title}
+                className="tooltip tooltip-bottom !pb-2"
+                data-tip={stat.info}
+              >
+                <button className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300">
+                  <div className="font-thin text-md uppercase tracking-wide leading-none">
+                    {stat.title}
+                  </div>
+                  <div className="font-theinhardt text-4xl mt-2 text-re-green-500">
+                    {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                      }`}
+                  </div>
+                </button>
+              </div>
+            ))}
+          </div>
+          <h1 className="ml-1 py-2 font-theinhardt text-2xl">
+            Borrows and Returns
+          </h1>
+          <div className="flex w-full gap-8">
+            <div className="flex-col w-1/6">
+              <div onChange={handleTimePeriodChange}>
+                <div className="form-control">
+                  <label className="label cursor-pointer">
+                    <span className="label-text">Monthly</span>
+                    <input
+                      type="radio"
+                      name="radio-6"
+                      value="monthly"
+                      className="radio checked:bg-re-green-500"
+                      defaultChecked
+                    />
+                  </label>
+                </div>
+                <div className="form-control">
+                  <label className="label cursor-pointer">
+                    <span className="label-text">Daily</span>
+                    <input
+                      type="radio"
+                      name="radio-6"
+                      value="daily"
+                      className="radio checked:bg-re-green-500"
+                    />
+                  </label>
                 </div>
               </div>
-              <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
-                Configure Settings
-              </h1>
-              <div className="flex w-full gap-8">
-                <SettingsForm settings={settings} setSettings={setSettings} />
-              </div>
-              <div className="py-6"></div>
+              {graphTimePeriod === 'monthly' && (
+                <div className="form-control w-full max-w-xs mt-2">
+                  <select
+                    className="select w-full max-w-xs"
+                    value={yearForMonthly}
+                    onChange={handleYearForMonthlyChange}
+                  >
+                    {allYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {graphTimePeriod === 'daily' && (
+                <div className="form-control w-full max-w-xs mt-2">
+                  <select
+                    className="select w-full max-w-xs"
+                    value={monthYearForDaily}
+                    onChange={handleMonthYearForDailyChange}
+                  >
+                    {allMonthYears.map((monthYear) => (
+                      <option key={monthYear} value={monthYear}>
+                        {getFormattedMonthYear(monthYear)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="text-white font-theinhardt text-28">
-              You will see tracking data here once products are in circulation
+
+            <div className="w-5/6">
+              <Line options={options} data={data} />
             </div>
-          )}
-        </main>
-      </div>
-    </Sidebar>
+          </div>
+          <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
+            Configure Settings
+          </h1>
+          <div className="flex w-full gap-8">
+            <SettingsForm settings={settings} setSettings={setSettings} />
+          </div>
+          <div className="py-6"></div>
+        </div>
+      ) : (
+        <div className="text-white font-theinhardt text-28">
+          You will see tracking data here once products are in circulation
+        </div>
+      )}
+    </>
   );
 };
 
 
-export default TrackingHome;
+export default TrackingChart;

@@ -1,4 +1,4 @@
-import { Action, Event, Settings, Sku } from '@prisma/client';
+import { Action, Company, Event, Settings, Sku, User } from '@prisma/client';
 import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
 import { ChangeEvent, use } from 'react';
@@ -9,12 +9,14 @@ import {
 } from '../../../utils/tracking/trackingUtils';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import useSWR from 'swr';
-import TrackingHome from '../../../pages/dashboard/tracking';
+import TrackingChart from '../../trackingChart';
+import { FullContainer } from '../../../components/dashboard/dashboardContainers';
 
 async function getSkus() {
   const skus = await prisma.sku.findMany();
   return skus;
 };
+export type UserSettings = (User & { company: Company & { settings: Settings | null; }; }) | null;
 
 async function getUser() {
   const user = await prisma.user.findUnique({
@@ -29,14 +31,24 @@ async function getUser() {
       },
     },
   });
+  return user;
 }
 
 export default function Page() {
 
   const skus = use(getSkus());
-  const user = use(getUser());
+  const user: UserSettings = use(getUser());
   // const user = use(getUser(context))
 
-  return (<div>New Tracking Page WIP</div>);
-  {/* <TrackingHome user={user} skus={skus} /> */ }
+  return (<>
+    <Head>
+      <title>Tracking</title>
+      <meta name="locations" content="Manage locations" />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
+    <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
+      <TrackingChart user={user} skus={skus} />
+    </main>
+
+  </>);
 };
