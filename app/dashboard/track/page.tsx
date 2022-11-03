@@ -1,50 +1,24 @@
-import { Action, Company, Event, Settings, Sku, User } from '@prisma/client';
-import { Session, unstable_getServerSession } from 'next-auth';
+import { Company, Settings, User } from '@prisma/client';
+import { Session } from 'next-auth';
 import Head from 'next/head';
-import { ChangeEvent, use } from 'react';
-import { Line } from 'react-chartjs-2';
+import { use } from 'react';
 import prisma from '../../../constants/prisma';
-import { UserWithSettings } from '../../../utils/tracking/trackingUtils';
-import { authOptions } from '../../../pages/api/auth/[...nextauth]';
-import useSWR from 'swr';
 import TrackingContent from './trackingContent';
-import { headers, cookies } from 'next/headers';
-
-import { NextAuthHandler } from 'next-auth/core';
+import { headers } from 'next/headers';
 
 // https://github.com/nextauthjs/next-auth/issues/5647
-
-export const getSession2 = async (options = authOptions) => {
-  const session = await NextAuthHandler<Session | {} | string>({
-    options,
-    req: {
-      host: headers().get('x-forwarded-host') ?? 'http://localhost:3000',
-      action: 'session',
-      method: 'GET',
-      cookies: Array.from(cookies().entries()).reduce(
-        (acc, [key]) => ({ ...acc, [key]: cookies().get(key) }),
-        {},
-      ),
-      headers: headers(),
-    },
-  });
-
-  return session;
-};
 
 async function getSkus() {
   const skus = await prisma.sku.findMany();
   return JSON.parse(JSON.stringify(skus));
 }
 
-// TODO(Suhana): Fix this type
 export type UserSettings = (User & {
   company: Company & {
     settings: Settings | null;
   };
 }) | null;
 
-// TODO(Suhana): Fetch current user
 async function getUser(session: Session) {
   const user = await prisma.user.findUnique({
     where: {
@@ -76,14 +50,10 @@ async function getSession(cookie: string): Promise<Session> {
 }
 
 export default function Page() {
-  const skus = use(getSkus());
-  // const session = use(getSession(authOptions))
-
+  // TODO(Suhana): What should we do here if there isn't a session?
   const session = use(getSession(headers().get('cookie') ?? ''));
   const user: UserSettings = use(getUser(session));
-
-  console.log(user);
-  // const user = use(getUser(context))
+  const skus = use(getSkus());
 
   return (
     <div className="w-full h-screen bg-black flex overflow-auto">
