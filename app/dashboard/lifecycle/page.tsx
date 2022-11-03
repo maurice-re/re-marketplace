@@ -19,7 +19,7 @@ import {
   getEventsByAction,
   getTotalUsed,
 } from '../../../utils/tracking/trackingUtils'
-import LifecycleChart from '../../components/dashboard/lifecycle/lifecycleChart'
+import LifecycleChart from './lifecycleChart'
 
 async function getEvents() {
   return await prisma.event.findMany({})

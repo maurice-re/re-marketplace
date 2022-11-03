@@ -7,7 +7,7 @@ import prisma from '../../../constants/prisma'
 import { UserWithSettings } from '../../../utils/tracking/trackingUtils'
 import { authOptions } from '../../../pages/api/auth/[...nextauth]'
 import useSWR from 'swr'
-import TrackingContent from '../../components/dashboard/tracking/trackingContent'
+import TrackingContent from './trackingContent'
 
 async function getSkus() {
   const skus = await prisma.sku.findMany()

@@ -30,9 +30,9 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
   UserWithSettings,
-} from '../../../../utils/tracking/trackingUtils'
+} from '../../../utils/tracking/trackingUtils'
 import useSWR from 'swr'
-import { UserSettings } from '../../../dashboard/track/page'
+import { UserSettings } from './page'
 
 const fetcher = (url: string) =>
   fetch(url, {
