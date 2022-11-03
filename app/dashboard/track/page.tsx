@@ -10,7 +10,6 @@ import {
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 import useSWR from 'swr';
 import TrackingChart from '../../trackingChart';
-import { FullContainer } from '../../../components/dashboard/dashboardContainers';
 
 async function getSkus() {
   const skus = await prisma.sku.findMany();
@@ -40,15 +39,5 @@ export default function Page() {
   const user: UserSettings = use(getUser());
   // const user = use(getUser(context))
 
-  return (<>
-    <Head>
-      <title>Tracking</title>
-      <meta name="locations" content="Manage locations" />
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
-    <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-      <TrackingChart user={user} skus={skus} />
-    </main>
-
-  </>);
+  return (<div className="w-full"><TrackingChart user={user} skus={skus} /></div>);
 };
