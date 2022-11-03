@@ -93,12 +93,12 @@ export default function Page() {
   };
 
   return (
-    <div className="w-screen h-screen flex bg-black">
+    <div className="w-full flex bg-black">
       <head>
         <title>Lifecycle</title>
       </head>
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-        <h1 className="font-theinhardt text-3xl self-start">Dashboard</h1>
+        <h1 className="font-theinhardt text-3xl self-start text-white">Lifecycle</h1>
         <FullContainer>
           <div className="stat place-items-center">
             <div className="stat-title">Containers in use</div>
@@ -121,9 +121,8 @@ export default function Page() {
           <div className="stat place-items-center">
             <div className="stat-title">% CO2eq saved</div>
             <div
-              className={`stat-value ${
-                percentSaved > 0 ? "text-accent" : "text-error"
-              }`}
+              className={`stat-value ${percentSaved > 0 ? "text-accent" : "text-error"
+                }`}
             >
               {(percentSaved * 100).toFixed(2)}%
             </div>

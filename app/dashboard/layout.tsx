@@ -164,7 +164,9 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
             />
           ))}
         </div>
-        {children}
+        <div className="w-full">
+          {children}
+        </div>
       </div>
     );
   }
