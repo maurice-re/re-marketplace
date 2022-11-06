@@ -53,12 +53,14 @@ async function getCompleteOrders(user: UserCompany) {
 }
 
 export default function Layout({ children }: { children: React.ReactNode; }) {
-
   const session = use(getSession(headers().get('cookie') ?? ''));
   const user: UserCompany = use(getUser(session));
-  const incompleteOrders: [Order] = use(getIncompleteOrders(user));
   const completeOrders: [Order] = use(getCompleteOrders(user));
 
+  // Need to be test user or have at least one complete order
+  const showAll: boolean = completeOrders.length > 0 || user.firstName === "Phil";
+
+  // All users see the following
   const routes: Route[] = [
     {
       icon: (
@@ -112,7 +114,7 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
     },
   ];
 
-  if (completeOrders.length > 0) { // || user.firstName === "Phil"
+  if (showAll) {
     routes.splice(2, 0, {
       icon: (
         <svg
@@ -204,7 +206,7 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
           />
         ))}
       </div>
-      <div className="w-full">
+      <div id="children" className="w-full">
         {children}
       </div>
     </div>
