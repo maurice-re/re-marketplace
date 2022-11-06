@@ -7,14 +7,13 @@ import { getSession } from '../../utils/sessionUtils';
 import { UserCompany } from "../../utils/dashboard/dashboardUtils";
 import { Session } from "next-auth";
 import prisma from "../../constants/prisma";
-import { Status } from "@prisma/client";
+import { Order, Status } from "@prisma/client";
 
 type Route = {
   icon: JSX.Element;
   link: string;
   title: string;
 };
-
 
 async function getUser(session: Session) {
   const user = await prisma.user.findUnique({
@@ -28,7 +27,7 @@ async function getUser(session: Session) {
   return JSON.parse(JSON.stringify(user));
 }
 
-async function getOrders(user: UserCompany) {
+async function getIncompleteOrders(user: UserCompany) {
   const orders = await prisma.order.findMany({
     where: {
       companyId: user.companyId ?? '',
@@ -43,15 +42,22 @@ async function getOrders(user: UserCompany) {
   return JSON.parse(JSON.stringify(orders));
 }
 
+async function getCompleteOrders(user: UserCompany) {
+  const orders = await prisma.order.findMany({
+    where: {
+      companyId: user.companyId ?? '',
+      status: Status.COMPLETED,
+    },
+  });
+  return JSON.parse(JSON.stringify(orders));
+}
+
 export default function Layout({ children }: { children: React.ReactNode; }) {
+
   const session = use(getSession(headers().get('cookie') ?? ''));
   const user: UserCompany = use(getUser(session));
-  const orders = use(getOrders(user));
-  const showReduced: boolean = orders.length > 0;
-  console.log("Should showReduced? ", showReduced);
-
-  console.log(user.companyId);
-  // const user: UserSettings = use(getUser(session));
+  const incompleteOrders: [Order] = use(getIncompleteOrders(user));
+  const completeOrders: [Order] = use(getCompleteOrders(user));
 
   const routes: Route[] = [
     {
@@ -67,63 +73,6 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
       ),
       link: "/dashboard",
       title: "Home",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-        </svg>
-      ),
-      link: "/dashboard/orderItem",
-      title: "Orders",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-            clipRule="evenodd"
-          />
-        </svg>
-      ),
-      link: "/dashboard/location",
-      title: "Locations",
-    },
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
-          />
-        </svg>
-      ),
-      link: "/dashboard/lifecycle",
-      title: "Lifecycle",
-    },
-    {
-      icon: <TbCurrentLocation size={20} />,
-      link: "/dashboard/tracking",
-      title: "Tracking",
     },
     {
       icon: (
@@ -162,6 +111,67 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
       title: "Account",
     },
   ];
+
+  if (completeOrders.length > 0) { // || user.firstName === "Phil"
+    routes.splice(2, 0, {
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+        </svg>
+      ),
+      link: "/dashboard/orderItem",
+      title: "Orders",
+    },
+      {
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        ),
+        link: "/dashboard/location",
+        title: "Locations",
+      },
+      {
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
+            />
+          </svg>
+        ),
+        link: "/dashboard/lifecycle",
+        title: "Lifecycle",
+      },
+      {
+        icon: <TbCurrentLocation size={20} />,
+        link: "/dashboard/tracking",
+        title: "Tracking",
+      },
+    );
+  }
 
   return (
     <div className="flex h-screen bg-black group">
