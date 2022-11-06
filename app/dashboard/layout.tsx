@@ -1,11 +1,13 @@
-"use client";
-import Link from "next/link";
-import { useState } from "react";
 import { TbCurrentLocation } from "react-icons/tb";
 import "tailwindcss/tailwind.css";
 import SidebarIcon from "./sidebarIcon";
-import { useRouter } from "next/router";
-import useSWR from 'swr';
+import { use } from 'react';
+import { headers } from 'next/headers';
+import { getSession } from '../../utils/sessionUtils';
+import { UserCompany } from "../../utils/dashboard/dashboardUtils";
+import { Session } from "next-auth";
+import prisma from "../../constants/prisma";
+import { Status } from "@prisma/client";
 
 type Route = {
   icon: JSX.Element;
@@ -13,15 +15,44 @@ type Route = {
   title: string;
 };
 
+
+async function getUser(session: Session) {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session?.user?.email ?? '',
+    },
+    include: {
+      company: true
+    },
+  });
+  return JSON.parse(JSON.stringify(user));
+}
+
+async function getOrders(user: UserCompany) {
+  const orders = await prisma.order.findMany({
+    where: {
+      companyId: user.companyId ?? '',
+      NOT: {
+        status: Status.COMPLETED,
+      }
+    },
+    include: {
+      company: true
+    },
+  });
+  return JSON.parse(JSON.stringify(orders));
+}
+
 export default function Layout({ children }: { children: React.ReactNode; }) {
-  // const { data: eventData } = useSWR(`/api/tracking/get-events?companyId=${user?.companyId}`, fetcher);
+  const session = use(getSession(headers().get('cookie') ?? ''));
+  const user: UserCompany = use(getUser(session));
+  const orders = use(getOrders(user));
+  const showReduced: boolean = orders.length > 0;
+  console.log("Should showReduced? ", showReduced);
 
-  const [opened, setOpened] = useState<boolean>(false);
-  const router = useRouter();
+  console.log(user.companyId);
+  // const user: UserSettings = use(getUser(session));
 
-  function isActivePage(route: string): boolean {
-    return router?.pathname == route;
-  }
   const routes: Route[] = [
     {
       icon: (
@@ -132,50 +163,12 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
     },
   ];
 
-  if (!opened) {
-    return (
-      <div className="flex h-screen bg-black group">
-        <div className="flex flex-col items-center text-white ml-4 hover:pl-20 group-hover:bg-black group-hover:w-48">
-          <button
-            className="rounded py-2 hover:text-re-green-800"
-            onClick={() => setOpened(true)}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 5l7 7-7 7M5 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-          {routes.map((route) => (
-            <SidebarIcon
-              key={route.link}
-              icon={route.icon}
-              link={route.link}
-              title={route.title}
-            />
-          ))}
-        </div>
-        <div className="w-full">
-          {children}
-        </div>
-      </div>
-    );
-  }
   return (
-    <div className="flex h-screen">
-      <div className="w-48 bg-black flex flex-col text-white">
+    <div className="flex h-screen bg-black group">
+      <div className="flex flex-col items-center text-white ml-4 hover:pl-20 group-hover:bg-black group-hover:w-48">
         <button
-          className="rounded py-2 hover:text-re-green-800 mr-2 self-center"
-          onClick={() => setOpened(false)}
+          className="rounded py-2 hover:text-re-green-800"
+          onClick={undefined}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -188,30 +181,22 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+              d="M13 5l7 7-7 7M5 5l7 7-7 7"
             />
           </svg>
         </button>
         {routes.map((route) => (
-          <Link
+          <SidebarIcon
             key={route.link}
-            href={{
-              pathname: route.link,
-            }}
-          >
-            <button
-              className={`${isActivePage(route.link) ? "bg-re-green-700" : ""
-                } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
-            >
-              {route.icon}
-              <div className=" font-theinhardt text-xl py-2 ml-2 text-left">
-                {route.title}
-              </div>
-            </button>
-          </Link>
+            icon={route.icon}
+            link={route.link}
+            title={route.title}
+          />
         ))}
       </div>
-      {children}
+      <div className="w-full">
+        {children}
+      </div>
     </div>
   );
 }

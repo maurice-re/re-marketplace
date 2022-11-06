@@ -5,19 +5,20 @@ import { use } from 'react';
 import prisma from '../../../constants/prisma';
 import TrackingContent from './trackingContent';
 import { headers } from 'next/headers';
+import { getSession } from '../../../utils/sessionUtils';
 
 // https://github.com/nextauthjs/next-auth/issues/5647
-
-async function getSkus() {
-  const skus = await prisma.sku.findMany();
-  return JSON.parse(JSON.stringify(skus));
-}
 
 export type UserSettings = (User & {
   company: Company & {
     settings: Settings | null;
   };
 }) | null;
+
+async function getSkus() {
+  const skus = await prisma.sku.findMany();
+  return JSON.parse(JSON.stringify(skus));
+}
 
 async function getUser(session: Session) {
   const user = await prisma.user.findUnique({
@@ -33,20 +34,6 @@ async function getUser(session: Session) {
     },
   });
   return JSON.parse(JSON.stringify(user));
-}
-
-async function getSession(cookie: string): Promise<Session> {
-  const response = await fetch(
-    `${headers().get('x-forwarded-host') ?? 'http://localhost:3000'
-    }/api/auth/session`,
-    {
-      headers: {
-        cookie,
-      },
-    },
-  );
-  const session = await response.json();
-  return Object.keys(session).length > 0 ? session : null;
 }
 
 export default function Page() {
