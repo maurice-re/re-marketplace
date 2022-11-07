@@ -8,12 +8,12 @@ type Route = {
   title: string;
 };
 
-function Sidebar({ children }: { children: ReactNode }) {
+function Sidebar({ children }: { children: ReactNode; }) {
   const [opened, setOpened] = useState<boolean>(false);
   const router = useRouter();
 
   function isActivePage(route: string): boolean {
-    return router.pathname == route;
+    return router?.pathname == route;
   }
 
   const routes: Route[] = [
@@ -69,19 +69,19 @@ function Sidebar({ children }: { children: ReactNode }) {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1.5"
+          strokeWidth="1.5"
           stroke="currentColor"
           className="w-6 h-6"
         >
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418"
           />
         </svg>
       ),
       link: "/dashboard/lifecycle",
-      title: "Life Cycle",
+      title: "Lifecycle",
     },
     {
       icon: <TbCurrentLocation size={20} />,
@@ -157,9 +157,8 @@ function Sidebar({ children }: { children: ReactNode }) {
               }}
             >
               <button
-                className={`${
-                  isActivePage(route.link) ? "bg-re-green-700" : ""
-                } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-3 px-3 rounded-10 my-1`}
+                className={`${isActivePage(route.link) ? "bg-re-green-700" : ""
+                  } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-3 px-3 rounded-10 my-1`}
               >
                 {route.icon}
               </button>
@@ -200,9 +199,8 @@ function Sidebar({ children }: { children: ReactNode }) {
             }}
           >
             <button
-              className={`${
-                isActivePage(route.link) ? "bg-re-green-700" : ""
-              } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
+              className={`${isActivePage(route.link) ? "bg-re-green-700" : ""
+                } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-1 mr-2 rounded-lg`}
             >
               {route.icon}
               <div className=" font-theinhardt text-xl py-2 ml-2">

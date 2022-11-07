@@ -98,9 +98,8 @@ export default function LineItems({
       if (orderString.split("*").length > 1) {
         items.push(
           <div key={"name " + locationId}>
-            <div>{`${
-              location ? location.displayName ?? location.city : location
-            } orders`}</div>
+            <div>{`${location ? location.displayName ?? location.city : location
+              } orders`}</div>
           </div>
         );
       }

@@ -1,4 +1,5 @@
-import { Action, Event, Settings, Sku } from '@prisma/client';
+'use client';
+import { Action, Settings, Sku, User } from '@prisma/client';
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -9,14 +10,9 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import type { GetServerSideProps, NextPage } from 'next';
-import { unstable_getServerSession } from 'next-auth';
-import Head from 'next/head';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import Sidebar from '../../../components/dashboard/sidebar';
-import SettingsForm from '../../../components/tracking/settingsForm';
-import prisma from '../../../constants/prisma';
+import SettingsForm from './settingsForm';
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -35,13 +31,14 @@ import {
   sortByDate,
   UserWithSettings,
 } from '../../../utils/tracking/trackingUtils';
-import { authOptions } from '../../api/auth/[...nextauth]';
 import useSWR from 'swr';
+import { UserSettings } from './page';
 
-const fetcher = (url: string) => fetch(url, {
-  method: "GET",
-  headers: { "Content-Type": "application/json" },
-}).then((res) => res.json());
+const fetcher = (url: string) =>
+  fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  }).then((res) => res.json());
 
 ChartJS.register(
   CategoryScale,
@@ -60,18 +57,9 @@ type Statistic = {
   isPercent: boolean;
 };
 
-type TrackingProps = {
-  user: UserWithSettings;
-  skus: Sku[];
-};
-
 const monthsInYear = getMonthsInYear();
 
-const TrackingHome: NextPage<TrackingProps> = ({
-  user,
-  skus,
-}: TrackingProps) => {
-
+function TrackingContent({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
   // "Dummy" data that is updated on changes
   let baseData = {
     labels: monthsInYear,
@@ -91,19 +79,32 @@ const TrackingHome: NextPage<TrackingProps> = ({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings>(user?.company.settings);
+  const [settings, setSettings] = useState<Settings>(user?.company.settings!);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
   const [yearForMonthly, setYearForMonthly] = useState<string>('');
   const [latestMonth, setLatestMonth] = useState<number>(0);
   const [latestYear, setLatestYear] = useState<number>(0);
-  const [defaultItemsBorrowedMonthly, setDefaultItemsBorrowedMonthly] = useState([0]);
-  const [defaultItemsReturnedMonthly, setDefaultItemsReturnedMonthly] = useState([0]);
-  const [defaultItemsBorrowedDaily, setDefaultItemsBorrowedDaily] = useState([0]);
-  const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([0]);
+  const [
+    defaultItemsBorrowedMonthly,
+    setDefaultItemsBorrowedMonthly,
+  ] = useState([0]);
+  const [
+    defaultItemsReturnedMonthly,
+    setDefaultItemsReturnedMonthly,
+  ] = useState([0]);
+  const [defaultItemsBorrowedDaily, setDefaultItemsBorrowedDaily] = useState([
+    0,
+  ]);
+  const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([
+    0,
+  ]);
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
-  const { data: eventData } = useSWR(`/api/tracking/get-events?companyId=${user?.companyId}`, fetcher);
+  const { data: eventData } = useSWR(
+    `/api/tracking/get-events?companyId=${user?.companyId}`,
+    fetcher,
+  );
   let events = eventData?.events;
 
   const [data, setData] = useState(baseData);
@@ -117,16 +118,8 @@ const TrackingHome: NextPage<TrackingProps> = ({
       setLatestMonth(latestMonthYear[0]);
       setLatestYear(latestMonthYear[1]);
 
-      const borrowedMonthly = getItemsByMonth(
-        latestYear,
-        events,
-        Action.BORROW,
-      );
-      const returnedMonthly = getItemsByMonth(
-        latestYear,
-        events,
-        Action.RETURN,
-      );
+      const borrowedMonthly = getItemsByMonth(latestYear, events, Action.BORROW);
+      const returnedMonthly = getItemsByMonth(latestYear, events, Action.RETURN);
 
       let selectedData = {
         labels: monthsInYear,
@@ -178,20 +171,11 @@ const TrackingHome: NextPage<TrackingProps> = ({
 
   if (!events || events.length == 0) {
     return (
-      <Sidebar>
-        <div className="w-screen h-screen bg-black flex">
-          <Head>
-            <title>Tracking</title>
-            <meta name="locations" content="Track your items" />
-            <link rel="icon" href="/favicon.ico" />
-          </Head>
-          <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-            <div className="text-white font-theinhardt text-28">
-              Integrate with our API to track
-            </div>
-          </main>
+      <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+        <div className="text-white font-theinhardt text-28">
+          Integrate with our API to track
         </div>
-      </Sidebar>
+      </main>
     );
   }
 
@@ -336,153 +320,108 @@ const TrackingHome: NextPage<TrackingProps> = ({
     },
   };
 
-  return (
-    <Sidebar>
-      <div className="w-full h-screen bg-black flex overflow-auto">
-        <Head>
-          <title>Tracking</title>
-          <meta name="locations" content="Manage locations" />
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          {events && events.length > 0 ? (
-            <div>
-              <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
-              <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
-                Lifetime Statistics
-              </h1>
-              <div className="flex w-full items-center justify-between mt-4 mb-8">
-                {stats.map((stat) => (
-                  <div
-                    key={stat.title}
-                    className="tooltip tooltip-bottom !pb-2"
-                    data-tip={stat.info}
-                  >
-                    <button className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300">
-                      <div className="font-thin text-md uppercase tracking-wide leading-none">
-                        {stat.title}
-                      </div>
-                      <div className="font-theinhardt text-4xl mt-2 text-re-green-500">
-                        {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
-                          }`}
-                      </div>
-                    </button>
-                  </div>
-                ))}
+  return events && events.length > 0 ? (
+    // TODO(Suhana): Create more sub-components here
+    <div>
+      <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
+      <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
+        Lifetime Statistics
+      </h1>
+      <div className="flex w-full items-center justify-between mt-4 mb-8">
+        {stats.map((stat) => (
+          <div
+            key={stat.title}
+            className="tooltip tooltip-bottom !pb-2"
+            data-tip={stat.info}
+          >
+            <button className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300">
+              <div className="font-thin text-md uppercase tracking-wide leading-none">
+                {stat.title}
               </div>
-              <h1 className="ml-1 py-2 font-theinhardt text-2xl">
-                Borrows and Returns
-              </h1>
-              <div className="flex w-full gap-8">
-                <div className="flex-col w-1/6">
-                  <div onChange={handleTimePeriodChange}>
-                    <div className="form-control">
-                      <label className="label cursor-pointer">
-                        <span className="label-text">Monthly</span>
-                        <input
-                          type="radio"
-                          name="radio-6"
-                          value="monthly"
-                          className="radio checked:bg-re-green-500"
-                          defaultChecked
-                        />
-                      </label>
-                    </div>
-                    <div className="form-control">
-                      <label className="label cursor-pointer">
-                        <span className="label-text">Daily</span>
-                        <input
-                          type="radio"
-                          name="radio-6"
-                          value="daily"
-                          className="radio checked:bg-re-green-500"
-                        />
-                      </label>
-                    </div>
-                  </div>
-                  {graphTimePeriod === 'monthly' && (
-                    <div className="form-control w-full max-w-xs mt-2">
-                      <select
-                        className="select w-full max-w-xs"
-                        value={yearForMonthly}
-                        onChange={handleYearForMonthlyChange}
-                      >
-                        {allYears.map((year) => (
-                          <option key={year} value={year}>
-                            {year}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                  {graphTimePeriod === 'daily' && (
-                    <div className="form-control w-full max-w-xs mt-2">
-                      <select
-                        className="select w-full max-w-xs"
-                        value={monthYearForDaily}
-                        onChange={handleMonthYearForDailyChange}
-                      >
-                        {allMonthYears.map((monthYear) => (
-                          <option key={monthYear} value={monthYear}>
-                            {getFormattedMonthYear(monthYear)}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
-                </div>
-
-                <div className="w-5/6">
-                  <Line options={options} data={data} />
-                </div>
+              <div className="font-theinhardt text-4xl mt-2 text-re-green-500">
+                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                  }`}
               </div>
-              <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
-                Configure Settings
-              </h1>
-              <div className="flex w-full gap-8">
-                <SettingsForm settings={settings} setSettings={setSettings} />
-              </div>
-              <div className="py-6"></div>
+            </button>
+          </div>
+        ))}
+      </div>
+      <h1 className="ml-1 py-2 font-theinhardt text-2xl">
+        Borrows and Returns
+      </h1>
+      <div className="flex w-full gap-8">
+        <div className="flex-col w-1/6">
+          <div onChange={handleTimePeriodChange}>
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <span className="label-text">Monthly</span>
+                <input
+                  type="radio"
+                  name="radio-6"
+                  value="monthly"
+                  className="radio checked:bg-re-green-500"
+                  defaultChecked
+                />
+              </label>
             </div>
-          ) : (
-            <div className="text-white font-theinhardt text-28">
-              You will see tracking data here once products are in circulation
+            <div className="form-control">
+              <label className="label cursor-pointer">
+                <span className="label-text">Daily</span>
+                <input
+                  type="radio"
+                  name="radio-6"
+                  value="daily"
+                  className="radio checked:bg-re-green-500"
+                />
+              </label>
+            </div>
+          </div>
+          {graphTimePeriod === 'monthly' && (
+            <div className="form-control w-full max-w-xs mt-2">
+              <select
+                className="select w-full max-w-xs"
+                value={yearForMonthly}
+                onChange={handleYearForMonthlyChange}
+              >
+                {allYears.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
-        </main>
+          {graphTimePeriod === 'daily' && (
+            <div className="form-control w-full max-w-xs mt-2">
+              <select
+                className="select w-full max-w-xs"
+                value={monthYearForDaily}
+                onChange={handleMonthYearForDailyChange}
+              >
+                {allMonthYears.map((monthYear) => (
+                  <option key={monthYear} value={monthYear}>
+                    {getFormattedMonthYear(monthYear)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+        <div className="w-5/6">
+          <Line options={options} data={data} />
+        </div>
       </div>
-    </Sidebar>
+      <h1 className="pt-8 ml-1 font-theinhardt text-2xl">Configure Settings</h1>
+      <div className="flex w-full gap-8">
+        <SettingsForm settings={settings} setSettings={setSettings} />
+      </div>
+      <div className="py-6"></div>
+    </div>
+  ) : (
+    <div className="text-white font-theinhardt text-28">
+      You will see tracking data here once products are in circulation
+    </div>
   );
-};
+}
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions,
-  );
-  if (session) {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: session?.user?.email ?? '',
-      },
-      include: {
-        company: {
-          include: {
-            settings: true,
-          },
-        },
-      },
-    });
-    const skus = await prisma.sku.findMany();
-    return {
-      props: {
-        user: JSON.parse(JSON.stringify(user)),
-        skus: JSON.parse(JSON.stringify(skus)),
-      },
-    };
-  }
-  return { props: {} };
-};
-
-export default TrackingHome;
+export default TrackingContent;
