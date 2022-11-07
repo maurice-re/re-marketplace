@@ -252,9 +252,15 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                 </button>
               </div>
             </div>
-            <div className="flex">
-              <div className="flex flex-col w-3/5 justify-between pb-4">
-                <div className="flex flex-col my-4 mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
+            <div className="flex flex-col">
+              <div className="alert alert-success shadow-lg mt-8 mb-6">
+                <div>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <span>Your order is  has been {user.orders[user.orders.length - 1].status.toLowerCase()}!</span>
+                </div>
+              </div>
+              <div className="flex w-full justify-between pb-4">
+                <div className="flex w-3/5 flex-col my-4 mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
                   <div className="flex justify-between w-full items-start">
                     <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
                       <span>Latest Order</span>
@@ -379,6 +385,12 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
                         </div>
                       )
                     )}
+                  </div>
+                </div>
+                <div className="flex mt-4 w-2/5">
+                  <div className="flex flex-col ml-4 mr-1 px-4 py-4 gap-4 w-full bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl">
+                    <div>Demo the tracking experience</div>
+                    <button className="btn btn-primarymt-4">Visit</button>
                   </div>
                 </div>
               </div>
