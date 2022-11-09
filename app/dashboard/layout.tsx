@@ -36,6 +36,7 @@ export default async function Layout({
   const showAll: boolean =
     completedOrders.length > 0 || user.companyId === "616";
 
+
   // All users see the following
   const routes: Route[] = [
     {
