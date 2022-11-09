@@ -5,7 +5,6 @@ import { use } from "react";
 import prisma from "../../constants/prisma";
 import {
   SkuProduct,
-  UserCompany,
   UserOrderItems,
 } from "../../utils/dashboard/dashboardUtils";
 import { getSession } from '../../utils/sessionUtils';
@@ -69,7 +68,7 @@ async function getSkus() {
   return JSON.parse(JSON.stringify(skus));
 }
 
-async function getIncompleteOrders(user: UserCompany) {
+async function getIncompleteOrders(user: UserOrderItems) {
   const orders = await prisma.order.findMany({
     where: {
       companyId: user.companyId ?? '',
@@ -84,7 +83,7 @@ async function getIncompleteOrders(user: UserCompany) {
   return JSON.parse(JSON.stringify(orders));
 }
 
-async function getCompleteOrders(user: UserCompany) {
+async function getCompleteOrders(user: UserOrderItems) {
   const orders = await prisma.order.findMany({
     where: {
       companyId: user.companyId ?? '',
