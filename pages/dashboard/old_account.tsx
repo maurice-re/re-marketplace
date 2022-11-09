@@ -2,13 +2,13 @@ import { Company, Role, User } from '@prisma/client';
 import type { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
-import Sidebar from '../../../components/dashboard/sidebar';
-import prisma from '../../../constants/prisma';
-import { authOptions } from '../../api/auth/[...nextauth]';
-import UserForm from '../../../components/account/userForm';
+import Sidebar from '../../components/dashboard/sidebar';
+import prisma from '../../constants/prisma';
+import { authOptions } from '../api/auth/[...nextauth]';
+import UserForm from '../../components/account/userForm';
 import { useState } from 'react';
-import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
-import AddUserForm from '../../../components/account/addUserForm';
+import { UserCompany } from '../../utils/dashboard/dashboardUtils';
+import AddUserForm from '../../components/account/addUserForm';
 import Image from 'next/image';
 
 type AccountProps = {
