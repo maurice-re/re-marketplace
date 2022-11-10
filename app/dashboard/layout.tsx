@@ -32,26 +32,24 @@ export default async function Layout({
     },
   });
 
+  const incompleteOrders: Order[] = await prisma.order.findMany({
+    where: {
+      companyId: user.companyId,
+      NOT: {
+        status: Status.COMPLETED,
+      }
+    },
+  });
+
   // Need to be test user or have at least one complete order
-  const showAll: boolean =
+  const hasCompleteOrder: boolean =
     completedOrders.length > 0 || user.companyId === "616";
+
+  const hasIncompleteOrder: boolean =
+    incompleteOrders.length > 0;
 
   // All users see the following
   const routes: Route[] = [
-    {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-        </svg>
-      ),
-      link: "/dashboard",
-      title: "Home",
-    },
     {
       icon: (
         <svg
@@ -70,7 +68,10 @@ export default async function Layout({
       link: "/dashboard/store",
       title: "Shop",
     },
-    {
+  ];
+
+  if (hasCompleteOrder) {
+    routes.splice(0, 0, {
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -78,22 +79,12 @@ export default async function Layout({
           viewBox="0 0 20 20"
           fill="currentColor"
         >
-          <path
-            fillRule="evenodd"
-            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-            clipRule="evenodd"
-          />
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
         </svg>
       ),
-      link: "/dashboard/account",
-      title: "Account",
+      link: "/dashboard",
+      title: "Home",
     },
-  ];
-
-  if (showAll) {
-    routes.splice(
-      2,
-      0,
       {
         icon: (
           <svg
@@ -152,6 +143,58 @@ export default async function Layout({
         title: "Tracking",
       }
     );
+    routes.splice(6, 0, {
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+            clipRule="evenodd"
+          />
+        </svg>
+      ),
+      link: "/dashboard/account",
+      title: "Account",
+    });
+  } else if (hasIncompleteOrder) {
+    routes.splice(0, 0, {
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+        </svg>
+      ),
+      link: "/dashboard",
+      title: "Home",
+    }
+    );
+    routes.splice(2, 0, {
+      icon: (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+            clipRule="evenodd"
+          />
+        </svg>
+      ),
+      link: "/dashboard/account",
+      title: "Account",
+    });
   }
 
   return (

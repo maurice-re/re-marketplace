@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function SidebarIcon({
   icon,
@@ -12,10 +12,9 @@ export default function SidebarIcon({
   link: string;
   title: string;
 }) {
-  const segment = useSelectedLayoutSegment();
-  console.log(segment);
+  console.log(icon);
   console.log(link);
-
+  const pathname = usePathname();
   return (
     <Link
       key={link}
@@ -24,9 +23,8 @@ export default function SidebarIcon({
       }}
     >
       <button
-        className={`${
-          `/dashboard/${segment}` == link ? "bg-re-green-700" : ""
-        } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-3 px-3 rounded-10 my-1`}
+        className={`${pathname == link ? "bg-re-green-700" : ""
+          } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-3 px-3 rounded-10 my-1`}
       >
         {icon}
       </button>
