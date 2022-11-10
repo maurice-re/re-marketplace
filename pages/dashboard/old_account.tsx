@@ -2,13 +2,13 @@ import { Company, Role, User } from '@prisma/client';
 import type { GetServerSideProps, NextPage } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import Head from 'next/head';
-import Sidebar from '../../../components/dashboard/sidebar';
-import prisma from '../../../constants/prisma';
-import { authOptions } from '../../api/auth/[...nextauth]';
-import UserForm from '../../../components/account/userForm';
+import Sidebar from '../../components/dashboard/sidebar';
+import prisma from '../../constants/prisma';
+import { authOptions } from '../api/auth/[...nextauth]';
+import UserForm from '../../components/account/userForm';
 import { useState } from 'react';
-import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
-import AddUserForm from '../../../components/account/addUserForm';
+import { UserCompany } from '../../utils/dashboard/dashboardUtils';
+import AddUserForm from '../../components/account/addUserForm';
 import Image from 'next/image';
 
 type AccountProps = {
@@ -52,7 +52,7 @@ const AccountHome: NextPage<AccountProps> = ({ user }) => {
               <h1 className="text-3xl">Manage Your Account</h1>
               <h3 className="text-2xl font-theinhardt-300">{`${dynamicUser?.firstName} ${dynamicUser?.lastName} | ${dynamicUser?.company?.name}`}</h3>
             </div>
-            {dynamicUser && dynamicUser.firstName === 'Phil' ? (
+            {dynamicUser && dynamicUser.companyId === '616' ? (
               <div className="avatar">
                 <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                   <Image
