@@ -19,5 +19,5 @@ export default async function handler(req: Request, res: Response) {
   };
   await transporter.sendMail(email).catch(e => console.log(e));
 
-  res.send()
+  res.send();
 }
