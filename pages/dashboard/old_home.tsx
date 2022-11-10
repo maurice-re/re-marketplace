@@ -63,7 +63,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
           {head}
           <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
             <div className="flex justify-between px-1">
-              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId === "616" ? "Agent Coulson" : user.firstName
                 }!`}</h1>
               <div className="flex items-center">
                 <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
@@ -236,7 +236,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
           {head}
           <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
             <div className="flex justify-between px-1">
-              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId === "616" ? "Agent Coulson" : user.firstName
                 }!`}</h1>
               <div className="flex items-center">
                 <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
@@ -407,7 +407,7 @@ const Home: NextPage<HomeProps> = ({ locations, skus, user }: HomeProps) => {
           {head}
           <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
             <div className="flex justify-between px-1">
-              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.firstName == "Phil" ? "Agent Coulson" : user.firstName
+              <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId === "616" ? "Agent Coulson" : user.firstName
                 }!`}</h1>
               <div className="flex items-center">
                 <h1 className=" font-theinhardt text-3xl">Dashboard</h1>

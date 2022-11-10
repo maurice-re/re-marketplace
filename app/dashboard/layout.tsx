@@ -32,7 +32,7 @@ export default async function Layout({
     },
   });
 
-  const hasIncompleteOrder: Order[] = await prisma.order.findMany({
+  const incompleteOrders: Order[] = await prisma.order.findMany({
     where: {
       companyId: user.companyId,
       NOT: {
@@ -44,6 +44,9 @@ export default async function Layout({
   // Need to be test user or have at least one complete order
   const hasCompleteOrder: boolean =
     completedOrders.length > 0 || user.companyId === "616";
+
+  const hasIncompleteOrder: boolean =
+    incompleteOrders.length > 0;
 
   // All users see the following
   const routes: Route[] = [
@@ -81,11 +84,7 @@ export default async function Layout({
       ),
       link: "/dashboard",
       title: "Home",
-    }
-    );
-    routes.splice(
-      2,
-      0,
+    },
       {
         icon: (
           <svg

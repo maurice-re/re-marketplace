@@ -101,7 +101,7 @@ export default function Page() {
   const incompleteOrders: [Order] = use(getIncompleteOrders(user));
   const completeOrders: [Order] = use(getCompleteOrders(user));
 
-  const hasCompleteOrder: boolean = completeOrders.length > 0 || user.firstName === "Phil";
+  const hasCompleteOrder: boolean = completeOrders.length > 0 || user.companyId === "616";
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
 
   return (
