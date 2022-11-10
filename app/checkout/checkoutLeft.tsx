@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Company,
   Location,
@@ -8,18 +10,14 @@ import {
 } from "@prisma/client";
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
-import type { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import CheckoutForm from "../../components/checkout/form";
 import LineItems from "../../components/checkout/lineItems";
 import Totals from "../../components/checkout/totals";
 import ReLogo from "../../components/form/re-logo";
 import { eolPolicy } from "../../constants/policy";
-import prisma from "../../constants/prisma";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
-import { authOptions } from "../api/auth/[...nextauth]";
+import CheckoutRight from "./checkoutRight";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
@@ -33,18 +31,18 @@ const appearance: Appearance = {
 };
 
 type CheckoutProps = {
-  company: Company | null;
-  locations: Location[] | null;
-  loggedIn: boolean | null;
+  company?: Company;
+  locations?: Location[];
+  loggedIn?: boolean;
   orderString: string;
-  productDevelopment: ProductDevelopment | null;
-  products: Product[] | null;
-  skus: Sku[] | null;
+  productDevelopment?: ProductDevelopment;
+  products?: Product[];
+  skus?: Sku[];
   type: CheckoutType;
-  user: User | null;
+  user?: User;
 };
 
-const Checkout: NextPage<CheckoutProps> = ({
+export default function CheckoutLeft({
   company,
   locations,
   orderString,
@@ -53,7 +51,7 @@ const Checkout: NextPage<CheckoutProps> = ({
   skus,
   type,
   user,
-}: CheckoutProps) => {
+}: CheckoutProps) {
   const [clientSecret, setClientSecret] = useState("");
   const [paymentIntentId, setPaymentIntentId] = useState("");
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
@@ -69,9 +67,9 @@ const Checkout: NextPage<CheckoutProps> = ({
       body: JSON.stringify({
         cost: getCheckoutTotal(
           orderString,
-          productDevelopment,
-          products,
-          skus,
+          productDevelopment ?? null,
+          products ?? [],
+          skus ?? [],
           type
         ),
         id: customerId,
@@ -127,25 +125,25 @@ const Checkout: NextPage<CheckoutProps> = ({
           <h2 className="text-lg">Pay Re Company</h2>
           <h1 className=" text-4xl font-semibold pb-4">{`$${getCheckoutTotal(
             orderString,
-            productDevelopment,
-            products,
-            skus,
+            productDevelopment ?? null,
+            products ?? [],
+            skus ?? [],
             type
           )}`}</h1>
           {LineItems({
-            locations: locations,
+            locations: locations ?? [],
             orderString: orderString,
-            skus: skus,
-            productDevelopment: productDevelopment,
-            products: products,
+            skus: skus ?? [],
+            productDevelopment: productDevelopment ?? null,
+            products: products ?? [],
             type: type,
           })}
           <div className="ml-16 mr-6 border my-4" />
           {Totals({
             orderString: orderString,
-            skus: skus,
-            productDevelopment: productDevelopment,
-            products: products,
+            skus: skus ?? [],
+            productDevelopment: productDevelopment ?? null,
+            products: products ?? [],
             type: type,
           })}
         </div>
@@ -153,19 +151,19 @@ const Checkout: NextPage<CheckoutProps> = ({
           {clientSecret && (
             // eslint-disable-next-line
             <Elements options={options} stripe={stripePromise}>
-              <CheckoutForm
-                company={company}
+              <CheckoutRight
+                company={company ?? null}
                 customerId={customerId}
                 eol={eol}
-                locations={locations}
+                locations={locations ?? []}
                 orderString={orderString}
                 paymentMethods={paymentMethods}
                 paymentIntentId={paymentIntentId}
-                productDevelopment={productDevelopment}
-                products={products}
-                skus={skus}
+                productDevelopment={productDevelopment ?? null}
+                products={products ?? []}
+                skus={skus ?? []}
                 type={type}
-                user={user}
+                user={user ?? null}
               />
             </Elements>
           )}
@@ -173,93 +171,4 @@ const Checkout: NextPage<CheckoutProps> = ({
       </main>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { orderString } = context.query;
-  if (typeof orderString == "string") {
-    // Product Development
-    if (orderString.startsWith("product-development")) {
-      const [_, devId] = orderString.split("~");
-      const productDev = await prisma.productDevelopment.findUnique({
-        where: { id: devId },
-      });
-      if (productDev == null) {
-        return { props: { type: CheckoutType.ERROR } };
-      } else if (productDev.companyId == null) {
-        return {
-          props: {
-            productDevelopment: JSON.parse(JSON.stringify(productDev)),
-            type: CheckoutType.PRODUCT_DEVELOPMENT,
-          },
-        };
-      } else {
-        const session = await unstable_getServerSession(
-          context.req,
-          context.res,
-          authOptions
-        );
-        const company = await prisma.company.findUnique({
-          where: { id: productDev.companyId },
-        });
-        const sessionUser = session == null ? null : (session?.user as User);
-        return {
-          props: {
-            company: JSON.parse(JSON.stringify(company)),
-            productDevelopment: JSON.parse(JSON.stringify(productDev)),
-            loggedIn: JSON.parse(
-              JSON.stringify(
-                sessionUser == null
-                  ? false
-                  : sessionUser.companyId == company?.id
-              )
-            ),
-            type: CheckoutType.PRODUCT_DEVELOPMENT,
-            user: JSON.parse(JSON.stringify(sessionUser)),
-          },
-        };
-      }
-    }
-
-    // Sample
-
-    // Order
-    const session = await unstable_getServerSession(
-      context.req,
-      context.res,
-      authOptions
-    );
-    const user = await prisma.user.findFirst({
-      where: {
-        email: session?.user?.email ?? "",
-      },
-      include: {
-        company: {
-          include: {
-            locations: true,
-          },
-        },
-      },
-    });
-
-    const allSkus = await prisma.sku.findMany();
-    const allProducts = await prisma.product.findMany();
-    return {
-      props: {
-        company: user
-          ? JSON.parse(JSON.stringify(user.company as Company))
-          : null,
-        user: user ? JSON.parse(JSON.stringify(user as User)) : null,
-        locations: user ? (user.company.locations as Location[]) : [],
-        orderString: orderString,
-        products: allProducts,
-        skus: allSkus,
-        type: CheckoutType.ORDER,
-      },
-    };
-  }
-
-  return { props: {} };
-};
-
-export default Checkout;
+}

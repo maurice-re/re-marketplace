@@ -1,9 +1,9 @@
 import { Sku } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore } from "../../stores/cartStore";
-import { LocationWithOneItem } from "../../utils/dashboard/dashboardUtils";
-import { getPriceFromTable } from "../../utils/prisma/dbUtils";
+import { useCartStore } from "../../../stores/cartStore";
+import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
+import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 
 function Cart({
   companyId,
@@ -82,10 +82,8 @@ function Cart({
             pathname: "/checkout",
             query: {
               orderString: orderString,
-              companyId: companyId,
             },
           }}
-          as={`/checkout/${new Date().getTime()}`}
         >
           <button
             className="btn btn-sm btn-outline btn-accent w-full"

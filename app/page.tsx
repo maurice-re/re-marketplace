@@ -1,20 +1,14 @@
-import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { unstable_getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "../pages/api/auth/[...nextauth]";
 
-const Home: NextPage = () => {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/dashboard");
-    }
-    if (status === "unauthenticated") {
-      router.push("/form/location");
-    }
-  }, [router, status]);
+export default async function Page() {
+  const session = await unstable_getServerSession(authOptions);
+  if (session == null) {
+    redirect("/form/location");
+  } else {
+    redirect("/dashboard");
+  }
 
   return (
     <div className="flex w-screen h-screen bg-black justify-center items-center">
@@ -39,6 +33,4 @@ const Home: NextPage = () => {
       </div>
     </div>
   );
-};
-
-export default Home;
+}

@@ -1,13 +1,9 @@
+import { Order, Status, User } from "@prisma/client";
+import { unstable_getServerSession } from "next-auth";
 import { TbCurrentLocation } from "react-icons/tb";
-import "tailwindcss/tailwind.css";
-import SidebarIcon from "./sidebarIcon";
-import { use } from 'react';
-import { headers } from 'next/headers';
-import { getSession } from '../../utils/sessionUtils';
-import { UserCompany } from "../../utils/dashboard/dashboardUtils";
-import { Session } from "next-auth";
 import prisma from "../../constants/prisma";
-import { Order, Status } from "@prisma/client";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import SidebarIcon from "./sidebarIcon";
 
 type Route = {
   icon: JSX.Element;
@@ -15,50 +11,30 @@ type Route = {
   title: string;
 };
 
-async function getUser(session: Session) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session?.user?.email ?? '',
-    },
-    include: {
-      company: true
-    },
-  });
-  return JSON.parse(JSON.stringify(user));
-}
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // const setUser = useAuthStore((state) => state.setUser);
 
-async function getIncompleteOrders(user: UserCompany) {
-  const orders = await prisma.order.findMany({
-    where: {
-      companyId: user.companyId ?? '',
-      NOT: {
-        status: Status.COMPLETED,
-      }
-    },
-    include: {
-      company: true
-    },
-  });
-  return JSON.parse(JSON.stringify(orders));
-}
+  const session = await unstable_getServerSession(authOptions);
+  if (session == null) {
+    return <div>Not logged in</div>;
+  }
+  const user = session.user as User;
+  // setUser(user);
 
-async function getCompleteOrders(user: UserCompany) {
-  const orders = await prisma.order.findMany({
+  const completedOrders: Order[] = await prisma.order.findMany({
     where: {
-      companyId: user.companyId ?? '',
+      companyId: user.companyId,
       status: Status.COMPLETED,
     },
   });
-  return JSON.parse(JSON.stringify(orders));
-}
-
-export default function Layout({ children }: { children: React.ReactNode; }) {
-  const session = use(getSession(headers().get('cookie') ?? ''));
-  const user: UserCompany = use(getUser(session));
-  const completeOrders: [Order] = use(getCompleteOrders(user));
 
   // Need to be test user or have at least one complete order
-  const showAll: boolean = completeOrders.length > 0 || user.firstName === "Phil";
+  const showAll: boolean =
+    completedOrders.length > 0 || user.companyId === "616";
 
   // All users see the following
   const routes: Route[] = [
@@ -115,20 +91,23 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
   ];
 
   if (showAll) {
-    routes.splice(2, 0, {
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-        </svg>
-      ),
-      link: "/dashboard/orderItem",
-      title: "Orders",
-    },
+    routes.splice(
+      2,
+      0,
+      {
+        icon: (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+          </svg>
+        ),
+        link: "/dashboard/orderItem",
+        title: "Orders",
+      },
       {
         icon: (
           <svg
@@ -171,13 +150,13 @@ export default function Layout({ children }: { children: React.ReactNode; }) {
         icon: <TbCurrentLocation size={20} />,
         link: "/dashboard/tracking",
         title: "Tracking",
-      },
+      }
     );
   }
 
   return (
-    <div className="flex h-screen bg-black group">
-      <div className="flex flex-col items-center text-white ml-4 hover:pl-20 group-hover:bg-black group-hover:w-48">
+    <div className="flex h-screen bg-black">
+      <div className="flex flex-col items-center text-white ml-4">
         <button
           className="rounded py-2 hover:text-re-green-800"
           onClick={undefined}

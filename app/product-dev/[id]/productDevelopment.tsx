@@ -1,16 +1,13 @@
-import { ProductDevelopment, User } from "@prisma/client";
+"use client";
+
+import { ProductDevelopment } from "@prisma/client";
 import { loadStripe } from "@stripe/stripe-js";
-import type { GetServerSideProps, NextPage } from "next";
-import { unstable_getServerSession } from "next-auth";
 import { signIn } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
-import prisma from "../../constants/prisma";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { FormEvent, useState } from "react";
 
 type ProductDevProps = {
-  loggedIn: boolean;
+  loggedIn: boolean | null;
   productDev: ProductDevelopment | null;
 };
 
@@ -18,33 +15,12 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-const ProductDevelopment: NextPage<ProductDevProps> = ({
+export default function ProductDevelopmentPage({
   loggedIn,
   productDev,
-}) => {
+}: ProductDevProps) {
   const [loading, setLoading] = useState(false);
   const [errorText, setErrorText] = useState("");
-  const router = useRouter();
-
-  useEffect(() => {
-    const isNewCompany =
-      productDev != null &&
-      productDev.initiationPaid == false &&
-      productDev.companyId == null;
-
-    const isLoggedIn =
-      productDev != null &&
-      productDev.initiationPaid == false &&
-      productDev.companyId != null &&
-      loggedIn;
-
-    if (isNewCompany || isLoggedIn) {
-      router.push({
-        pathname: "/checkout",
-        query: { orderString: `product-development~${productDev.id}` },
-      });
-    }
-  }, [loggedIn, productDev, router]);
 
   if (productDev == null) {
     return (
@@ -139,52 +115,4 @@ const ProductDevelopment: NextPage<ProductDevProps> = ({
       </main>
     </div>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { id } = context.query;
-
-  const productDev = await prisma.productDevelopment.findUnique({
-    where: {
-      id: id as string,
-    },
-  });
-
-  // If new company return productDev only
-  if (productDev != null && productDev.companyId == null) {
-    return {
-      props: {
-        productDev: JSON.parse(JSON.stringify(productDev)),
-      },
-    };
-  }
-
-  // If company exists check if signed in
-  if (productDev != null && productDev.companyId != null) {
-    const session = await unstable_getServerSession(
-      context.req,
-      context.res,
-      authOptions
-    );
-    const sessionUser = session == null ? null : (session?.user as User);
-    return {
-      props: {
-        loggedIn: JSON.parse(
-          JSON.stringify(
-            sessionUser == null
-              ? false
-              : sessionUser.companyId == productDev.companyId
-          )
-        ),
-        productDev: JSON.parse(JSON.stringify(productDev)),
-      },
-    };
-  }
-
-  // If no productDev found
-  return {
-    props: { loggedIn: false, productDev: null },
-  };
-};
-
-export default ProductDevelopment;
+}

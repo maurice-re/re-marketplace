@@ -1,8 +1,9 @@
-import type { NextPage } from "next";
+"use client";
+
 import Head from "next/head";
 import Confetti from "react-confetti";
 
-const ProductDevSuccess: NextPage = () => {
+export default function Page() {
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden">
       <Head>
@@ -25,6 +26,4 @@ const ProductDevSuccess: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default ProductDevSuccess;
+}

@@ -1,12 +1,11 @@
-import { Action } from '@prisma/client'
+import { Action } from "@prisma/client";
 
-import { use } from 'react'
-import 'tailwindcss/tailwind.css'
+import { use } from "react";
 import {
   FullContainer,
   HalfContainer,
-} from '../../../components/dashboard/dashboardContainers'
-import prisma from '../../../constants/prisma'
+} from "../../../components/dashboard/dashboardContainers";
+import prisma from "../../../constants/prisma";
 import {
   calculatePercent,
   getEmissions,
@@ -14,19 +13,19 @@ import {
   productionAndDistributionEmission,
   recyclingEmission,
   washingEmission,
-} from '../../../utils/lifecycleUtils'
+} from "../../../utils/lifecycleUtils";
 import {
   getEventsByAction,
   getTotalUsed,
-} from '../../../utils/tracking/trackingUtils'
-import LifecycleChart from './lifecycleChart'
+} from "../../../utils/tracking/trackingUtils";
+import LifecycleChart from "./lifecycleChart";
 
 async function getEvents() {
-  return await prisma.event.findMany({})
+  return await prisma.event.findMany({});
 }
 
 export default function Page() {
-  const events = use(getEvents())
+  const events = use(getEvents());
   if (!events) {
     return (
       <div className="w-screen h-screen bg-black flex">
@@ -36,27 +35,27 @@ export default function Page() {
           </div>
         </main>
       </div>
-    )
+    );
   }
-  const totalUsed = getTotalUsed(events)
-  const singleUseSaved = getEventsByAction(events, Action.BORROW).length
-  const percentSaved = calculatePercent(events)
+  const totalUsed = getTotalUsed(events);
+  const singleUseSaved = getEventsByAction(events, Action.BORROW).length;
+  const percentSaved = calculatePercent(events);
 
   const reuseVsSingleData = {
-    labels: ['Reuse', 'Single Use'],
+    labels: ["Reuse", "Single Use"],
     datasets: [
       {
-        label: 'C02eq Emissions',
+        label: "C02eq Emissions",
         data: [
           getEmissions(events) / 1000,
           getSingleUseEmissions(singleUseSaved) / 1000,
         ],
-        backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)'],
-        borderColor: ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
         borderWidth: 1,
       },
     ],
-  }
+  };
 
   const reuseVsSingleOptions = {
     aspectRatio: 1,
@@ -65,32 +64,32 @@ export default function Page() {
         beginAtZero: true,
       },
     },
-  }
+  };
 
   const stagesData = {
-    labels: ['Production', 'Use', 'Disposal'],
+    labels: ["Production", "Use", "Disposal"],
     datasets: [
       {
-        label: 'C02eq Emissions (kg)',
+        label: "C02eq Emissions (kg)",
         data: [
           (productionAndDistributionEmission * totalUsed) / 1000,
           (washingEmission * singleUseSaved) / 1000,
           (recyclingEmission * totalUsed) / 1000,
         ],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
         ],
         borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
         ],
         borderWidth: 1,
       },
     ],
-  }
+  };
 
   return (
     <div className="w-full flex bg-black">
@@ -124,7 +123,7 @@ export default function Page() {
             <div className="stat-title">% CO2eq saved</div>
             <div
               className={`stat-value ${
-                percentSaved > 0 ? 'text-accent' : 'text-error'
+                percentSaved > 0 ? "text-accent" : "text-error"
               }`}
             >
               {(percentSaved * 100).toFixed(2)}%
@@ -149,5 +148,5 @@ export default function Page() {
         </div>
       </main>
     </div>
-  )
+  );
 }
