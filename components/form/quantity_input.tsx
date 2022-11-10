@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useFormStore } from "../../stores/formStore";
 import { getPriceFromTable } from "../../utils/prisma/dbUtils";
@@ -20,8 +20,8 @@ function SkuQuantityField({
       skuCatalog: state.skuCatalog,
       productCatalog: state.productCatalog,
     }));
-  const router = useRouter();
-  const { city } = router.query;
+  const searchParams = useSearchParams();
+  const city = searchParams.get("city");
 
   const product = productCatalog.filter((p) => p.id == productId)[0];
   const sku = skuCatalog.filter(

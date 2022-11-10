@@ -1,15 +1,16 @@
+"use client";
+
 import { Product } from "@prisma/client";
-import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import FormNextButton from "../../components/form/next-button";
-import FormOptionButton from "../../components/form/option-button";
-import ProgressBar from "../../components/form/progress-bar";
-import SkuQuantityField from "../../components/form/quantity_input";
-import ReLogo from "../../components/form/re-logo";
-import { useFormStore } from "../../stores/formStore";
+import FormNextButton from "../../../components/form/next-button";
+import ProgressBar from "../../../components/form/progress-bar";
+import SkuQuantityField from "../../../components/form/quantity_input";
+import ReLogo from "../../../components/form/re-logo";
+import { useFormStore } from "../../../stores/formStore";
+import FormOptionButton from "../option-button";
 
 const emptyProduct = {
   id: "",
@@ -22,8 +23,9 @@ const emptyProduct = {
   mainImage: "/images/swapbox_main.png",
 };
 
-const Product: NextPage = () => {
-  const router = useRouter();
+export default function Page() {
+  const path = usePathname();
+  const searchParams = useSearchParams();
   const { locations, productCatalog } = useFormStore((state) => ({
     locations: state.locations,
     productCatalog: state.productCatalog,
@@ -36,9 +38,11 @@ const Product: NextPage = () => {
   useEffect(() => {
     setChosenSizes([]);
     setChosenMaterial([]);
-  }, [router.asPath]);
+  }, [path]);
 
-  const { id, city } = router.query;
+  const id = searchParams.get("id");
+  const city = searchParams.get("city");
+
   useEffect(() => {
     if (productCatalog) {
       const productId = id == "swapcup" ? "SC1" : "SB1";
@@ -113,7 +117,7 @@ const Product: NextPage = () => {
         <meta name="product" content="Info on product from the Re catalog" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ProgressBar pageName={router.asPath.slice(6)} />
+      <ProgressBar pageName={path?.slice(1) + "?" + searchParams.toString()} />
       <ReLogo />
       <main className="flex flex-col container mx-auto my-4 justify-evenly">
         <div className=" text-white text-5xl text-center font-theinhardt">
@@ -158,7 +162,7 @@ const Product: NextPage = () => {
           </div>
         </div>
         <FormNextButton
-          pageName={router.asPath.slice(6)}
+          pageName={path?.slice(1) + "?" + searchParams.toString()}
           disabled={false}
           option
           green
@@ -166,15 +170,4 @@ const Product: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Product;
-
-// export async function getStaticProps(context: GetStaticPropsContext) {
-//   const products = await prisma.product.findMany({});
-//   return {
-//     props: {
-//       products: JSON.parse(JSON.stringify(products)),
-//     },
-//   };
-// }
+}

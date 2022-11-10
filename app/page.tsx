@@ -7,6 +7,7 @@ export default async function Page() {
   if (session == null) {
     redirect("/form/location");
   } else {
+    console.log("dashboard");
     redirect("/dashboard");
   }
 

@@ -1,15 +1,16 @@
-import type { NextPage } from "next";
+"use client";
+
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import AddressField from "../../components/form/address-field";
-import ProgressBar from "../../components/form/progress-bar";
-import ReLogo from "../../components/form/re-logo";
-import { useFormStore } from "../../stores/formStore";
-import { allLocations } from "../../utils/form/cart";
+import AddressField from "../../../components/form/address-field";
+import ProgressBar from "../../../components/form/progress-bar";
+import ReLogo from "../../../components/form/re-logo";
+import { useFormStore } from "../../../stores/formStore";
+import { allLocations } from "../../../utils/form/cart";
 
-const Quote: NextPage = () => {
+export default function Page() {
   const { cart, locations, prettyString } = useFormStore((state) => ({
     cart: state.cart,
     locations: state.locations,
@@ -159,6 +160,4 @@ const Quote: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Quote;
+}

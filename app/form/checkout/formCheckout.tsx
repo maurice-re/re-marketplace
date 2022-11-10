@@ -4,10 +4,10 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import React, { FormEvent, useState } from "react";
-import { useFormStore } from "../../stores/formStore";
-import { saveToLocalStorage } from "../../utils/form/localStorage";
-import AddressField from "./address-field";
-import DoubleAddressField from "./double-address-field";
+import AddressField from "../../../components/form/address-field";
+import DoubleAddressField from "../../../components/form/double-address-field";
+import { useFormStore } from "../../../stores/formStore";
+import { saveToLocalStorage } from "../../../utils/form/localStorage";
 
 export default function CheckoutForm() {
   const stripe = useStripe();

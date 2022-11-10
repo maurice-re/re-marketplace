@@ -1,5 +1,5 @@
 import { createCipheriv } from "crypto";
-import FormOptionButton from "../components/form/option-button";
+import FormOptionButton from "../app/form/option-button";
 
 export type FormButtonModel = {
   title: string;

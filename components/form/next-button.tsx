@@ -19,8 +19,11 @@ function FormNextButton({
     routes: state.routes,
   }));
   const currentRouteIndex = routes.findIndex(
-    (route) => route.name == pageName.replace("%20", " ")
+    (route) => route.name == pageName.replace("+", " ")
   );
+  console.log(currentRouteIndex);
+  console.log(routes);
+  console.log(pageName);
 
   const nextPage = nextRoute(currentRouteIndex);
   if (green) {

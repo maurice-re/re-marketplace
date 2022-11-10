@@ -1,13 +1,14 @@
-import type { NextPage } from "next";
+"use client";
+
 import { signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
-import { CartOrder } from "../../stores/formStore";
-import { allLocations } from "../../utils/form/cart";
+import { CartOrder } from "../../../stores/formStore";
+import { allLocations } from "../../../utils/form/cart";
 
-const Summary: NextPage = () => {
+export default function Page() {
   const [cart, setCart] = useState<CartOrder[]>([]);
 
   useEffect(() => {
@@ -114,6 +115,4 @@ const Summary: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Summary;
+}
