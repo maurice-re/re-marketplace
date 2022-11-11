@@ -118,9 +118,8 @@ export default async function Page() {
           <div className="stat place-items-center">
             <div className="stat-title">% CO2eq saved</div>
             <div
-              className={`stat-value ${
-                percentSaved > 0 ? "text-accent" : "text-error"
-              }`}
+              className={`stat-value ${percentSaved > 0 ? "text-accent" : "text-error"
+                }`}
             >
               {(percentSaved * 100).toFixed(2)}%
             </div>
