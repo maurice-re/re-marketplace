@@ -1,6 +1,6 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { Role } from '@prisma/client';
-import { UserCompany } from '../../utils/dashboard/dashboardUtils';
+import { Role } from "@prisma/client";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { UserCompany } from "../../utils/dashboard/dashboardUtils";
 
 type NewUser = {
   email: string;
@@ -12,45 +12,49 @@ type NewUser = {
   newCompanyCustomerId: string;
 };
 
-export default function AddUserForm({ user }: { user: UserCompany; }) {
+export default function AddUserForm({ user }: { user: UserCompany }) {
   const [newUser, setNewUser] = useState<NewUser>({
-    email: '',
-    firstName: '',
-    lastName: '',
+    email: "",
+    firstName: "",
+    lastName: "",
     role: Role.USER,
     companyId: user.companyId,
-    newCompanyName: '',
-    newCompanyCustomerId: '',
+    newCompanyName: "",
+    newCompanyCustomerId: "",
   });
   const [errorUser, setErrorUser] = useState<NewUser>();
   const [successUser, setSuccessUser] = useState<NewUser>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
+  const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-
     e.preventDefault();
     setIsLoading(true);
 
-    console.log('Got newUser');
+    console.log("Got newUser");
     console.log(newUser);
     console.log("Using ", user.companyId);
 
     if (
-      user && newUser && newUser.firstName && newUser.lastName && newUser.email && newUser.role
+      user &&
+      newUser &&
+      newUser.firstName &&
+      newUser.lastName &&
+      newUser.email &&
+      newUser.role
     ) {
-      const res = await fetch('/api/user/create-peer-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/user/create-peer-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           companyId: user.companyId, // newUser.companyId for adding user to diff company
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           email: newUser.email,
           role: newUser.role,
-          newCompanyName: '', // newUser.newCompanyName for adding user to diff company
-          newCompanyCustomerId: '', // newUser.newCompanyCustomerId for adding user to diff company
+          newCompanyName: "", // newUser.newCompanyName for adding user to diff company
+          newCompanyCustomerId: "", // newUser.newCompanyCustomerId for adding user to diff company
         }),
       });
       if (res.status != 200) {
@@ -86,18 +90,18 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
     }));
   };
 
-  const handleNewCompanyNameChange = (newCompanyName: string) => {
-    setNewUser((prevState) => ({
-      ...prevState,
-      newCompanyName: newCompanyName,
-      companyId: newCompanyName === '' ? user.companyId : '',
-    }));
-  };
+  // const handleNewCompanyNameChange = (newCompanyName: string) => {
+  //   setNewUser((prevState) => ({
+  //     ...prevState,
+  //     newCompanyName: newCompanyName,
+  //     companyId: newCompanyName === '' ? user.companyId : '',
+  //   }));
+  // };
 
   const handleRoleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setNewUser((prevState) => ({
       ...prevState,
-      role: event.target.value === 'ADMIN' ? Role.ADMIN : Role.USER,
+      role: event.target.value === "ADMIN" ? Role.ADMIN : Role.USER,
     }));
   };
   return (
@@ -112,7 +116,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           placeholder="First Name"
           id="firstName"
           className="input input-bordered w-full max-w-sm"
-          value={newUser.firstName ?? ''}
+          value={newUser.firstName ?? ""}
           onChange={(e) => handleFirstNameChange(e.target.value)}
         />
       </div>
@@ -126,7 +130,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           placeholder="Last Name"
           id="lastName"
           className="input input-bordered w-full max-w-sm"
-          value={newUser.lastName ?? ''}
+          value={newUser.lastName ?? ""}
           onChange={(e) => handleLastNameChange(e.target.value)}
         />
       </div>
@@ -140,7 +144,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           placeholder="Email"
           id="email"
           className="input input-bordered w-full max-w-sm"
-          value={newUser.email ?? ''}
+          value={newUser.email ?? ""}
           onChange={(e) => handleEmailChange(e.target.value)}
         />
       </div>
@@ -191,16 +195,18 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           newUser === successUser
         }
         id="submit"
-        className={`btn btn-accent btn-outline w-28 mt-5 ${isLoading ? 'loading' : ''
-          }`}
+        className={`btn btn-accent btn-outline w-28 mt-5 ${
+          isLoading ? "loading" : ""
+        }`}
       >
         Create
       </button>
       {message && (errorUser === newUser || successUser === newUser) && (
         <div
           id="error-message"
-          className={`font-theinhardt text-left mt-4 ${errorUser === newUser ? 'text-error' : 'text-re-green-500'
-            }`}
+          className={`font-theinhardt text-left mt-4 ${
+            errorUser === newUser ? "text-error" : "text-re-green-500"
+          }`}
         >
           {message}
         </div>

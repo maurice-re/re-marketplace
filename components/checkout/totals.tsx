@@ -15,7 +15,7 @@ export default function Totals({
   skus: Sku[] | null;
   type: CheckoutType;
 }): JSX.Element[] {
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     const total = (
@@ -37,7 +37,7 @@ export default function Totals({
           }% due on initiation`}</div>
         </div>
         <div className="">
-          <div className="mb-0.5">{`\$${
+          <div className="mb-0.5">{`$${
             (productDevelopment.developmentFee +
               productDevelopment.researchFee) *
             productDevelopment.split
@@ -56,7 +56,7 @@ export default function Totals({
           }% due on completion`}</div>
         </div>
         <div className="">
-          <div className="text-xs mb-0.5">{`\$${
+          <div className="text-xs mb-0.5">{`$${
             (productDevelopment.developmentFee +
               productDevelopment.researchFee) *
             completionSplit
@@ -73,7 +73,7 @@ export default function Totals({
           <div className="font-semibold mb-0.5">Subtotal</div>
         </div>
         <div className="">
-          <div className="font-semibold mb-0.5">{`\$${
+          <div className="font-semibold mb-0.5">{`$${
             productDevelopment.developmentFee + productDevelopment.researchFee
           }`}</div>
         </div>
@@ -88,7 +88,7 @@ export default function Totals({
           <div className="text-sm font-bold mb-0.5">Total due today</div>
         </div>
         <div className="">
-          <div className="text-sm font-bold mb-0.5">{`\$${total}`}</div>
+          <div className="text-sm font-bold mb-0.5">{`$${total}`}</div>
         </div>
       </div>
     );

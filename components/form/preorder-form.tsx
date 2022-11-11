@@ -5,7 +5,7 @@ import AddressField from "./address-field";
 import DoubleAddressField from "./double-address-field";
 
 export default function PreOrderForm() {
-  const [message, setMessage] = useState("");
+  const [message] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { cart, locations, customerId } = useFormStore((state) => ({
     cart: state.cart,
@@ -15,8 +15,9 @@ export default function PreOrderForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: find a better way to do parse form
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    let shippingInfo: string[] = [];
+    const shippingInfo: string[] = [];
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
     }
@@ -30,26 +31,6 @@ export default function PreOrderForm() {
 
     setIsLoading(false);
   };
-
-  const addresses = locations.map((city) => (
-    <div className="py-4" key={city}>
-      {locations.length > 1 ? (
-        <div className="text-lg font-semibold">{`${city} Shipping Address`}</div>
-      ) : (
-        <div className="text-lg font-semibold">{`Shipping Address`}</div>
-      )}
-      <AddressField placeholder="Name" top required />
-      <AddressField placeholder="Country" required />
-      <AddressField placeholder="Address Line 1" required />
-      <AddressField placeholder="Address Line 2" />
-      <DoubleAddressField
-        leftPlaceholder="City"
-        rightPlaceholder="Zip"
-        required
-      />
-      <AddressField placeholder="State" bottom required />
-    </div>
-  ));
 
   return (
     <form

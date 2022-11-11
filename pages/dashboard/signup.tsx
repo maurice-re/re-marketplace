@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -21,6 +22,7 @@ const SignUp: NextPage = () => {
 
   async function signUp(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: figure out the right way to parse a form
     const formElements = (e.target as any).elements as HTMLInputElement[];
     setLoading(true);
     setErrorText("");
@@ -54,11 +56,11 @@ const SignUp: NextPage = () => {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <head>
+      <Head>
         <title>Account</title>
         <meta name="account" content="Manage your account" />
         <link rel="icon" href="/favicon.ico" />
-      </head>
+      </Head>
       <input type="checkbox" id="success-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box relative">

@@ -5,13 +5,11 @@ function FormNextButton({
   onClick,
   pageName,
   disabled,
-  option,
   green,
 }: {
   onClick?: () => void;
   pageName: string;
   disabled: boolean;
-  option?: boolean;
   green?: boolean;
 }) {
   const { nextRoute, routes } = useFormStore((state) => ({

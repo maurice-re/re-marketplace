@@ -55,8 +55,9 @@ export default function CheckoutForm({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: find a better way to do parse form
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    let shippingInfo: string[] = [];
+    const shippingInfo: string[] = [];
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
     }

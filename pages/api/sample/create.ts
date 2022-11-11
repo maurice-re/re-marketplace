@@ -39,19 +39,17 @@ async function create(req: Request, res: Response) {
       role: Role.USER
     },
   });
-
-  let formIndex = 0;
   const location = await prisma.location.create({
     data: {
       type: LocationType.SAMPLE,
-      city: shippingInfo[4 + 7 * formIndex],
-      country: shippingInfo[1 + 7 * formIndex],
+      city: shippingInfo[11],
+      country: shippingInfo[8],
       companyId: company.id,
-      line1: shippingInfo[2 + 7 * formIndex],
-      line2: shippingInfo[3 + 7 * formIndex],
-      shippingName: shippingInfo[0 + 7 * formIndex],
-      state: shippingInfo[6 + 7 * formIndex],
-      zip: shippingInfo[5 + 7 * formIndex],
+      line1: shippingInfo[9],
+      line2: shippingInfo[10],
+      shippingName: shippingInfo[7],
+      state: shippingInfo[13],
+      zip: shippingInfo[12],
     },
   });
 

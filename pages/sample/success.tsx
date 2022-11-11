@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Head from "next/head";
 import { useEffect } from "react";
 import Confetti from "react-confetti";
 import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
@@ -44,14 +45,14 @@ const Summary: NextPage = () => {
 
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden">
-      <head>
+      <Head>
         <title>Congrats</title>
         <meta
           name="successful purchase"
           content="Congrats on making a purchase"
         />
         <link rel="icon" href="/favicon.ico" />
-      </head>
+      </Head>
 
       <main className="flex flex-col container mx-auto items-center py-4 text-white my-auto">
         <Confetti width={1800} height={1200} />

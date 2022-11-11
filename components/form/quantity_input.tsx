@@ -12,14 +12,14 @@ function SkuQuantityField({
   productId: string;
   size: string;
 }) {
-  const { addToCart, canCheckout, cart, skuCatalog, productCatalog } =
-    useFormStore((state) => ({
+  const { addToCart, canCheckout, skuCatalog, productCatalog } = useFormStore(
+    (state) => ({
       addToCart: state.addToCart,
       canCheckout: state.canCheckout,
-      cart: state.cart,
       skuCatalog: state.skuCatalog,
       productCatalog: state.productCatalog,
-    }));
+    })
+  );
   const searchParams = useSearchParams();
   const city = searchParams.get("city");
 
@@ -31,7 +31,7 @@ function SkuQuantityField({
   const [quantity, setQuantity] = useState<number>(0);
 
   function handleChange(quantity: string) {
-    addToCart(sku.id, quantity, city!.toString());
+    addToCart(sku.id, quantity, city?.toString() ?? "");
     setQuantity(parseInt(quantity == "" ? "0" : quantity));
   }
 
@@ -42,7 +42,7 @@ function SkuQuantityField({
           {sku.size + " " + product.name}
         </div>
         {canCheckout && (
-          <div className="text-white text-xs font-theinhardt-300">{`(\$${getPriceFromTable(
+          <div className="text-white text-xs font-theinhardt-300">{`($${getPriceFromTable(
             sku.priceTable,
             quantity
           )} each)`}</div>

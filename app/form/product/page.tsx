@@ -163,7 +163,6 @@ export default function Page() {
         <FormNextButton
           pageName={path?.slice(1) + "?" + searchParams.toString()}
           disabled={false}
-          option
           green
         />
       </main>
