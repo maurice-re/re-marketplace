@@ -1,7 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
@@ -93,14 +92,14 @@ export default function Page() {
 
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden">
-      <Head>
+      <head>
         <title>Congrats</title>
         <meta
           name="successful purchase"
           content="Congrats on making a purchase"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
 
       <main className="flex flex-col container mx-auto items-center py-4 text-white">
         <Confetti width={1800} height={1200} />

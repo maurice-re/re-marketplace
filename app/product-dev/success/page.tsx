@@ -1,19 +1,18 @@
 "use client";
 
-import Head from "next/head";
 import Confetti from "react-confetti";
 
 export default function Page() {
   return (
     <div className="w-screen h-screen bg-black flex overflow-hidden">
-      <Head>
+      <head>
         <title>Thank You for your Order</title>
         <meta
           name="successful product development purchase"
           content="Congrats on making a purchase"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
 
       <main className="flex flex-col container mx-auto items-center py-4 text-white justify-center">
         <Confetti width={1800} height={1200} />

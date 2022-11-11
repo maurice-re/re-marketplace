@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { signIn } from "next-auth/react";
-import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -55,11 +54,11 @@ const SignUp: NextPage = () => {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Account</title>
         <meta name="account" content="Manage your account" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <input type="checkbox" id="success-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box relative">

@@ -2,7 +2,6 @@
 
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReLogo from "../../../components/form/re-logo";
@@ -127,11 +126,11 @@ export default function Page() {
 
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
-      <Head>
+      <head>
         <title>Checkout</title>
         <meta name="checkout" content="Purchase containers from Re Company" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ReLogo />
       <meta name="viewport" content="width=device-width, minimum-scale=1" />
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">

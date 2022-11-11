@@ -1,7 +1,6 @@
 "use client";
 
 import { Product } from "@prisma/client";
-import Head from "next/head";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -112,11 +111,11 @@ export default function Page() {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Customize your product</title>
         <meta name="product" content="Info on product from the Re catalog" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ProgressBar pageName={path?.slice(1) + "?" + searchParams.toString()} />
       <ReLogo />
       <main className="flex flex-col container mx-auto my-4 justify-evenly">

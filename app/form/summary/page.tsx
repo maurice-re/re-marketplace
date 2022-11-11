@@ -1,7 +1,6 @@
 "use client";
 
 import { loadStripe } from "@stripe/stripe-js";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -100,11 +99,11 @@ export default function Page() {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Your perfect setup</title>
         <meta name="summary" content="Review your perfect setup" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ProgressBar pageName="summary" />
       <ReLogo />
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">

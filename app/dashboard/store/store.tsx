@@ -1,7 +1,6 @@
 "use client";
 
 import { Company, Location, LocationType, Product, Sku } from "@prisma/client";
-import Head from "next/head";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
@@ -144,11 +143,11 @@ export default function StorePage({
 
     return (
       <div className="w-screen h-screen bg-black flex">
-        <Head>
+        <head>
           <title>Store</title>
           <meta name="store" content="shop for products" />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <input
           type="checkbox"
           id="newLocation-modal"
@@ -254,11 +253,11 @@ export default function StorePage({
 
     return (
       <div className="w-screen h-screen bg-black flex">
-        <Head>
+        <head>
           <title>Store</title>
           <meta name="store" content="shop for products" />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <main className="flex flex-col w-full h-full py-3 font-theinhardt">
           <div className="flex justify-between px-10 py-6 text-white">
             <h1 className="font-theinhardt text-3xl">Shop</h1>
@@ -296,11 +295,11 @@ export default function StorePage({
 
     return (
       <div className="w-screen h-screen bg-black flex">
-        <Head>
+        <head>
           <title>Store</title>
           <meta name="store" content="shop for products" />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <main className="flex flex-col w-full h-full py-3 font-theinhardt">
           <div className="flex justify-between px-10 py-6 text-white">
             <h1 className="font-theinhardt text-3xl">Shop</h1>
@@ -410,11 +409,11 @@ export default function StorePage({
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Store</title>
         <meta name="store" content="shop for products" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
         <div className="text-white font-theinhardt text-28">Coming Soon</div>
       </main>

@@ -1,6 +1,5 @@
 "use client";
 
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
@@ -101,11 +100,11 @@ export default function Page() {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Your perfect setup</title>
         <meta name="quote" content="Get a quote for perfect setup" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ProgressBar pageName="quote" />
       <ReLogo />
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">

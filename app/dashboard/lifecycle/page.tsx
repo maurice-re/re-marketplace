@@ -1,6 +1,5 @@
 import { Action } from "@prisma/client";
 
-import { use } from "react";
 import {
   FullContainer,
   HalfContainer,
@@ -20,12 +19,9 @@ import {
 } from "../../../utils/tracking/trackingUtils";
 import LifecycleChart from "./lifecycleChart";
 
-async function getEvents() {
-  return await prisma.event.findMany({});
-}
+export default async function Page() {
+  const events = await prisma.event.findMany({});
 
-export default function Page() {
-  const events = use(getEvents());
   if (!events) {
     return (
       <div className="w-screen h-screen bg-black flex">

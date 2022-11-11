@@ -1,7 +1,6 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import Head from "next/head";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -99,14 +98,14 @@ export default function Page() {
 
   return (
     <div className=" w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>What cities do you operate in</title>
         <meta
           name="location"
           content="Choose locations that your company needs service for"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ProgressBar pageName={"form/location"} />
       <ReLogo />
       <div className="absolute left-4 top-6 flex text-white">
