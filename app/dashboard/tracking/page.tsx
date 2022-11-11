@@ -36,11 +36,11 @@ async function getUser(session: Session) {
   return JSON.parse(JSON.stringify(user));
 }
 
-export default function Page() {
+export default async function Page() {
   // TODO(Suhana): What should we do here if there isn't a session?
-  const session = use(getSession(headers().get('cookie') ?? ''));
-  const user: UserSettings = use(getUser(session));
-  const skus = use(getSkus());
+  const session = await getSession(headers().get('cookie') ?? '');
+  const user: UserSettings = await getUser(session);
+  const skus = await getSkus();
 
   return (
     <div className="w-full h-screen bg-black flex overflow-auto">

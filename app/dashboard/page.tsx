@@ -93,13 +93,13 @@ async function getCompleteOrders(user: UserOrderItems) {
   return JSON.parse(JSON.stringify(orders));
 }
 
-export default function Page() {
-  const session = use(getSession(headers().get('cookie') ?? ''));
-  const user: UserOrderItems = use(getUser(session));
-  const locations: Location[] = use(getLocations(user));
-  const skus: SkuProduct[] = use(getSkus());
-  const incompleteOrders: [Order] = use(getIncompleteOrders(user));
-  const completeOrders: [Order] = use(getCompleteOrders(user));
+export default async function Page() {
+  const session = await getSession(headers().get('cookie') ?? '');
+  const user: UserOrderItems = await getUser(session);
+  const locations: Location[] = await getLocations(user);
+  const skus: SkuProduct[] = await getSkus();
+  const incompleteOrders: [Order] = await getIncompleteOrders(user);
+  const completeOrders: [Order] = await getCompleteOrders(user);
 
   const hasCompleteOrder: boolean = completeOrders.length > 0 || user.companyId === "616";
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;

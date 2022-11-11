@@ -1,6 +1,5 @@
 
 import prisma from '../../../constants/prisma';
-import { use } from 'react';
 import { headers } from 'next/headers';
 import { getSession } from '../../../utils/sessionUtils';
 import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
@@ -22,10 +21,10 @@ async function getUser(session: Session) {
 
 }
 
-export default function Page() {
+export default async function Page() {
 
-    const session = use(getSession(headers().get('cookie') ?? ''));
-    const user: UserCompany = use(getUser(session));
+    const session = await getSession(headers().get('cookie') ?? '');
+    const user: UserCompany = await getUser(session);
 
     return (<AccountContent user={user} />);
 
