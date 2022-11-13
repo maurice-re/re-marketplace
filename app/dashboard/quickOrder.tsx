@@ -179,7 +179,7 @@ function QuickOrder({
                   companyId: companyId,
                 },
               }}
-              as={`/checkout/${new Date().getTime()}`}
+            // as={`/checkout/${new Date().getTime()}`} 
             >
               <button className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black">
                 Buy now

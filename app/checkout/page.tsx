@@ -8,7 +8,7 @@ import CheckoutLeft from "./checkoutLeft";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { orderString: string };
+  searchParams: { orderString: string; };
 }) {
   const { orderString } = searchParams;
 
