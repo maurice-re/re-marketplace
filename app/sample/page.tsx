@@ -3,12 +3,8 @@ import prisma from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
 import SampleOrder from "./sampleOrder";
 
-type SampleProps = {
-  skus: SkuProduct[];
-};
-
 export default async function Page() {
-  const skus = await prisma.sku.findMany({
+  const skus: SkuProduct[] = await prisma.sku.findMany({
     include: {
       product: true,
     },

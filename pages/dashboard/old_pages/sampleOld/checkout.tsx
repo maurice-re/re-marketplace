@@ -3,18 +3,17 @@ import { Appearance, loadStripe } from "@stripe/stripe-js";
 import type { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import ReLogo from "../../components/form/re-logo";
-import prisma from "../../constants/prisma";
-import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
-import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
+import ReLogo from "../../../../components/form/re-logo";
+import prisma from "../../../../constants/prisma";
+import { SkuProduct } from "../../../../utils/dashboard/dashboardUtils";
+import { SampleOrderWithSkuID } from "../../../../utils/sample/sampleUtils";
 
-import Head from "next/head";
-import CheckoutForm from "../../components/sample/checkoutForm";
-import { saveToLocalStorage } from "../../utils/form/localStorage";
+import CheckoutForm from "../../../../components/sample/checkoutForm";
+import { saveToLocalStorage } from "../../../../utils/form/localStorage";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
-} from "../../utils/prisma/dbUtils";
+} from "../../../../utils/prisma/dbUtils";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect } from "react";
 import Confetti from "react-confetti";
-import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
+import { SampleOrderWithSkuID } from "../../../../utils/sample/sampleUtils";
 
 const Summary: NextPage = () => {
   useEffect(() => {
