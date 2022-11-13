@@ -3,7 +3,7 @@ import { Session } from 'next-auth';
 import Head from 'next/head';
 import { use } from 'react';
 import prisma from '../../../constants/prisma';
-import TrackingContent from './trackingContent';
+import Tracking from './tracking';
 import { headers } from 'next/headers';
 import { getSession } from '../../../utils/sessionUtils';
 
@@ -50,7 +50,7 @@ export default async function Page() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-        <TrackingContent user={user} skus={skus} />
+        <Tracking user={user} skus={skus} />
       </main>
     </div>
   );

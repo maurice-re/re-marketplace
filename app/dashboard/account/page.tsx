@@ -5,7 +5,7 @@ import { getSession } from '../../../utils/sessionUtils';
 import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
 import React from "react";
 import { Session } from 'next-auth';
-import AccountContent from './accountContent';
+import Account from './account';
 
 async function getUser(session: Session) {
 
@@ -26,6 +26,6 @@ export default async function Page() {
     const session = await getSession(headers().get('cookie') ?? '');
     const user: UserCompany = await getUser(session);
 
-    return (<AccountContent user={user} />);
+    return (<Account user={user} />);
 
 };

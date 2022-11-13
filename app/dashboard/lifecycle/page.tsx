@@ -24,7 +24,7 @@ export default async function Page() {
 
   if (!events) {
     return (
-      <div className="w-screen h-screen bg-black flex">
+      <div className="h-screen bg-black flex">
         <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
           <div className="text-white font-theinhardt text-28">
             Sign up for tracking to see this information

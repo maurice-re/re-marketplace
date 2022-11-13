@@ -8,7 +8,7 @@ import {
   UserOrderItems,
 } from "../../utils/dashboard/dashboardUtils";
 import { getSession } from '../../utils/sessionUtils';
-import HomeContent from "./homeContent";
+import Home from "./home";
 import { Order, Status } from "@prisma/client";
 
 async function getLocations(user: UserOrderItems) {
@@ -105,6 +105,6 @@ export default async function Page() {
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
 
   return (
-    <HomeContent locations={locations} user={user} skus={skus} hasCompleteOrder={hasCompleteOrder} hasIncompleteOrder={hasIncompleteOrder} />
+    <Home locations={locations} user={user} skus={skus} hasCompleteOrder={hasCompleteOrder} hasIncompleteOrder={hasIncompleteOrder} />
   );
 };
