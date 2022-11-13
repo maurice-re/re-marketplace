@@ -1,4 +1,3 @@
-import { loadStripe } from "@stripe/stripe-js";
 import Head from "next/head";
 import ReLogo from "../../../components/form/re-logo";
 import prisma from "../../../constants/prisma";
@@ -13,15 +12,13 @@ export default async function Page({
 }: {
   searchParams: { transaction: string; };
 }) {
+  const { transaction } = searchParams;
+
   const session = await unstable_getServerSession(authOptions);
   if (session == null) {
     //TODO: redirect to login
     return <div>Not logged in</div>;
   }
-
-  console.log(searchParams);
-  const { transaction } = searchParams;
-  console.log(transaction);
 
   const skuIds: string[] = JSON.parse(transaction).skuIds.split(", ");
   const transactionObj: SampleOrderWithSkuID = JSON.parse(transaction);
@@ -47,4 +44,4 @@ export default async function Page({
       <Checkout transaction={transactionObj} skus={skus} />
     </div>
   );
-};
+}
