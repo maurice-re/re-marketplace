@@ -8,7 +8,7 @@ const DashboardLogin: NextPage = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   async function handleLogin() {
     const csrfToken = await getCsrfToken();

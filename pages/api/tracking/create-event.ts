@@ -95,6 +95,7 @@ async function createEvent(req: Request, res: Response) {
 
 export default createEvent;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Implement
 async function updateUntracked(
   itemId: string,
   company: Company & { untracked: UntrackedInventory[] },
@@ -107,7 +108,10 @@ async function updateUntracked(
   });
 
   if (numEvents == 1) {
-    const untracked = company.untracked.find((data) => data.skuId == skuId)!;
+    const untracked = company.untracked.find((data) => data.skuId == skuId);
+    if (!untracked) {
+      return;
+    }
 
     if (untracked.quantity == 1) {
       await prisma.untrackedInventory.delete({

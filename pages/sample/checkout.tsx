@@ -1,7 +1,6 @@
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
 import type { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReLogo from "../../components/form/re-logo";
@@ -9,6 +8,7 @@ import prisma from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
 import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 
+import Head from "next/head";
 import CheckoutForm from "../../components/sample/checkoutForm";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
 import {
@@ -71,7 +71,7 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
     appearance,
   };
 
-  let items: (JSX.Element | JSX.Element[])[] = [];
+  const items: (JSX.Element | JSX.Element[])[] = [];
 
   skus.forEach((sku) => {
     items.push(
@@ -101,7 +101,7 @@ const SampleCheckout: NextPage<CheckoutProps> = ({
             sku.id,
             transaction.quantity
           )}`}</div>
-          <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+          <div className="text-xs text-gray-300">{`$${getPriceFromTable(
             sku.priceTable,
             transaction.quantity
           )} each`}</div>

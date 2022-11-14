@@ -52,14 +52,17 @@ interface FormStore {
     customerId: "",
     productCatalog: [],
     routes: [
-        {active: true, city: "", name: "location"}
+        {active: true, city: "", name: "form/location"}
     ],
     skuCatalog: [],
     activateRoute: (route: string, city: string) =>
         set((state) => {
+            console.log(city);
+            console.log(route);
             const index = state.routes.findIndex(
-                (r) => r.name.startsWith(route) && r.active == false && r.city == city
-            );
+                (r) => r.name.startsWith("form/" + route) && r.active == false && r.city == city
+                );
+                console.log(index);
             if (index > -1) {
                 const newRoutes = state.routes.map((r, i) => {
                     if (i == index) {
@@ -77,23 +80,23 @@ interface FormStore {
             const newRoutes = [...state.routes, {
                 active: true,
                 city: location,
-                name: `types?id=business&city=${location}`,
+                name: `form/types?id=business&city=${location}`,
               },
-              { active: false, city: location, name: `types?id=food&city=${location}` },
+              { active: false, city: location, name: `form/types?id=food&city=${location}` },
               {
                 active: false,
                 city: location,
-                name: `types?id=drinks&city=${location}`,
-              },
-              {
-                active: false,
-                city: location,
-                name: `product?id=swapbox&city=${location}`,
+                name: `form/types?id=drinks&city=${location}`,
               },
               {
                 active: false,
                 city: location,
-                name: `product?id=swapcup&city=${location}`,
+                name: `form/product?id=swapbox&city=${location}`,
+              },
+              {
+                active: false,
+                city: location,
+                name: `form/product?id=swapcup&city=${location}`,
               },];
             return { locations: newLocations, routes: newRoutes };
         }),
@@ -103,19 +106,19 @@ interface FormStore {
                 const newRoutes = [...state.routes,{
                     active: true,
                     city: "",
-                    name: "summary",
+                    name: "form/summary",
                   },
                   {
                     active: true,
                     city: "",
-                    name: "checkout",
+                    name: "form/checkout",
                   }];
                 return { routes: newRoutes };
             } else {
                 const newRoutes = [...state.routes,{
                     active: true,
                     city: "",
-                    name: "quote",
+                    name: "form/quote",
                   }];
                 return { routes: newRoutes };
             }
@@ -155,7 +158,7 @@ interface FormStore {
     deactivateRoute: (route: string, city: string) =>
         set((state) => {
             const index = state.routes.findIndex(
-                (r) => r.name.startsWith(route) && r.active == true && r.city == city
+                (r) => r.name.startsWith("form/" + route) && r.active == true && r.city == city
             );
             if (index > -1) {
                 const newRoutes = state.routes.map((r, i) => {

@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
       }
       return `${baseUrl}`
     },
-    async session({ session, user, token}) {
+    async session({ session, user }) {
       session.user = user;
       return session
     },

@@ -1,15 +1,15 @@
-import type { NextPage } from "next";
-import Head from "next/head";
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
-import AddressField from "../../components/form/address-field";
-import ProgressBar from "../../components/form/progress-bar";
-import ReLogo from "../../components/form/re-logo";
-import { useFormStore } from "../../stores/formStore";
-import { allLocations } from "../../utils/form/cart";
+import AddressField from "../../../components/form/address-field";
+import ProgressBar from "../../../components/form/progress-bar";
+import ReLogo from "../../../components/form/re-logo";
+import { useFormStore } from "../../../stores/formStore";
+import { allLocations } from "../../../utils/form/cart";
 
-const Quote: NextPage = () => {
+export default function Page() {
   const { cart, locations, prettyString } = useFormStore((state) => ({
     cart: state.cart,
     locations: state.locations,
@@ -100,11 +100,11 @@ const Quote: NextPage = () => {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Your perfect setup</title>
         <meta name="quote" content="Get a quote for perfect setup" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ProgressBar pageName="quote" />
       <ReLogo />
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
@@ -159,6 +159,4 @@ const Quote: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Quote;
+}

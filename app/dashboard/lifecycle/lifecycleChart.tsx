@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import {
   ArcElement,
@@ -9,8 +9,8 @@ import {
   LinearScale,
   Title,
   Tooltip,
-} from 'chart.js'
-import { Bar, Doughnut } from 'react-chartjs-2'
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
 
 ChartJS.register(
   ArcElement,
@@ -19,8 +19,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend,
-)
+  Legend
+);
 
 export default function LifecycleChart({
   data,
@@ -28,15 +28,16 @@ export default function LifecycleChart({
   options,
   type,
 }: {
-  data: any
-  id: string
-  options?: any
-  type: string
+  data: any;
+  id: string;
+  options?: any;
+  type: string;
 }) {
-  if (type == 'bar') {
-    return <Bar id={id} data={data} options={options} />
-  } else if (type == 'doughnut') {
-    return <Doughnut id={id} data={data} options={options} />
+  const _type = type ?? "bar";
+  if (_type == "bar") {
+    return <Bar id={id} data={data} options={options} />;
+  } else if (_type == "doughnut") {
+    return <Doughnut id={id} data={data} options={options} />;
   }
-  return <div />
+  return <div />;
 }

@@ -1,20 +1,20 @@
+"use client";
+
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
-import type { NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import CheckoutForm from "../../components/form/checkout-form";
-import ReLogo from "../../components/form/re-logo";
-import { useFormStore } from "../../stores/formStore";
-import { allLocations } from "../../utils/form/cart";
-import { getPriceFromTable } from "../../utils/prisma/dbUtils";
+import ReLogo from "../../../components/form/re-logo";
+import { useFormStore } from "../../../stores/formStore";
+import { allLocations } from "../../../utils/form/cart";
+import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
+import CheckoutForm from "./formCheckout";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-const Checkout: NextPage = () => {
+export default function Page() {
   const [clientSecret, setClientSecret] = useState("");
   const { calculatePrice, calculateTotal, cart, locations, setCustomerId } =
     useFormStore((state) => ({
@@ -126,11 +126,11 @@ const Checkout: NextPage = () => {
 
   return (
     <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
-      <Head>
+      <head>
         <title>Checkout</title>
         <meta name="checkout" content="Purchase containers from Re Company" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ReLogo />
       <meta name="viewport" content="width=device-width, minimum-scale=1" />
       <main className="flex p-6 columns-2 mx-20 my-1 h-screen">
@@ -183,6 +183,4 @@ const Checkout: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Checkout;
+}

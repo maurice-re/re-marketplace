@@ -37,7 +37,7 @@ const OrderPage: NextPage<TransactionProps> = ({ order }: TransactionProps) => {
         <h1>{`Transaction: ${order.id}`}</h1>
         <div>{`Transaction was placed on ${order.createdAt}`}</div>
         <div>{`Transaction status is ${order.status.toLowerCase()}`}</div>
-        <div>{`Transaction amount was \$${order.amount}`}</div>
+        <div>{`Transaction amount was $${order.amount}`}</div>
       </main>
     </div>
   );

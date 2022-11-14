@@ -22,6 +22,7 @@ const SignUp: NextPage = () => {
 
   async function signUp(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: figure out the right way to parse a form
     const formElements = (e.target as any).elements as HTMLInputElement[];
     setLoading(true);
     setErrorText("");

@@ -26,6 +26,7 @@ function ApiDoc({ spec }: InferGetStaticPropsType<typeof getStaticProps>) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Swagger spec is not typed
   const spec: Record<string, any> = createSwaggerSpec({
     definition: apiSpec,
   });

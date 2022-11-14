@@ -1,16 +1,16 @@
-import type { NextPage } from "next";
-import { signIn } from "next-auth/react";
-import Head from "next/head";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import FormNextButton from "../../components/form/next-button";
-import ProgressBar from "../../components/form/progress-bar";
-import ReLogo from "../../components/form/re-logo";
-import { cities } from "../../constants/cities";
-import { useFormStore } from "../../stores/formStore";
+"use client";
 
-const LocationPage: NextPage = () => {
+import { signIn } from "next-auth/react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import FormNextButton from "../../../components/form/next-button";
+import ProgressBar from "../../../components/form/progress-bar";
+import ReLogo from "../../../components/form/re-logo";
+import { cities } from "../../../constants/cities";
+import { useFormStore } from "../../../stores/formStore";
+
+export default function Page() {
   const {
     addLocation,
     addSummary,
@@ -28,7 +28,7 @@ const LocationPage: NextPage = () => {
   }));
   const [query, setQuery] = useState<string>("");
   const [drawerOpen, toggleDrawer] = useState<boolean>();
-  const router = useRouter();
+  const checkout = useSearchParams().get("checkout");
 
   useEffect(() => {
     const fetchCatalog = async () => {
@@ -40,10 +40,10 @@ const LocationPage: NextPage = () => {
   }, [initializeCatalog]);
 
   useEffect(() => {
-    if (router.query.checkout == "false") {
+    if (checkout == "false") {
       disableCheckout();
     }
-  }, [disableCheckout, router.query.checkout]);
+  }, [disableCheckout, checkout]);
 
   function handleClick(city: string) {
     if (locations.includes(city)) {
@@ -98,15 +98,15 @@ const LocationPage: NextPage = () => {
 
   return (
     <div className=" w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>What cities do you operate in</title>
         <meta
           name="location"
           content="Choose locations that your company needs service for"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <ProgressBar pageName={"location"} />
+      </head>
+      <ProgressBar pageName={"form/location"} />
       <ReLogo />
       <div className="absolute left-4 top-6 flex text-white">
         <div className="text-white">
@@ -150,7 +150,7 @@ const LocationPage: NextPage = () => {
           )}
           {!drawerOpen && (
             <FormNextButton
-              pageName={"location"}
+              pageName={"form/location"}
               disabled={locations.length < 1}
               onClick={() => addSummary()}
               green
@@ -160,6 +160,4 @@ const LocationPage: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default LocationPage;
+}

@@ -1,29 +1,29 @@
+"use client";
+
 import { loadStripe } from "@stripe/stripe-js";
-import type { NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import ProgressBar from "../../components/form/progress-bar";
-import ReLogo from "../../components/form/re-logo";
-import { useFormStore } from "../../stores/formStore";
-import { allLocations } from "../../utils/form/cart";
+import ProgressBar from "../../../components/form/progress-bar";
+import ReLogo from "../../../components/form/re-logo";
+import { useFormStore } from "../../../stores/formStore";
+import { allLocations } from "../../../utils/form/cart";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
 );
 
-const Summary: NextPage = () => {
+export default function Page() {
   const [eol, checkEol] = useState<boolean>(false);
   const { calculateTotal, cart, skipToCheckout } = useFormStore((state) => ({
     calculateTotal: state.calculateTotal,
     cart: state.cart,
     skipToCheckout: state.skipToCheckout,
   }));
-  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const { checkout } = router.query;
+  const checkout = searchParams.get("checkout");
 
   useEffect(() => {
     if (typeof checkout == "string") {
@@ -99,11 +99,11 @@ const Summary: NextPage = () => {
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Your perfect setup</title>
         <meta name="summary" content="Review your perfect setup" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <ProgressBar pageName="summary" />
       <ReLogo />
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
@@ -134,7 +134,7 @@ const Summary: NextPage = () => {
             Agree to EOL policy
           </button>
         </div>
-        <Link href={"checkout"}>
+        <Link href={"form/checkout"}>
           <button
             className={
               "bg-re-green-500 w-124 text-25 font-theinhardt rounded-10 py-2 disabled:bg-gray-300 text-black"
@@ -149,6 +149,4 @@ const Summary: NextPage = () => {
       </main>
     </div>
   );
-};
-
-export default Summary;
+}

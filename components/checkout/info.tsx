@@ -12,7 +12,7 @@ export default function Info({
   type: CheckoutType;
   user: User | null;
 }): JSX.Element[] {
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     items.push(

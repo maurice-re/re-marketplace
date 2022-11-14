@@ -3,7 +3,6 @@
 import { ProductDevelopment } from "@prisma/client";
 import { loadStripe } from "@stripe/stripe-js";
 import { signIn } from "next-auth/react";
-import Head from "next/head";
 import { FormEvent, useState } from "react";
 
 type ProductDevProps = {
@@ -25,11 +24,11 @@ export default function ProductDevelopmentPage({
   if (productDev == null) {
     return (
       <div className="w-screen h-screen bg-black flex">
-        <Head>
+        <head>
           <title>Product Development</title>
           <meta name="locations" content="Manage your account" />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
           <div className="text-white font-theinhardt text-28">
             This does not exist
@@ -42,11 +41,11 @@ export default function ProductDevelopmentPage({
   if (productDev.initiationPaid) {
     return (
       <div className="w-screen h-screen bg-black flex">
-        <Head>
+        <head>
           <title>Product Development</title>
           <meta name="locations" content="Proposal already paid for" />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <main className="flex flex-col container mx-auto h-full justify-center py-3 items-center">
           <div className="text-white font-theinhardt text-28">
             This has already been paid for
@@ -73,11 +72,11 @@ export default function ProductDevelopmentPage({
 
   return (
     <div className="w-screen h-screen bg-black flex">
-      <Head>
+      <head>
         <title>Product Development</title>
         <meta name="account" content="Sign in to view proposal" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <input type="checkbox" id="success-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box relative">

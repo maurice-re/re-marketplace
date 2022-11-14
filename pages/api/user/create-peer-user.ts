@@ -1,4 +1,4 @@
-import { LocationType, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 
@@ -17,8 +17,7 @@ async function createPeerUser(req: Request, res: Response) {
   } = req.body;
 
   const now = new Date();
-
-  var userCompanyId = companyId;
+  let userCompanyId = companyId;
 
   // Only create new company if the appropriate details are passed and companyId is empty
   if (newCompanyName !== '' && (companyId === '' || !companyId)) {
