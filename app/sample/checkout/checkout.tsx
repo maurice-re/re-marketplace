@@ -1,12 +1,8 @@
 "use client";
 import { Elements } from "@stripe/react-stripe-js";
 import { Appearance, loadStripe } from "@stripe/stripe-js";
-import type { GetServerSideProps, NextPage } from "next";
-import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import ReLogo from "../../../components/form/re-logo";
-import prisma from "../../../constants/prisma";
 import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
 import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";
 

@@ -43,7 +43,7 @@ function Home({ locations, user, skus, hasCompleteOrder, hasIncompleteOrder }: {
   if (hasCompleteOrder) {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
+        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
             <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId === "616" ? "Agent Coulson" : user.firstName
@@ -211,7 +211,7 @@ function Home({ locations, user, skus, hasCompleteOrder, hasIncompleteOrder }: {
   } else if (hasIncompleteOrder) {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
+        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
             <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId == "616" ? "Agent Coulson" : user.firstName
@@ -391,7 +391,7 @@ function Home({ locations, user, skus, hasCompleteOrder, hasIncompleteOrder }: {
   } else if (user) {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
+        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
             <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId == "616" ? "Agent Coulson" : user.firstName

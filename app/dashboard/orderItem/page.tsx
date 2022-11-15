@@ -1,6 +1,5 @@
 import { Company, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
-import Head from "next/head";
 import Link from "next/link";
 import { GoSearch } from "react-icons/go";
 import prisma from "../../../constants/prisma";
@@ -45,11 +44,11 @@ export default async function Page() {
   if (!orderItems || orderItems.length == 0 || !company) {
     return (
       <div className="w-screen h-screen bg-black flex">
-        <Head>
+        <head>
           <title>Locations</title>
           <meta name="locations" content="Manage locations" />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
           <div className="text-white font-theinhardt text-28">
             No Orders Placed
@@ -61,11 +60,11 @@ export default async function Page() {
 
   return (
     <div className="h-screen bg-black flex overflow-hidden">
-      <Head>
+      {/* <head>
         <title>Orders</title>
         <meta name="orders" content="Manage your orders" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head> */}
 
       <main className="flex flex-col container mx-auto py-6 px-1 w-full text-white font-theinhardt">
         <div className="flex justify-between">

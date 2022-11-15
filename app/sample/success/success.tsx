@@ -1,5 +1,4 @@
 "use client";
-import Head from "next/head";
 import { useEffect } from "react";
 import Confetti from "react-confetti";
 import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";
@@ -45,14 +44,14 @@ function Success() {
 
     return (
         <div className="h-screen bg-black flex">
-            <Head>
+            {/* <head>
                 <title>Congrats</title>
                 <meta
                     name="successful purchase"
                     content="Congrats on making a purchase"
                 />
                 <link rel="icon" href="/favicon.ico" />
-            </Head>
+            </head> */}
             <main className="flex flex-col container mx-auto items-center py-4 text-white my-auto">
                 <Confetti width={1800} height={1200} />
                 <h1 className="text-5xl font-theinhardt text-white text-center">

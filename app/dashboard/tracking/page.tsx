@@ -1,6 +1,5 @@
 import { Company, Settings, User } from '@prisma/client';
 import { Session, unstable_getServerSession } from 'next-auth';
-import Head from 'next/head';
 import prisma from '../../../constants/prisma';
 import Tracking from './tracking';
 import { authOptions } from '../../../pages/api/auth/[...nextauth]';
@@ -46,11 +45,11 @@ export default async function Page() {
 
   return (
     <div className="w-full h-screen bg-black flex overflow-auto">
-      <Head>
+      {/* <head>
         <title>Tracking</title>
         <meta name="tracking" content="Tracking" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Tracking user={user} skus={skus} />
       </main>
