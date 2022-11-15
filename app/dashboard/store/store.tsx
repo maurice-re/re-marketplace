@@ -125,16 +125,15 @@ export default function StorePage({
           <div className="flex items-center text-sm font-theinhardt-300 gap-1">
             <div className="text-re-green-600">{`Last order date`}</div>
             <div className="text-gray-200">
-              {` — ${
-                location.orderItems.length == 0
+              {` — ${location.orderItems.length == 0
                   ? "No orders placed"
                   : new Date(
-                      location.orderItems[0].createdAt
-                    ).toLocaleDateString("en-us", {
-                      day: "numeric",
-                      month: "short",
-                    })
-              }`}
+                    location.orderItems[0].createdAt
+                  ).toLocaleDateString("en-us", {
+                    day: "numeric",
+                    month: "short",
+                  })
+                }`}
             </div>
           </div>
         </div>
@@ -143,11 +142,11 @@ export default function StorePage({
 
     return (
       <div className="w-screen h-screen bg-black flex">
-        <head>
+        {/* <head>
           <title>Store</title>
           <meta name="store" content="shop for products" />
           <link rel="icon" href="/favicon.ico" />
-        </head>
+        </head> */}
         <input
           type="checkbox"
           id="newLocation-modal"
@@ -179,9 +178,8 @@ export default function StorePage({
                   Close
                 </button>
                 <button
-                  className={`btn btn-outline btn-accent ${
-                    loading ? "loading" : ""
-                  }`}
+                  className={`btn btn-outline btn-accent ${loading ? "loading" : ""
+                    }`}
                   type="submit"
                 >
                   Add
@@ -338,9 +336,8 @@ export default function StorePage({
                         {sizes.map((size) => (
                           <button
                             key={size}
-                            className={`btn btn-outline mr-2 ${
-                              sku.size == size ? "btn-accent" : ""
-                            }`}
+                            className={`btn btn-outline mr-2 ${sku.size == size ? "btn-accent" : ""
+                              }`}
                             onClick={() => changeSize(size)}
                           >
                             {size}
@@ -353,9 +350,8 @@ export default function StorePage({
                         {colors.map((color) => (
                           <button
                             key={color}
-                            className={`btn btn-outline mr-2 ${
-                              sku.color == color ? "btn-accent" : ""
-                            }`}
+                            className={`btn btn-outline mr-2 ${sku.color == color ? "btn-accent" : ""
+                              }`}
                             onClick={() => changeColor(color)}
                           >
                             {color}
@@ -367,9 +363,8 @@ export default function StorePage({
                       {materials.map((material) => (
                         <button
                           key={material}
-                          className={`btn btn-outline mr-2 ${
-                            sku.material == material ? "btn-accent" : ""
-                          }`}
+                          className={`btn btn-outline mr-2 ${sku.material == material ? "btn-accent" : ""
+                            }`}
                         >
                           {material}
                         </button>
