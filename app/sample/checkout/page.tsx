@@ -7,12 +7,21 @@ import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
 import Checkout from "./checkout";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: { transaction: string; };
-}) {
-  const { transaction } = searchParams;
+type Props = {
+  searchParams?: {
+    transaction?: string;
+  };
+};
+
+export default async function Page(props: Props) {
+
+  const { searchParams } = props;
+
+  const transaction = searchParams?.transaction;
+
+  if (!transaction) {
+    return <div>An error occurred</div>;
+  }
 
   const session = await unstable_getServerSession(authOptions);
   if (session == null) {
