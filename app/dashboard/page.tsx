@@ -1,15 +1,14 @@
 import { Location } from "@prisma/client";
-import { Session } from "next-auth";
+import { Session, unstable_getServerSession } from "next-auth";
 import { headers } from "next/headers";
-import { use } from "react";
 import prisma from "../../constants/prisma";
 import {
   SkuProduct,
   UserOrderItems,
 } from "../../utils/dashboard/dashboardUtils";
-import { getSession } from '../../utils/sessionUtils';
-import HomeContent from "./homeContent";
+import Home from "./home";
 import { Order, Status } from "@prisma/client";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
 
 async function getLocations(user: UserOrderItems) {
   const locations = await prisma.location.findMany({
@@ -93,18 +92,22 @@ async function getCompleteOrders(user: UserOrderItems) {
   return JSON.parse(JSON.stringify(orders));
 }
 
-export default function Page() {
-  const session = use(getSession(headers().get('cookie') ?? ''));
-  const user: UserOrderItems = use(getUser(session));
-  const locations: Location[] = use(getLocations(user));
-  const skus: SkuProduct[] = use(getSkus());
-  const incompleteOrders: [Order] = use(getIncompleteOrders(user));
-  const completeOrders: [Order] = use(getCompleteOrders(user));
+export default async function Page() {
+  const session = await unstable_getServerSession(authOptions);
+  if (session == null) {
+    //TODO: redirect to login
+    return <div>Not logged in</div>;
+  }
+  const user: UserOrderItems = await getUser(session);
+  const locations: Location[] = await getLocations(user);
+  const skus: SkuProduct[] = await getSkus();
+  const incompleteOrders: [Order] = await getIncompleteOrders(user);
+  const completeOrders: [Order] = await getCompleteOrders(user);
 
   const hasCompleteOrder: boolean = completeOrders.length > 0 || user.companyId === "616";
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
 
   return (
-    <HomeContent locations={locations} user={user} skus={skus} hasCompleteOrder={hasCompleteOrder} hasIncompleteOrder={hasIncompleteOrder} />
+    <Home locations={locations} user={user} skus={skus} hasCompleteOrder={hasCompleteOrder} hasIncompleteOrder={hasIncompleteOrder} />
   );
 };

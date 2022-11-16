@@ -1,15 +1,12 @@
 
 import prisma from '../../../constants/prisma';
-import { use } from 'react';
-import { headers } from 'next/headers';
-import { getSession } from '../../../utils/sessionUtils';
 import { UserCompany } from '../../../utils/dashboard/dashboardUtils';
 import React from "react";
-import { Session } from 'next-auth';
-import AccountContent from './accountContent';
+import { Session, unstable_getServerSession } from 'next-auth';
+import Account from './account';
+import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 
 async function getUser(session: Session) {
-
     const user = await prisma.user.findUnique({
         where: {
             email: session?.user?.email ?? '',
@@ -19,14 +16,17 @@ async function getUser(session: Session) {
         },
     });
     return JSON.parse(JSON.stringify(user));
-
 }
 
-export default function Page() {
+export default async function Page() {
 
-    const session = use(getSession(headers().get('cookie') ?? ''));
-    const user: UserCompany = use(getUser(session));
+    const session = await unstable_getServerSession(authOptions);
+    if (session == null) {
+        //TODO: redirect to login
+        return <div>Not logged in</div>;
+    }
+    const user: UserCompany = await getUser(session);
 
-    return (<AccountContent user={user} />);
+    return (<Account user={user} />);
 
 };

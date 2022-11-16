@@ -6,7 +6,7 @@ import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
 import AddUserForm from "./addUserForm";
 import UserForm from "./userForm";
 
-function AccountContent({ user }: { user: UserCompany }) {
+function Account({ user }: { user: UserCompany; }) {
   // TODO(Suhana): Use either user or dynamicUser
 
   const [dynamicUser, setDynamicUser] = useState<UserCompany>(user);
@@ -73,4 +73,4 @@ function AccountContent({ user }: { user: UserCompany }) {
   );
 }
 
-export default AccountContent;
+export default Account;

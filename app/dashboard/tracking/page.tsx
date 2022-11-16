@@ -1,11 +1,8 @@
 import { Company, Settings, User } from '@prisma/client';
-import { Session } from 'next-auth';
-import Head from 'next/head';
-import { use } from 'react';
+import { Session, unstable_getServerSession } from 'next-auth';
 import prisma from '../../../constants/prisma';
-import TrackingContent from './trackingContent';
-import { headers } from 'next/headers';
-import { getSession } from '../../../utils/sessionUtils';
+import Tracking from './tracking';
+import { authOptions } from '../../../pages/api/auth/[...nextauth]';
 
 // https://github.com/nextauthjs/next-auth/issues/5647
 
@@ -36,21 +33,25 @@ async function getUser(session: Session) {
   return JSON.parse(JSON.stringify(user));
 }
 
-export default function Page() {
+export default async function Page() {
   // TODO(Suhana): What should we do here if there isn't a session?
-  const session = use(getSession(headers().get('cookie') ?? ''));
-  const user: UserSettings = use(getUser(session));
-  const skus = use(getSkus());
+  const session = await unstable_getServerSession(authOptions);
+  if (session == null) {
+    //TODO: redirect to login
+    return <div>Not logged in</div>;
+  }
+  const user: UserSettings = await getUser(session);
+  const skus = await getSkus();
 
   return (
     <div className="w-full h-screen bg-black flex overflow-auto">
-      <Head>
+      {/* <head>
         <title>Tracking</title>
         <meta name="tracking" content="Tracking" />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-        <TrackingContent user={user} skus={skus} />
+        <Tracking user={user} skus={skus} />
       </main>
     </div>
   );
