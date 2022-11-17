@@ -8,13 +8,13 @@ import CheckoutLeft from "./checkoutLeft";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { orderString: string };
+  searchParams?: { orderString: string };
 }) {
-  const { orderString } = searchParams;
-
-  if (orderString == null) {
+  if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
   }
+
+  const { orderString } = searchParams;
 
   // Product Development
   if (orderString.startsWith("product-development")) {
@@ -40,7 +40,8 @@ export default async function Page({
       const session = await unstable_getServerSession(authOptions);
       const company = await prisma.company.findUnique({
         where: { id: productDev.companyId },
-      })!;
+      });
+
       if (company == null) {
         //TODO: Handle error
         return <div>An error has occurred</div>;
@@ -78,8 +79,8 @@ export default async function Page({
 
   return (
     <CheckoutLeft
-      company={JSON.parse(JSON.stringify(company))! as Company}
-      locations={JSON.parse(JSON.stringify(company!.locations))}
+      company={JSON.parse(JSON.stringify(company)) as Company}
+      locations={JSON.parse(JSON.stringify(company?.locations))}
       orderString={orderString}
       products={products}
       skus={skus}

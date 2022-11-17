@@ -1,5 +1,5 @@
 "use client";
-import { signIn, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import {
   addDays,
   ItemLocationSku,
@@ -11,10 +11,9 @@ import {
 } from "../../utils/dashboard/dashboardUtils";
 
 import { Location } from "@prisma/client";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
 import QuickOrder from "./quickOrder";
 
@@ -31,24 +30,12 @@ function HomeContent({
   hasCompleteOrder: boolean;
   hasIncompleteOrder: boolean;
 }) {
-  const [email, setEmail] = useState<string>(user?.email ?? "");
-  const router = useRouter();
-
-  function handleLogin() {
-    signIn("email", { redirect: false, email: email });
-  }
-
-  async function handleSignOut() {
-    await signOut({ redirect: false });
-    router.push("/");
-  }
-
   const head = (
-    <head>
+    <Head>
       <title>Dashboard</title>
       <meta name="dashboard" content="Manage your dashboard" />
       <link rel="icon" href="/favicon.ico" />
-    </head>
+    </Head>
   );
 
   //TODO(Suhana): Create sub components once used in app/
@@ -67,7 +54,7 @@ function HomeContent({
               <h1 className=" font-theinhardt text-3xl">{user.company.name}</h1>
               <button
                 className="ml-6 px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
-                onClick={handleSignOut}
+                onClick={() => signOut({ callbackUrl: "/form/location" })}
               >
                 Sign Out
               </button>
@@ -111,7 +98,7 @@ function HomeContent({
                             {(arr[0] as ItemLocationSku).location.displayName ??
                               (arr[0] as ItemLocationSku).location.city}
                           </h2>
-                          <h3 className="text-lg font-theinhardt-300">{`\$${arr.reduce(
+                          <h3 className="text-lg font-theinhardt-300">{`$${arr.reduce(
                             (prev, curr) => prev + curr.amount,
                             0
                           )}`}</h3>
@@ -239,7 +226,7 @@ function HomeContent({
               <h1 className=" font-theinhardt text-3xl">{user.company.name}</h1>
               <button
                 className="ml-6 px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
-                onClick={handleSignOut}
+                onClick={() => signOut({ callbackUrl: "/form/location" })}
               >
                 Sign Out
               </button>
@@ -304,7 +291,7 @@ function HomeContent({
                             {(arr[0] as ItemLocationSku).location.displayName ??
                               (arr[0] as ItemLocationSku).location.city}
                           </h2>
-                          <h3 className="text-lg font-theinhardt-300">{`\$${arr.reduce(
+                          <h3 className="text-lg font-theinhardt-300">{`$${arr.reduce(
                             (prev, curr) => prev + curr.amount,
                             0
                           )}`}</h3>
@@ -423,7 +410,7 @@ function HomeContent({
               <h1 className=" font-theinhardt text-3xl">{user.company.name}</h1>
               <button
                 className="ml-6 px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
-                onClick={handleSignOut}
+                onClick={() => signOut({ callbackUrl: "/form/location" })}
               >
                 Sign Out
               </button>
@@ -452,27 +439,5 @@ function HomeContent({
       </div>
     );
   }
-
-  // TODO: Change redirect to SignIn
-  return (
-    <div className="w-screen h-screen bg-black flex overflow-hidden">
-      {head}
-      <main className="flex flex-col container mx-auto my-auto items-center py-4 text-white">
-        <div>
-          <input
-            name={"Email"}
-            className="p-1 border-2 text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 rounded mb-4"
-            type="text"
-            value={email}
-            placeholder={"Email"}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button className=" w-full btn btn-accent" onClick={handleLogin}>
-            Login
-          </button>
-        </div>
-      </main>
-    </div>
-  );
 }
 export default HomeContent;

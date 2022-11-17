@@ -19,6 +19,14 @@ module.exports = {
         'aquamarine-500': '#7FFFD4',
         'aquamarine-400': '#99FFDD',
         'aquamarine-300': '#ADFFE4',
+        're-blue': '#5336FF',
+        're-dark-green-500': '#001517',
+        're-dark-green-400': '#0A1E20',
+        're-dark-green-300': '#0C2224',
+        're-gray-text': '#767676',
+        're-gray-500': '#434343',
+        're-gray-400': '#353535',
+        're-gray-300': '#3f3f3f',
         're-green-800': '#3DB189',
         're-green-700': '#46CB9C',
         're-green-600': '#4FE4B0',
@@ -27,10 +35,11 @@ module.exports = {
         're-green-300': '#79FECF',
         're-green-200': '#8AFED5',
         're-green-100': '#9AFEDB',
-        're-blue': '#5336FF',
-        're-gray-500': '#2B2B2B',
-        're-gray-400': '#353535',
-        're-gray-300': '#3f3f3f',
+        're-purple-700': '#432BCC',
+        're-purple-600': '#4B30E6',
+        're-purple-500': '#5336FF',
+        're-purple-400': '#654AFF',
+        're-purple-300': '#765EFF',
         'stripe-gray': '#30313d'
       },
       fontFamily: {
@@ -69,6 +78,7 @@ module.exports = {
     themes: [
       {
         dark: {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
           accent: "#46CB9C",
           "base-100": "#353535",
