@@ -12,8 +12,6 @@ export default function SidebarIcon({
   link: string;
   title: string;
 }) {
-  console.log(icon);
-  console.log(link);
   const pathname = usePathname();
   return (
     <Link

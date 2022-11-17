@@ -59,7 +59,7 @@ type Statistic = {
 
 const monthsInYear = getMonthsInYear();
 
-function TrackingContent({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
+function Tracking({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
   // "Dummy" data that is updated on changes
   let baseData = {
     labels: monthsInYear,
@@ -424,4 +424,4 @@ function TrackingContent({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
   );
 }
 
-export default TrackingContent;
+export default Tracking;

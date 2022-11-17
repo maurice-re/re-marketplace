@@ -17,7 +17,7 @@ import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
 import QuickOrder from "./quickOrder";
 
-function HomeContent({
+function Home({
   locations,
   user,
   skus,
@@ -42,7 +42,7 @@ function HomeContent({
   if (hasCompleteOrder) {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
+        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
             <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
@@ -214,7 +214,7 @@ function HomeContent({
   } else if (hasIncompleteOrder) {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
+        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
             <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
@@ -398,7 +398,7 @@ function HomeContent({
   } else if (user) {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
-        {head}
+        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
             <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
@@ -440,4 +440,4 @@ function HomeContent({
     );
   }
 }
-export default HomeContent;
+export default Home;
