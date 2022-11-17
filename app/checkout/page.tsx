@@ -18,7 +18,7 @@ export default async function Page({
 
   // Product Development
   if (orderString.startsWith("product-development")) {
-    const [_, devId] = orderString.split("~");
+    const [, devId] = orderString.split("~");
     const productDev = await prisma.productDevelopment.findUnique({
       where: { id: devId },
     });

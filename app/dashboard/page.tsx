@@ -1,21 +1,20 @@
-import { Location } from "@prisma/client";
+import { Location, Order, Status } from "@prisma/client";
 import { Session, unstable_getServerSession } from "next-auth";
-import { headers } from "next/headers";
 import prisma from "../../constants/prisma";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import {
   SkuProduct,
   UserOrderItems,
 } from "../../utils/dashboard/dashboardUtils";
 import Home from "./home";
-import { Order, Status } from "@prisma/client";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
 
 async function getLocations(user: UserOrderItems) {
   const locations = await prisma.location.findMany({
     where: {
       companyId: user?.companyId,
     },
-  }); return JSON.parse(JSON.stringify(locations));
+  });
+  return JSON.parse(JSON.stringify(locations));
 }
 
 async function getUser(session: Session) {
@@ -70,13 +69,13 @@ async function getSkus() {
 async function getIncompleteOrders(user: UserOrderItems) {
   const orders = await prisma.order.findMany({
     where: {
-      companyId: user.companyId ?? '',
+      companyId: user.companyId ?? "",
       NOT: {
         status: Status.COMPLETED,
-      }
+      },
     },
     include: {
-      company: true
+      company: true,
     },
   });
   return JSON.parse(JSON.stringify(orders));
@@ -85,7 +84,7 @@ async function getIncompleteOrders(user: UserOrderItems) {
 async function getCompleteOrders(user: UserOrderItems) {
   const orders = await prisma.order.findMany({
     where: {
-      companyId: user.companyId ?? '',
+      companyId: user.companyId ?? "",
       status: Status.COMPLETED,
     },
   });
@@ -104,10 +103,17 @@ export default async function Page() {
   const incompleteOrders: [Order] = await getIncompleteOrders(user);
   const completeOrders: [Order] = await getCompleteOrders(user);
 
-  const hasCompleteOrder: boolean = completeOrders.length > 0 || user.companyId === "616";
+  const hasCompleteOrder: boolean =
+    completeOrders.length > 0 || user.companyId === "616";
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
 
   return (
-    <Home locations={locations} user={user} skus={skus} hasCompleteOrder={hasCompleteOrder} hasIncompleteOrder={hasIncompleteOrder} />
+    <Home
+      locations={locations}
+      user={user}
+      skus={skus}
+      hasCompleteOrder={hasCompleteOrder}
+      hasIncompleteOrder={hasIncompleteOrder}
+    />
   );
-};
+}

@@ -11,7 +11,6 @@ import {
 } from "../../utils/dashboard/dashboardUtils";
 
 import { Location } from "@prisma/client";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
@@ -30,14 +29,6 @@ function Home({
   hasCompleteOrder: boolean;
   hasIncompleteOrder: boolean;
 }) {
-  const head = (
-    <Head>
-      <title>Dashboard</title>
-      <meta name="dashboard" content="Manage your dashboard" />
-      <link rel="icon" href="/favicon.ico" />
-    </Head>
-  );
-
   //TODO(Suhana): Create sub components once used in app/
   if (hasCompleteOrder) {
     return (
@@ -103,7 +94,7 @@ function Home({
                             0
                           )}`}</h3>
                         </div>
-                        {arr.map((item, i) => (
+                        {arr.map((item) => (
                           <div
                             className="flex justify-between"
                             key={item.id + "items"}
@@ -296,7 +287,7 @@ function Home({
                             0
                           )}`}</h3>
                         </div>
-                        {arr.map((item, i) => (
+                        {arr.map((item) => (
                           <div
                             className="flex justify-between"
                             key={item.id + "items"}
@@ -387,7 +378,7 @@ function Home({
               <div className="flex mt-4 w-2/5">
                 <div className="flex flex-col ml-4 mr-1 px-4 py-4 gap-4 w-full bg-re-gray-500 bg-opacity-70 rounded-2xl justify-center items-center font-theinhardt text-2xl">
                   <div>Demo the tracking experience</div>
-                  <button className="btn btn-primarymt-4">Visit</button>
+                  <button className="btn btn-primary mt-4">Visit</button>
                 </div>
               </div>
             </div>
@@ -395,7 +386,7 @@ function Home({
         </main>
       </div>
     );
-  } else if (user) {
+  } else {
     return (
       <div className="w-full h-screen bg-black flex overflow-auto">
         {/* {head} */}
