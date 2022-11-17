@@ -226,7 +226,7 @@ export default function CheckoutRight({
             <option
               key={method.id}
               value={method.id}
-            >{`${method.us_bank_account?.account_type} – ${method.us_bank_account?.routing_number}`}</option>
+            >{`${method.us_bank_account?.account_type} – ${method.us_bank_account?.routing_number}`}</option>
           ))}
           <option value="new" key="new">
             New payment method

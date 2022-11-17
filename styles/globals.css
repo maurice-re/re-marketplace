@@ -37,3 +37,7 @@ a {
 :root {
   color-scheme: dark;
 }
+
+.btn {
+  text-transform: none;
+}
