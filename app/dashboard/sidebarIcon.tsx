@@ -20,14 +20,14 @@ export default function SidebarIcon({
         pathname: link,
       }}
     >
-      <button className={`${pathname == link ? "bg-re-dark-green-400" : ""} rounded w-full flex items-center justify-start h-8 mb-2`}>
+      <button className={`${pathname == link ? "bg-re-dark-green-400" : ""} rounded w-full flex items-center justify-start h-7 mb-2`}>
 
         <div
           className="flex justify-center items-center py-3 pl-2 pr-3 rounded-10 my-1"
         >
           {icon}
         </div>
-        <div>{title}</div>
+        <p className="font-theinhardt-300">{title}</p>
       </button>
     </Link>
   );
