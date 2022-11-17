@@ -20,11 +20,14 @@ export default function SidebarIcon({
         pathname: link,
       }}
     >
-      <button
-        className={`${pathname == link ? "bg-re-green-700" : ""
-          } hover:bg-re-green-600 active:bg-re-green-500 flex justify-center items-center py-3 px-3 rounded-10 my-1`}
-      >
-        {icon}
+      <button className={`${pathname == link ? "bg-re-dark-green-400" : ""} rounded w-full flex items-center justify-start h-8 mb-2`}>
+
+        <div
+          className="flex justify-center items-center py-3 pl-2 pr-3 rounded-10 my-1"
+        >
+          {icon}
+        </div>
+        <div>{title}</div>
       </button>
     </Link>
   );

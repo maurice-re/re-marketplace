@@ -1,5 +1,7 @@
 import { Order, Status, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
+import Image from "next/image";
+import { GoSearch } from "react-icons/go";
 import { TbCurrentLocation } from "react-icons/tb";
 import prisma from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
@@ -199,34 +201,38 @@ export default async function Layout({
 
   return (
     <div className="flex h-screen bg-black">
-      <div className="flex flex-col items-center text-white ml-4">
-        <button
-          className="rounded py-2 hover:text-re-green-800"
-          onClick={undefined}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-        {routes.map((route) => (
-          <SidebarIcon
-            key={route.link}
-            icon={route.icon}
-            link={route.link}
-            title={route.title}
+      <div className="flex flex-col items-center text-white px-8 mr-6 border-r-1/2 border-re-dark-green-100">
+        <div className="w-full flex items-center justify-center gap-20 mt-6 mb-8">
+          <Image
+            src={"/images/logo.png"}
+            height={29}
+            width={38}
+            alt={"Re Company Logo"}
           />
-        ))}
+          <div className="avatar placeholder">
+            <div className="bg-re-green-500 text-black rounded-full w-8">
+              <span className="text-md">
+                {user.firstName?.charAt(0)}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="w-40 h-7 mb-6 flex items-center justify-center rounded border-1/2 border-re-dark-green-300 bg-re-dark-green-200">
+          <div className="w-1/8 mx-2"><GoSearch size={15} /></div>
+          <div className="w-7/8">
+            <input className="w-full font-theinhardt-300  font-white focus:outline-none bg-transparent" placeholder="Search"></input>
+          </div>
+        </div>
+        <div className="w-full">
+          {routes.map((route) => (
+            <SidebarIcon
+              key={route.link}
+              icon={route.icon}
+              link={route.link}
+              title={route.title}
+            />
+          ))}
+        </div>
       </div>
       <div id="children" className="w-full">
         {children}

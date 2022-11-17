@@ -10,6 +10,7 @@ module.exports = {
         '10': '10px',
       },
       borderWidth: {
+        '1/2': '0.5px',
         '3': '3px'
       },
       colors: {
@@ -40,6 +41,14 @@ module.exports = {
         're-purple-500': '#5336FF',
         're-purple-400': '#654AFF',
         're-purple-300': '#765EFF',
+        're-blue': '#5336FF',
+        're-gray-500': '#2B2B2B',
+        're-gray-400': '#353535',
+        're-gray-300': '#3f3f3f',
+        're-dark-green-100': '#434343',
+        're-dark-green-200': '#1d2a2c',
+        're-dark-green-300': '#081719',
+        're-dark-green-400': '#132325',
         'stripe-gray': '#30313d'
       },
       fontFamily: {

@@ -29,7 +29,7 @@ function Account({ user }: { user: UserCompany; }) {
             <h1 className="text-3xl">Manage Your Account</h1>
             <h3 className="text-2xl font-theinhardt-300">{`${dynamicUser?.firstName} ${dynamicUser?.lastName} | ${dynamicUser?.company?.name}`}</h3>
           </div>
-          {dynamicUser && dynamicUser.firstName === "Phil" ? (
+          {dynamicUser && dynamicUser.companyId === "616" ? (
             <div className="avatar">
               <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                 <Image
