@@ -17,11 +17,11 @@ function Cart({
   const orderString = useCartStore((state) => state.orderString);
   const clearCart = useCartStore((state) => state.clearCart);
   return (
-    <div className="flex border-l border-l-re-gray-500 mb-2">
-      <div className="w-56 flex flex-col text-white px-2 py-6">
-        <h1 className="text-white font-theinhardt text-2xl text-center">
-          Your Cart
-        </h1>
+    <div className="flex">
+      <div className="w-56 flex flex-col text-white justify-between h-screen  border-l border-l-re-gray-500">
+        <div className="flex justify-between py-4 pl-6 text-white border-b-1/2 border-re-dark-green-100">
+          <h1 className="font-theinhardt text-lg">Shoping Cart</h1>
+        </div>
         {orderString == "" && (
           <div className="text-center text-white font-theinhardt text-xl py-10">
             Your cart is empty
@@ -37,9 +37,8 @@ function Cart({
 
             return (
               <div
-                className={`flex flex-col ${
-                  index == 0 ? "pt-10 pb-3" : "py-3"
-                }`}
+                className={`flex flex-col ${index == 0 ? "pt-10 pb-3" : "py-3"
+                  }`}
                 key={locationId}
               >
                 <div>{location?.displayName ?? location?.city}</div>
@@ -71,27 +70,29 @@ function Cart({
               </div>
             );
           })}
-        <button
-          className="btn btn-sm btn-outline btn-error mb-3"
-          onClick={clearCart}
-        >
-          Clear Cart
-        </button>
-        <Link
-          href={{
-            pathname: "/checkout",
-            query: {
-              orderString: orderString,
-            },
-          }}
-        >
+        <div className="flex items-center justify-center flex-col">
           <button
-            className="btn btn-sm btn-outline btn-accent w-full"
-            disabled={orderString == ""}
+            className="btn btn-sm btn-outline btn-error"
+            onClick={clearCart}
           >
-            Checkout
+            Clear Cart
           </button>
-        </Link>
+          <Link
+            href={{
+              pathname: "/checkout",
+              query: {
+                orderString: orderString,
+              },
+            }}
+          >
+            <button
+              className="btn btn-sm btn-outline btn-accent w-full justify-self-end"
+              disabled={orderString == ""}
+            >
+              Checkout
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );

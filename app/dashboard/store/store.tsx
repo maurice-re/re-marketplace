@@ -20,7 +20,7 @@ type StoreProps = {
 type BreadcrumbsInfo = {
   step: string;
   title: string;
-  active: boolean;
+  passed: boolean;
 };
 
 export default function StorePage({
@@ -149,22 +149,22 @@ export default function StorePage({
       {
         step: "1",
         title: "Choose the location",
-        active: true
+        passed: true
       },
       {
         step: "2",
         title: "Choose your product",
-        active: false
+        passed: false
       },
       {
         step: "3",
         title: "Set properties",
-        active: false
+        passed: false
       },
     ];
     const breadcrumbs = breadcrumbsInfo.map((info) => (
       <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
-        <div className={`h-0.5 ${info.active ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
+        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
             Step {info.step}:
@@ -223,14 +223,13 @@ export default function StorePage({
             </form>
           </div>
         </div>
-        <main className="flex flex-col w-full h-full py-3 font-theinhardt">
+        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
           <div className="flex justify-between mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
             <div className="flex px-6 flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4">{breadcrumbs}</div>
-
               <h1 className="text-center text-3xl text-white">
                 Which location are you shopping for?
               </h1>
@@ -438,7 +437,7 @@ export default function StorePage({
   }
 
   return (
-    <div className="w-screen h-screen bg-black flex">
+    <div className=" h-screen bg-black flex">
       <head>
         <title>Store</title>
         <meta name="store" content="shop for products" />
