@@ -114,33 +114,34 @@ export default function StorePage({
     const locationCards = locations.map((location) => (
       <div
         key={location.id}
-        className="card card-compact w-full h-72 my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-base-200 cursor-pointer"
+        className="bg-re-dark-green-500 h-24 rounded-md border-re-dark-green-100 border-1/2 shadow-xl font-theinhardt justify-center hover:bg-re-dark-green-400 cursor-pointer"
         onClick={() => setLocationId(location.id)}
       >
-        <div className="card-body justify-center">
-          <h2 className="card-title leading-none text-white">
+        <div className="flex flex-col items-start justify-center p-4">
+          <div className="w-full items-center justify-between flex"><h2 className="text-left text-lg leading-none text-white">
             {location.displayName ?? location.city}
           </h2>
-          <div className="h-px bg-white my-1 w-full" />
-          <div className="flex flex-col w-full">
-            <div>{location.line1}</div>
-            <div className="font-theinhardt-300 text-sm text-gray-200 leading-none">
-              {location.city + " | " + location.country + " | " + location.zip}
-            </div>
+            {location.orderItems.length != 0 && (
+              <div className="rounded-2xl px-2 bg-re-dark-green-800 border-re-dark-green-800">
+                <div className="flex items-center text-sm font-theinhardt-300 w-full gap-1">
+                  <div className="text-gray-200">
+                    {"Last ordered: " + new Date(
+                      location.orderItems[0].createdAt
+                    ).toLocaleDateString("en-us", {
+                      day: "numeric",
+                      month: "short",
+                    })
+                    }
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex items-center text-sm font-theinhardt-300 gap-1">
-            <div className="text-re-green-600">{`Last order date`}</div>
-            <div className="text-gray-200">
-              {` — ${location.orderItems.length == 0
-                ? "No orders placed"
-                : new Date(
-                  location.orderItems[0].createdAt
-                ).toLocaleDateString("en-us", {
-                  day: "numeric",
-                  month: "short",
-                })
-                }`}
-            </div>
+          <div className="flex flex-col w-full re-dark-green-700 font-theinhardt-300 text-sm mt-1">
+            <h2>{location.line1}</h2>
+            <h2 className="leading-none">
+              {location.city + ", " + location.country + ", " + location.zip}
+            </h2>
           </div>
         </div>
       </div>
@@ -224,29 +225,33 @@ export default function StorePage({
           </div>
         </div>
         <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
-          <div className="flex justify-between mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
-            <div className="flex px-6 flex-col w-full">
-              <div className="w-full flex gap-6 items-center py-4">{breadcrumbs}</div>
-              <h1 className="text-center text-3xl text-white">
-                Which location are you shopping for?
-              </h1>
-              <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
-                {locationCards}
-                <div
-                  key={"new"}
-                  className="card card-compact w-full h-72 my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-base-200 cursor-pointer"
-                  onClick={() =>
-                    document.getElementById("newLocation-modal")?.click()
-                  }
-                >
-                  <div className="card-body justify-center">
-                    <h2 className="card-title leading-none text-white self-center">
-                      {"New Location"}
+            <div className="flex flex-col w-full">
+              <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
+              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+                <h1 className="font-theinhardt text-lg">Locations</h1>
+              </div>
+              <div className="bg-re-dark-green-600 h-full pt-4">
+                <div className="mt-2 px-2 grid grid-cols-3 gap-4 py-1 mx-4 items-start justify-start ">
+                  {locationCards}
+                  <div
+                    key={"new"}
+                    className="bg-re-dark-green-500 h-24 flex gap-1 rounded-md border-re-dark-green-100 border-1/2 shadow-xl font-theinhardt justify-center items-center hover:bg-re-dark-green-400 cursor-pointer"
+                    onClick={() =>
+                      document.getElementById("newLocation-modal")?.click()
+                    }
+                  >
+                    <h2 className="text-lg leading-none text-white">
+                      {"Add new location"}
                     </h2>
-                    <div className="text-3xl text-center">+</div>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2.25C8.27344 2.25 5.25 5.12766 5.25 8.67188C5.25 12.75 9.75 19.2127 11.4023 21.4448C11.4709 21.5391 11.5608 21.6157 11.6647 21.6686C11.7686 21.7215 11.8835 21.749 12 21.749C12.1165 21.749 12.2314 21.7215 12.3353 21.6686C12.4392 21.6157 12.5291 21.5391 12.5977 21.4448C14.25 19.2136 18.75 12.7533 18.75 8.67188C18.75 5.12766 15.7266 2.25 12 2.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                      <path d="M12 11.25C13.2426 11.25 14.25 10.2426 14.25 9C14.25 7.75736 13.2426 6.75 12 6.75C10.7574 6.75 9.75 7.75736 9.75 9C9.75 10.2426 10.7574 11.25 12 11.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+
                   </div>
                 </div>
               </div>
@@ -264,7 +269,7 @@ export default function StorePage({
       .map((product) => (
         <div
           key={product.id}
-          className="card card-compact w-full my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-base-200 cursor-pointer"
+          className="card card-compact w-full my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-re-dark-green-400 cursor-pointer"
           onClick={() => {
             setSkuId(skus.find((sku) => sku.productId == product.id)?.id);
             setProductId(product.id);

@@ -17,8 +17,7 @@ function Cart({
   const orderString = useCartStore((state) => state.orderString);
   const clearCart = useCartStore((state) => state.clearCart);
   return (
-    // <div className="flex">
-    <div className="w-70 flex flex-col text-white justify-between h-screen  border-l border-l-re-gray-500">
+    <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between h-screen  border-l border-l-re-gray-500">
       <div className="flex justify-between py-4 pl-6 text-white border-b-1/2 border-re-dark-green-100">
         <h1 className="font-theinhardt text-lg">Shopping Cart</h1>
       </div>
@@ -109,7 +108,6 @@ function Cart({
         </Link>
       </div>
     </div>
-    // </div>
   );
 }
 
