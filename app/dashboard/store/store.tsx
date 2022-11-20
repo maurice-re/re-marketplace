@@ -17,6 +17,12 @@ type StoreProps = {
   skus: Sku[];
 };
 
+type BreadcrumbsInfo = {
+  step: string;
+  title: string;
+  active: boolean;
+};
+
 export default function StorePage({
   company,
   initialLocations,
@@ -126,22 +132,51 @@ export default function StorePage({
             <div className="text-re-green-600">{`Last order date`}</div>
             <div className="text-gray-200">
               {` — ${location.orderItems.length == 0
-                  ? "No orders placed"
-                  : new Date(
-                    location.orderItems[0].createdAt
-                  ).toLocaleDateString("en-us", {
-                    day: "numeric",
-                    month: "short",
-                  })
+                ? "No orders placed"
+                : new Date(
+                  location.orderItems[0].createdAt
+                ).toLocaleDateString("en-us", {
+                  day: "numeric",
+                  month: "short",
+                })
                 }`}
             </div>
           </div>
         </div>
       </div>
     ));
+    const breadcrumbsInfo: BreadcrumbsInfo[] = [
+      {
+        step: "1",
+        title: "Choose the location",
+        active: true
+      },
+      {
+        step: "2",
+        title: "Choose your product",
+        active: false
+      },
+      {
+        step: "3",
+        title: "Set properties",
+        active: false
+      },
+    ];
+    const breadcrumbs = breadcrumbsInfo.map((info) => (
+      <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
+        <div className={`h-0.5 ${info.active ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
+        <div className="w-full flex items-center justify-start mt-1">
+          <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
+            Step {info.step}:
+          </h2>
+          <h2 className=" font-theinhardt-300 text-white">
+            {info.title}
+          </h2>
+        </div>
+      </div>));
 
     return (
-      <div className="w-screen h-screen bg-black flex">
+      <div className="h-screen bg-black flex">
         {/* <head>
           <title>Store</title>
           <meta name="store" content="shop for products" />
@@ -189,12 +224,13 @@ export default function StorePage({
           </div>
         </div>
         <main className="flex flex-col w-full h-full py-3 font-theinhardt">
-          <div className="flex justify-between px-10 py-6 text-white">
-            <h1 className="font-theinhardt text-3xl">Shop</h1>
-            <h1 className="font-theinhardt text-3xl">{company.name}</h1>
+          <div className="flex justify-between mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+            <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full">
+            <div className="flex px-6 flex-col w-full">
+              <div className="w-full flex gap-6 items-center py-4">{breadcrumbs}</div>
+
               <h1 className="text-center text-3xl text-white">
                 Which location are you shopping for?
               </h1>
@@ -257,9 +293,8 @@ export default function StorePage({
           <link rel="icon" href="/favicon.ico" />
         </head>
         <main className="flex flex-col w-full h-full py-3 font-theinhardt">
-          <div className="flex justify-between px-10 py-6 text-white">
-            <h1 className="font-theinhardt text-3xl">Shop</h1>
-            <h1 className="font-theinhardt text-3xl">{company.name}</h1>
+          <div className="flex justify-between mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+            <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
             <div className="flex flex-col w-full">

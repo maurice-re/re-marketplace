@@ -166,7 +166,7 @@ export default async function Layout({
 
   return (
     <div className="flex h-screen bg-black">
-      <div className="flex flex-col items-center text-white px-8 mr-6 border-r-1/2 border-re-dark-green-100">
+      <div className="flex flex-col items-center text-white px-8 border-r-1/2 border-re-dark-green-100">
         <div className="w-full flex items-center justify-center gap-20 mt-6 mb-8">
           <Image
             src={"/images/logo.png"}
