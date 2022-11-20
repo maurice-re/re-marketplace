@@ -89,9 +89,9 @@ export default async function Page() {
 
   return (
     <div className="w-full flex bg-black">
-      <head>
+      {/* <head>
         <title>Lifecycle</title>
-      </head>
+      </head> */}
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
         <h1 className="font-theinhardt text-3xl self-start text-white">
           Lifecycle
