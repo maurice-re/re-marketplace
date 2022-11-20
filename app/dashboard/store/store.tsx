@@ -337,8 +337,8 @@ export default function StorePage({
             <h1 className="font-theinhardt text-3xl">Shop</h1>
             <h1 className="font-theinhardt text-3xl">{company.name}</h1>
           </div>
-          <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full">
+          <div className="flex w-full justify-between">
+            <div className="flex flex-col">
               <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-4 overflow-y-auto pt-4 pb-4 items-stretch flex flex-col mx-4">
                 <button
                   className="btn btn-square btn-outline"
