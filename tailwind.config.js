@@ -50,7 +50,7 @@ module.exports = {
         're-dark-green-300': '#081719',
         're-dark-green-400': '#132325',
         're-dark-green-500': '#0a1e20',
-        're-dark-green-600': '#001517',
+        're-dark-green-600': '#001417',
         're-dark-green-700': '#767676',
         're-dark-green-800': '#00474F',
         'stripe-gray': '#30313d'
