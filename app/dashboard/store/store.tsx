@@ -23,6 +23,24 @@ type BreadcrumbsInfo = {
   passed: boolean;
 };
 
+let breadcrumbsInfo: BreadcrumbsInfo[] = [
+  {
+    step: "1",
+    title: "Choose the location",
+    passed: true
+  },
+  {
+    step: "2",
+    title: "Choose your product",
+    passed: true
+  },
+  {
+    step: "3",
+    title: "Set properties",
+    passed: false
+  },
+];
+
 export default function StorePage({
   company,
   initialLocations,
@@ -62,6 +80,15 @@ export default function StorePage({
     }
 
     setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
+  }
+
+  function getLocationById(locationId: string): LocationWithOneItem | undefined {
+    return locations.find(location => location.id === locationId);
+  }
+
+  function getLocationName(locationId: string): string {
+    const location: LocationWithOneItem | undefined = getLocationById(locationId);
+    return location?.displayName ?? location?.city ?? "Your Location";
   }
 
   function handleAddToCart() {
@@ -146,23 +173,10 @@ export default function StorePage({
         </div>
       </div>
     ));
-    const breadcrumbsInfo: BreadcrumbsInfo[] = [
-      {
-        step: "1",
-        title: "Choose the location",
-        passed: true
-      },
-      {
-        step: "2",
-        title: "Choose your product",
-        passed: false
-      },
-      {
-        step: "3",
-        title: "Set properties",
-        passed: false
-      },
-    ];
+
+    breadcrumbsInfo[0].passed = true;
+    breadcrumbsInfo[1].passed = false;
+    breadcrumbsInfo[2].passed = false;
     const breadcrumbs = breadcrumbsInfo.map((info) => (
       <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
         <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
@@ -289,36 +303,90 @@ export default function StorePage({
         </div>
       ));
 
+    breadcrumbsInfo[0].passed = true;
+    breadcrumbsInfo[1].passed = true;
+    breadcrumbsInfo[2].passed = false;
+
+    // TODO(Suhana): DRY breadcrumbs
+    const breadcrumbs = breadcrumbsInfo.map((info) => (
+      <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
+        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
+        <div className="w-full flex items-center justify-start mt-1">
+          <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
+            Step {info.step}:
+          </h2>
+          <h2 className=" font-theinhardt-300 text-white">
+            {info.title}
+          </h2>
+        </div>
+      </div>));
+
     return (
-      <div className="w-screen h-screen bg-black flex">
-        <head>
-          <title>Store</title>
-          <meta name="store" content="shop for products" />
-          <link rel="icon" href="/favicon.ico" />
-        </head>
-        <main className="flex flex-col w-full h-full py-3 font-theinhardt">
-          <div className="flex justify-between mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+      <div className="h-screen bg-black flex">
+        {/* <head>
+        <title>Store</title>
+        <meta name="store" content="shop for products" />
+        <link rel="icon" href="/favicon.ico" />
+      </head> */}
+        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
+          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
             <div className="flex flex-col w-full">
-              <h1 className="text-center text-3xl text-white">Re Catalogue</h1>
-              <button
-                className="btn btn-square btn-outline"
-                onClick={() => {
-                  setLocationId(undefined);
-                }}
-              >
-                Back
-              </button>
-              <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
-                {productCards}
+              <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
+              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100 items-center justify-start gap-2">
+                <button
+                  onClick={() => {
+                    setLocationId(undefined);
+                  }}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.4598 5.10577L8.56554 12.0001L15.4598 18.8944C15.7527 19.1872 15.7527 19.6621 15.4598 19.955C15.1669 20.2479 14.6921 20.2479 14.3992 19.955L6.97455 12.5304C6.8339 12.3897 6.75488 12.199 6.75488 12.0001C6.75488 11.8011 6.8339 11.6104 6.97455 11.4697L14.3992 4.04511C14.4358 4.0085 14.4752 3.97646 14.5168 3.949C14.8079 3.75679 15.2035 3.78883 15.4598 4.04511C15.7527 4.338 15.7527 4.81288 15.4598 5.10577Z" fill="white" />
+                  </svg>
+                </button>
+                <h1 className="font-theinhardt text-lg">Locations / {getLocationName(locationId)}</h1>
+              </div>
+              <div className="bg-re-dark-green-600 h-full pt-4">
+                <div className="max-h-full  bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
+                  {productCards}
+                </div>
               </div>
             </div>
             <Cart companyId={company.id} locations={locations} skus={skus} />
           </div>
         </main>
       </div>
+
+      // <div className="w-screen h-screen bg-black flex">
+      //   <head>
+      //     <title>Store</title>
+      //     <meta name="store" content="shop for products" />
+      //     <link rel="icon" href="/favicon.ico" />
+      //   </head>
+      //   <main className="flex flex-col w-full h-full py-3 font-theinhardt">
+      //     <div className="flex justify-between mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+      //       <h1 className="font-theinhardt text-lg">Shop</h1>
+      //     </div>
+      //     <div className="flex h-full justify-between">
+      //       <div className="flex flex-col w-full">
+      //         <h1 className="text-center text-3xl text-white">Re Catalogue</h1>
+      //         <button
+      //           className="btn btn-square btn-outline"
+      //           onClick={() => {
+      //             setLocationId(undefined);
+      //           }}
+      //         >
+      //           Back
+      //         </button>
+      //         <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
+      //           {productCards}
+      //         </div>
+      //       </div>
+      //       <Cart companyId={company.id} locations={locations} skus={skus} />
+      //     </div>
+      //   </main>
+      // </div>
     );
   }
 
