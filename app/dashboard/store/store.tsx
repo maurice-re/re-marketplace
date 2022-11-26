@@ -243,7 +243,7 @@ export default function StorePage({
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full h-screen">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
                 <h1 className="font-theinhardt text-lg">Locations</h1>
@@ -278,18 +278,18 @@ export default function StorePage({
   }
 
   if (locationId != undefined && productId == undefined) {
-    const productCards = products
+    let productCards = products
       .filter((product) => product.active)
       .map((product) => (
         <div
           key={product.id}
-          className="card card-compact w-full my-3 bg-base-100 shadow-xl font-theinhardt justify-center hover:bg-re-dark-green-400 cursor-pointer"
+          className="w-full rounded-b-md justify-center cursor-pointer"
           onClick={() => {
             setSkuId(skus.find((sku) => sku.productId == product.id)?.id);
             setProductId(product.id);
           }}
         >
-          <figure>
+          <figure className="rounded-t-md overflow-hidden">
             <Image
               src={product.mainImage}
               alt={product.name}
@@ -297,8 +297,12 @@ export default function StorePage({
               width={400}
             />
           </figure>
-          <div className="card-body">
-            <h2 className="card-title">{product.name}</h2>
+          <div className="p-3 flex items-center justify-between border-b-1/2 bg-re-dark-green-500 hover:bg-re-dark-green-400 border-re-dark-green-100 border-x-1/2 rounded-b-md">
+            <div >
+              <h3 className="text-white text-lg leading-none">{product.name}</h3>
+              <h3 className="mt-2 leading-none text-re-dark-green-700">{product.materials}</h3>
+              <h3 className="mt-1 leading-none text-re-dark-green-700">{product.sizes.split(', ').join(' | ')}</h3>
+            </div>
           </div>
         </div>
       ));
@@ -328,12 +332,12 @@ export default function StorePage({
         <meta name="store" content="shop for products" />
         <link rel="icon" href="/favicon.ico" />
       </head> */}
-        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
+        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt-300">
           <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full h-screen">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100 items-center justify-start gap-2">
                 <button
@@ -347,8 +351,10 @@ export default function StorePage({
                 </button>
                 <h1 className="font-theinhardt text-lg">Locations / {getLocationName(locationId)}</h1>
               </div>
-              <div className="bg-re-dark-green-600 h-full pt-4">
-                <div className="max-h-full  bg-opacity-70 rounded-10 my-4 px-8 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4">
+              <div className="bg-re-dark-green-600 h-full">
+
+                <div className={`mt-6 grid grid-cols-4 gap-6 py-1 items-start justify-start ${productCards.length > 3 ? 'px-28' : 'px-6'}`}>
+                  {/* <div className="max-h-full rounded-10 my-4 px-28 grid grid-cols-3 gap-8 overflow-y-auto py-1 items-stretch mx-4"> */}
                   {productCards}
                 </div>
               </div>
@@ -397,7 +403,7 @@ export default function StorePage({
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full">
+            <div className="flex flex-col w-full h-screen">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100 items-center justify-start gap-2">
                 <button
@@ -500,116 +506,6 @@ export default function StorePage({
           </div>
         </main>
       </div>
-
-
-
-      // <div className="w-screen h-screen bg-black flex">
-      //   <head>
-      //     <title>Store</title>
-      //     <meta name="store" content="shop for products" />
-      //     <link rel="icon" href="/favicon.ico" />
-      //   </head>
-      //   <main className="flex flex-col w-full h-full py-3 font-theinhardt">
-      //     <div className="flex justify-between px-10 py-6 text-white">
-      //       <h1 className="font-theinhardt text-3xl">Shop</h1>
-      //       <h1 className="font-theinhardt text-3xl">{company.name}</h1>
-      //     </div>
-      //     <div className="flex w-full justify-between">
-      //       <div className="flex flex-col">
-      //         <div className="max-h-full bg-re-gray-500 bg-opacity-70 rounded-10 my-4 px-4 overflow-y-auto pt-4 pb-4 items-stretch flex flex-col mx-4">
-      //           <button
-      //             className="btn btn-square btn-outline"
-      //             onClick={() => {
-      //               setProductId(undefined);
-      //               setQuantity("");
-      //               setSkuId(undefined);
-      //             }}
-      //           >
-      //             Back
-      //           </button>
-      //           <h1 className="text-3xl mb-4 text-center text-white">
-      //             {product.name}
-      //           </h1>
-      //           <div className="flex justify-evenly">
-      //             <div className="flex flex-col">
-      //               <Image
-      //                 src={product.mainImage}
-      //                 alt={product.name}
-      //                 width={400}
-      //                 height={400}
-      //                 className="rounded-10"
-      //               />
-      //             </div>
-      //             <div className="flex flex-col justify-evenly">
-      //               <div className="flex flex-col p-6 w-full bg-re-gray-400 rounded-10">
-      //                 <div>Size</div>
-      //                 <div className="flex flex-wrap">
-      //                   {sizes.map((size) => (
-      //                     <button
-      //                       key={size}
-      //                       className={`btn btn-outline mr-2 ${sku.size == size ? "btn-accent" : ""
-      //                         }`}
-      //                       onClick={() => changeSize(size)}
-      //                     >
-      //                       {size}
-      //                     </button>
-      //                   ))}
-      //                 </div>
-      //                 <div className="h-4" />
-      //                 <div>Color</div>
-      //                 <div className="flex flex-wrap">
-      //                   {colors.map((color) => (
-      //                     <button
-      //                       key={color}
-      //                       className={`btn btn-outline mr-2 ${sku.color == color ? "btn-accent" : ""
-      //                         }`}
-      //                       onClick={() => changeColor(color)}
-      //                     >
-      //                       {color}
-      //                     </button>
-      //                   ))}
-      //                 </div>
-      //                 <div className="h-4" />
-      //                 <div>Material</div>
-      //                 {materials.map((material) => (
-      //                   <button
-      //                     key={material}
-      //                     className={`btn btn-outline mr-2 ${sku.material == material ? "btn-accent" : ""
-      //                       }`}
-      //                   >
-      //                     {material}
-      //                   </button>
-      //                 ))}
-      //               </div>
-      //               <div className="flex p-4 bg-re-gray-400 rounded-10 items-center">
-      //                 <h2>{`\$${getPriceFromTable(
-      //                   sku.priceTable,
-      //                   quantity == "" ? 1 : quantity
-      //                 )}`}</h2>
-      //                 <div className="w-6" />
-      //                 <input
-      //                   type="number"
-      //                   placeholder="Quantity"
-      //                   className="input w-full max-w-xs bg-black"
-      //                   required
-      //                   value={quantity}
-      //                   onChange={(e) => setQuantity(e.target.value)}
-      //                 />
-      //               </div>
-      //               <button
-      //                 className="btn btn-outline btn-accent font-theinhardt tracking-wide"
-      //                 onClick={handleAddToCart}
-      //               >
-      //                 Add To Cart
-      //               </button>
-      //             </div>
-      //           </div>
-      //         </div>
-      //       </div>
-      //       <Cart companyId={company.id} locations={locations} skus={skus} />
-      //     </div>
-      //   </main>
-      // </div>
     );
   }
 
