@@ -32,7 +32,6 @@ function Cart({
           <div className="text-center text-white font-theinhardt text-lg py-4">
             Your cart is empty
           </div>
-
         </div>)}
       {orderString != "" &&
         orderString.split("*").map((orderForLocation, index) => {
@@ -41,7 +40,6 @@ function Cart({
           const location = locations.find(
             (location) => location.id == locationId
           );
-
           return (
             <div
               className={`flex flex-col ${index == 0 ? "pt-10 pb-3" : "py-3"
@@ -77,18 +75,20 @@ function Cart({
             </div>
           );
         })}
-      {/* <button
-            className="btn btn-sm btn-outline btn-error"
-            onClick={clearCart}
-          >
-            Clear Cart
-          </button> */}
+      {orderString !== "" && (
+        <button
+          className="btn btn-sm btn-outline btn-error"
+          onClick={clearCart}
+        >
+          Clear Cart
+        </button>
+      )}
       <div className="font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-dark-green-100 py-4 px-6">
         <div className="flex items-center w-full justify-between mb-2">
           <h2 className="font-theinhardt-300 text-left text-white">Subtotal</h2>
           <h2 className="text-left text-white">$0.00</h2>
         </div>
-        <h2 className="text-re-dark-green-100 text-sm leading-none mb-8 w-full">Shipping and taxes calculated at checkout.</h2>
+        <h2 className="text-re-dark-green-100 text-sm leading-none mb-6 w-full">Shipping and taxes calculated at checkout.</h2>
         <Link
           className={`w-full ${orderString == "" && "pointer-events-none"
             }`}
@@ -100,7 +100,7 @@ function Cart({
           }}
         >
           <button
-            className="btn btn-sm btn-outline btn-accent w-full"
+            className="bg-re-blue rounded-md py-1 font-theinhardt-300 text-white text-lg w-full"
             disabled={orderString == ""}
           >
             Checkout

@@ -53,6 +53,8 @@ module.exports = {
         're-dark-green-600': '#001417',
         're-dark-green-700': '#767676',
         're-dark-green-800': '#00474F',
+        're-product-gray': '#586168',
+        're-product-green': '#00474F',
         'stripe-gray': '#30313d'
       },
       fontFamily: {
