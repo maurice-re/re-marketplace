@@ -507,6 +507,37 @@ export default function StorePage({
                           Add to cart
                         </button>
                       </div>
+                      <div className="flex gap-2 text-white text-md items-center justify-center mt-6">
+                        <svg width="20" height="13" viewBox="0 0 20 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M6.00487 2.06073L2.81554 5.25H13.0049C16.7328 5.25 19.7549 8.2721 19.7549 12V12.25C19.7549 12.6642 19.4191 13 19.0049 13C18.5907 13 18.2549 12.6642 18.2549 12.25V12C18.2549 9.1005 15.9044 6.75 13.0049 6.75H2.81554L6.00487 9.9394C6.04148 9.976 6.07351 10.0155 6.10097 10.057C6.29318 10.3482 6.26115 10.7438 6.00487 11C5.71197 11.2929 5.2371 11.2929 4.94421 11L0.47455 6.5304C0.18166 6.2375 0.18166 5.7626 0.47455 5.4697L4.94421 1.00007C5.2371 0.707171 5.71197 0.707171 6.00487 1.00007C6.29776 1.29296 6.29776 1.76783 6.00487 2.06073Z" fill="#58FEC4" />
+                        </svg>
+                        <div className="flex">
+                          <h2>Shop more</h2>
+                          <button
+                            onClick={() => {
+                              setProductId(undefined);
+                              setQuantity("");
+                              setSkuId(undefined);
+                            }}
+                            className="decoration-re-green-300 decoration-1 underline underline-offset-2 mx-1">
+                            products
+                          </button>
+                          <h2 >or</h2>
+                          <button
+                            className="ml-1 decoration-re-green-300 decoration-1 underline underline-offset-2"
+                            onClick={() => {
+                              setLocationId(undefined);
+                            }}>
+                            locations
+                          </button>
+                        </div>
+                      </div>
+                      {/* <h2 className="text-re-dark-green-700 leading-none text-center text-sm mt-2">Shop multiple locations and products in the same order</h2> */}
+                      {/* <div className="mt-8 text-white flex flex-col items-center justify-center text-md">
+                        <h1 className="leading-none">Add more products for {getLocationName(locationId)}</h1>
+                        <h1 className="uppercase text-xs tracking-wide my-2 leading-none text-re-dark-green-700">or</h1>
+                        <h1 className="leading-none">Shop for other locations</h1>
+                      </div> */}
                     </div>
                   </div>
                 </div>

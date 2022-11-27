@@ -55,7 +55,7 @@ function Cart({
                         <div className="w-3/4 flex flex-col justify-between h-full ">
                           <div className="flex flex-col">
                             <h2 className="text-md leading-tight">{sku.materialShort}</h2>
-                            <h2 className="text-sm pt-1 pb-2 leading-none text-gray-300 text-opacity-30" >{sku.size + " · " + (sku.color).charAt(0).toUpperCase() + (sku.color).slice(1)}</h2>
+                            <h2 className="text-sm pt-1 pb-2 leading-none text-gray-300 " >{sku.size + " · " + (sku.color).charAt(0).toUpperCase() + (sku.color).slice(1)}</h2>
                           </div>
                           <h2 className="text-md leading-tight">{"Qty " + quantity}</h2>
                         </div>
