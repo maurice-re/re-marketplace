@@ -20,6 +20,7 @@ const emptyProduct = {
   materials: "",
   priceTable: "",
   mainImage: "/images/swapbox_main.png",
+  description: null,
 };
 
 export default function Page() {

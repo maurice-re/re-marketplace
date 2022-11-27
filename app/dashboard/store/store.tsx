@@ -10,14 +10,10 @@ import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import Cart from "./cart";
 
-export type ProductWithDescription = Product & {
-  description: String;
-};
-
 type StoreProps = {
   company: Company;
   initialLocations: LocationWithOneItem[];
-  products: ProductWithDescription[];
+  products: Product[];
   skus: Sku[];
 };
 
@@ -446,7 +442,7 @@ export default function StorePage({
                         <h2>In stock and ready to ship</h2>
                       </div>
                       <h2 className="text-white text-lg mt-4 mb-2">Description</h2>
-                      <h2 className="text-re-dark-green-700 text-lg leading-tight">{product.description ?? "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}</h2>
+                      <h2 className="text-re-dark-green-700 text-lg leading-tight">{(product.description && product.description !== "") ? product.description : "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}</h2>
                       <h2 className="text-white text-lg mt-4 mb-3">Size</h2>
                       <div className="grid grid-cols-2 gap-4 items-start justify-start text-white text-md">
                         {sizes.map((size) => (
