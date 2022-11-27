@@ -493,7 +493,7 @@ export default function StorePage({
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full items-center h-full text-center bg-black focus:outline-none placeholder-re-dark-green-100"
+                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none placeholder-re-dark-green-100"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
