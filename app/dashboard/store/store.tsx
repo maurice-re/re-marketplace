@@ -488,22 +488,23 @@ export default function StorePage({
                         height={400}
                         className="rounded-md"
                       />
-                      <div className="flex items-center justify-center mt-4 font-theinhardt-300 text-md text-white">
-                        <div className="flex w-1/5 rounded-l-md justify-center items-center border-1/2 border-re-blue">
+                      <div className="flex  items-center justify-center mt-4 font-theinhardt-300 text-md text-white">
+                        <div className={`flex py-2 w-1/5 rounded-l-md justify-center h-full items-center ${quantity === "" ? " border-re-dark-green-100" : " border-re-blue"} border-1/2`}>
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full items-center text-center bg-black"
+                            className="input w-full items-center h-full text-center bg-black focus:outline-none placeholder-re-dark-green-100"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                           />
                         </div>
                         <button
-                          className="w-4/5 border-1/2 border-re-blue bg-re-blue h-full rounded-r-md"
+                          className={`${quantity === "" ? "text-re-dark-green-100 border-re-dark-green-100" : "bg-re-blue border-re-blue"} border-1/2 w-4/5 h-full rounded-r-md text-lg`}
                           onClick={handleAddToCart}
+                          disabled={quantity === ""}
                         >
-                          Add To Cart
+                          Add to cart
                         </button>
                       </div>
                     </div>

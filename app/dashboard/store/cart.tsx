@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCartStore } from "../../../stores/cartStore";
 import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
+import { getOrderStringTotal } from "../../../utils/dashboard/orderStringUtils";
 
 function Cart({
   companyId,
@@ -18,8 +19,54 @@ function Cart({
   const clearCart = useCartStore((state) => state.clearCart);
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between h-screen  border-l border-l-re-gray-500">
-      <div className="flex justify-between py-4 pl-6 text-white border-b-1/2 border-re-dark-green-100">
-        <h1 className="font-theinhardt text-lg">Shopping Cart</h1>
+      <div className="flex flex-col gap-4 text-white">
+        <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-dark-green-100">Shopping Cart</h1>
+        {orderString != "" &&
+          orderString.split("*").map((orderForLocation, index) => {
+            const orderForLocationSplit = orderForLocation.split("_");
+            const locationId = orderForLocationSplit[0];
+            const location = locations.find(
+              (location) => location.id == locationId
+            );
+            return (
+              <div
+                className="flex flex-col px-6 w-full font-theinhardt-300"
+                // className={`flex flex-col ${index == 0 ? "pt-10 pb-3" : "py-3"
+                //   }`}
+                key={locationId}
+              >
+                <div className="text-re-green-300">{location?.displayName ?? location?.city}</div>
+                {orderForLocationSplit.slice(1).map((skuQuantity) => {
+                  const [skuId, quantity] = skuQuantity.split("~");
+                  const sku = skus.find((sku) => sku.id == skuId)!;
+                  return (
+                    <div
+                      className="flex items-center justify-between my-2"
+                      key={locationId + skuId}
+                    >
+                      <Image
+                        src={sku?.mainImage ?? ""}
+                        alt={sku?.id}
+                        height={72}
+                        width={72}
+                        className="rounded"
+                      />
+                      <div className="justify-between h-full w-full flex text-white ml-2">
+                        <div className="w-3/4 flex flex-col justify-between h-full ">
+                          <div className="flex flex-col">
+                            <h2 className="text-md leading-tight">{sku.materialShort}</h2>
+                            <h2 className="text-sm pt-1 pb-2 leading-none text-gray-300 text-opacity-30" >{sku.size + " · " + (sku.color).charAt(0).toUpperCase() + (sku.color).slice(1)}</h2>
+                          </div>
+                          <h2 className="text-md leading-tight">{"Qty " + quantity}</h2>
+                        </div>
+                        <div className="w-1/4"><h2>{"$" + getPriceFromTable(sku.priceTable, quantity)}</h2></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
       </div>
       {orderString == "" && (
         <div className="flex items-center flex-col 4">
@@ -32,80 +79,43 @@ function Cart({
           <div className="text-center text-white font-theinhardt text-lg py-4">
             Your cart is empty
           </div>
-        </div>)}
-      {orderString != "" &&
-        orderString.split("*").map((orderForLocation, index) => {
-          const orderForLocationSplit = orderForLocation.split("_");
-          const locationId = orderForLocationSplit[0];
-          const location = locations.find(
-            (location) => location.id == locationId
-          );
-          return (
-            <div
-              className={`flex flex-col ${index == 0 ? "pt-10 pb-3" : "py-3"
-                }`}
-              key={locationId}
-            >
-              <div>{location?.displayName ?? location?.city}</div>
-              {orderForLocationSplit.slice(1).map((skuQuantity) => {
-                const [skuId, quantity] = skuQuantity.split("~");
-                const sku = skus.find((sku) => sku.id == skuId)!;
-                return (
-                  <div
-                    className="flex px-2 items-center justify-between my-2"
-                    key={locationId + skuId}
-                  >
-                    <Image
-                      src={sku?.mainImage ?? ""}
-                      alt={sku?.id}
-                      height={72}
-                      width={72}
-                      className="rounded"
-                    />
-                    <div className="flex flex-col justify-center text-center">
-                      <div>{sku.size + " | " + sku.materialShort}</div>
-                      <div>{"Qty " + quantity}</div>
-                    </div>
-                    <div>
-                      {"$" + getPriceFromTable(sku.priceTable, quantity)}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-      {orderString !== "" && (
-        <button
-          className="btn btn-sm btn-outline btn-error"
-          onClick={clearCart}
-        >
-          Clear Cart
-        </button>
-      )}
-      <div className="font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-dark-green-100 py-4 px-6">
-        <div className="flex items-center w-full justify-between mb-2">
-          <h2 className="font-theinhardt-300 text-left text-white">Subtotal</h2>
-          <h2 className="text-left text-white">$0.00</h2>
         </div>
-        <h2 className="text-re-dark-green-100 text-sm leading-none mb-6 w-full">Shipping and taxes calculated at checkout.</h2>
-        <Link
-          className={`w-full ${orderString == "" && "pointer-events-none"
-            }`}
-          href={{
-            pathname: "/checkout",
-            query: {
-              orderString: orderString,
-            },
-          }}
-        >
-          <button
-            className="bg-re-blue rounded-md py-1 font-theinhardt-300 text-white text-lg w-full"
-            disabled={orderString == ""}
+      )}
+      <div className="w-full flex flex-col items-justify items-center gap-6">
+        {orderString !== "" && (
+          <div className="px-4 w-full">
+            <button
+              className={`border-1/2 border-re-dark-green-100 bg-re-dark-green-100 bg-opacity-70 rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              onClick={clearCart}
+            >
+              Clear cart
+            </button>
+          </div>
+        )}
+        <div className="px-6 font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-dark-green-100 py-4 ">
+          <div className="flex items-center w-full justify-between mb-2">
+            <h2 className="font-theinhardt-300 text-left text-white">Subtotal</h2>
+            <h2 className="text-left text-white">${getOrderStringTotal(orderString, [], skus ?? []).toFixed(2)}</h2>
+          </div>
+          <h2 className="text-re-dark-green-100 text-sm leading-none mb-6 w-full">Shipping and taxes calculated at checkout.</h2>
+          <Link
+            className={`w-full ${orderString == "" && "pointer-events-none"
+              }`}
+            href={{
+              pathname: "/checkout",
+              query: {
+                orderString: orderString,
+              },
+            }}
           >
-            Checkout
-          </button>
-        </Link>
+            <button
+              className={`${orderString === "" ? "text-re-dark-green-100 border-1/2 border-re-dark-green-100" : "bg-re-blue"}  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              disabled={orderString == ""}
+            >
+              Checkout
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
