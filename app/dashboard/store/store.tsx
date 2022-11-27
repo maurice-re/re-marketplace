@@ -10,10 +10,14 @@ import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import Cart from "./cart";
 
+export type ProductWithDescription = Product & {
+  description: String;
+};
+
 type StoreProps = {
   company: Company;
   initialLocations: LocationWithOneItem[];
-  products: Product[];
+  products: ProductWithDescription[];
   skus: Sku[];
 };
 
@@ -532,12 +536,6 @@ export default function StorePage({
                           </button>
                         </div>
                       </div>
-                      {/* <h2 className="text-re-dark-green-700 leading-none text-center text-sm mt-2">Shop multiple locations and products in the same order</h2> */}
-                      {/* <div className="mt-8 text-white flex flex-col items-center justify-center text-md">
-                        <h1 className="leading-none">Add more products for {getLocationName(locationId)}</h1>
-                        <h1 className="uppercase text-xs tracking-wide my-2 leading-none text-re-dark-green-700">or</h1>
-                        <h1 className="leading-none">Shop for other locations</h1>
-                      </div> */}
                     </div>
                   </div>
                 </div>

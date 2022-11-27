@@ -152,14 +152,15 @@ model OrderItem {
 }
 
 model Product {
-  id        String  @id @default(cuid())
-  active    Boolean @default(true)
-  colors    String
-  mainImage String
-  materials String
-  name      String
-  sizes     String
-  skus      Sku[]
+  id          String  @id @default(cuid())
+  active      Boolean @default(true)
+  colors      String
+  description String?
+  mainImage   String
+  materials   String
+  name        String
+  sizes       String
+  skus        Sku[]
 }
 
 model ProductDevelopment {
