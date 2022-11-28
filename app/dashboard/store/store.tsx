@@ -141,7 +141,7 @@ export default function StorePage({
     const locationCards = locations.map((location) => (
       <div
         key={location.id}
-        className="bg-re-dark-green-500 h-24 rounded-md border-re-dark-green-100 border-1/2 shadow-xl font-theinhardt justify-center hover:bg-re-dark-green-400 cursor-pointer"
+        className="bg-re-dark-green-300 h-24 rounded-md border-re-gray-300 border-1/2 shadow-xl font-theinhardt justify-center hover:bg-re-dark-green-200 cursor-pointer"
         onClick={() => setLocationId(location.id)}
       >
         <div className="flex flex-col items-start justify-center p-4">
@@ -164,7 +164,7 @@ export default function StorePage({
               </div>
             )}
           </div>
-          <div className="flex flex-col w-full re-dark-green-700 font-theinhardt-300 text-sm mt-1">
+          <div className="flex flex-col w-full re-gray-100 font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
             <h2 className="leading-none">
               {location.city + ", " + location.country + ", " + location.zip}
@@ -179,7 +179,7 @@ export default function StorePage({
     breadcrumbsInfo[2].passed = false;
     const breadcrumbs = breadcrumbsInfo.map((info) => (
       <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
-        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
+        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"} mb-2 w-full`} />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
             Step {info.step}:
@@ -239,21 +239,21 @@ export default function StorePage({
           </div>
         </div>
         <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
-          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
             <div className="flex flex-col w-full h-screen">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
-              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
                 <h1 className="font-theinhardt text-lg">Locations</h1>
               </div>
-              <div className="bg-re-dark-green-600 h-full pt-4">
+              <div className="bg-re-dark-green-500 h-full pt-4">
                 <div className="mt-2 px-2 grid grid-cols-3 gap-4 py-1 mx-4 items-start justify-start ">
                   {locationCards}
                   <div
                     key={"new"}
-                    className="bg-re-dark-green-500 h-24 flex gap-1 rounded-md border-re-dark-green-100 border-1/2 shadow-xl font-theinhardt justify-center items-center hover:bg-re-dark-green-400 cursor-pointer"
+                    className="bg-re-dark-green-300 h-24 flex gap-1 rounded-md border-re-gray-300 border-1/2 shadow-xl font-theinhardt justify-center items-center hover:bg-re-dark-green-200 cursor-pointer"
                     onClick={() =>
                       document.getElementById("newLocation-modal")?.click()
                     }
@@ -297,11 +297,11 @@ export default function StorePage({
               width={400}
             />
           </figure>
-          <div className="p-3 flex w-full items-end justify-between border-b-1/2 bg-re-dark-green-500 hover:bg-re-dark-green-400 border-re-dark-green-100 border-x-1/2 rounded-b-md">
+          <div className="p-3 flex w-full items-end justify-between border-b-1/2 bg-re-dark-green-300 hover:bg-re-dark-green-200 border-re-gray-300 border-x-1/2 rounded-b-md">
             <div className="w-5/6">
               <h3 className="text-white text-lg leading-none">{product.name}</h3>
-              <h3 className="mt-2 leading-none text-re-dark-green-700">{product.materials}</h3>
-              <h3 className="mt-1 leading-none text-re-dark-green-700">{product.sizes.split(', ').join(' | ')}</h3>
+              <h3 className="mt-2 leading-none text-re-gray-100">{product.materials}</h3>
+              <h3 className="mt-1 leading-none text-re-gray-100">{product.sizes.split(', ').join(' | ')}</h3>
             </div>
             <div className="w-1/6 flex justify-end"> <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M21 12C21 7.03125 16.9688 3 12 3C7.03125 3 3 7.03125 3 12C3 16.9688 7.03125 21 12 21C16.9688 21 21 16.9688 21 12Z" stroke="white" stroke-miterlimit="10" />
@@ -319,7 +319,7 @@ export default function StorePage({
     // TODO(Suhana): DRY breadcrumbs
     const breadcrumbs = breadcrumbsInfo.map((info) => (
       <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
-        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
+        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"} mb-2 w-full`} />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
             Step {info.step}:
@@ -338,13 +338,13 @@ export default function StorePage({
         <link rel="icon" href="/favicon.ico" />
       </head> */}
         <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt-300">
-          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
             <div className="flex flex-col w-full h-screen">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
-              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100 items-center justify-start gap-2">
+              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300 items-center justify-start gap-2">
                 <button
                   onClick={() => {
                     setLocationId(undefined);
@@ -356,7 +356,7 @@ export default function StorePage({
                 </button>
                 <h1 className="font-theinhardt text-lg">Locations / {getLocationName(locationId)}</h1>
               </div>
-              <div className="bg-re-dark-green-600 h-full">
+              <div className="bg-re-dark-green-500 h-full">
                 <div className="mt-6 grid grid-cols-4 gap-6 py-1 items-start justify-start px-6">
                   {productCards}
                 </div>
@@ -383,7 +383,7 @@ export default function StorePage({
 
     const breadcrumbs = breadcrumbsInfo.map((info) => (
       <div className={`w-1/${breadcrumbsInfo.length} flex flex-col py-2`}>
-        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-dark-green-100"} mb-2 w-full`} />
+        <div className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"} mb-2 w-full`} />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
             Step {info.step}:
@@ -398,13 +398,13 @@ export default function StorePage({
       <div className="h-screen bg-black flex">
 
         <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
-          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100">
+          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
           <div className="flex h-full justify-between">
             <div className="flex flex-col w-full h-screen">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
-              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-dark-green-100 items-center justify-start gap-2">
+              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300 items-center justify-start gap-2">
                 <button
                   onClick={() => {
                     setProductId(undefined);
@@ -418,7 +418,7 @@ export default function StorePage({
                 </button>
                 <h1 className="font-theinhardt text-lg">Locations / {getLocationName(locationId)} / {product.name}</h1>
               </div>
-              <div className="bg-re-dark-green-600 h-full font-theinhardt">
+              <div className="bg-re-dark-green-500 h-full font-theinhardt">
                 <div className="max-h-full bg-opacity-70 rounded-10 my-4 px-4 overflow-y-auto pt-4 pb-4 items-stretch flex flex-col mx-4">
                   <div className="flex w-full px-24 gap-16">
                     <div className="flex flex-col w-1/2">
@@ -442,13 +442,13 @@ export default function StorePage({
                         <h2>In stock and ready to ship</h2>
                       </div>
                       <h2 className="text-white text-lg mt-4 mb-2">Description</h2>
-                      <h2 className="text-re-dark-green-700 text-lg leading-tight">{(product.description && product.description !== "") ? product.description : "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}</h2>
+                      <h2 className="text-re-gray-100 text-lg leading-tight">{(product.description && product.description !== "") ? product.description : "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}</h2>
                       <h2 className="text-white text-lg mt-4 mb-3">Size</h2>
                       <div className="grid grid-cols-2 gap-4 items-start justify-start text-white text-md">
                         {sizes.map((size) => (
                           <button
                             key={size}
-                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-500 ${sku.size == size ? "border-re-green-500" : "border-re-dark-green-100"
+                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${sku.size == size ? "border-re-green-500" : "border-re-gray-300"
                               }`}
                             onClick={() => changeSize(size)}
                           >
@@ -472,7 +472,7 @@ export default function StorePage({
                         {materials.map((material) => (
                           <button
                             key={material}
-                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-500 ${sku.material == material ? "border-re-green-500" : "border-re-dark-green-100"
+                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${sku.material == material ? "border-re-green-500" : "border-re-gray-300"
                               }`}
                           >
                             {material}
@@ -489,18 +489,18 @@ export default function StorePage({
                         className="rounded-md"
                       />
                       <div className="flex  items-center justify-center mt-4 font-theinhardt-300 text-md text-white">
-                        <div className={`flex py-2 w-1/5 rounded-l-md justify-center h-full items-center ${quantity === "" ? " border-re-dark-green-100" : " border-re-blue"} border-1/2`}>
+                        <div className={`flex py-2 w-1/5 rounded-l-md justify-center h-full items-center ${quantity === "" ? " border-re-gray-300" : " border-re-blue"} border-1/2`}>
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none placeholder-re-dark-green-100"
+                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none placeholder-re-gray-300"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                           />
                         </div>
                         <button
-                          className={`${quantity === "" ? "text-re-dark-green-100 border-re-dark-green-100" : "bg-re-blue border-re-blue"} border-1/2 w-4/5 h-full rounded-r-md text-lg`}
+                          className={`${quantity === "" ? "text-re-gray-300 border-re-gray-300" : "bg-re-blue border-re-blue"} border-1/2 w-4/5 h-full rounded-r-md text-lg`}
                           onClick={handleAddToCart}
                           disabled={quantity === ""}
                         >

@@ -20,7 +20,7 @@ function Cart({
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between h-screen  border-l border-l-re-gray-500">
       <div className="flex flex-col gap-4 text-white">
-        <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-dark-green-100">Shopping Cart</h1>
+        <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">Shopping Cart</h1>
         {orderString != "" &&
           orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
@@ -85,19 +85,19 @@ function Cart({
         {orderString !== "" && (
           <div className="px-4 w-full">
             <button
-              className={`border-1/2 border-re-dark-green-100 bg-re-dark-green-100 bg-opacity-70 rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              className={`border-1/2 border-re-gray-300 bg-re-gray-300 bg-opacity-70 rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               onClick={clearCart}
             >
               Clear cart
             </button>
           </div>
         )}
-        <div className="px-6 font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-dark-green-100 py-4 ">
+        <div className="px-6 font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-gray-300 py-4 ">
           <div className="flex items-center w-full justify-between mb-2">
             <h2 className="font-theinhardt-300 text-left text-white">Subtotal</h2>
             <h2 className="text-left text-white">${getOrderStringTotal(orderString, [], skus ?? []).toFixed(2)}</h2>
           </div>
-          <h2 className="text-re-dark-green-100 text-sm leading-none mb-6 w-full">Shipping and taxes calculated at checkout.</h2>
+          <h2 className="text-re-gray-300 text-sm leading-none mb-6 w-full">Shipping and taxes calculated at checkout.</h2>
           <Link
             className={`w-full ${orderString == "" && "pointer-events-none"
               }`}
@@ -109,7 +109,7 @@ function Cart({
             }}
           >
             <button
-              className={`${orderString === "" ? "text-re-dark-green-100 border-1/2 border-re-dark-green-100" : "bg-re-blue"}  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              className={`${orderString === "" ? "text-re-gray-300 border-1/2 border-re-gray-300" : "bg-re-blue"}  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               disabled={orderString == ""}
             >
               Checkout
