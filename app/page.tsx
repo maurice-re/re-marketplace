@@ -16,7 +16,7 @@ export default async function Page() {
       },
     });
 
-    if (orders.length == 0) {
+    if (orders.length === 0) {
       // redirect to shop if they have no orders, including if they just signed in for
       // the first time
       redirect("/dashboard/store");
