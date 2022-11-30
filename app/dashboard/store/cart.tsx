@@ -20,7 +20,7 @@ function Cart({
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between border-l border-l-re-gray-500 flex-grow-0">
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">Shopping Cart</h1>
-      <div className="flex flex-col gap-4 text-white mt-4 overflow-y-auto flex-grow-0 mb-4">
+      <div className="flex flex-col gap-4 h-full text-white mt-4 overflow-y-auto flex-grow-0 mb-4">
         {orderString != "" &&
           orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
