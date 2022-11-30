@@ -12,7 +12,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import type { PaymentMethod } from "@stripe/stripe-js";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import Addresses from "../../components/checkout/addresses";
 import Info from "../../components/checkout/info";

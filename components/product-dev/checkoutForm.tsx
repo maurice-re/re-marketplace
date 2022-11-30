@@ -5,7 +5,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { PaymentMethod } from "@stripe/stripe-js";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";

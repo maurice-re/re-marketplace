@@ -2,11 +2,13 @@
 import { Location } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
-import { calculatePriceFromCatalog, getPriceFromTable } from "../../utils/prisma/dbUtils";
+import {
+  calculatePriceFromCatalog,
+  getPriceFromTable,
+} from "../../utils/prisma/dbUtils";
 
 function QuickOrder({
   companyId,
@@ -76,10 +78,11 @@ function QuickOrder({
       <div className="h-px bg-white mb-4 w-full" />
       <div className="flex justify-between w-full gap-4">
         <div
-          className={`grid gap-4 h-96 overflow-y-auto w-full pr-1 items-start ${selected.length == 0
-            ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
-            : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
-            }`}
+          className={`grid gap-4 h-96 overflow-y-auto w-full pr-1 items-start ${
+            selected.length == 0
+              ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
+              : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
+          }`}
         >
           {skus
             .filter((s) => s.product.active)
@@ -89,10 +92,11 @@ function QuickOrder({
                 className="flex flex-col items-center mx-1 mb-2 group"
               >
                 <button
-                  className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selected.includes(sku)
-                    ? "border-re-green-600 border-3"
-                    : "border"
-                    }`}
+                  className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
+                    selected.includes(sku)
+                      ? "border-re-green-600 border-3"
+                      : "border"
+                  }`}
                   onClick={() => handleItemPress(sku)}
                 >
                   <Image
@@ -179,7 +183,7 @@ function QuickOrder({
                   companyId: companyId,
                 },
               }}
-            // as={`/checkout/${new Date().getTime()}`} 
+              // as={`/checkout/${new Date().getTime()}`}
             >
               <button className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black">
                 Buy now
