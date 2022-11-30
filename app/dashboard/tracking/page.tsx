@@ -34,7 +34,6 @@ async function getUser(session: Session) {
 }
 
 export default async function Page() {
-  // TODO(Suhana): What should we do here if there isn't a session?
   const session = await unstable_getServerSession(authOptions);
   if (session == null) {
     //TODO: redirect to login
@@ -44,7 +43,7 @@ export default async function Page() {
   const skus = await getSkus();
 
   return (
-    <div className="w-full h-screen bg-black flex overflow-auto">
+    <div className="w-full h-screen bg-black flex overflow-auto ml-6">
       {/* <head>
         <title>Tracking</title>
         <meta name="tracking" content="Tracking" />

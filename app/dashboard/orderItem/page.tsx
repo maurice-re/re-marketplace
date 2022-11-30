@@ -59,7 +59,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="h-screen bg-black flex overflow-hidden">
+    <div className="h-screen bg-black flex overflow-hidden ml-6">
       {/* <head>
         <title>Orders</title>
         <meta name="orders" content="Manage your orders" />

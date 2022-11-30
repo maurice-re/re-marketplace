@@ -6,13 +6,11 @@ import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import { unstable_getServerSession } from "next-auth";
 import Checkout from "./checkout";
 
-type Props = {
+export default async function Page(props: {
   searchParams?: {
     transaction?: string;
   };
-};
-
-export default async function Page(props: Props) {
+}) {
 
   const { searchParams } = props;
 

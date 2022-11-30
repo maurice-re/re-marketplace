@@ -6,7 +6,8 @@
         "mainImage": "/images/swapcup_main.png",
         "materials": "Recycled Polypropylene",
         "name": "Swap Cup",
-        "sizes": "8 oz, 12 oz, 16 oz"
+        "sizes": "8 oz, 12 oz, 16 oz",
+        "description": null
     },
     {
         "id": "SB1",
@@ -15,6 +16,7 @@
         "mainImage": "/images/swapbox_main.png",
         "materials": "Recycled Polypropylene",
         "name": "Swap Box",
-        "sizes": "1 L, 1.5 L"
+        "sizes": "1 L, 1.5 L",
+        "description": null
     }
 ]
