@@ -149,7 +149,7 @@ export default function StorePage({
             {location.displayName ?? location.city}
           </h2>
             {location.orderItems.length != 0 && (
-              <div className="rounded-2xl px-2 bg-re-dark-green-800 border-re-dark-green-800">
+              <div className="rounded-2xl px-2 bg-re-product-green border-re-product-green">
                 <div className="flex items-center text-sm font-theinhardt-300 w-full gap-1">
                   <div className="text-gray-200">
                     {"Last ordered: " + new Date(
@@ -242,8 +242,8 @@ export default function StorePage({
           <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
-          <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full h-screen">
+          <div className="flex h-full justify-between overflow-hidden">
+            <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
                 <h1 className="font-theinhardt text-lg">Locations</h1>
@@ -304,7 +304,7 @@ export default function StorePage({
               <h3 className="mt-1 leading-none text-re-gray-100">{product.sizes.split(', ').join(' | ')}</h3>
             </div>
             <div className="w-1/6 flex justify-end"> <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M21 12C21 7.03125 16.9688 3 12 3C7.03125 3 3 7.03125 3 12C3 16.9688 7.03125 21 12 21C16.9688 21 21 16.9688 21 12Z" stroke="white" stroke-miterlimit="10" />
+              <path d="M21 12C21 7.03125 16.9688 3 12 3C7.03125 3 3 7.03125 3 12C3 16.9688 7.03125 21 12 21C16.9688 21 21 16.9688 21 12Z" stroke="white" strokeMiterlimit="10" />
               <path d="M12 8.25V15.75M15.75 12H8.25" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
             </svg></div>
 
@@ -341,8 +341,8 @@ export default function StorePage({
           <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
-          <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full h-screen">
+          <div className="flex h-full justify-between overflow-hidden">
+            <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300 items-center justify-start gap-2">
                 <button
@@ -401,8 +401,8 @@ export default function StorePage({
           <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div>
-          <div className="flex h-full justify-between">
-            <div className="flex flex-col w-full h-screen">
+          <div className="flex h-full justify-between overflow-hidden">
+            <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300 items-center justify-start gap-2">
                 <button
@@ -418,9 +418,9 @@ export default function StorePage({
                 </button>
                 <h1 className="font-theinhardt text-lg">Locations / {getLocationName(locationId)} / {product.name}</h1>
               </div>
-              <div className="bg-re-dark-green-500 h-full font-theinhardt">
-                <div className="max-h-full bg-opacity-70 rounded-10 my-4 px-4 overflow-y-auto pt-4 pb-4 items-stretch flex flex-col mx-4">
-                  <div className="flex w-full px-24 gap-16">
+              <div className="bg-re-dark-green-500 h-full font-theinhardt overflow-y-auto">
+                <div className="max-h-full bg-opacity-70 rounded-10 my-4 px-4 pt-4 items-stretch flex flex-col mx-4">
+                  <div className="flex w-full px-24 gap-16 pb-8">
                     <div className="flex flex-col w-1/2">
                       <h1 className="text-3xl text-left text-white">
                         {product.name}
@@ -489,18 +489,18 @@ export default function StorePage({
                         className="rounded-md"
                       />
                       <div className="flex  items-center justify-center mt-4 font-theinhardt-300 text-md text-white">
-                        <div className={`flex py-2 w-1/5 rounded-l-md justify-center h-full items-center ${quantity === "" ? " border-re-gray-300" : " border-re-blue"} border-1/2`}>
+                        <div className="flex py-2 w-1/5 rounded-l-md justify-center h-full items-center border-re-blue border-1/2">
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none placeholder-re-gray-300"
+                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                           />
                         </div>
                         <button
-                          className={`${quantity === "" ? "text-re-gray-300 border-re-gray-300" : "bg-re-blue border-re-blue"} border-1/2 w-4/5 h-full rounded-r-md text-lg`}
+                          className="bg-re-blue border-re-blue border-1/2 w-4/5 h-full rounded-r-md text-lg"
                           onClick={handleAddToCart}
                           disabled={quantity === ""}
                         >
