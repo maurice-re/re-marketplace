@@ -13,7 +13,6 @@ async function createApiKey(req: Request, res: Response) {
         return;
     }
 
-    const key = nanoid(64)
     await prisma.apiKey.update({
         where: {companyId: companyId},
         data: {admin: admin}

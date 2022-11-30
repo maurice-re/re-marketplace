@@ -1,5 +1,5 @@
 import { Location, Product, ProductDevelopment, Sku } from ".prisma/client";
-import Image from "next/future/image";
+import Image from "next/image";
 import { CheckoutType } from "../../utils/checkoutUtils";
 import {
   calculatePriceFromCatalog,
@@ -107,10 +107,10 @@ export default function LineItems({
       items = items.concat(
         lineItems.map((lineItem) => {
           const [skuId, quantity] = lineItem.split("~");
-          const sku: Sku = skus.find((s) => s.id == skuId)!;
+          const sku: Sku = skus.find((s) => s.id == skuId) as Sku;
           const product: Product = products.find(
             (p) => (p.id = sku.productId)
-          )!;
+          ) as Product;
           return (
             <div
               className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
@@ -143,7 +143,7 @@ export default function LineItems({
                   sku.id,
                   quantity
                 ).toFixed(2)}`}</div>
-                <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+                <div className="text-xs text-gray-300">{`$${getPriceFromTable(
                   sku.priceTable,
                   quantity
                 ).toFixed(2)} each`}</div>

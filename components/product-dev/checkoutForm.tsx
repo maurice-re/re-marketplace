@@ -5,7 +5,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import { PaymentMethod } from "@stripe/stripe-js";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import AddressField from "../form/address-field";
 import DoubleAddressField from "../form/double-address-field";
@@ -66,6 +66,8 @@ export default function CheckoutForm({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: find a better way to do parse form
     const formElements = (e.target as any).elements as HTMLInputElement[];
 
     setIsLoading(true);
@@ -143,7 +145,7 @@ export default function CheckoutForm({
             <option
               key={method.id}
               value={method.id}
-            >{`${method.card?.brand} – ${method.card?.last4}`}</option>
+            >{`${method.card?.brand} – ${method.card?.last4}`}</option>
           ))}
           <option value="new" key="new">
             New payment method

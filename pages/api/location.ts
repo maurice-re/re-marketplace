@@ -7,7 +7,6 @@ async function handler(req: Request, res: Response) {
     req.body;
   const { companyId, withItems } = req.query;
 
-  const now = new Date();
   if (req.method == "POST") {
     const newLocation = await prisma.location.create({
       data: {

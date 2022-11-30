@@ -37,17 +37,17 @@ export default function Addresses({
             placeholder="Name"
             top
             required
-            value={location?.shippingName!}
+            value={location?.shippingName ?? ""}
           />
           <AddressField
             placeholder="Country"
             required
-            value={location?.country!}
+            value={location?.country ?? ""}
           />
           <AddressField
             placeholder="Address Line 1"
             required
-            value={location?.line1!}
+            value={location?.line1 ?? ""}
           />
           <AddressField
             placeholder="Address Line 2"
@@ -55,16 +55,16 @@ export default function Addresses({
           />
           <DoubleAddressField
             leftPlaceholder="City"
-            leftValue={location?.city!}
+            leftValue={location?.city ?? ""}
             rightPlaceholder="Zip"
-            rightValue={location?.zip!}
+            rightValue={location?.zip ?? ""}
             required
           />
           <AddressField
             placeholder="State"
             bottom
             required
-            value={location?.state!}
+            value={location?.state ?? ""}
           />
         </div>
       );

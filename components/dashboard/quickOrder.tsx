@@ -1,7 +1,6 @@
 import { Location } from "@prisma/client";
-import Image from "next/future/image";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
 import {
@@ -11,15 +10,11 @@ import {
 
 function QuickOrder({
   companyId,
-  customerId,
   locations,
-  userId,
   skus,
 }: {
   companyId: string;
-  customerId: string;
   locations: Location[];
-  userId: string;
   skus: SkuProduct[];
 }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
@@ -29,7 +24,6 @@ function QuickOrder({
   const [location, setLocation] = useState<string>(
     locations.length > 1 ? locations[0].id : "new"
   );
-  const router = useRouter();
 
   function handleItemPress(skuSelected: SkuProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
@@ -62,7 +56,7 @@ function QuickOrder({
   }
 
   function createOrderString(): string {
-    let orderString = location == "New Location" ? "new" : location;
+    const orderString = location == "New Location" ? "new" : location;
     return skuIdQuantity.reduce((orders, tuple) => {
       const [sku, quantity] = tuple;
       return orders + "_" + [sku.id, quantity].join("~");
@@ -129,15 +123,13 @@ function QuickOrder({
                   </div>
                 </div>
                 <div className="text-sm font-theinhardt text-center">
-                  {`\$${getPriceFromTable(
+                  {`$${getPriceFromTable(
                     sku.priceTable,
                     getQuantityOfSku(sku.id)
                   )}`}
                 </div>
                 <input
-                  value={
-                    skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
-                  }
+                  value={skuIdQuantity.find(([s]) => s.id == sku.id)?.[1] ?? ""}
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
                   className="bg-re-gray-500 rounded-lg py-0.5 bg-opacity-70 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
                 />
@@ -147,7 +139,7 @@ function QuickOrder({
             <div className="flex justify-between mb-2">
               <div>Total:</div>
               <div>
-                {`\$${skuIdQuantity
+                {`$${skuIdQuantity
                   .reduce(
                     (prev, [sku, quantity]) =>
                       calculatePriceFromCatalog(
