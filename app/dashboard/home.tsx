@@ -32,13 +32,12 @@ function Home({
   //TODO(Suhana): Create sub components once used in app/
   if (hasCompleteOrder) {
     return (
-      <div className="w-full h-screen bg-black flex overflow-auto">
+      <div className="w-full h-screen w-7/8 bg-black flex overflow-auto">
         {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
-            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
-              user.companyId === "616" ? "Agent Coulson" : user.firstName
-            }!`}</h1>
+            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId === "616" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
             <div className="flex items-center">
               <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
               <div className="bg-white w-px h-5/6 mx-2" />
@@ -100,9 +99,8 @@ function Home({
                             key={item.id + "items"}
                           >
                             <div
-                              className={`flex items-center ${
-                                index + 1 != arr.length ? "mb-3" : ""
-                              }`}
+                              className={`flex items-center ${index + 1 != arr.length ? "mb-3" : ""
+                                }`}
                             >
                               <Image
                                 src={
@@ -123,12 +121,10 @@ function Home({
                                   }
                                 </div>
                                 <div className="text-sm font-theinhardt-300">
-                                  {`${
-                                    (item as ItemLocationSkuProduct).sku.size
-                                  } | ${
-                                    (item as ItemLocationSkuProduct).sku
+                                  {`${(item as ItemLocationSkuProduct).sku.size
+                                    } | ${(item as ItemLocationSkuProduct).sku
                                       .materialShort
-                                  }`}
+                                    }`}
                                 </div>
                               </div>
                             </div>
@@ -204,13 +200,12 @@ function Home({
     );
   } else if (hasIncompleteOrder) {
     return (
-      <div className="w-full h-screen bg-black flex overflow-auto">
+      <div className="w-full h-screen w-7/8 bg-black flex overflow-auto">
         {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
-            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
-              user.companyId == "616" ? "Agent Coulson" : user.firstName
-            }!`}</h1>
+            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId == "616" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
             <div className="flex items-center">
               <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
               <div className="bg-white w-px h-5/6 mx-2" />
@@ -293,9 +288,8 @@ function Home({
                             key={item.id + "items"}
                           >
                             <div
-                              className={`flex items-center ${
-                                index + 1 != arr.length ? "mb-3" : ""
-                              }`}
+                              className={`flex items-center ${index + 1 != arr.length ? "mb-3" : ""
+                                }`}
                             >
                               <Image
                                 src={
@@ -316,12 +310,10 @@ function Home({
                                   }
                                 </div>
                                 <div className="text-sm font-theinhardt-300">
-                                  {`${
-                                    (item as ItemLocationSkuProduct).sku.size
-                                  } | ${
-                                    (item as ItemLocationSkuProduct).sku
+                                  {`${(item as ItemLocationSkuProduct).sku.size
+                                    } | ${(item as ItemLocationSkuProduct).sku
                                       .materialShort
-                                  }`}
+                                    }`}
                                 </div>
                               </div>
                             </div>
@@ -388,13 +380,12 @@ function Home({
     );
   } else {
     return (
-      <div className="w-full h-screen bg-black flex overflow-auto">
+      <div className="w-full h-screen w-7/8 bg-black flex overflow-auto">
         {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
-            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
-              user.companyId == "616" ? "Agent Coulson" : user.firstName
-            }!`}</h1>
+            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId == "616" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
             <div className="flex items-center">
               <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
               <div className="bg-white w-px h-5/6 mx-2" />

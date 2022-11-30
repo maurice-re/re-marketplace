@@ -88,7 +88,7 @@ export default async function Page() {
   };
 
   return (
-    <div className="w-full flex bg-black">
+    <div className="ml-6 w-full flex bg-black">
       {/* <head>
         <title>Lifecycle</title>
       </head> */}
