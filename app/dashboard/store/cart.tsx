@@ -20,7 +20,7 @@ function Cart({
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between border-l border-l-re-gray-500 flex-grow-0">
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">Shopping Cart</h1>
-      <div className="flex flex-col gap-4 h-full text-white mt-4 overflow-y-auto flex-grow-0 mb-4">
+      <div className="flex flex-col gap-4 text-white mt-4 overflow-y-auto flex-grow-0 mb-4">
         {orderString != "" &&
           orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
@@ -69,7 +69,7 @@ function Cart({
           })}
       </div>
       {orderString == "" && (
-        <div className="flex items-center flex-col 4">
+        <div className="flex items-center flex-col 4 my-auto">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.25 20.25C8.66421 20.25 9 19.9142 9 19.5C9 19.0858 8.66421 18.75 8.25 18.75C7.83579 18.75 7.5 19.0858 7.5 19.5C7.5 19.9142 7.83579 20.25 8.25 20.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
             <path d="M18.75 20.25C19.1642 20.25 19.5 19.9142 19.5 19.5C19.5 19.0858 19.1642 18.75 18.75 18.75C18.3358 18.75 18 19.0858 18 19.5C18 19.9142 18.3358 20.25 18.75 20.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
