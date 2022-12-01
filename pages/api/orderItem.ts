@@ -8,7 +8,11 @@ async function handler(req: Request, res: Response) {
   }
 
   if (req.method == "DELETE") {
-    await prisma.orderItem.deleteMany();
+    await prisma.company.findFirst({
+      where: {
+        
+      }
+    });
     res.status(200).send();
   }
 }

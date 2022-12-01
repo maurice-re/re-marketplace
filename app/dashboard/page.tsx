@@ -30,7 +30,6 @@ async function getUser(session: Session) {
         },
       },
       orders: {
-        take: 1,
         orderBy: {
           createdAt: "desc",
         },
