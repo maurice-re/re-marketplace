@@ -9,16 +9,16 @@ async function repeat(req: Request, res: Response) {
     orderItem,
     companyId,
     userId,
-  } : {
-      companyId: string;
-      orderItem: OrderItemLocation;
-      userId: string;
+  }: {
+    companyId: string;
+    orderItem: OrderItemLocation;
+    userId: string;
   } = req.body;
-  
+
   const now = new Date();
 
   if (!orderItem || !companyId) {
-      res.status(400).send("Empty body")
+    res.status(400).send("Empty body");
   }
 
 
@@ -31,19 +31,19 @@ async function repeat(req: Request, res: Response) {
     },
   });
 
-  
-    await prisma.orderItem.create({
-        data: {
-            amount: orderItem.amount,
-            comments: orderItem.comments,
-            createdAt: now,
-            locationId: orderItem.locationId,
-            orderId: order.id,
-            quantity: orderItem.quantity,
-            qrCode: orderItem.qrCode,
-            skuId: orderItem.sku.id,
-        }
-    })
+
+  await prisma.orderItem.create({
+    data: {
+      amount: orderItem.amount,
+      comments: orderItem.comments,
+      createdAt: now,
+      locationId: orderItem.locationId,
+      orderId: order.id,
+      quantity: orderItem.quantity,
+      qrCode: orderItem.qrCode,
+      skuId: orderItem.sku.id,
+    }
+  });
   res.status(200).send();
 }
 
