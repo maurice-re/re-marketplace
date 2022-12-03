@@ -204,7 +204,14 @@ export default async function Layout({
         </div>
       </div>
       <div id="children" className="w-full">
-        {children}
+        <div className="h-screen bg-black flex">
+          <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
+            <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
+              <h1 className="font-theinhardt text-lg">Shop</h1>
+            </div>
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );

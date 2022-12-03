@@ -191,89 +191,91 @@ export default function StorePage({
       </div>));
 
     return (
-      <div className="h-screen bg-black flex">
-        {/* <head>
-          <title>Store</title>
-          <meta name="store" content="shop for products" />
-          <link rel="icon" href="/favicon.ico" />
-        </head> */}
-        <input
-          type="checkbox"
-          id="newLocation-modal"
-          className="modal-toggle"
-        />
-        <div className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Add a new location</h3>
-            <form id="add-location-form" onSubmit={handleAddLocation}>
-              <AddressField placeholder="Name" top required />
-              <AddressField placeholder="Country" required />
-              <AddressField placeholder="Address Line 1" required />
-              <AddressField placeholder="Address Line 2" />
-              <DoubleAddressField
-                leftPlaceholder="City"
-                rightPlaceholder="Zip"
-                required
-              />
-              <AddressField placeholder="State" bottom required />
-              <div className="modal-action flex">
-                <button
-                  className="btn btn-outline btn-error"
-                  type="button"
-                  disabled={loading}
-                  onClick={() =>
-                    document.getElementById("newLocation-modal")?.click()
-                  }
-                >
-                  Close
-                </button>
-                <button
-                  className={`btn btn-outline btn-accent ${loading ? "loading" : ""
-                    }`}
-                  type="submit"
-                >
-                  Add
-                </button>
-              </div>
-            </form>
+      // <div className="h-screen bg-black flex">
+      //   <head>
+      //     <title>Store</title>
+      //     <meta name="store" content="shop for products" />
+      //     <link rel="icon" href="/favicon.ico" />
+      //   </head>
+      //   <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
+      //     <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
+      //       <h1 className="font-theinhardt text-lg">Shop</h1>
+      //     </div>
+      // <div className="h-full">
+      //   <input
+      //     type="checkbox"
+      //     id="newLocation-modal"
+      //     className="modal-toggle"
+      //   />
+      //   <div className="modal">
+      //     <div className="modal-box">
+      //       <h3 className="font-bold text-lg">Add a new location</h3>
+      //       <form id="add-location-form" onSubmit={handleAddLocation}>
+      //         <AddressField placeholder="Name" top required />
+      //         <AddressField placeholder="Country" required />
+      //         <AddressField placeholder="Address Line 1" required />
+      //         <AddressField placeholder="Address Line 2" />
+      //         <DoubleAddressField
+      //           leftPlaceholder="City"
+      //           rightPlaceholder="Zip"
+      //           required
+      //         />
+      //         <AddressField placeholder="State" bottom required />
+      //         <div className="modal-action flex">
+      //           <button
+      //             className="btn btn-outline btn-error"
+      //             type="button"
+      //             disabled={loading}
+      //             onClick={() =>
+      //               document.getElementById("newLocation-modal")?.click()
+      //             }
+      //           >
+      //             Close
+      //           </button>
+      //           <button
+      //             className={`btn btn-outline btn-accent ${loading ? "loading" : ""
+      //               }`}
+      //             type="submit"
+      //           >
+      //             Add
+      //           </button>
+      //         </div>
+      //       </form>
+      //     </div>
+      //   </div>
+      <div className="flex h-full justify-between overflow-hidden">
+        <div className="flex flex-col w-full">
+          <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
+          <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
+            <h1 className="font-theinhardt text-lg">Locations</h1>
           </div>
-        </div>
-        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
-          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div>
-          <div className="flex h-full justify-between overflow-hidden">
-            <div className="flex flex-col w-full">
-              <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
-              <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-                <h1 className="font-theinhardt text-lg">Locations</h1>
-              </div>
-              <div className="bg-re-dark-green-500 h-full pt-4">
-                <div className="mt-2 px-2 grid grid-cols-3 gap-4 py-1 mx-4 items-start justify-start ">
-                  {locationCards}
-                  <div
-                    key={"new"}
-                    className="bg-re-dark-green-300 h-24 flex gap-1 rounded-md border-re-gray-300 border-1/2 shadow-xl font-theinhardt justify-center items-center hover:bg-re-dark-green-200 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("newLocation-modal")?.click()
-                    }
-                  >
-                    <h2 className="text-lg leading-none text-white">
-                      {"Add new location"}
-                    </h2>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M12 2.25C8.27344 2.25 5.25 5.12766 5.25 8.67188C5.25 12.75 9.75 19.2127 11.4023 21.4448C11.4709 21.5391 11.5608 21.6157 11.6647 21.6686C11.7686 21.7215 11.8835 21.749 12 21.749C12.1165 21.749 12.2314 21.7215 12.3353 21.6686C12.4392 21.6157 12.5291 21.5391 12.5977 21.4448C14.25 19.2136 18.75 12.7533 18.75 8.67188C18.75 5.12766 15.7266 2.25 12 2.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
-                      <path d="M12 11.25C13.2426 11.25 14.25 10.2426 14.25 9C14.25 7.75736 13.2426 6.75 12 6.75C10.7574 6.75 9.75 7.75736 9.75 9C9.75 10.2426 10.7574 11.25 12 11.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
+          <div className="bg-re-dark-green-500 h-full pt-4">
+            <div className="mt-2 px-2 grid grid-cols-3 gap-4 py-1 mx-4 items-start justify-start ">
+              {locationCards}
+              <div
+                key={"new"}
+                className="bg-re-dark-green-300 h-24 flex gap-1 rounded-md border-re-gray-300 border-1/2 shadow-xl font-theinhardt justify-center items-center hover:bg-re-dark-green-200 cursor-pointer"
+                onClick={() =>
+                  document.getElementById("newLocation-modal")?.click()
+                }
+              >
+                <h2 className="text-lg leading-none text-white">
+                  {"Add new location"}
+                </h2>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2.25C8.27344 2.25 5.25 5.12766 5.25 8.67188C5.25 12.75 9.75 19.2127 11.4023 21.4448C11.4709 21.5391 11.5608 21.6157 11.6647 21.6686C11.7686 21.7215 11.8835 21.749 12 21.749C12.1165 21.749 12.2314 21.7215 12.3353 21.6686C12.4392 21.6157 12.5291 21.5391 12.5977 21.4448C14.25 19.2136 18.75 12.7533 18.75 8.67188C18.75 5.12766 15.7266 2.25 12 2.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M12 11.25C13.2426 11.25 14.25 10.2426 14.25 9C14.25 7.75736 13.2426 6.75 12 6.75C10.7574 6.75 9.75 7.75736 9.75 9C9.75 10.2426 10.7574 11.25 12 11.25Z" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
 
-                  </div>
-                </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
           </div>
-        </main>
+        </div>
+        <Cart companyId={company.id} locations={locations} skus={skus} />
       </div>
+      // </div >
+      //   </main>
+      // </div>
     );
   }
 
@@ -332,15 +334,10 @@ export default function StorePage({
 
     return (
       <div className="h-screen bg-black flex">
-        {/* <head>
-        <title>Store</title>
-        <meta name="store" content="shop for products" />
-        <link rel="icon" href="/favicon.ico" />
-      </head> */}
         <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt-300">
-          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
+          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div>
+          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
@@ -398,9 +395,9 @@ export default function StorePage({
       <div className="h-screen bg-black flex">
 
         <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
-          <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
+          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div>
+          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
