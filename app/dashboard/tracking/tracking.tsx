@@ -59,7 +59,7 @@ type Statistic = {
 
 const monthsInYear = getMonthsInYear();
 
-function Tracking({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
+function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo: boolean; }) {
   // "Dummy" data that is updated on changes
   let baseData = {
     labels: monthsInYear,
@@ -411,10 +411,10 @@ function Tracking({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
           <Line options={options} data={data} />
         </div>
       </div>
-      <h1 className="pt-8 ml-1 font-theinhardt text-2xl">Configure Settings</h1>
-      <div className="flex w-full gap-8">
-        <SettingsForm settings={settings} setSettings={setSettings} />
-      </div>
+      {!demo && (<><h1 className="pt-8 ml-1 font-theinhardt text-2xl">Configure Settings</h1>
+        <div className="flex w-full gap-8">
+          <SettingsForm settings={settings} setSettings={setSettings} />
+        </div></>)}
       <div className="py-6"></div>
     </div>
   ) : (

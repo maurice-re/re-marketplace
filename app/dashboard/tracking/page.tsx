@@ -50,7 +50,7 @@ export default async function Page() {
         <link rel="icon" href="/favicon.ico" />
       </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-        <Tracking user={user} skus={skus} />
+        <Tracking user={user} skus={skus} demo={false} />
       </main>
     </div>
   );
