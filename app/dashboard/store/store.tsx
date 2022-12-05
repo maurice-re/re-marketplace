@@ -243,7 +243,7 @@ export default function StorePage({
       //       </form>
       //     </div>
       //   </div>
-      <div className="flex h-full justify-between overflow-hidden">
+      <div className="flex h-screen flex-grow-0 justify-between overflow-hidden">
         <div className="flex flex-col w-full">
           <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
           <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
@@ -338,7 +338,7 @@ export default function StorePage({
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div> */}
-          <div className="flex h-full justify-between overflow-hidden">
+          <div className="flex h-screen flex-grow-0 justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300 items-center justify-start gap-2">
@@ -398,7 +398,7 @@ export default function StorePage({
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div> */}
-          <div className="flex h-full justify-between overflow-hidden">
+          <div className="flex h-screen flex-grow-0 justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">{breadcrumbs}</div>
               <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300 items-center justify-start gap-2">
