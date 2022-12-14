@@ -79,9 +79,20 @@ export type LocationWithOneItem = Location & {
   orderItems: OrderItem[]
 }
 
+export type OrderItemLocationName = Order & {
+  items: OrderItem & {
+      location: {
+          city: string | null;
+          displayName: string | null;
+      };
+      sku: Sku & {
+          product: Product;
+      };
+  }[];
+}
 
 export function getUniqueSkus(orders: ItemSkuProduct[]): SkuProduct[] {
-  let ids: string[] = [];
+  const ids: string[] = [];
   return orders.reduce((prev, curr) => {
     if (ids.includes(curr.skuId)) {
       return prev;
@@ -104,7 +115,7 @@ export function numItemsBySkuId(orders: ItemSkuProduct[], id: string): number {
 }
 
 export function getLocationNames(orders: ItemSkuProduct[]): string[] {
-    let ids: string[] = [];
+    const ids: string[] = [];
     return orders.reduce((prev, curr) => {
         if (ids.includes(curr.locationId)) {
         return prev;
@@ -116,7 +127,7 @@ export function getLocationNames(orders: ItemSkuProduct[]): string[] {
 }
 
 export function addDays(date: Date, numDays: number) {
-    let d = new Date(date);
+    const d = new Date(date);
     d.setDate(d.getDate() + numDays)
     return d;
 }
@@ -137,7 +148,7 @@ function getLocationIds(orders: OrderItem[]): string[]{
 
 export function separateByLocationId(orders: OrderItem[]):OrderItem[][]  {
     const locationIds = getLocationIds(orders);
-    let output: OrderItem[][] = [];
+    const output: OrderItem[][] = [];
     locationIds.forEach(loc => {   
         const or = orders.filter(o => o.locationId == loc);
         output.push(or)

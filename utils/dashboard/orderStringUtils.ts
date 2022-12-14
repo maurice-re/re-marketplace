@@ -8,7 +8,7 @@ import { OrderWithItems, separateByLocationId } from "./dashboardUtils";
 
 export function getOrderStringTotal(orderString: string, products: Product[], skus: Sku[], tax?: number) {
     const ordersByLocation = orderString.split("*");
-    const orders = ordersByLocation.reduce((_orders, orderByLoc) => _orders.concat(orderByLoc.split("_").slice(1)), [] as String[]);
+    const orders = ordersByLocation.reduce((_orders, orderByLoc) => _orders.concat(orderByLoc.split("_").slice(1)), [] as string[]);
     return orders.reduce((total, order) => {
       const [skuId, quantity] = order.split("~");
       return total + calculatePriceFromCatalog(skus, skuId, parseInt(quantity), tax)

@@ -1,14 +1,15 @@
-import { Location, Order, Status } from "@prisma/client";
+import { Location, Status } from "@prisma/client";
 import { Session, unstable_getServerSession } from "next-auth";
 import prisma from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import {
+  OrderItemLocationName,
   SkuProduct,
-  UserOrderItems,
+  UserCompany,
 } from "../../utils/dashboard/dashboardUtils";
 import Home from "./home";
 
-async function getLocations(user: UserOrderItems) {
+async function getLocations(user: UserCompany) {
   const locations = await prisma.location.findMany({
     where: {
       companyId: user?.companyId,
@@ -17,40 +18,13 @@ async function getLocations(user: UserOrderItems) {
   return JSON.parse(JSON.stringify(locations));
 }
 
-async function getUser(session: Session) {
+async function getUser(session: Session): Promise<UserCompany> {
   const user = await prisma.user.findUnique({
     where: {
       email: session?.user?.email ?? "",
     },
     include: {
-      company: {
-        select: {
-          name: true,
-          customerId: true,
-        },
-      },
-      orders: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        include: {
-          items: {
-            include: {
-              sku: {
-                include: {
-                  product: true,
-                },
-              },
-              location: {
-                select: {
-                  displayName: true,
-                  city: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      company: true,
     },
   });
   return JSON.parse(JSON.stringify(user));
@@ -65,26 +39,30 @@ async function getSkus() {
   return JSON.parse(JSON.stringify(skus));
 }
 
-async function getIncompleteOrders(user: UserOrderItems) {
+async function getOrders(user: UserCompany): Promise<OrderItemLocationName[]> {
   const orders = await prisma.order.findMany({
     where: {
       companyId: user.companyId ?? "",
-      NOT: {
-        status: Status.COMPLETED,
-      },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
     include: {
-      company: true,
-    },
-  });
-  return JSON.parse(JSON.stringify(orders));
-}
-
-async function getCompleteOrders(user: UserOrderItems) {
-  const orders = await prisma.order.findMany({
-    where: {
-      companyId: user.companyId ?? "",
-      status: Status.COMPLETED,
+      items: {
+        include: {
+          sku: {
+            include: {
+              product: true,
+            },
+          },
+          location: {
+            select: {
+              displayName: true,
+              city: true,
+            },
+          },
+        },
+      },
     },
   });
   return JSON.parse(JSON.stringify(orders));
@@ -96,11 +74,17 @@ export default async function Page() {
     //TODO: redirect to login
     return <div>Not logged in</div>;
   }
-  const user: UserOrderItems = await getUser(session);
+  const user: UserCompany = await getUser(session);
   const locations: Location[] = await getLocations(user);
   const skus: SkuProduct[] = await getSkus();
-  const incompleteOrders: [Order] = await getIncompleteOrders(user);
-  const completeOrders: [Order] = await getCompleteOrders(user);
+  const orders = await getOrders(user);
+
+  const completeOrders = orders.filter(
+    (order) => order.status === Status.COMPLETED
+  );
+  const incompleteOrders = orders.filter(
+    (order) => order.status !== Status.COMPLETED
+  );
 
   const hasCompleteOrder: boolean =
     completeOrders.length > 0 || user.companyId === "616";
@@ -109,6 +93,7 @@ export default async function Page() {
   return (
     <Home
       locations={locations}
+      orders={orders}
       user={user}
       skus={skus}
       hasCompleteOrder={hasCompleteOrder}
