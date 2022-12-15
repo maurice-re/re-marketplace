@@ -148,6 +148,7 @@ export default function CheckoutForm({
         setIsLoading(false);
         return;
       }
+      await fetch("/api/mail/send-order");
     }
 
     if (!hasError) {
