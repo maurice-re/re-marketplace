@@ -247,7 +247,7 @@ export default function StorePage({
             </form>
           </div>
         </div>
-        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
+        <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div> */}
@@ -391,7 +391,7 @@ export default function StorePage({
         <meta name="store" content="shop for products" />
         <link rel="icon" href="/favicon.ico" />
       </head> */}
-        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt-300">
+        <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt-300">
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div> */}
@@ -468,7 +468,7 @@ export default function StorePage({
 
     return (
       <div className="h-screen bg-black flex">
-        <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt">
+        <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
           </div> */}
@@ -552,8 +552,8 @@ export default function StorePage({
                           <button
                             key={size}
                             className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${sku.size == size
-                                ? "border-re-green-500"
-                                : "border-re-gray-300"
+                              ? "border-re-green-500"
+                              : "border-re-gray-300"
                               }`}
                             onClick={() => changeSize(size)}
                           >
@@ -567,8 +567,8 @@ export default function StorePage({
                           <button
                             key={color}
                             className={`rounded-full w-8 h-8 border-1/2 mr-2 ${color === "green"
-                                ? "bg-re-product-green"
-                                : "bg-re-product-gray"
+                              ? "bg-re-product-green"
+                              : "bg-re-product-gray"
                               } ${sku.color == color
                                 ? "border-white"
                                 : "border-none"
@@ -583,8 +583,8 @@ export default function StorePage({
                           <button
                             key={material}
                             className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${sku.material == material
-                                ? "border-re-green-500"
-                                : "border-re-gray-300"
+                              ? "border-re-green-500"
+                              : "border-re-gray-300"
                               }`}
                           >
                             {material}

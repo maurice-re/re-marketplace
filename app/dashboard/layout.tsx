@@ -170,7 +170,7 @@ export default async function Layout({
   // console.log(pathname);
 
   return (
-    <div className="flex h-screen bg-black">
+    <div className="flex flex-grow bg-black">
       <div className="flex flex-col items-center text-white px-8 border-r-1/2 border-re-gray-300">
         <div className="w-full flex items-center justify-center gap-20 mt-6 mb-8">
           <Image
@@ -208,19 +208,10 @@ export default async function Layout({
           ))}
         </div>
       </div>
-      <div id="children" className="flex flex-col w-full h-full">
+      <div id="children" className="flex flex-col w-full h-screen">
         <Header routes={routes} />
         {children}
       </div>
-      {/* <div id="children" className="w-full">
-        <div className="h-screen bg-black flex">
-          <main className="flex flex-col w-full h-full overflow-y-auto pt-3 font-theinhardt min-h-screen max-h-screen">
-            <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-              <h1 className="font-theinhardt text-lg">Shop</h1>
-            </div>
-          </main>
-        </div>
-      </div> */}
     </div>
   );
 }
