@@ -1,4 +1,4 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Sku, Status, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export type UserOrderItems = User & {
@@ -24,12 +24,12 @@ export type ItemSkuProduct = OrderItem & {
   location: {
     displayName: string | null;
     city: string | null;
-};
+  };
 };
 
 export type SkuProduct = Sku & {
-    product: Product;
-  };
+  product: Product;
+};
 
 export type OrderCustomerOrderItems = Order & {
   company: {
@@ -51,12 +51,12 @@ export type OrderWithItemsLocationSku = Order & {
 export type ItemLocationSku = OrderItem & {
   location: Location;
   sku: Sku;
-}
+};
 
 export type OrderItemLocation = OrderItem & {
   location: Location;
   sku: Sku & {
-      product: Product;
+    product: Product;
   };
 };
 
@@ -65,31 +65,31 @@ export type ItemLocationSkuProduct = OrderItem & {
   sku: Sku & {
     product: Product;
   };
-}
+};
 
 export type OrderWithItems = Order & {
-  items: OrderItem[]
-}
+  items: OrderItem[];
+};
 
 export type UserCompany = User & {
-  company: Company
-}
+  company: Company;
+};
 
 export type LocationWithOneItem = Location & {
-  orderItems: OrderItem[]
-}
+  orderItems: OrderItem[];
+};
 
 export type OrderItemLocationName = Order & {
   items: OrderItem & {
-      location: {
-          city: string | null;
-          displayName: string | null;
-      };
-      sku: Sku & {
-          product: Product;
-      };
+    location: {
+      city: string | null;
+      displayName: string | null;
+    };
+    sku: Sku & {
+      product: Product;
+    };
   }[];
-}
+};
 
 export function getUniqueSkus(orders: ItemSkuProduct[]): SkuProduct[] {
   const ids: string[] = [];
@@ -105,59 +105,59 @@ export function getUniqueSkus(orders: ItemSkuProduct[]): SkuProduct[] {
 
 
 export function numItemsBySkuId(orders: ItemSkuProduct[], id: string): number {
-    return orders.reduce((prev, curr) => {
-        if(curr.skuId == id) {
-            return prev + curr.quantity
-        } else {
-            return prev;
-        }
-    }, 0)
+  return orders.reduce((prev, curr) => {
+    if (curr.skuId == id) {
+      return prev + curr.quantity;
+    } else {
+      return prev;
+    }
+  }, 0);
 }
 
 export function getLocationNames(orders: ItemSkuProduct[]): string[] {
-    const ids: string[] = [];
-    return orders.reduce((prev, curr) => {
-        if (ids.includes(curr.locationId)) {
-        return prev;
-        } else {
-        ids.push(curr.locationId);
-        return [...prev, curr.location.displayName ?? curr.location.city!];
-        }
-    }, [] as string[]);
+  const ids: string[] = [];
+  return orders.reduce((prev, curr) => {
+    if (ids.includes(curr.locationId)) {
+      return prev;
+    } else {
+      ids.push(curr.locationId);
+      return [...prev, curr.location.displayName ?? curr.location.city!];
+    }
+  }, [] as string[]);
 }
 
 export function addDays(date: Date, numDays: number) {
-    const d = new Date(date);
-    d.setDate(d.getDate() + numDays)
-    return d;
+  const d = new Date(date);
+  d.setDate(d.getDate() + numDays);
+  return d;
 }
 
 export function skuName(sku: SkuProduct): string {
-    return sku.size + " " + sku.materialShort + " " + sku.product.name
+  return sku.size + " " + sku.materialShort + " " + sku.product.name;
 }
 
-function getLocationIds(orders: OrderItem[]): string[]{
-    return orders.reduce((prev, curr) => {
-        if(prev.includes(curr.locationId)) {
-            return prev
-        } else {
-            return [...prev, curr.locationId]
-        }
-    }, [] as string[])
-} 
-
-export function separateByLocationId(orders: OrderItem[]):OrderItem[][]  {
-    const locationIds = getLocationIds(orders);
-    const output: OrderItem[][] = [];
-    locationIds.forEach(loc => {   
-        const or = orders.filter(o => o.locationId == loc);
-        output.push(or)
-    })
-    return output
+function getLocationIds(orders: OrderItem[]): string[] {
+  return orders.reduce((prev, curr) => {
+    if (prev.includes(curr.locationId)) {
+      return prev;
+    } else {
+      return [...prev, curr.locationId];
     }
+  }, [] as string[]);
+}
+
+export function separateByLocationId(orders: OrderItem[]): OrderItem[][] {
+  const locationIds = getLocationIds(orders);
+  const output: OrderItem[][] = [];
+  locationIds.forEach(loc => {
+    const or = orders.filter(o => o.locationId == loc);
+    output.push(or);
+  });
+  return output;
+}
 
 
-export function totalFromOrders(orderItems: ItemLocationSkuProduct[], onlyOrders?: OrderItem[], skus?: Sku[], products? :Product[]): number {
+export function totalFromOrders(orderItems: ItemLocationSkuProduct[], onlyOrders?: OrderItem[], skus?: Sku[], products?: Product[]): number {
   if (onlyOrders) {
     return onlyOrders.reduce((prev, item) => prev + calculatePriceFromCatalog(skus ?? [], item.skuId, item.quantity), 0);
   }
@@ -166,41 +166,41 @@ export function totalFromOrders(orderItems: ItemLocationSkuProduct[], onlyOrders
 
 export function getLocationsFromOrders(orderItems: ItemLocationSkuProduct[]): Location[] {
   return orderItems.reduce((prev, curr) => {
-    if(prev.find(l => l.id == curr.locationId)){
+    if (prev.find(l => l.id == curr.locationId)) {
       return prev;
     } else {
-      return [...prev, curr.location ]
+      return [...prev, curr.location];
     }
-  }, [] as Location[])
+  }, [] as Location[]);
 }
 
-export function dayMonthYear(d: Date) : string {
+export function dayMonthYear(d: Date): string {
   const date = new Date(d);
   const day = date.toLocaleString("en-us", {
     day: "numeric"
-  })
+  });
   const month = date.toLocaleString("en-us", {
     month: "long"
-  })
+  });
   const year = date.toLocaleString("en-us", {
     year: "numeric"
-  })
+  });
   return day + " " + month + " " + year;
 }
-export function monthDayYear(d: Date) : string {
+export function monthDayYear(d: Date): string {
   const date = new Date(d);
   const day = date.toLocaleString("en-us", {
     day: "2-digit"
-  })
+  });
   const month = date.toLocaleString("en-us", {
     month: "2-digit"
-  })
+  });
   const year = date.toLocaleString("en-us", {
     year: "numeric"
-  })
+  });
   return month + "/" + day + "/" + year;
 }
 
 export function fullProductName(order: ItemSkuProduct): string {
-  return order.sku.size + " " + order.sku.materialShort + " " + order.sku.product.name
+  return order.sku.size + " " + order.sku.materialShort + " " + order.sku.product.name;
 }
