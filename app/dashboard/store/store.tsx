@@ -503,7 +503,7 @@ export default function StorePage({
                 </h1>
               </div>
               <div className="bg-re-dark-green-500 h-full font-theinhardt overflow-y-auto">
-                <div className="max-h-full bg-opacity-70 rounded-10 my-4 px-4 pt-4 items-stretch flex flex-col mx-4">
+                <div className=" bg-opacity-70 rounded-10 my-4 px-4 pt-4 items-stretch flex flex-col mx-4 h-96">
                   <div className="flex w-full px-24 gap-16 pb-8">
                     <div className="flex flex-col w-1/2">
                       <h1 className="text-3xl text-left text-white">
@@ -657,19 +657,10 @@ export default function StorePage({
                       </div>
                       <div className="flex gap-2 text-white text-md items-center justify-center mt-1">
                         <h2>or go to checkout</h2>
-                        <svg
-                          width="20"
-                          height="13"
-                          viewBox="0 0 20 13"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M6.00487 2.06073L2.81554 5.25H13.0049C16.7328 5.25 19.7549 8.2721 19.7549 12V12.25C19.7549 12.6642 19.4191 13 19.0049 13C18.5907 13 18.2549 12.6642 18.2549 12.25V12C18.2549 9.1005 15.9044 6.75 13.0049 6.75H2.81554L6.00487 9.9394C6.04148 9.976 6.07351 10.0155 6.10097 10.057C6.29318 10.3482 6.26115 10.7438 6.00487 11C5.71197 11.2929 5.2371 11.2929 4.94421 11L0.47455 6.5304C0.18166 6.2375 0.18166 5.7626 0.47455 5.4697L4.94421 1.00007C5.2371 0.707171 5.71197 0.707171 6.00487 1.00007C6.29776 1.29296 6.29776 1.76783 6.00487 2.06073Z"
-                            fill="#58FEC4"
-                            transform="scale(-1,-1) translate(-20,-13)"
-                          />
+                        <svg transform="scale(0.8)" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M11.045 2.4593L16.5858 8H1C0.44771 8 0 8.4478 0 9C0 9.5523 0.44771 10 1 10H16.5858L11.045 15.5408C10.6545 15.9313 10.6545 16.5645 11.045 16.955C11.4356 17.3455 12.0687 17.3455 12.4592 16.955L19.7071 9.7072C20.0976 9.3166 20.0976 8.6835 19.7071 8.2929L12.4592 1.04509C12.2633 0.849151 12.0063 0.751521 11.7495 0.752201C11.6864 0.752371 11.6233 0.758471 11.5611 0.770501C11.372 0.807111 11.1915 0.898641 11.045 1.04509C10.6545 1.43561 10.6545 2.06878 11.045 2.4593Z" fill="#58FEC4" />
                         </svg>
+
                       </div>
                     </div>
                   </div>

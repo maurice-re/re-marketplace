@@ -323,8 +323,8 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
   return events && events.length > 0 ? (
     // TODO(Suhana): Create more sub-components here
     <div>
-      <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
-      <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
+      {/* <h1 className="ml-1 mb-8 font-theinhardt text-3xl">Tracking</h1> */}
+      <h1 className="ml-1 font-theinhardt text-2xl">
         Lifetime Statistics
       </h1>
       <div className="flex w-full items-center justify-between mt-4 mb-8">
