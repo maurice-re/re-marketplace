@@ -25,7 +25,7 @@ export default async function Page() {
   if (!events) {
     return (
       <div className="h-screen bg-black flex">
-        <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+        <main className="flex flex-col  mx-auto h-full justify-evenly py-3 items-center">
           <div className="text-white font-theinhardt text-28">
             Sign up for tracking to see this information
           </div>
@@ -88,15 +88,14 @@ export default async function Page() {
   };
 
   return (
-    <div className="ml-6 w-full flex bg-black">
+    <div className="ml-6 w-full flex bg-black h-screen">
       {/* <head>
         <title>Lifecycle</title>
       </head> */}
-      <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-        <h1 className="font-theinhardt text-3xl self-start text-white">
-          Lifecycle
-        </h1>
+      <main className="flex flex-col  mx-auto h-full justify-evenly py-3 items-center">
+
         <FullContainer>
+          {/* <div className="h-full"> */}
           <div className="stat place-items-center">
             <div className="stat-title">Containers in use</div>
             <div className="stat-value">{totalUsed}</div>
@@ -125,6 +124,7 @@ export default async function Page() {
             </div>
             <div className="stat-desc">vs. leading single use options</div>
           </div>
+          {/* </div> */}
         </FullContainer>
         <div className="flex w-full justify-between">
           <HalfContainer>

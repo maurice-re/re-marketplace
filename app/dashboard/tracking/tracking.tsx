@@ -59,7 +59,7 @@ type Statistic = {
 
 const monthsInYear = getMonthsInYear();
 
-function Tracking({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
+function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo: boolean; }) {
   // "Dummy" data that is updated on changes
   let baseData = {
     labels: monthsInYear,
@@ -323,8 +323,8 @@ function Tracking({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
   return events && events.length > 0 ? (
     // TODO(Suhana): Create more sub-components here
     <div>
-      <h1 className="ml-1 font-theinhardt text-3xl">Tracking</h1>
-      <h1 className="ml-1 mt-8 font-theinhardt text-2xl">
+      {/* <h1 className="ml-1 mb-8 font-theinhardt text-3xl">Tracking</h1> */}
+      <h1 className="ml-1 font-theinhardt text-2xl">
         Lifetime Statistics
       </h1>
       <div className="flex w-full items-center justify-between mt-4 mb-8">
@@ -411,10 +411,10 @@ function Tracking({ user, skus }: { user: UserSettings; skus: Sku[]; }) {
           <Line options={options} data={data} />
         </div>
       </div>
-      <h1 className="pt-8 ml-1 font-theinhardt text-2xl">Configure Settings</h1>
-      <div className="flex w-full gap-8">
-        <SettingsForm settings={settings} setSettings={setSettings} />
-      </div>
+      {!demo && (<><h1 className="pt-8 ml-1 font-theinhardt text-2xl">Configure Settings</h1>
+        <div className="flex w-full gap-8">
+          <SettingsForm settings={settings} setSettings={setSettings} />
+        </div></>)}
       <div className="py-6"></div>
     </div>
   ) : (

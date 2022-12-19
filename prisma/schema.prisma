@@ -131,6 +131,7 @@ model Order {
   status    Status      @default(SUBMITTED)
   user      User        @relation(fields: [userId], references: [id])
   userId    String
+  paymentId String?
 }
 
 model OrderItem {
