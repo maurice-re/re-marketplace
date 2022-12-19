@@ -16,6 +16,8 @@ const stripePromise = loadStripe(
 
 export default function Page() {
   const [clientSecret, setClientSecret] = useState("");
+  // TODO(Suhana): If form checkout continues, add payment intent ID to this
+  // const [paymentIntentId, setPaymentIntentId] = useState("");
   const { calculatePrice, calculateTotal, cart, locations, setCustomerId } =
     useFormStore((state) => ({
       calculatePrice: state.calculatePrice,

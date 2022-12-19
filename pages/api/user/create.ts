@@ -11,18 +11,18 @@ async function create(req: Request, res: Response) {
     cart,
     form,
     customerId
-  } : {
-      cart: CartOrder[],
-      form: string[],
-      customerId: string
+  }: {
+    cart: CartOrder[],
+    form: string[],
+    customerId: string;
   } = req.body;
-  
+
   const now = new Date();
-  const tax = 1.07
+  const tax = 1.07;
   const shippingInfo = form.slice(4);
 
   if (!cart || !form) {
-      res.status(200).send("Empty body")
+    res.status(200).send("Empty body");
   }
 
   const company = await prisma.company.create({
@@ -50,6 +50,7 @@ async function create(req: Request, res: Response) {
       companyId: company.id,
       createdAt: now,
       userId: user.id,
+      paymentId: customerId
     },
   });
 
@@ -68,22 +69,22 @@ async function create(req: Request, res: Response) {
         type: LocationType.SHIPPING,
       },
     });
-    cart.forEach( async (orderItem) => {
-      if(orderItem.location == city) {
+    cart.forEach(async (orderItem) => {
+      if (orderItem.location == city) {
         await prisma.orderItem.create({
-            data: {
-                amount: calculatePriceFromCatalog(orderItem.sku, orderItem.sku.id, orderItem.quantity, tax),
-                createdAt: now,
-                locationId: location.id,
-                orderId: order.id,
-                quantity: orderItem.quantity,
-                skuId: orderItem.sku.id,
-            }
-        })
+          data: {
+            amount: calculatePriceFromCatalog(orderItem.sku, orderItem.sku.id, orderItem.quantity, tax),
+            createdAt: now,
+            locationId: location.id,
+            orderId: order.id,
+            quantity: orderItem.quantity,
+            skuId: orderItem.sku.id,
+          }
+        });
       }
-    })
-    formIndex += 1
-  })
+    });
+    formIndex += 1;
+  });
   res.status(200).send();
 }
 

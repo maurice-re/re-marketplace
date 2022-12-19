@@ -43,14 +43,14 @@ export default async function Page() {
   const skus = await getSkus();
 
   return (
-    <div className="w-full h-screen bg-black flex overflow-auto ml-6">
+    <div className="w-full h-screen bg-black flex overflow-auto px-6">
       {/* <head>
         <title>Tracking</title>
         <meta name="tracking" content="Tracking" />
         <link rel="icon" href="/favicon.ico" />
       </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-        <Tracking user={user} skus={skus} />
+        <Tracking user={user} skus={skus} demo={false} />
       </main>
     </div>
   );

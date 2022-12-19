@@ -1,11 +1,14 @@
 import { Order, Status, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import prisma from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import Header from "./header";
 import SidebarIcon from "./sidebarIcon";
+// import { usePathname } from "next/navigation";
 
-type Route = {
+export type Route = {
   icon: JSX.Element;
   link: string;
   title: string;
@@ -17,10 +20,11 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   // const setUser = useAuthStore((state) => state.setUser);
+  // const pathname = usePathname();
 
   const session = await unstable_getServerSession(authOptions);
   if (session == null) {
-    return <div>Not Logged in</div>;
+    redirect("/signin");
   }
   const user = session.user as User;
   // setUser(user);
@@ -197,7 +201,7 @@ export default async function Layout({
             <path
               d="M12 5.25C10.665 5.25 9.35994 5.64588 8.2499 6.38758C7.13987 7.12928 6.27471 8.18349 5.76382 9.41689C5.25292 10.6503 5.11925 12.0075 5.3797 13.3169C5.64015 14.6262 6.28303 15.829 7.22703 16.773C8.17104 17.717 9.37377 18.3599 10.6831 18.6203C11.9925 18.8808 13.3497 18.7471 14.5831 18.2362C15.8165 17.7253 16.8707 16.8601 17.6124 15.7501C18.3541 14.6401 18.75 13.335 18.75 12C18.75 10.2098 18.0388 8.4929 16.773 7.22703C15.5071 5.96116 13.7902 5.25 12 5.25Z"
               stroke="white"
-              stroke-miterlimit="10"
+              strokeMiterlimit="10"
             />
             <path
               d="M19.5 12H21.375M2.625 12H4.5"
@@ -229,7 +233,7 @@ export default async function Layout({
           <path
             d="M12 14.25C7.92187 14.25 3.7828 16.5 3.01687 20.7469C2.92452 21.2588 3.21421 21.75 3.74999 21.75H20.25C20.7862 21.75 21.0759 21.2588 20.9836 20.7469C20.2172 16.5 16.0781 14.25 12 14.25Z"
             stroke="white"
-            stroke-miterlimit="10"
+            strokeMiterlimit="10"
           />
         </svg>
       ),
@@ -271,8 +275,11 @@ export default async function Layout({
     });
   }
 
+  // console.log("In layout");
+  // console.log(pathname);
+
   return (
-    <div className="flex h-screen bg-black">
+    <div className="flex flex-grow bg-black">
       <div className="flex flex-col items-center text-white px-8 border-r-1/2 border-re-gray-300">
         <div className="w-full flex items-center justify-center gap-20 mt-6 mb-8">
           <Image
@@ -290,8 +297,8 @@ export default async function Layout({
         {/* TODO(Suhana): Uncomment when we implement search functionality */}
         {/* <div className="w-40 h-7 mb-6 flex items-center justify-center rounded border-1/2 border-re-dark-green-400 bg-re-dark-green-200">
           <div className="w-1/8 mx-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10.3636 3C8.90722 3 7.48354 3.43187 6.2726 4.24099C5.06167 5.05011 4.11786 6.20015 3.56052 7.54567C3.00319 8.89119 2.85737 10.3718 3.14149 11.8002C3.42562 13.2286 4.12693 14.5406 5.15675 15.5704C6.18657 16.6003 7.49863 17.3016 8.92703 17.5857C10.3554 17.8698 11.836 17.724 13.1815 17.1667C14.527 16.6093 15.6771 15.6655 16.4862 14.4546C17.2953 13.2437 17.7272 11.82 17.7272 10.3636C17.7271 8.41069 16.9512 6.5378 15.5703 5.15688C14.1894 3.77597 12.3165 3.00012 10.3636 3V3Z" stroke="white" stroke-miterlimit="10" />
-            <path d="M15.8574 15.8574L21 21" stroke="white" stroke-miterlimit="10" strokeLinecap="round" />
+            <path d="M10.3636 3C8.90722 3 7.48354 3.43187 6.2726 4.24099C5.06167 5.05011 4.11786 6.20015 3.56052 7.54567C3.00319 8.89119 2.85737 10.3718 3.14149 11.8002C3.42562 13.2286 4.12693 14.5406 5.15675 15.5704C6.18657 16.6003 7.49863 17.3016 8.92703 17.5857C10.3554 17.8698 11.836 17.724 13.1815 17.1667C14.527 16.6093 15.6771 15.6655 16.4862 14.4546C17.2953 13.2437 17.7272 11.82 17.7272 10.3636C17.7271 8.41069 16.9512 6.5378 15.5703 5.15688C14.1894 3.77597 12.3165 3.00012 10.3636 3V3Z" stroke="white" strokeMiterlimit="10" />
+            <path d="M15.8574 15.8574L21 21" stroke="white" strokeMiterlimit="10" strokeLinecap="round" />
           </svgL          </div>
           <div className="w-7/8">
             <input className="w-full font-theinhardt-300  font-white focus:outline-none bg-transparent" placeholder="Search"></input>
@@ -308,7 +315,8 @@ export default async function Layout({
           ))}
         </div>
       </div>
-      <div id="children" className="w-full">
+      <div id="children" className="flex flex-col w-full h-screen">
+        <Header routes={routes} />
         {children}
       </div>
     </div>

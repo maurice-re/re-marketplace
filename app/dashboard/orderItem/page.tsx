@@ -67,10 +67,6 @@ export default async function Page() {
       </head> */}
 
       <main className="flex flex-col container mx-auto py-6 px-1 w-full text-white font-theinhardt">
-        <div className="flex justify-between">
-          <h1 className="font-theinhardt text-3xl">Orders</h1>
-          <h1 className="font-theinhardt text-3xl">{company.name}</h1>
-        </div>
         <div className="form-control mx-auto my-4">
           <div className="input-group w-96">
             <input
