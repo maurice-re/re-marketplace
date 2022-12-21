@@ -22,8 +22,8 @@ function Cart({
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">
         Shopping Cart
       </h1>
-      <div className="flex flex-col gap-4 text-white mt-4 overflow-y-auto flex-grow-0 mb-4">
-        {orderString != "" &&
+      {orderString != "" && (<div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
+        {
           orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
@@ -84,7 +84,7 @@ function Cart({
               </div>
             );
           })}
-      </div>
+      </div>)}
       {orderString == "" && (
         <div className="flex items-center flex-col 4 my-auto">
           <svg
@@ -157,11 +157,10 @@ function Cart({
             }}
           >
             <button
-              className={`${
-                orderString === ""
-                  ? "text-re-gray-300 border-1/2 border-re-gray-300"
-                  : "bg-re-blue"
-              }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              className={`${orderString === ""
+                ? "text-re-gray-300 border-1/2 border-re-gray-300"
+                : "bg-re-blue"
+                }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               disabled={orderString == ""}
             >
               Checkout
