@@ -136,7 +136,7 @@ function Cart({
           </div>
         )}
         <div className="px-6 font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-gray-300 py-4 ">
-          <div className="flex items-center w-full justify-between mb-2">
+          <div className="flex items-center w-full justify-between mb-1">
             <h2 className="font-theinhardt-300 text-left text-white">
               Subtotal
             </h2>
@@ -144,11 +144,11 @@ function Cart({
               ${getOrderStringTotal(orderString, [], skus ?? []).toFixed(2)}
             </h2>
           </div>
-          <h2 className="text-re-gray-300 text-sm leading-none mb-6 w-full">
+          <h2 className="text-re-gray-300 text-sm leading-none w-full">
             Shipping and taxes calculated at checkout.
           </h2>
           <Link
-            className={`w-full ${orderString == "" && "pointer-events-none"}`}
+            className={`w-full my-4 ${orderString == "" && "pointer-events-none"}`}
             href={{
               pathname: "/checkout",
               query: {
@@ -166,6 +166,40 @@ function Cart({
               Checkout
             </button>
           </Link>
+          <div
+            className={`${orderString === ""
+              ? "text-re-gray-300"
+              : "text-white"
+              }  text-sm w-full flex justify-center items-center`}
+          >
+            <h2 className="text-center">Or,</h2>
+            <Link
+              className={` ${orderString == "" && "pointer-events-none"}`}
+              href={{
+                pathname: "/po",
+                query: {
+                  orderString: orderString,
+                },
+              }}
+            >
+              <button
+                disabled={orderString == ""}
+                className={`${orderString === ""
+                  ? "decoration-re-gray-300"
+                  : "decoration-re-blue"
+                  } decoration-1 underline underline-offset-2 px-1`}
+              >generate</button>
+            </Link>
+            <h2 className="text-center mr-1">purchase order</h2>
+            {/* <svg transform="scale(0.8)" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.045 2.4593L16.5858 8H1C0.44771 8 0 8.4478 0 9C0 9.5523 0.44771 10 1 10H16.5858L11.045 15.5408C10.6545 15.9313 10.6545 16.5645 11.045 16.955C11.4356 17.3455 12.0687 17.3455 12.4592 16.955L19.7071 9.7072C20.0976 9.3166 20.0976 8.6835 19.7071 8.2929L12.4592 1.04509C12.2633 0.849151 12.0063 0.751521 11.7495 0.752201C11.6864 0.752371 11.6233 0.758471 11.5611 0.770501C11.372 0.807111 11.1915 0.898641 11.045 1.04509C10.6545 1.43561 10.6545 2.06878 11.045 2.4593Z" fill="#58FEC4" />
+            </svg> */}
+            {/* <Fragment>
+          <PDFViewer width="1000" height="600" className="app" >
+            <Invoice invoice={invoice} />
+          </PDFViewer>
+        </Fragment> */}
+          </div>
         </div>
       </div>
     </div>
