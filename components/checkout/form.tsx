@@ -13,10 +13,13 @@ import {
 } from "@stripe/react-stripe-js";
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useState } from "react";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
+import invoice from "../../utils/po/template";
+import Invoice from "../po/po";
 import Addresses from "./addresses";
 import Info from "./info";
+import { PDFViewer } from '@react-pdf/renderer';
 
 export default function CheckoutForm({
   company,
@@ -283,10 +286,15 @@ export default function CheckoutForm({
       <div className="w-full flex justify-center items-center">
         <h2 className="text-center text-white">Or,</h2>
         <button onClick={undefined} className="decoration-re-green-300 decoration-1 underline underline-offset-2 px-1">download</button>
-        <h2 className="text-center text-white mr-1">purchase order</h2>
+        <h2 className="text-center text-white mr-1">purchase order PDF</h2>
         <svg transform="scale(0.8)" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M11.045 2.4593L16.5858 8H1C0.44771 8 0 8.4478 0 9C0 9.5523 0.44771 10 1 10H16.5858L11.045 15.5408C10.6545 15.9313 10.6545 16.5645 11.045 16.955C11.4356 17.3455 12.0687 17.3455 12.4592 16.955L19.7071 9.7072C20.0976 9.3166 20.0976 8.6835 19.7071 8.2929L12.4592 1.04509C12.2633 0.849151 12.0063 0.751521 11.7495 0.752201C11.6864 0.752371 11.6233 0.758471 11.5611 0.770501C11.372 0.807111 11.1915 0.898641 11.045 1.04509C10.6545 1.43561 10.6545 2.06878 11.045 2.4593Z" fill="#58FEC4" />
         </svg>
+        <Fragment>
+          <PDFViewer width="1000" height="600" className="app" >
+            <Invoice invoice={invoice} />
+          </PDFViewer>
+        </Fragment>
       </div>
       {/* Show any error or success messages */}
       {message && (
