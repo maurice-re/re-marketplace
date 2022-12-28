@@ -2,7 +2,7 @@
 import { Fragment } from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
 import invoice from '../../utils/po/template';
-import Invoice from '../../components/po/po';
+import Invoice from './poPDF';
 
 function PODisplay() {
     return (

@@ -5,7 +5,6 @@ import BillTo from './BillTo';
 import InvoiceNo from './InvoiceNo';
 import InvoiceItemsTable from './InvoiceItemsTable';
 import InvoiceThankYouMsg from './InvoiceThankYouMsg';
-import logo from '../../../src/logo.png';
 
 const styles = StyleSheet.create({
     page: {

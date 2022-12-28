@@ -6,10 +6,9 @@ import { Appearance, loadStripe, PaymentMethod } from '@stripe/stripe-js';
 import { unstable_getServerSession } from "next-auth";
 import 'tailwindcss/tailwind.css';
 import prisma from '../../constants/prisma';
-import { CheckoutType, getCheckoutTotal } from '../../utils/checkoutUtils';
-import PODisplay from '../../components/po/poDisplay';
+import { CheckoutType } from '../../utils/checkoutUtils';
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
-import POLeft from '../../components/po/poLeft';
+import POSummary from '../../components/po/poSummary';
 
 const stripePromise = loadStripe(
     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? '',
@@ -48,8 +47,8 @@ export default async function Page({
 
     return (
         <div className="w-full h-screen w-7/8 bg-black flex overflow-auto">
-            <main className="flex flex-col w-full container mx-auto py-6 text-white font-theinhardt px-4">
-                <POLeft
+            <main className="flex flex-col w-full py-6 text-white font-theinhardt px-4">
+                <POSummary
                     company={JSON.parse(JSON.stringify(company)) as Company}
                     locations={JSON.parse(JSON.stringify(company?.locations))}
                     orderString={orderString}
@@ -58,7 +57,6 @@ export default async function Page({
                     type={CheckoutType.ORDER}
                     user={JSON.parse(JSON.stringify(user))}
                 />
-                <PODisplay />
             </main>
         </div>
     );
