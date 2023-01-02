@@ -1,6 +1,6 @@
 import React from 'react';
 import { Page, Document, Image, StyleSheet } from '@react-pdf/renderer';
-import InvoiceTitle from './InvoiceTitle';
+import POTitle from './poTitle';
 import BillTo from './BillTo';
 import InvoiceNo from './InvoiceNo';
 import InvoiceItemsTable from './InvoiceItemsTable';
@@ -27,8 +27,7 @@ const styles = StyleSheet.create({
 const Invoice = ({ invoice }: { invoice: any; }) => (
     <Document>
         <Page size="A4" style={styles.page}>
-            {/* <Image style={styles.logo} src={logo} /> */}
-            <InvoiceTitle title='Invoice' />
+            <POTitle sellerCompany='The Reusability Company' />
             <InvoiceNo invoice={invoice} />
             <BillTo invoice={invoice} />
             <InvoiceItemsTable invoice={invoice} />
