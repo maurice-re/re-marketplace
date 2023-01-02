@@ -1,11 +1,10 @@
 import React from 'react';
 import { Page, Document, Image, StyleSheet } from '@react-pdf/renderer';
 import POTitle from './poTitle';
-import BillTo from './BillTo';
-import InvoiceNo from './InvoiceNo';
 import InvoiceItemsTable from './InvoiceItemsTable';
-import InvoiceThankYouMsg from './InvoiceThankYouMsg';
 import POSellerAddress from './poSellerAddress';
+
+// The generation of the PO was based on this invoice example by Kagunda JM: https://kags.me.ke/post/generate-dynamic-pdf-incoice-using-react-pdf/
 
 const styles = StyleSheet.create({
     page: {
@@ -25,17 +24,14 @@ const styles = StyleSheet.create({
     }
 });
 
-const Invoice = ({ invoice }: { invoice: any; }) => (
+const POFile = ({ invoice }: { invoice: any; }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <POTitle sellerCompany='The Reusability Company' />
             <POSellerAddress addressLine='3 Germany Dr, Unit 4' city='Wilmington' state='Delaware' zip='19804' country='USA' website='wwww.re.company' phoneNumber='+1 9295054562' />
-            <InvoiceNo invoice={invoice} />
-            <BillTo invoice={invoice} />
             <InvoiceItemsTable invoice={invoice} />
-            <InvoiceThankYouMsg />
         </Page>
     </Document>
 );
 
-export default Invoice;
+export default POFile;
