@@ -5,6 +5,7 @@ import BillTo from './BillTo';
 import InvoiceNo from './InvoiceNo';
 import InvoiceItemsTable from './InvoiceItemsTable';
 import InvoiceThankYouMsg from './InvoiceThankYouMsg';
+import POSellerAddress from './poSellerAddress';
 
 const styles = StyleSheet.create({
     page: {
@@ -28,6 +29,7 @@ const Invoice = ({ invoice }: { invoice: any; }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <POTitle sellerCompany='The Reusability Company' />
+            <POSellerAddress addressLine='3 Germany Dr, Unit 4' city='Wilmington' state='Delaware' zip='19804' country='USA' website='wwww.re.company' phoneNumber='+1 9295054562' />
             <InvoiceNo invoice={invoice} />
             <BillTo invoice={invoice} />
             <InvoiceItemsTable invoice={invoice} />

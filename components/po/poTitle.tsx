@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     }
 });
 
-
 const POTitle = ({ sellerCompany }: { sellerCompany: string; }) => (
     <View style={styles.titleContainer}>
         <Text style={styles.company}>{sellerCompany}</Text>
