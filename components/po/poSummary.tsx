@@ -8,9 +8,8 @@ import {
     Sku,
     User,
 } from "@prisma/client";
-import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
 import ReLogo from "../form/re-logo";
-import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
+import { CheckoutType } from "../../utils/checkoutUtils";
 import POItems from "./poItems";
 import POForm from "./poForm";
 
