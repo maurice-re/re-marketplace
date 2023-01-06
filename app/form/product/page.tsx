@@ -125,7 +125,7 @@ export default function Page() {
         </div>
         <div className="flex justify-evenly">
           <div className="w-124 h-124 relative">
-            <div className="w-120 h-120 bg-re-blue right-1 bottom-0 absolute z-0 rounded-2xl"></div>
+            <div className="w-120 h-120 bg-re-blue-500 right-1 bottom-0 absolute z-0 rounded-2xl"></div>
             <Image
               src={product.mainImage}
               width={484}

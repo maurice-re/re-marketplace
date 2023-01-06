@@ -134,7 +134,7 @@ export default async function Layout({
             />
           </svg>
         ),
-        link: "/dashboard/orderItem",
+        link: "/dashboard/order",
         title: "Orders",
       },
       {
@@ -279,7 +279,7 @@ export default async function Layout({
   // console.log(pathname);
 
   return (
-    <div className="flex flex-grow bg-black">
+    <div className="flex flex-grow bg-re-black">
       <div className="flex flex-col items-center text-white px-8 border-r-1/2 border-re-gray-300">
         <div className="w-full flex items-center justify-center gap-20 mt-6 mb-8">
           <Image

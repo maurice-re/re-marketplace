@@ -160,7 +160,7 @@ function Cart({
               className={`${
                 orderString === ""
                   ? "text-re-gray-300 border-1/2 border-re-gray-300"
-                  : "bg-re-blue"
+                  : "bg-re-blue-500"
               }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               disabled={orderString == ""}
             >
