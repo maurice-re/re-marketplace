@@ -12,12 +12,12 @@ const styles = StyleSheet.create({
     }
 });
 
-const POSellerAddress = ({ addressLine, city, state, zip, country, website, phoneNumber }: { addressLine: string; city: string; state: string; zip: string; country: string; website: string; phoneNumber: string; }) => (
+const POSellerAddress = ({ addressLine, city, state, zip, country, website, phone }: { addressLine: string; city: string; state: string; zip: string; country: string; website: string; phone: string; }) => (
     <View style={styles.addressContainer}>
         <Text style={styles.text}>{addressLine}</Text>
         <Text style={styles.text}>{city}, {state}</Text>
         <Text style={styles.text}>{zip} {country}</Text>
-        <Text style={styles.text}>{phoneNumber}</Text>
+        <Text style={styles.text}>{phone}</Text>
     </View>
 );
 

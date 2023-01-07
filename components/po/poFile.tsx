@@ -29,8 +29,8 @@ const POFile = ({ invoice }: { invoice: any; }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <POTitle sellerCompany='The Reusability Company' />
-            <POSellerAddress addressLine='3 Germany Dr, Unit 4' city='Wilmington' state='Delaware' zip='19804' country='USA' website='wwww.re.company' phoneNumber='+1 9295054562' />
-            <POBillingInfo sellerCompany="The Reusability Company" ein="87-2179396" addressLine='3 Germany Dr, Unit 4' city='Wilmington' state='Delaware' zip='19804' country='USA' poNumber={57} />
+            <POSellerAddress addressLine='3 Germany Dr, Unit 4' city='Wilmington' state='Delaware' zip='19804' country='USA' website='wwww.re.company' phone='+1 9295054562' />
+            <POBillingInfo sellerCompany="The Reusability Company" sellerTaxId="87-2179396" sellerAddressLine='3 Germany Dr, Unit 4' sellerCity='Wilmington' sellerState='Delaware' sellerZip='19804' sellerCountry='USA' sellerPONumber={57} buyerBillingAddressLine={"buyerBillingAddressLine"} buyerShippingAddressLine={"buyerShippingAddressLine"} buyerName={"buyerName"} buyerPhone={"buyerPhone"} buyerTaxId={0} />
             <InvoiceItemsTable invoice={invoice} />
         </Page>
     </Document>
