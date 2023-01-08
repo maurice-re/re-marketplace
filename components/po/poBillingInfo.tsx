@@ -4,7 +4,7 @@ import { Text, View, StyleSheet } from '@react-pdf/renderer';
 const styles = StyleSheet.create({
     billingInfoContainer: {
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 40,
         justifyContent: 'space-between',
     },
     textContainer: {

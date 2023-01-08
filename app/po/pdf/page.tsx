@@ -1,5 +1,5 @@
 import 'tailwindcss/tailwind.css';
-import PODisplay from '../../../components/po/poDisplay';
+import POFile from '../../../components/po/poFile';
 import ReLogo from '../../../components/form/re-logo';
 
 export default async function Page({
@@ -21,7 +21,7 @@ export default async function Page({
                     Thank you for your purchase
                 </h1>
                 <div className="mx-auto">
-                    <PODisplay />
+                    <POFile />
                 </div>
             </main>
         </div>

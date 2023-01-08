@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     tableContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginTop: 24,
+        marginTop: 40,
         borderWidth: 1,
         borderColor: '#e0e0e0',
     },

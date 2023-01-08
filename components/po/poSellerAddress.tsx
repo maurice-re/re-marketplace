@@ -9,15 +9,17 @@ const styles = StyleSheet.create({
     text: {
         color: '#000000',
         fontSize: 7,
+        lineHeight: 1.3,
     }
 });
 
-const POSellerAddress = ({ addressLine, city, state, zip, country, website, phone }: { addressLine: string; city: string; state: string; zip: string; country: string; website: string; phone: string; }) => (
+const POSellerAddress = ({ sellerAddressLine, sellerCity, sellerState, sellerZip, sellerCountry, sellerWebsite, sellerPhone }: { sellerAddressLine: string; sellerCity: string; sellerState: string; sellerZip: string; sellerCountry: string; sellerWebsite: string; sellerPhone: string; }) => (
     <View style={styles.addressContainer}>
-        <Text style={styles.text}>{addressLine}</Text>
-        <Text style={styles.text}>{city}, {state}</Text>
-        <Text style={styles.text}>{zip} {country}</Text>
-        <Text style={styles.text}>{phone}</Text>
+        <Text style={styles.text}>{sellerAddressLine}</Text>
+        <Text style={styles.text}>{sellerCity}, {sellerState}</Text>
+        <Text style={styles.text}>{sellerZip} {sellerCountry}</Text>
+        <Text style={styles.text}>{sellerWebsite}</Text>
+        <Text style={styles.text}>{sellerPhone}</Text>
     </View>
 );
 
