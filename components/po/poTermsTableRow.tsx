@@ -9,18 +9,18 @@ const styles = StyleSheet.create({
         height: 18,
         fontStyle: 'bold',
         fontFamily: 'Helvetica',
-        fontSize: 8,
+        fontSize: 7,
         lineHeight: 1,
     },
     column: {
         width: '20%',
         borderRightColor: '#e0e0e0',
         borderRightWidth: 1,
-        paddingLeft: 8,
+        paddingLeft: 5,
     },
     lastColumn: {
         width: '20%',
-        paddingLeft: 8,
+        paddingLeft: 5,
     },
 
 });

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     },
     body: {
         color: '#000000',
-        fontSize: 8,
+        fontSize: 7,
     }
 });
 

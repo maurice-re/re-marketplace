@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
         height: 18,
         fontStyle: 'bold',
         fontFamily: 'Helvetica',
-        fontSize: 8,
+        fontSize: 7,
         textTransform: 'uppercase',
         letterSpacing: 1,
         lineHeight: 1,
@@ -18,11 +18,11 @@ const styles = StyleSheet.create({
         width: '20%',
         borderRightColor: '#ffffff',
         borderRightWidth: 1,
-        paddingLeft: 8,
+        paddingLeft: 5,
     },
     lastColumn: {
         width: '20%',
-        paddingLeft: 8,
+        paddingLeft: 5,
     },
 
 });
