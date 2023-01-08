@@ -9,6 +9,11 @@ export type POItem = {
     unitPrice: number;
     total: number;
 };
+export type POTotal = {
+    name: string;
+    value: number;
+};
+
 
 export default async function Page({
     searchParams,
@@ -23,7 +28,7 @@ export default async function Page({
 
     // TODO(Suhana): Generate actual items form the orderString using a helper function
     const items: POItem[] = [{ qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }];
-
+    const totals: POTotal[] = [{ name: "Subtotal", value: 50, }, { name: "Sales Tax (7.25%)", value: 50, }, { name: "Shipping and Handling", value: 50, }, { name: "Other", value: 50, }, { name: "Total", value: 50, }];
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
             <ReLogo />
@@ -33,7 +38,7 @@ export default async function Page({
                 </h1>
                 <div className="mx-auto">
                     {/* TODO(Suhana): Pass actual total here */}
-                    <POFile items={items} total={0} />
+                    <POFile items={items} totals={totals} />
                 </div>
             </main>
         </div>

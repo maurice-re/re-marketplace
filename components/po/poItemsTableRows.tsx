@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 
 });
 
-const POTermsTableRow = ({ items }: { items: POItem[]; }) => {
+const POItemsTableRows = ({ items }: { items: POItem[]; }) => {
     const rows = items.map((item) => (
         <View style={styles.row}>
             <Text style={styles.qty}>{item.qty}</Text>
@@ -60,4 +60,4 @@ const POTermsTableRow = ({ items }: { items: POItem[]; }) => {
     );
 };
 
-export default POTermsTableRow;
+export default POItemsTableRows;
