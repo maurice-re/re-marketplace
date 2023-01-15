@@ -16,7 +16,7 @@ apiUrl = "http://localhost:3000/api/tracking/create-event"
 
 events = []
 
-fileName = "sheets/EventsDataComplete.csv"
+fileName = "sheets/EventsDataNoReturn.csv"
 with open(fileName, 'r') as csvFile:
     dataReader = csv.reader(csvFile)
     next(dataReader)
@@ -34,11 +34,11 @@ with open(fileName, 'r') as csvFile:
         events.append(event)
 
 for event in events:
-    eventBody = {"consumerId": event[0], "itemId": event[1], "trackingLocation": event[2], "skuId": event[3], "action": event[4], "timestamp": event[5], "locationId": "clcxrwg4w0000v4m94bhhifvw"}
+    eventBody = {"consumerId": event[0], "itemId": event[1], "trackingLocation": event[2], "skuId": event[3], "action": event[4], "timestamp": event[5], "locationId": "clcxz3gab0002v4b2li9smsoz"}
     
     print(eventBody)
 
-    headers = {"content-type":"application/json", "authorization": "Bearer Y4c5DVhDPkxoL1acDYp98o3YB3OWD961raWo9vuklOp1NL4SpTpqCxHIivb47Fah"}
+    headers = {"content-type":"application/json", "authorization": "Bearer Tq0awWGy2yeQqPfVg0wnbBFpl4taGBuyH2FQVyXLfM3rYrtkfpIGnHXs8zoea4v4"}
     response = requests.post(apiUrl, data=json.dumps(eventBody), headers=headers)
 
     print(response.status_code)
