@@ -70,11 +70,11 @@ model Event {
   company          Company   @relation(fields: [companyId], references: [id])
   companyId        String
   consumerId       String?
-  itemId           String
-  location         Location? @relation(fields: [locationId], references: [id])
-  locationId       String?
-  sku              Sku       @relation(fields: [skuId], references: [id])
-  skuId            String
+  itemId           String?
+  location         Location  @relation(fields: [locationId], references: [id])
+  locationId       String
+  sku              Sku?      @relation(fields: [skuId], references: [id])
+  skuId            String?
   timestamp        DateTime  @default(now())
   trackingLocation String?
 }
@@ -101,7 +101,7 @@ model Location {
   company          Company       @relation(fields: [companyId], references: [id])
   companyId        String
   displayName      String?
-  events           Event[]       @relation(fields: [])
+  events           Event[]
   line1            String?
   line2            String?
   orderItems       OrderItem[]
@@ -220,7 +220,7 @@ model Settings {
 model Sku {
   id            String               @id @default(cuid())
   color         String
-  events        Event[]
+  events        Event[]              @relation(fields: [])
   images        Image[]
   mainImage     String
   material      String

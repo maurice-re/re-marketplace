@@ -6,7 +6,7 @@ import csv
 # npm run dev
 # Use API key for the desired company in "Bearer ..." (create new API Key using createAPIKey.py if needed)
 # Change fileName
-# Run using VSCode "Run" button
+# Run using VSCode "Run" button in Python terminal, cd'ing into this directory
 # Ensure CSV column order is: customer,location,product,type,productId,date
 
 productSkuIdPairs = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB1-1.5-RPP-GRAY",
@@ -16,14 +16,14 @@ apiUrl = "http://localhost:3000/api/tracking/create-event"
 
 events = []
 
-fileName = "EventsDataNoProduct.csv"
+fileName = "sheets/EventsDataComplete.csv"
 with open(fileName, 'r') as csvFile:
     dataReader = csv.reader(csvFile)
     next(dataReader)
     for row in dataReader:
         # The following variables correspond to the CSV column headings in the order they appear
         customer = row[0]
-        location = row[1]
+        location = row[1] # trackingLocation is the code, locationId is in DB
         product = row[2]
         actionType = row[3]
         productId = row[4]
@@ -34,10 +34,11 @@ with open(fileName, 'r') as csvFile:
         events.append(event)
 
 for event in events:
-    print(event)
+    eventBody = {"consumerId": event[0], "itemId": event[1], "trackingLocation": event[2], "skuId": event[3], "action": event[4], "timestamp": event[5], "locationId": "clcxrwg4w0000v4m94bhhifvw"}
+    
+    print(eventBody)
 
-    eventBody = {"consumerId": event[0], "itemId": event[1], "locationId": event[2], "skuId": event[3], "action": event[4], "timestamp": event[5]}
-    headers = {"content-type":"application/json", "authorization": "Bearer DSwXumUE5eTQbYM3nI6qSPBWrtF0yp6IhjiXEVYvWMcahTyR0MWdUka1ywkWWaK8"}
+    headers = {"content-type":"application/json", "authorization": "Bearer Y4c5DVhDPkxoL1acDYp98o3YB3OWD961raWo9vuklOp1NL4SpTpqCxHIivb47Fah"}
     response = requests.post(apiUrl, data=json.dumps(eventBody), headers=headers)
 
     print(response.status_code)
