@@ -111,7 +111,7 @@ export default function Page() {
     ));
 
   return (
-    <div className="w-screen h-screen bg-black flex">
+    <div className="w-screen h-screen bg-re-black flex">
       <head>
         <title>Customize your product</title>
         <meta name="product" content="Info on product from the Re catalog" />

@@ -201,7 +201,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
+      <div className="h-screen bg-re-black flex">
         <input
           type="checkbox"
           id="newLocation-modal"
@@ -380,7 +380,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
+      <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt-300">
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
@@ -455,7 +455,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
+      <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
@@ -501,7 +501,7 @@ export default function StorePage({
                         {`$${getPriceFromTable(
                           sku.priceTable,
                           quantity == "" ? 1 : quantity
-                        )}`}
+                        ).toFixed(2)}`}
                       </h2>
                       <div className="flex gap-2 text-white text-md items-center">
                         <svg
@@ -597,7 +597,7 @@ export default function StorePage({
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none"
+                            className="input w-full pr-1 items-center h-full text-center bg-re-black focus:outline-none"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
@@ -676,7 +676,7 @@ export default function StorePage({
   }
 
   return (
-    <div className=" h-screen bg-black flex">
+    <div className=" h-screen bg-re-black flex">
       <head>
         <title>Store</title>
         <meta name="store" content="shop for products" />

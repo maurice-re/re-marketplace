@@ -48,7 +48,7 @@ export default function SignUpForm({
           <input
             type={"email"}
             required
-            className="rounded bg-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
+            className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
             value={email}
             disabled
           ></input>
@@ -58,7 +58,7 @@ export default function SignUpForm({
           <input
             type={"text"}
             required
-            className="rounded bg-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
+            className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
             value={userInfo["firstName"]}
             onChange={(e) =>
               setUserInfo({ ...userInfo, firstName: e.target.value })
@@ -70,7 +70,7 @@ export default function SignUpForm({
           <input
             type={"text"}
             required
-            className="rounded bg-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
+            className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
             value={userInfo["lastName"]}
             onChange={(e) =>
               setUserInfo({ ...userInfo, lastName: e.target.value })
@@ -83,7 +83,7 @@ export default function SignUpForm({
             <input
               type={"text"}
               required
-              className="rounded bg-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
+              className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
               value={userInfo["company"]}
               onChange={(e) =>
                 setUserInfo({ ...userInfo, company: e.target.value })

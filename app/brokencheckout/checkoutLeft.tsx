@@ -88,7 +88,7 @@ export default function CheckoutLeft({
     appearance,
   };
   return (
-    <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
+    <div className="w-screen h-screen bg-re-black flex items-center justify-center text-white">
       <ReLogo />
       <input type="checkbox" id="eol-modal" className="modal-toggle" />
       <div className="modal">

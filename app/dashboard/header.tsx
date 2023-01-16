@@ -12,7 +12,7 @@ export default function Header({ routes }: { routes: Route[] }) {
   }
   return (
     // <div className="w-full">
-    //     <div className="h-screen bg-black flex">
+    //     <div className="h-screen bg-re-black flex">
     //         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt min-h-screen max-h-screen">
     <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
       <h1 className="font-theinhardt text-lg">{title}</h1>

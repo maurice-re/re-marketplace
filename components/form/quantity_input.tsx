@@ -52,7 +52,7 @@ function SkuQuantityField({
       <div className="flex mr-2">
         <input
           type="text"
-          className="bg-black border-2 border-white text-white font-theinhardt-300 text-25 text-center w-36 rounded-10 py-1"
+          className="bg-re-black border-2 border-white text-white font-theinhardt-300 text-25 text-center w-36 rounded-10 py-1"
           onChange={(e) => handleChange(e.target.value)}
         />
       </div>

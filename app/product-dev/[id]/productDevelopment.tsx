@@ -23,7 +23,7 @@ export default function ProductDevelopmentPage({
 
   if (productDev == null) {
     return (
-      <div className="w-screen h-screen bg-black flex">
+      <div className="w-screen h-screen bg-re-black flex">
         <head>
           <title>Product Development</title>
           <meta name="locations" content="Manage your account" />
@@ -40,7 +40,7 @@ export default function ProductDevelopmentPage({
 
   if (productDev.initiationPaid) {
     return (
-      <div className="w-screen h-screen bg-black flex">
+      <div className="w-screen h-screen bg-re-black flex">
         <head>
           <title>Product Development</title>
           <meta name="locations" content="Proposal already paid for" />
@@ -71,7 +71,7 @@ export default function ProductDevelopmentPage({
   }
 
   return (
-    <div className="w-screen h-screen bg-black flex">
+    <div className="w-screen h-screen bg-re-black flex">
       <head>
         <title>Product Development</title>
         <meta name="account" content="Sign in to view proposal" />

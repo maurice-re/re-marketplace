@@ -90,7 +90,7 @@ export default function Page() {
     getTypes().length > 4 ? " columns-3" : " columns-2";
 
   return (
-    <div className="w-screen h-screen bg-black flex">
+    <div className="w-screen h-screen bg-re-black flex">
       <ProgressBar pageName={path?.slice(1) + "?" + searchParams.toString()} />
       <ReLogo />
       <main className="flex flex-col container mx-auto items-center justify-evenly my-4">

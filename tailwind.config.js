@@ -53,7 +53,12 @@ module.exports = {
         're-table-even': '#0D2527',
         're-table-hover': '#23393B',
         're-table-odd': '#0D2A2D',
-        'stripe-gray': '#30313d'
+        'stripe-gray': '#30313d',
+        're-gray-active': '#677475',
+        're-gray-button': '#1E3032',
+        're-graph-green': '#00DEA3',
+        're-graph-blue': '#5459EA',
+        're-graph-pink': '#D40C98'
       },
       fontFamily: {
         'theinhardt': ["Theinhardt", "sans-serif"],

@@ -74,7 +74,11 @@ function Cart({
                         </div>
                         <div className="w-1/4">
                           <h2>
-                            {"$" + getPriceFromTable(sku.priceTable, quantity)}
+                            {"$" +
+                              getPriceFromTable(
+                                sku.priceTable,
+                                quantity
+                              ).toFixed(2)}
                           </h2>
                         </div>
                       </div>

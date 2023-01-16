@@ -32,7 +32,7 @@ export default function SignInForm({ emails }: { emails: string[] }) {
           <input
             type={"email"}
             required
-            className="rounded bg-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
+            className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           ></input>

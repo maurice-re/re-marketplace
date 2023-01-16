@@ -38,7 +38,7 @@ export default async function Page() {
 
   if (!orders || orders.length == 0 || !company) {
     return (
-      <div className="w-screen h-screen bg-black flex">
+      <div className="w-screen h-screen bg-re-black flex">
         <head>
           <title>Locations</title>
           <meta name="locations" content="Manage locations" />
@@ -71,7 +71,7 @@ export default async function Page() {
             Search for an order by Product/SKU/Location
           </div>
         </div>
-        <div className="flex bg-re-dark-green-500 h-full w-full p-6 overflow-scroll">
+        <div className="flex bg-re-dark-green-500 h-full w-full p-6 overflow-auto">
           <table className="w-full h-min font-theinhardt-300">
             <thead>
               <tr className="bg-re-black text-re-gray-text text-lg text-left">

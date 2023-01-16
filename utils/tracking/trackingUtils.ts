@@ -15,7 +15,7 @@ type Totals = {
     eol: number;
 };
 
-function getTotals(events: Event[]): Totals {
+export function getTotals(events: Event[]): Totals {
     /* Given an array of Events, returns the total number of borrowed,
     returned, EOL'ed, and lost items, in a Totals object. */
 

@@ -4,7 +4,7 @@ import Confetti from "react-confetti";
 
 export default function Page() {
   return (
-    <div className="w-screen h-screen bg-black flex overflow-hidden">
+    <div className="w-screen h-screen bg-re-black flex overflow-hidden">
       <head>
         <title>Thank You for your Order</title>
         <meta

@@ -91,7 +91,7 @@ export default function Page() {
   });
 
   return (
-    <div className="w-screen h-screen bg-black flex overflow-hidden">
+    <div className="w-screen h-screen bg-re-black flex overflow-hidden">
       <head>
         <title>Congrats</title>
         <meta

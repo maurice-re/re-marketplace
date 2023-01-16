@@ -127,7 +127,7 @@ export default function Page() {
   });
 
   return (
-    <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
+    <div className="w-screen h-screen bg-re-black flex items-center justify-center text-white">
       <head>
         <title>Checkout</title>
         <meta name="checkout" content="Purchase containers from Re Company" />

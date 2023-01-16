@@ -1,8 +1,8 @@
 import { Order, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { authOptions } from "../pages/api/auth/[...nextauth]";
 import prisma from "../constants/prisma";
+import { authOptions } from "../pages/api/auth/[...nextauth]";
 
 export default async function Page() {
   const session = await unstable_getServerSession(authOptions);
@@ -20,14 +20,13 @@ export default async function Page() {
       // redirect to shop if they have no orders, including if they just signed in for
       // the first time
       redirect("/dashboard/store");
-    }
-    else {
+    } else {
       redirect("/dashboard");
     }
   }
 
   return (
-    <div className="flex w-screen h-screen bg-black justify-center items-center">
+    <div className="flex w-screen h-screen bg-re-black justify-center items-center">
       <div role="status">
         <svg
           aria-hidden="true"
