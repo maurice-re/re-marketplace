@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
         fontSize: 10,
         textTransform: 'uppercase',
         letterSpacing: 1,
+        fontWeight: 'bold'
     },
     reportTitle: {
         color: '#a3a3a3',

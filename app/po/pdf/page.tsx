@@ -26,8 +26,8 @@ export default async function Page({
 
     const { orderString } = searchParams;
 
-    // TODO(Suhana): Generate actual items form the orderString using a helper function
-    const items: POItem[] = [{ qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }];
+    // TODO(Suhana): Generate actual items from the orderString using a helper function
+    const items: POItem[] = [{ qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }, { qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }];
     const totals: POTotal[] = [{ name: "Subtotal", value: 50, }, { name: "Sales Tax (7.25%)", value: 50, }, { name: "Shipping and Handling", value: 50, }, { name: "Other", value: 50, }, { name: "Total", value: 50, }];
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
