@@ -41,12 +41,7 @@ export default async function Page() {
   });
 
   return (
-    <div className="w-full h-full bg-re-black flex overflow-auto">
-      {/* <head>
-        <title>Tracking</title>
-        <meta name="tracking" content="Tracking" />
-        <link rel="icon" href="/favicon.ico" />
-      </head> */}
+    <div className="w-full h-screen bg-re-black flex overflow-auto">
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Link href={"/dashboard"}>
           <button className="w-full mb-8 flex items-center justify-start gap-2">
