@@ -4,12 +4,11 @@
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  referentialIntegrity = "prisma"
+  relationMode = "prisma"
 }
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
   binaryTargets   = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -29,6 +28,7 @@ model Account {
   userId        String
 
   @@unique([provider, providerId])
+  @@index([userId])
 }
 
 model ApiKey {
@@ -77,6 +77,10 @@ model Event {
   skuId            String
   timestamp        DateTime  @default(now())
   trackingLocation String?
+
+  @@index([locationId])
+  @@index([companyId])
+  @@index([skuId])
 }
 
 enum Action {
@@ -101,7 +105,7 @@ model Location {
   company          Company       @relation(fields: [companyId], references: [id])
   companyId        String
   displayName      String?
-  events           Event[]       @relation(fields: [])
+  events           Event[]       
   line1            String?
   line2            String?
   orderItems       OrderItem[]
@@ -113,6 +117,9 @@ model Location {
   trackingLocation String?
   type             LocationType  @default(SHIPPING)
   zip              String?
+
+  @@index([companyId])
+  @@index([tagId])
 }
 
 enum LocationType {
@@ -132,6 +139,9 @@ model Order {
   user      User        @relation(fields: [userId], references: [id])
   userId    String
   paymentId String?
+
+  @@index([companyId])
+  @@index([userId])
 }
 
 model OrderItem {
@@ -150,6 +160,10 @@ model OrderItem {
   sku        Sku       @relation(fields: [skuId], references: [id])
   skuId      String
   status     Status    @default(SUBMITTED)
+
+  @@index([skuId])
+  @@index([orderId])
+  @@index([locationId])
 }
 
 model Product {
@@ -177,6 +191,8 @@ model ProductDevelopment {
   researchFee      Float
   split            Float     @default(0.7)
   status           Status    @default(PROPOSED)
+
+  @@index([companyId])
 }
 
 enum Region {
@@ -200,6 +216,9 @@ model SampleOrder {
   createdAt  DateTime
   skuIds     String
   status     Status   @default(SUBMITTED)
+
+  @@index([locationId])
+  @@index([companyId])
 }
 
 model Session {
@@ -208,6 +227,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Settings {
@@ -231,6 +252,8 @@ model Sku {
   priceTable    String               @default("0:10")
   untracked     UntrackedInventory[]
   size          String
+
+  @@index([productId])
 }
 
 enum Status {
@@ -257,6 +280,8 @@ model Tag {
   companyId String
   userIds   String?
   locations Location[]
+
+  @@index([companyId])
 }
 
 model UntrackedInventory {
@@ -267,6 +292,7 @@ model UntrackedInventory {
   quantity  Int
 
   @@unique([companyId, skuId])
+  @@index([skuId])
 }
 
 model User {
@@ -284,6 +310,8 @@ model User {
   reEmployee    Boolean   @default(false)
   role          Role
   sessions      Session[]
+
+  @@index([companyId])
 }
 
 model VerificationToken {
