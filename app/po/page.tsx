@@ -2,7 +2,6 @@ import {
     Company,
     User,
 } from '@prisma/client';
-import { Appearance, loadStripe, PaymentMethod } from '@stripe/stripe-js';
 import { unstable_getServerSession } from "next-auth";
 import 'tailwindcss/tailwind.css';
 import prisma from '../../constants/prisma';
@@ -10,16 +9,6 @@ import { CheckoutType } from '../../utils/checkoutUtils';
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import POSummary from '../../components/po/poSummary';
 
-const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? '',
-);
-
-const appearance: Appearance = {
-    theme: 'night',
-    variables: {
-        colorPrimary: '#58FEC4',
-    },
-};
 
 export default async function Page({
     searchParams,

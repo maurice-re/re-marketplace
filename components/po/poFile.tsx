@@ -29,19 +29,56 @@ const styles = StyleSheet.create({
 function POFile({
     items,
     totals,
+    sellerCompany,
+    sellerAddressLine,
+    sellerCity,
+    sellerState,
+    sellerZip,
+    sellerCountry,
+    sellerWebsite,
+    sellerPhone,
+    sellerTaxId,
+    sellerPONumber,
+    buyerPhone,
+    buyerBillingAddressLine,
+    buyerTaxId,
+    buyerName,
+    shippedVia,
+    requestioner,
+    fobPoint,
+    terms
 }: {
     items: POItem[];
     totals: POTotal[];
+    sellerCompany: string;
+    sellerAddressLine: string;
+    sellerCity: string;
+    sellerState: string;
+    sellerZip: string;
+    sellerCountry: string;
+    sellerWebsite: string;
+    sellerPhone: string;
+    sellerTaxId: string;
+    sellerPONumber: number;
+    buyerBillingAddressLine: string;
+    buyerShippingAddressLine: string;
+    buyerName: string;
+    buyerPhone: string;
+    buyerTaxId: number;
+    requestioner: string;
+    shippedVia: string;
+    fobPoint: string;
+    terms: string;
 }) {
     return (
         <Fragment>
             <PDFViewer width="1000" height="600" className="app">
                 <Document>
                     <Page size="A4" style={styles.page}>
-                        <POTitle sellerCompany='The Reusability Company' />
-                        <POSellerAddress sellerAddressLine='3 Germany Dr, Unit 4' sellerCity='Wilmington' sellerState='Delaware' sellerZip='19804' sellerCountry='USA' sellerWebsite='wwww.re.company' sellerPhone='+1 9295054562' />
-                        <POBillingInfo sellerCompany="The Reusability Company" sellerTaxId="87-2179396" sellerAddressLine='3 Germany Dr, Unit 4' sellerCity='Wilmington' sellerState='Delaware' sellerZip='19804' sellerCountry='USA' sellerPONumber={57} buyerBillingAddressLine={"buyerBillingAddressLine"} buyerShippingAddressLine={"buyerShippingAddressLine"} buyerName={"buyerName"} buyerPhone={"buyerPhone"} buyerTaxId={0} />
-                        <POTermsTable poDate="poDate" requestioner="requestioner" shippedVia="shippedVia" fobPoint="fobPoint" terms="terms" />
+                        <POTitle sellerCompany={sellerCompany} />
+                        <POSellerAddress sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerWebsite={sellerWebsite} sellerPhone={sellerPhone} />
+                        <POBillingInfo sellerCompany={sellerCompany} sellerTaxId={sellerTaxId} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerPONumber={sellerPONumber} buyerBillingAddressLine={"buyerBillingAddressLine"} buyerShippingAddressLine={buyerBillingAddressLine} buyerName={buyerName} buyerPhone={buyerPhone} buyerTaxId={buyerTaxId} />
+                        <POTermsTable requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
                         <POItemsTable items={items} />
                         <POItemsTotals totals={totals} />
                         <POSignoff />

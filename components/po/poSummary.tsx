@@ -35,6 +35,8 @@ export default function POSummary({
     user,
 }: POSummaryProps) {
 
+    console.log("In PO page, got ", orderString);
+
     return (
         <div className="w-full h-screen bg-black flex items-start justify-center text-white">
             <ReLogo />
@@ -57,7 +59,6 @@ export default function POSummary({
                     type={CheckoutType.ORDER}
                     user={JSON.parse(JSON.stringify(user))}
                 />
-
             </div>
         </div>
     );

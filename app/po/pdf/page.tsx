@@ -1,6 +1,8 @@
+// "use client";
 import 'tailwindcss/tailwind.css';
 import POFile from '../../../components/po/poFile';
 import ReLogo from '../../../components/form/re-logo';
+// import { useEffect } from 'react';
 
 export type POItem = {
     qty: number;
@@ -14,17 +16,19 @@ export type POTotal = {
     value: number;
 };
 
-
-export default async function Page({
-    searchParams,
-}: {
-    searchParams?: { orderString: string; };
-}) {
-    if (!(searchParams && searchParams.orderString)) {
-        return <div>An error occurred</div>;
-    }
-
-    const { orderString } = searchParams;
+export default async function Page() {
+    // TODO(Suhana): Read from local storage to pass all variables to POFile
+    // except seller (Re) info
+    // useEffect(() => {
+    //     console.log("In useEffect");
+    //     // Retrieve from local storage
+    //     const poInfo: string | null = localStorage.getItem("poInfo");
+    //     if (poInfo != null) {
+    //         const poFields: string[] = JSON.parse(poInfo);
+    //         // console.log("Unpacked: ", poFields);
+    //         localStorage.clear();
+    //     }
+    // }, []);
 
     // TODO(Suhana): Generate actual items from the orderString using a helper function
     const items: POItem[] = [{ qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }, { qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }];
@@ -38,7 +42,29 @@ export default async function Page({
                 </h1>
                 <div className="mx-auto">
                     {/* TODO(Suhana): Pass actual total here */}
-                    <POFile items={items} totals={totals} />
+                    <POFile items={items} totals={totals}
+                        sellerCompany='The Reusability Company'
+                        sellerAddressLine='3 Germany Dr, Unit 4'
+                        sellerCity='Wilmington'
+                        sellerState='Delaware'
+                        sellerZip='19804'
+                        sellerCountry='USA'
+                        sellerWebsite='wwww.re.company'
+                        sellerPhone='+1 9295054562'
+                        sellerTaxId="87-2179396"
+                        sellerPONumber={57}
+                        // TODO(Suhana): Add city, state, zip, and country for both billing and shipping
+                        buyerBillingAddressLine={"buyerBillingAddressLine"}
+                        buyerShippingAddressLine={"buyerShippingAddressLine"}
+                        // TODO(Suhana): Add first and last name fields
+                        buyerName={"buyerName"}
+                        buyerPhone={"buyerPhone"}
+                        buyerTaxId={0}
+                        requestioner="requestioner"
+                        shippedVia="shippedVia"
+                        fobPoint="fobPoint"
+                        terms="terms"
+                    />
                 </div>
             </main>
         </div>

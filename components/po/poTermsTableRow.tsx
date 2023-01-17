@@ -25,9 +25,10 @@ const styles = StyleSheet.create({
 
 });
 
-const POTermsTableRow = ({ poDate, requestioner, shippedVia, fobPoint, terms }: { poDate: string; requestioner: string; shippedVia: string; fobPoint: string; terms: string; }) => {
+const date = new Date();
+const POTermsTableRow = ({ requestioner, shippedVia, fobPoint, terms }: { requestioner: string; shippedVia: string; fobPoint: string; terms: string; }) => {
     return (<Fragment><View style={styles.row}>
-        <Text style={styles.column}>{poDate}</Text>
+        <Text style={styles.column}>{date.toDateString()}</Text>
         <Text style={styles.column}>{requestioner}</Text>
         <Text style={styles.column}>{shippedVia}</Text>
         <Text style={styles.column}>{fobPoint}</Text>

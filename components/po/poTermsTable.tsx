@@ -13,10 +13,10 @@ const styles = StyleSheet.create({
     },
 });
 
-const POTermsTable = ({ poDate, requestioner, shippedVia, fobPoint, terms }: { poDate: string; requestioner: string; shippedVia: string; fobPoint: string; terms: string; }) => (
+const POTermsTable = ({ requestioner, shippedVia, fobPoint, terms }: { requestioner: string; shippedVia: string; fobPoint: string; terms: string; }) => (
     <View style={styles.tableContainer}>
         <POTermsTableHeader />
-        <POTermsTableRow poDate={poDate} requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
+        <POTermsTableRow requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
     </View>
 );
 
