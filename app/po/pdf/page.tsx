@@ -1,6 +1,8 @@
 import 'tailwindcss/tailwind.css';
 import POFile from '../../../components/po/poFile';
 import ReLogo from '../../../components/form/re-logo';
+import { calculatePriceFromCatalog } from '../../../utils/prisma/dbUtils';
+import prisma from "../../../constants/prisma";
 
 export type POItem = {
     qty: number;
@@ -47,12 +49,43 @@ export default async function Page({
         fobPoint,
         terms
     } = searchParams;
-    console.log("On this page");
-    console.log(buyerName);
 
-    // TODO(Suhana): Generate actual items from the orderString using a helper function
-    const items: POItem[] = [{ qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }, { qty: 5000, unit: " ", unitPrice: 4, description: "22oz Cold Beverage Cup (PP material, with pad printing)", total: 4, }];
-    const totals: POTotal[] = [{ name: "Subtotal", value: 50, }, { name: "Sales Tax (7.25%)", value: 50, }, { name: "Shipping and Handling", value: 50, }, { name: "Other", value: 50, }, { name: "Total", value: 50, }];
+    // TODO(Suhana): Pass this down instead of re-fetching
+    const skus = await prisma.sku.findMany({});
+
+    let items: POItem[] = [];
+
+    const orderItems: { amount: number; locationId: string; quantity: number; skuId: string; }[] = [];
+    orderString.split("*").forEach(ordersByLocation => {
+        const locationId = ordersByLocation.split("_")[0];
+        const ordersForLocation = ordersByLocation.split("_").slice(1);
+        ordersForLocation.forEach(order => {
+            const [skuId, quantity] = order.split("~");
+            orderItems.push({
+                amount: calculatePriceFromCatalog(skus, skuId, quantity),
+                locationId: locationId,
+                quantity: parseInt(quantity),
+                skuId: skuId
+            });
+        });
+    });
+
+    let subtotal = 0;
+    let item: POItem;
+
+    orderItems.forEach(orderItem => {
+        item = { qty: orderItem.quantity, unit: " ", unitPrice: calculatePriceFromCatalog(skus, orderItem.skuId, 1), description: orderItem.skuId, total: orderItem.amount };
+        items.push(item);
+        subtotal += item.unitPrice * item.qty;
+    });
+
+    const tax = subtotal * 0.0725;
+    const shippingAndHandling = 50;
+    const other = 0;
+    const total = subtotal + tax;
+
+    const totals: POTotal[] = [{ name: "Subtotal", value: parseFloat(subtotal.toFixed(2)), }, { name: "Sales Tax (7.25%)", value: parseFloat(tax.toFixed(2)), }, { name: "Shipping and Handling", value: parseFloat(shippingAndHandling.toFixed(2)), }, { name: "Other", value: parseFloat(other.toFixed(2)), }, { name: "Total", value: parseFloat(total.toFixed(2)), }];
+
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
             <ReLogo />

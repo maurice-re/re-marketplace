@@ -1,19 +1,7 @@
 "use client";
 
-import {
-    Company,
-    Location,
-    Product,
-    ProductDevelopment,
-    Sku,
-    User,
-} from "@prisma/client";
-import { CheckoutType } from "../../utils/checkoutUtils";
 import Link from "next/link";
-import { saveToLocalStorage } from "../../utils/form/localStorage";
-import { FormEvent, useState } from "react";
-import DoubleAddressField from "../form/double-address-field";
-import AddressField from "../form/address-field";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type POFormProps = {
