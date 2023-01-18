@@ -42,22 +42,14 @@ export default function POSummary({
             <ReLogo />
             <div className="w-full flex">
                 <POItems
-                    company={JSON.parse(JSON.stringify(company)) as Company}
                     locations={JSON.parse(JSON.stringify(company?.locations))}
                     orderString={orderString}
                     products={products}
                     skus={skus}
                     type={CheckoutType.ORDER}
-                    user={JSON.parse(JSON.stringify(user))}
                 />
                 <POForm
-                    company={JSON.parse(JSON.stringify(company)) as Company}
-                    locations={JSON.parse(JSON.stringify(company?.locations))}
                     orderString={orderString}
-                    products={products}
-                    skus={skus}
-                    type={CheckoutType.ORDER}
-                    user={JSON.parse(JSON.stringify(user))}
                 />
             </div>
         </div>

@@ -13,7 +13,6 @@ import Totals from "../checkout/totals";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 
 type POItemsProps = {
-    company?: Company;
     locations?: Location[];
     loggedIn?: boolean;
     orderString: string;
@@ -21,17 +20,14 @@ type POItemsProps = {
     products?: Product[];
     skus?: Sku[];
     type: CheckoutType;
-    user?: User;
 };
 
 export default function POItems({
-    company,
     locations,
     orderString,
     products,
     skus,
     type,
-    user,
 }: POItemsProps) {
     return (
         <div className="flex flex-col my-1 w-1/2">

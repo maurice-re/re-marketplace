@@ -11,94 +11,159 @@ import {
 import { CheckoutType } from "../../utils/checkoutUtils";
 import Link from "next/link";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import DoubleAddressField from "../form/double-address-field";
 import AddressField from "../form/address-field";
 import { useRouter } from "next/navigation";
 
-type CheckoutProps = {
-    company?: Company;
-    locations?: Location[];
-    loggedIn?: boolean;
+type POFormProps = {
     orderString: string;
-    productDevelopment?: ProductDevelopment;
-    products?: Product[];
-    skus?: Sku[];
-    type: CheckoutType;
-    user?: User;
 };
 
-// TODO(Suhana): Remove uneccess
 export default function POForm({
-    company,
-    locations,
     orderString,
-    products,
-    skus,
-    type,
-    user,
-}: CheckoutProps) {
+}: POFormProps) {
     const router = useRouter();
-
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        console.log("Inside PO handleSubmit()");
-        e.preventDefault();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TODO: find a better way to do parse form
-        const formElements = (e.target as any).elements as HTMLInputElement[];
-        const poInfo: string[] = [];
-        for (let i = 0; i < formElements.length - 1; i++) {
-            console.log(formElements[i].value);
-            poInfo.push(formElements[i].value);
-        }
-
-        saveToLocalStorage(
-            [poInfo],
-            ["poInfo"]
-        );
-
-        router.replace("/po/pdf");
-
-        // TODO(Suhana): Add error display (setMessage)
-    };
+    const [buyerName, setBuyerName] = useState<string>("");
+    const [buyerBillingAddressLine, setBuyerBillingAddressLine] = useState<string>("");
+    const [buyerShippingAddressLine, setBuyerShippingAddressLine] = useState<string>("");
+    const [buyerPhone, setBuyerPhone] = useState<string>("");
+    const [buyerTaxId, setBuyerTaxId] = useState<string>("");
+    const [requestioner, setRequestioner] = useState<string>("");
+    const [shippedVia, setShippedVia] = useState<string>("");
+    const [fobPoint, setFobPoint] = useState<string>("");
+    const [terms, setTerms] = useState<string>("");
 
     return (
         <form
             className="w-1/2 my-4 flex-col"
-            onSubmit={handleSubmit}
         >
             <div>
                 <div className="py-4">
-                    <div className="text-lg font-semibold">Your Company Info</div>
-                    <AddressField placeholder="Company Name" top required />
-                    <AddressField placeholder="Billing Address Line" required />
-                    <AddressField placeholder="Shipping Address Line" required />
-                    {/* <AddressField placeholder="Country" required />
-                    <DoubleAddressField
-                        leftPlaceholder="City"
-                        rightPlaceholder="Zip"
-                        required
-                    />
-                    <AddressField placeholder="State" required /> */}
-                </div>
-            </div>
-            <div>
-                <div className="py-4">
-                    <div className="text-lg font-semibold">Buyer Info</div>
-                    <AddressField placeholder="Contact Name" top required />
-                    <AddressField placeholder="Phone" required />
-                    <AddressField placeholder="Tax ID" bottom required />
+                    <div className="text-lg font-semibold">Your Info</div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Contact Name"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t"}
+                            type="text"
+                            value={buyerName}
+                            placeholder={"Contact Name"}
+                            onChange={(e) => setBuyerName(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Billing Address Line"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
+                            type="text"
+                            value={buyerBillingAddressLine}
+                            placeholder={"Billing Address Line"}
+                            onChange={(e) => setBuyerBillingAddressLine(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Shipping Address Line"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
+                            type="text"
+                            value={buyerShippingAddressLine}
+                            placeholder={"Shipping Address Line"}
+                            onChange={(e) => setBuyerShippingAddressLine(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Buyer Phone"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
+                            type="text"
+                            value={buyerPhone}
+                            placeholder={"Buyer Phone"}
+                            onChange={(e) => setBuyerPhone(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Buyer Tax ID"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-b-2 mb-2 rounded-b"}
+                            type="text"
+                            value={buyerTaxId}
+                            placeholder={"Buyer Tax ID"}
+                            onChange={(e) => setBuyerTaxId(e.target.value)}
+                            required
+                        />
+                    </div>
                 </div>
             </div>
             <div>
                 <div className="py-4">
                     <div className="text-lg font-semibold">Other Info</div>
-                    <AddressField placeholder="Requestioner" top required />
-                    <AddressField placeholder="Shipped Via" required />
-                    <AddressField placeholder="FOB Point" required />
-                    <AddressField placeholder="Terms" bottom required />
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Requestioner"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t"}
+                            type="text"
+                            value={requestioner}
+                            placeholder={"Requestioner"}
+                            onChange={(e) => setRequestioner(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Shipped Via"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
+                            type="text"
+                            value={shippedVia}
+                            placeholder={"Shipped Via"}
+                            onChange={(e) => setShippedVia(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"FOB Point"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
+                            type="text"
+                            value={fobPoint}
+                            placeholder={"FOB Point"}
+                            onChange={(e) => setFobPoint(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="p-0 my-0">
+                        <input
+                            name={"Terms"}
+                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-b-2 mb-2 rounded-b"}
+                            type="text"
+                            value={terms}
+                            placeholder={"Terms"}
+                            onChange={(e) => setTerms(e.target.value)}
+                            required
+                        />
+                    </div>
                 </div>
             </div>
-            <div className="flex flex-col my-1 w-1/2 mx-auto">
+            <Link
+                className={`flex flex-col my-1 w-1/2 mx-auto${orderString == "" && "pointer-events-none"}`}
+                href={{
+                    pathname: "/po/pdf",
+                    query: {
+                        orderString: orderString,
+                        buyerName: buyerName,
+                        buyerBillingAddressLine: buyerBillingAddressLine,
+                        buyerShippingAddressLine: buyerShippingAddressLine,
+                        buyerPhone: buyerPhone,
+                        buyerTaxId: buyerTaxId,
+                        requestioner: requestioner,
+                        shippedVia: shippedVia,
+                        fobPoint: fobPoint,
+                        terms: terms
+                    },
+                }}>
                 <button
                     id="submit"
                     className={`${orderString === ""
@@ -110,7 +175,7 @@ export default function POForm({
                     Go to PDF
                 </button>
 
-            </div>
+            </Link>
         </form>
 
     );
