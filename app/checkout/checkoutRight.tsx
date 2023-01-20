@@ -201,7 +201,7 @@ export default function CheckoutRight({
     <form
       id="payment-form"
       onSubmit={handleSubmit}
-      className="flex-col rounded px-10 py-4 h-full items-start overflow-auto"
+      className="flex-col rounded px-10 py-4 h-full items-start"
     >
       {company != null && paymentMethods && (
         <select

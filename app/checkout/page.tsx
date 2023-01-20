@@ -104,9 +104,9 @@ export default async function Page({
   ).then((res) => res.json());
 
   return (
-    <div className="w-full h-screen overflow-auto bg-re-dark-green-500 flex flex-col font-theinhardt text-white items-center p-6 justify-center">
+    <div className="w-full h-full min-h-screen bg-re-dark-green-500 flex flex-col font-theinhardt text-white items-center p-6 pt-10 justify-center">
       <ReLogo />
-      <div className="flex flex-col w-5/6 text-right">
+      <div className="flex flex-col w-5/6 text-right pt-10">
         <div>Total Payment</div>
         <div className="text-4xl mb-6">{`$${getCheckoutTotal(
           orderString,

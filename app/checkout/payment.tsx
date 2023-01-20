@@ -64,7 +64,7 @@ export default function Payment({
     appearance,
   };
   return (
-    <div className="w-1/3 self-center">
+    <div className="w-1/3 self-center mt-5">
       <input type="checkbox" id="eol-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box">
@@ -89,7 +89,7 @@ export default function Payment({
         </div>
       </div>
 
-      <main className="flex-grow font-theinhardt">
+      <div className="flex-grow font-theinhardt">
         <div className="px-10 flex justify-between text-lg">
           <div>Subtotal</div>
           <div>
@@ -107,7 +107,7 @@ export default function Payment({
           ).toFixed(2)}`}</div>
         </div>
         <div className="px-10 flex justify-between text-lg">
-          <div>Total due</div>
+          <div>Total Payment</div>
           <div>
             {`$${getCheckoutTotal(
               orderString,
@@ -122,10 +122,10 @@ export default function Payment({
         {clientSecret && (
           <Elements options={options} stripe={stripePromise}>
             <CheckoutRight
-              company={company ?? null}
+              company={JSON.parse(JSON.stringify(company ?? null))}
               customerId={customerId}
               eol={eol}
-              locations={locations ?? []}
+              locations={JSON.parse(JSON.stringify(locations ?? []))}
               orderString={orderString}
               paymentMethods={paymentMethods}
               paymentIntentId={paymentIntentId}
@@ -137,7 +137,7 @@ export default function Payment({
             />
           </Elements>
         )}
-      </main>
+      </div>
     </div>
   );
 }
