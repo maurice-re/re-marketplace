@@ -196,7 +196,7 @@ export default function LineItems({
       );
     });
   }
-  console.log(items);
+  // console.log(items);
 
   return items;
 }

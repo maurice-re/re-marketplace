@@ -13,20 +13,21 @@ export function getEmissions(events: Event[]): number {
   const usedOnce = new Map<string, undefined>();
   let emissions = 0;
   events.forEach((event) => {
-    if (event.action == Action.BORROW && !usedOnce.has(event.itemId)) {
-      emissions += productionAndDistributionEmission;
-      usedOnce.set(event.itemId, undefined);
-    }
-    if (event.action == Action.RETURN) {
+    if (event.itemId) {
+      if (event.action == Action.BORROW && !usedOnce.has(event.itemId)) {
+        emissions += productionAndDistributionEmission;
+        usedOnce.set(event.itemId, undefined);
+      }
+      if (event.action == Action.RETURN) {
         emissions += washingEmission;
-    }
-    if (event.action == Action.EOL) {
+      }
+      if (event.action == Action.EOL) {
         emissions += recyclingEmission;
-    }
-    if (event.action == Action.LOST) {
+      }
+      if (event.action == Action.LOST) {
         emissions += incinerationEmission;
+      }
     }
-
   });
   return emissions;
 }

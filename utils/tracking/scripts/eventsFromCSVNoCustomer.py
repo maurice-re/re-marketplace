@@ -9,12 +9,13 @@ apiUrl = "http://localhost:3000/api/tracking/create-event"
 
 events = []
 
-fileName = "MuuseEventDataWithDates.csv"
+fileName = "sheets/EventsDataNoCustomer.csv"
 with open(fileName, 'r') as csvFile:
     dataReader = csv.reader(csvFile)
     next(dataReader)
     for row in dataReader:
-        location = row[0]
+        # The following variables correspond to the CSV column headings in the order they appear
+        location = row[0] # trackingLocation is the code, locationId is in DB
         product = row[1]
         actionType = row[2]
         productId = row[3]
@@ -25,10 +26,11 @@ with open(fileName, 'r') as csvFile:
         events.append(event)
 
 for event in events:
-    print(event)
+    eventBody = {"consumerId": "", "itemId": event[0], "trackingLocation": event[1], "skuId": event[2], "action": event[3], "timestamp": event[4], "locationId": "clcy01xcp0005v4b2fdt95clp"}
 
-    eventBody = {"itemId": event[0], "locationId": event[1], "skuId": event[2], "action": event[3], "timestamp": event[4]}
-    headers = {"content-type":"application/json", "authorization": "Bearer NrL3uRqdnUsbUZs1iJbhKiYrPqS6k1RXuXWBRwjlcgyYTjxA74n3lLuySOcWUg3u"}
+    print(eventBody)
+
+    headers = {"content-type":"application/json", "authorization": "Bearer qtTNjRQFWNBe1EXaNmIfEeDmKgqnIZIeZlcpZvAG7ELBEmzgIzRL473rgZjBwOiP"}
     response = requests.post(apiUrl, data=json.dumps(eventBody), headers=headers)
 
     print(response.status_code)
