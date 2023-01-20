@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
 
 const POItemsTableRows = ({ items }: { items: POItem[]; }) => {
     const rows = items.map((item) => (
-        <View style={styles.row}>
+        <View style={styles.row} key={items.indexOf(item)}>
             <Text style={styles.qty}>{item.qty}</Text>
             <Text style={styles.unit}>{item.unit}</Text>
             <Text style={styles.description}>{item.description}</Text>

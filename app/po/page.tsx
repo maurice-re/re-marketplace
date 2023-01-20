@@ -1,6 +1,7 @@
 import {
     Company,
     User,
+    Location,
 } from '@prisma/client';
 import { unstable_getServerSession } from "next-auth";
 import 'tailwindcss/tailwind.css';
@@ -38,7 +39,7 @@ export default async function Page({
         <div className="w-full h-screen w-7/8 bg-black flex overflow-auto">
             <main className="flex flex-col w-full py-6 text-white font-theinhardt px-4">
                 <POSummary
-                    company={JSON.parse(JSON.stringify(company)) as Company}
+                    company={JSON.parse(JSON.stringify(company)) as Company & { locations: Location[]; }}
                     locations={JSON.parse(JSON.stringify(company?.locations))}
                     orderString={orderString}
                     products={products}

@@ -14,7 +14,7 @@ import POItems from "./poItems";
 import POForm from "./poForm";
 
 type POSummaryProps = {
-    company?: Company;
+    company?: Company & { locations: Location[]; };
     locations?: Location[];
     loggedIn?: boolean;
     orderString: string;

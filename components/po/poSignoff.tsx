@@ -45,6 +45,8 @@ const date = new Date();
 const POSignoff = () => (
 
     <View style={styles.signoffContainer}>
+        {/* Disabling here because React PDF Image doesn't have an alt prop */}
+        {/* eslint-disable-next-line */}
         <Image style={styles.logo} src={'/images/re-logo-black.jpg'} />
         <View style={styles.signoff}>
             <Text style={styles.signIndicationText}>Sign here:</Text>

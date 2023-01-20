@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 // TODO(Suhana): Style this better
 const POItemsTotals = ({ totals }: { totals: POTotal[]; }) => {
     const rows = totals.map((total) => (
-        <View style={styles.row}>
+        <View style={styles.row} key={totals.indexOf(total)}>
             <Text style={styles.name}>{total.name}</Text>
             <Text style={styles.value}>{total.value}</Text>
         </View>
