@@ -20,7 +20,7 @@ async function getUser() {
   const user = await prisma.user.findUnique({
     where: {
       // TODO(Suhana): Change the below to fixed tracking demo user
-      email: "pcoulson@myyahoo.com",
+      email: "lewis@example.com",
     },
     include: {
       company: {
@@ -35,9 +35,10 @@ async function getUser() {
 
 export default async function Page() {
   const user: UserSettings = await getUser();
+  if (!user) return <div>Not found</div>;
   const skus = await getSkus();
   const events: Event[] = await prisma.event.findMany({
-    where: { companyId: "616" },
+    where: { companyId: user.companyId },
   });
 
   return (

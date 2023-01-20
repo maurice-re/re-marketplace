@@ -14,8 +14,6 @@ import {
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import Addresses from "../../components/checkout/addresses";
-import Info from "../../components/checkout/info";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 
 export default function CheckoutRight({
@@ -141,6 +139,7 @@ export default function CheckoutRight({
           ),
         }),
       });
+      console.log(res);
       if (res.status != 200) {
         hasError = true;
         const { message } = await res.json();
@@ -172,6 +171,7 @@ export default function CheckoutRight({
         }
         return;
       } else if (type == CheckoutType.ORDER && company && user) {
+        console.log("order");
         await fetch("/api/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -194,28 +194,20 @@ export default function CheckoutRight({
     setIsLoading(false);
   };
 
+  console.log("company", company);
+  console.log("paymentMethods", paymentMethods);
+
   return (
     <form
       id="payment-form"
       onSubmit={handleSubmit}
-      className="flex-col border-l border-grey-500 rounded px-10 py-4 h-full items-start overflow-auto"
+      className="flex-col rounded px-10 py-4 h-full items-start overflow-auto"
     >
-      <div>
-        {Info({
-          productDevelopment: productDevelopment,
-          user: user,
-          type: type,
-        })}
-        {Addresses({
-          locations: locations,
-          orderString: orderString,
-          type: type,
-        })}
-      </div>
       {company != null && paymentMethods && (
         <select
-          className={`w-full bg-stripe-gray border-white border rounded py-2 ${dropdown == "new" ? "mb-2" : "mb-6"
-            }`}
+          className={`w-full bg-re-dark-green-200  border border-re-gray-300 rounded p-4 ${
+            dropdown == "new" ? "mb-2" : "mb-6"
+          }`}
           value={dropdown}
           onChange={(e) => setDropdown(e.target.value)}
         >
@@ -241,8 +233,9 @@ export default function CheckoutRight({
           onClick={() => document.getElementById("eol-modal")?.click()}
           type="button"
           disabled={isLoading || !stripe || !elements || dropdown == ""}
-          className={`btn modal-button text-center mb-6 w-full ${eol ? "" : "btn-error btn-outline"
-            }`}
+          className={`btn modal-button text-center mb-6 w-full ${
+            eol ? "text-re-green-500" : "btn-error btn-outline"
+          }`}
         >
           {eol ? (
             <svg
@@ -274,8 +267,9 @@ export default function CheckoutRight({
             (type == CheckoutType.ORDER && !eol)
           }
           id="submit"
-          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${isLoading ? "loading" : ""
-            }`}
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
+            isLoading ? "loading" : ""
+          }`}
         >
           Pay Now
         </button>

@@ -22,7 +22,7 @@ export default function LineItems({
   type: CheckoutType;
 }): JSX.Element[] {
   console.log(orderString);
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
     items.push(
@@ -89,84 +89,108 @@ export default function LineItems({
   }
 
   if (type == CheckoutType.ORDER && products && skus && locations) {
-    console.log("HI");
     orderString.split("*").forEach((ordersByLocation) => {
       const locationId = ordersByLocation.split("_")[0];
       const lineItems = ordersByLocation.split("_").slice(1);
       const location = locations.find((loc) => loc.id == locationId);
-
-      if (orderString.split("*").length > 1) {
-        items.push(
-          <div key={"name " + locationId}>
-            <div>{`${
-              location ? location.displayName ?? location.city : location
-            } orders`}</div>
-          </div>
-        );
+      if (!location) {
+        //TODO: handle error
+        return;
       }
-      items = items.concat(
-        lineItems.map((lineItem) => {
-          const [skuId, quantity] = lineItem.split("~");
-          const sku: Sku = skus.find((s) => s.id == skuId) as Sku;
-          const product: Product = products.find(
-            (p) => (p.id = sku.productId)
-          ) as Product;
-          return (
-            <div
-              className="flex columns-2 justify-between items-center mr-4 mt-5 mb-8"
-              key={skuId + location ?? locationId}
-            >
-              <div className="flex columns-2 justify-start items-center">
-                <div className="h-12 w-12 overflow-hidden rounded place-content-center mr-3">
-                  <Image
-                    src={sku.mainImage}
-                    alt={product.name}
-                    height={48}
-                    width={48}
-                  />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold mb-0.5">
-                    {sku.size + " " + sku.materialShort + " " + product.name}
-                  </div>
-                  <div className="flex flex-col">
-                    <div className="text-xs text-gray-300">
-                      {sku.color[0].toUpperCase() + sku.color.slice(1)}
-                    </div>
-                    <div className="text-xs text-gray-300">{`Qty ${quantity}`}</div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col justify-center">
-                <div className="text-sm font-semibold mb-0.5">{`$${calculatePriceFromCatalog(
-                  sku,
-                  sku.id,
-                  quantity
-                ).toFixed(2)}`}</div>
-                <div className="text-xs text-gray-300">{`$${getPriceFromTable(
-                  sku.priceTable,
-                  quantity
-                ).toFixed(2)} each`}</div>
-              </div>
-            </div>
-          );
-        })
-      );
       items.push(
-        <div
-          className="flex columns-2 pl-16 justify-between mr-6 mb-8"
-          key={"tax " + locationId}
-        >
-          <div className="">
-            <div className="text-sm font-semibold mb-0.5">Shipping</div>
-            <div className="text-xs text-gray-300">
-              {location
-                ? `Shenzen to ${location.city} 7-10 days`
-                : `Ships from Shenzen 7-14 days`}
+        <div className="flex w-5/6 gap-3 mb-4" key={locationId}>
+          <div className="w-3/5 px-5 py-4 bg-re-dark-green-300 border border-re-gray-300 rounded-md">
+            <div className="mb-5 text-lg">{`${
+              location.displayName ?? location.city
+            } orders`}</div>
+            {lineItems.map((lineItem) => {
+              const [skuId, quantity] = lineItem.split("~");
+              const sku: Sku = skus.find((s) => s.id == skuId) as Sku;
+              const product: Product = products.find(
+                (p) => (p.id = sku.productId)
+              ) as Product;
+
+              return (
+                <div
+                  className="flex justify-start mb-5"
+                  key={skuId + locationId}
+                >
+                  <Image
+                    className="bg-red-400 rounded mr-2"
+                    src={sku.mainImage}
+                    alt={"Image of product"}
+                    width={96}
+                    height={96}
+                  />
+                  <div className="flex flex-col flex-grow h-24">
+                    <div className="flex justify-between items-center">
+                      <div>{sku.materialShort + " " + product.name}</div>
+                      <div className="text-xl">{`$${calculatePriceFromCatalog(
+                        skus,
+                        skuId,
+                        quantity
+                      ).toFixed(2)}`}</div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="text-base text-re-gray-text">
+                        {sku.size +
+                          " · " +
+                          sku.color.charAt(0).toUpperCase() +
+                          sku.color.slice(1)}
+                      </div>
+                      <div className="text-sm text-re-gray-text">{`$${getPriceFromTable(
+                        sku.priceTable,
+                        quantity
+                      ).toFixed(2)} each`}</div>
+                    </div>
+                    <div className="flex-grow" />
+                    <div className=" items-end">{`Qty ${quantity}`}</div>
+                  </div>
+                </div>
+              );
+            })}
+            <div>Shipping</div>
+            <div className="flex justify-between">
+              <div className="text-re-gray-text">{`Shenzen to ${location.city} 7-10 days`}</div>
+              <div className="text-re-gray-text">Calculated later</div>
             </div>
           </div>
-          <div className="">
-            <div className="text-sm font-semibold mb-0.5">Calculated later</div>
+          <div className=" w-2/5 flex flex-col justify-center">
+            <div className="bg-re-dark-green-500 border border-re-gray-300 rounded-md flex flex-col">
+              <div className="p-4">{`${
+                location.displayName ?? location.city
+              } shipping address`}</div>
+              <div className="h-px bg-re-gray-300 w-full"></div>
+              <div
+                className={`px-6 py-2 ${
+                  location.displayName ? "text-white" : "text-re-gray-text"
+                }`}
+              >
+                {location.displayName ? location.displayName : "Display Name"}
+              </div>
+              <div className="h-px bg-re-gray-300 w-full"></div>
+              <div className="px-6 py-2">{location.country}</div>
+              <div className="h-px bg-re-gray-300 w-full"></div>
+              <div className="px-6 py-2">{location.line1}</div>
+              <div className="h-px bg-re-gray-300 w-full"></div>
+              <div
+                className={`px-6 py-2 ${
+                  location.line2 && location.line2.length > 1
+                    ? "text-white"
+                    : "text-re-gray-text"
+                }`}
+              >
+                {location.line2 ? location.line2 : "Line 2"}
+              </div>
+              <div className="h-px bg-re-gray-300 w-full"></div>
+              <div className="flex">
+                <div className="pl-6 py-2 w-1/3">{location.city}</div>
+                <div className="w-px h-full bg-re-gray-300" />
+                <div className="px-6 py-2">{location.zip}</div>
+              </div>
+              <div className="h-px bg-re-gray-300 w-full"></div>
+              <div className="px-6 py-1">{location.state}</div>
+            </div>
           </div>
         </div>
       );

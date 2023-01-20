@@ -59,133 +59,142 @@ function Home({
   //TODO(Suhana): Create sub components once used in app/
   if (hasCompleteOrder) {
     return (
-      <main className="flex flex-col text-white font-theinhardt bg-re-dark-green-500 h-screen">
+      <div className="flex flex-col overflow-auto">
         <div className="border-b-1/2 border-re-gray-300 bg-re-black py-2 pl-6 text-lg">
           Welcome {user.firstName} – {user.company.name}
         </div>
-        <div className="flex items-center justify-center p-4">
-          <div className="flex flex-col w-3/5 justify-between gap-6">
-            <div className="flex flex-col bg-re-dark-green-300 border border-re-gray-300 rounded-md items-start">
-              <div className="flex justify-between w-full items-center p-4">
-                <h1 className=" text-white font-theinhardt text-xl">
-                  <span>Latest Order</span>
-                  <span className="text-xl"> – </span>
-                  <span className="text-xl">
-                    {`${new Date(orders[0].createdAt).toLocaleDateString(
-                      "en-us",
-                      {
-                        day: "numeric",
-                        month: "short",
-                      }
-                    )}`}
-                  </span>
-                </h1>
-                <Link
-                  href={{
-                    pathname: "/checkout",
-                    query: {
-                      orderString: getOrderString(
-                        orders[0] as unknown as OrderWithItems
-                      ),
-                    },
-                  }}
-                >
-                  <button className=" px-4 py-2 bg-re-purple-500 rounded text-white hover:bg-re-purple-600">
-                    Order Again
-                  </button>
-                </Link>
-              </div>
-              <div className="h-px bg-re-gray-300 mb-2 w-full" />
-              <div className="flex flex-col w-full p-4">
-                {separateByLocationId(
-                  orders[0].items as unknown as OrderItem[]
-                ).map((arr, index) => (
-                  <div key={arr[0].locationId}>
-                    <div className="flex justify-between mt-1 mb-3">
-                      <h2 className="text-xl font-theinhardt">
-                        {(arr[0] as ItemLocationSku).location.displayName ??
-                          (arr[0] as ItemLocationSku).location.city}
-                      </h2>
-                      <h3 className="text-lg font-theinhardt-300">{`$${arr.reduce(
-                        (prev, curr) => prev + curr.amount,
-                        0
-                      )}`}</h3>
-                    </div>
-                    {arr.map((item) => (
-                      <div
-                        className="flex justify-between"
-                        key={item.id + "items"}
-                      >
-                        <div
-                          className={`flex items-center ${
-                            index + 1 != arr.length ? "mb-3" : ""
-                          }`}
-                        >
-                          <Image
-                            src={(item as ItemLocationSkuProduct).sku.mainImage}
-                            height={96}
-                            width={96}
-                            alt={skuName((item as ItemLocationSkuProduct).sku)}
-                            className="rounded"
-                          />
-                          <div className="flex-col text-start ml-4">
-                            <div className="text-base font-theinhardt">
-                              {
-                                (item as ItemLocationSkuProduct).sku.product
-                                  .name
-                              }
-                            </div>
-                            <div className="text-sm font-theinhardt-300">
-                              {`${
-                                (item as ItemLocationSkuProduct).sku.size
-                              } | ${
-                                (item as ItemLocationSkuProduct).sku
-                                  .materialShort
-                              }`}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center font-theinhardt-300 text-md">{`x ${item.quantity}`}</div>
-                        <div className="flex mb-3 items-center">
-                          <div className="flex-col justify-center text-center">
-                            <div className="font-theinhardt uppercase tracking-wide text-xs text-re-green-600">
-                              {item.status}
-                            </div>
-                            <div className=" text-xs font-theinhardt-300">
-                              {getEstimation(item)}
-                            </div>
-                          </div>
-                          <div className="flex items-center mx-6">
-                            <Link
-                              href={{
-                                pathname: "/checkout",
-                                query: {
-                                  orderString: getOrderString(undefined, item),
-                                },
-                              }}
-                            >
-                              <button className="px-3 py-2 bg-re-purple-500 text-xs hover:bg-re-purple-600 rounded">
-                                Re-order
-                              </button>
-                            </Link>
-                          </div>
-                        </div>
+        <main className="flex flex-col text-white font-theinhardt bg-re-dark-green-500 h-screen overflow-auto">
+          <div className="flex items-center justify-center p-4">
+            <div className="flex flex-col w-3/5 justify-between gap-6">
+              <div className="flex flex-col bg-re-dark-green-300 border border-re-gray-300 rounded-md items-start">
+                <div className="flex justify-between w-full items-center p-4">
+                  <h1 className=" text-white font-theinhardt text-xl">
+                    <span>Latest Order</span>
+                    <span className="text-xl"> – </span>
+                    <span className="text-xl">
+                      {`${new Date(orders[0].createdAt).toLocaleDateString(
+                        "en-us",
+                        {
+                          day: "numeric",
+                          month: "short",
+                        }
+                      )}`}
+                    </span>
+                  </h1>
+                  <Link
+                    href={{
+                      pathname: "/checkout",
+                      query: {
+                        orderString: getOrderString(
+                          orders[0] as unknown as OrderWithItems
+                        ),
+                      },
+                    }}
+                  >
+                    <button className=" px-4 py-2 bg-re-purple-500 rounded text-white hover:bg-re-purple-600">
+                      Order Again
+                    </button>
+                  </Link>
+                </div>
+                <div className="h-px bg-re-gray-300 mb-2 w-full" />
+                <div className="flex flex-col w-full p-4">
+                  {separateByLocationId(
+                    orders[0].items as unknown as OrderItem[]
+                  ).map((arr, index) => (
+                    <div key={arr[0].locationId}>
+                      <div className="flex justify-between mt-1 mb-3">
+                        <h2 className="text-xl font-theinhardt">
+                          {(arr[0] as ItemLocationSku).location.displayName ??
+                            (arr[0] as ItemLocationSku).location.city}
+                        </h2>
+                        <h3 className="text-lg font-theinhardt-300">{`$${arr.reduce(
+                          (prev, curr) => prev + curr.amount,
+                          0
+                        )}`}</h3>
                       </div>
-                    ))}
-                  </div>
-                ))}
+                      {arr.map((item) => (
+                        <div
+                          className="flex justify-between"
+                          key={item.id + "items"}
+                        >
+                          <div
+                            className={`flex items-center ${
+                              index + 1 != arr.length ? "mb-3" : ""
+                            }`}
+                          >
+                            <Image
+                              src={
+                                (item as ItemLocationSkuProduct).sku.mainImage
+                              }
+                              height={96}
+                              width={96}
+                              alt={skuName(
+                                (item as ItemLocationSkuProduct).sku
+                              )}
+                              className="rounded"
+                            />
+                            <div className="flex-col text-start ml-4">
+                              <div className="text-base font-theinhardt">
+                                {
+                                  (item as ItemLocationSkuProduct).sku.product
+                                    .name
+                                }
+                              </div>
+                              <div className="text-sm font-theinhardt-300">
+                                {`${
+                                  (item as ItemLocationSkuProduct).sku.size
+                                } | ${
+                                  (item as ItemLocationSkuProduct).sku
+                                    .materialShort
+                                }`}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center font-theinhardt-300 text-md">{`x ${item.quantity}`}</div>
+                          <div className="flex mb-3 items-center">
+                            <div className="flex-col justify-center text-center">
+                              <div className="font-theinhardt uppercase tracking-wide text-xs text-re-green-600">
+                                {item.status}
+                              </div>
+                              <div className=" text-xs font-theinhardt-300">
+                                {getEstimation(item)}
+                              </div>
+                            </div>
+                            <div className="flex items-center mx-6">
+                              <Link
+                                href={{
+                                  pathname: "/checkout",
+                                  query: {
+                                    orderString: getOrderString(
+                                      undefined,
+                                      item
+                                    ),
+                                  },
+                                }}
+                              >
+                                <button className="px-3 py-2 bg-re-purple-500 text-xs hover:bg-re-purple-600 rounded">
+                                  Re-order
+                                </button>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
+              <QuickOrder
+                companyId={user.companyId}
+                customerId={user.company.customerId}
+                locations={locations}
+                skus={skus}
+                userId={user.id}
+              />
             </div>
-            <QuickOrder
-              companyId={user.companyId}
-              customerId={user.company.customerId}
-              locations={locations}
-              skus={skus}
-              userId={user.id}
-            />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     );
   } else if (hasIncompleteOrder) {
     // Get status of first incomplete order
