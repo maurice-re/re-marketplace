@@ -58,14 +58,9 @@ model Company {
   createdAt           DateTime
   customerId          String
   events              Event[]
-  locations           Location[]
   name                String
-  orders              Order[]
   productDevelopments ProductDevelopment[]
-  settings            Settings?
-  sampleOrders        SampleOrder[]
   subscriptionType    SubscriptionType     @default(FREE)
-  tags                Tag[]
   untracked           UntrackedInventory[]
   users               User[]
 }
@@ -111,23 +106,25 @@ model Location {
   id               String        @id @default(cuid())
   city             String?
   country          String?
-  company          Company       @relation(fields: [companyId], references: [id])
-  companyId        String
   displayName      String?
   events           Event[]
   hardware         Hardware[]
   line1            String?
   line2            String?
   orderItems       OrderItem[]
+<<<<<<< HEAD
   penalty          Penalty       @default(NONE)
+=======
+  owners           User[]        @relation(name: "LocationOwners")
+>>>>>>> 78d0038 (location-based schema changes 1)
   sampleOrders     SampleOrder[]
+  settings         Settings?
   shippingName     String?
   state            String?
-  tag              Tag?          @relation(fields: [tagId], references: [id])
-  tagId            String?
   trackingLocation String?
   trackingType     TrackingType  @default(NONE)
   type             LocationType  @default(SHIPPING)
+  viewers          User[]        @relation(name: "LocationViewers")
   zip              String?
 
   @@index([tagId])
@@ -143,8 +140,6 @@ enum LocationType {
 model Order {
   id        String      @id @default(cuid())
   amount    Float
-  company   Company     @relation(fields: [companyId], references: [id])
-  companyId String
   createdAt DateTime
   items     OrderItem[]
   status    Status      @default(SUBMITTED)
@@ -228,8 +223,6 @@ model SampleOrder {
   amount     Float
   location   Location @relation(fields: [locationId], references: [id])
   locationId String
-  company    Company  @relation(fields: [companyId], references: [id])
-  companyId  String
   createdAt  DateTime
   skuIds     String
   status     Status   @default(SUBMITTED)
@@ -249,10 +242,10 @@ model Session {
 }
 
 model Settings {
-  id                 String  @id @default(cuid())
+  id                 String   @id @default(cuid())
   borrowReturnBuffer Int?
-  company            Company @relation(fields: [companyId], references: [id])
-  companyId          String  @unique
+  location           Location @relation(fields: [locationId], references: [id])
+  locationId         String   @unique
 }
 
 model Sku {
@@ -290,24 +283,6 @@ enum SubscriptionType {
   PREMIUM_PLUS
 }
 
-model Tag {
-  id        String     @id @default(cuid())
-  name      String
-  company   Company    @relation(fields: [companyId], references: [id])
-  companyId String
-  userIds   String?
-  locations Location[]
-
-  @@index([companyId])
-}
-
-enum TrackingType {
-  NONE
-  USER
-  CONTAINER
-  BOTH
-}
-
 model UntrackedInventory {
   company   Company @relation(fields: [companyId], references: [id])
   companyId String
@@ -320,22 +295,22 @@ model UntrackedInventory {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  accounts      Account[]
-  company       Company   @relation(fields: [companyId], references: [id])
-  companyId     String
-  createdAt     DateTime
-  email         String    @unique()
-  emailVerified DateTime?
-  firstName     String?
-  lastName      String?
-  manufacturer  Boolean   @default(false)
-  orders        Order[]
-  reEmployee    Boolean   @default(false)
-  role          Role
-  sessions      Session[]
-
-  @@index([companyId])
+  id                String     @id @default(cuid())
+  accounts          Account[]
+  company           Company    @relation(fields: [companyId], references: [id])
+  companyId         String
+  createdAt         DateTime
+  email             String     @unique()
+  emailVerified     DateTime?
+  firstName         String?
+  lastName          String?
+  ownedLocations    Location[] @relation(name: "LocationOwners")
+  viewableLocations Location[] @relation(name: "LocationViewers")
+  manufacturer      Boolean    @default(false)
+  orders            Order[]
+  reEmployee        Boolean    @default(false)
+  role              Role
+  sessions          Session[]
 }
 
 model VerificationToken {
