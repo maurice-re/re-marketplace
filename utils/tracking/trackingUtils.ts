@@ -95,7 +95,7 @@ export function getEventsBySku(events: Event[], sku: Sku): Event[] {
     return eventsBySku;
 }
 
-export function getItemIds(events: Event[]): string[] {
+export function getItemIds(events: Event[]): (string | null)[] {
     /* Filters given events to return an array of the distinct itemIds among the events. */
 
     // Uncomment to get an array of uniqueItemId events instead
@@ -103,8 +103,13 @@ export function getItemIds(events: Event[]): string[] {
     //     (event1, i, arr) => arr.findIndex(eventB => eventB.itemId === event1.itemId) === i
     // );
 
-    const itemIds = events.map(event => event.itemId)
-        .filter((value, index, self) => self.indexOf(value) === index);
+    let itemIds: (string | null)[] = [];
+
+    // May not have an itemId
+    if (events[0]?.itemId) {
+        itemIds = events.map(event => event.itemId)
+            .filter((value, index, self) => self.indexOf(value) === index);
+    }
 
     return itemIds;
 }
@@ -450,7 +455,9 @@ export function getTotalUsed(events: Event[]): number {
     /* Returns the total number of items used (borrowed and returned) over the given time period. */
     const set = new Set<string>();
     events.forEach(event => {
-        set.add(event.itemId);
-    })
+        if (event.itemId) {
+            set.add(event.itemId);
+        }
+    });
     return set.size;
 }

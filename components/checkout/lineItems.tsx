@@ -89,7 +89,7 @@ export default function LineItems({
   }
 
   if (type == CheckoutType.ORDER && products && skus && locations) {
-    console.log("HI");
+    // console.log("HI");
     orderString.split("*").forEach((ordersByLocation) => {
       const locationId = ordersByLocation.split("_")[0];
       const lineItems = ordersByLocation.split("_").slice(1);
@@ -98,9 +98,8 @@ export default function LineItems({
       if (orderString.split("*").length > 1) {
         items.push(
           <div key={"name " + locationId}>
-            <div>{`${
-              location ? location.displayName ?? location.city : location
-            } orders`}</div>
+            <div>{`${location ? location.displayName ?? location.city : location
+              } orders`}</div>
           </div>
         );
       }
@@ -172,7 +171,7 @@ export default function LineItems({
       );
     });
   }
-  console.log(items);
+  // console.log(items);
 
   return items;
 }

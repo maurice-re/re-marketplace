@@ -5,10 +5,10 @@ import Tracking from "../dashboard/tracking/tracking";
 
 export type UserSettings =
   | (User & {
-      company: Company & {
-        settings: Settings | null;
-      };
-    })
+    company: Company & {
+      settings: Settings | null;
+    };
+  })
   | null;
 
 async function getSkus() {
@@ -19,8 +19,7 @@ async function getSkus() {
 async function getUser() {
   const user = await prisma.user.findUnique({
     where: {
-      // TODO(Suhana): Change the below to fixed tracking demo user
-      email: "pcoulson@myyahoo.com",
+      email: "lewis@example.com", // Complete
     },
     include: {
       company: {
@@ -69,7 +68,6 @@ export default async function Page() {
             Unlock tracking insights like these and more metric customization
             options by integrating with our tracking API.
           </h3>
-          {/* TODO(Suhana): Take to correct page to set up tracking. */}
           <Link href={"/trackingDemo"}>
             <button className="w-1/8 mb-8 flex items-center justify-start gap-2">
               <h2 className="active:opacity-80 decoration-re-green-300 decoration-1 underline underline-offset-2 text-white font-theinhardt-300 text-xl">
