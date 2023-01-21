@@ -16,7 +16,7 @@ apiUrl = "http://localhost:3000/api/tracking/create-event"
 
 events = []
 
-fileName = "sheets/EventsDataNoReturn.csv"
+fileName = "../../sheets/EventsDataNoReturn.csv"
 with open(fileName, 'r') as csvFile:
     dataReader = csv.reader(csvFile)
     next(dataReader)

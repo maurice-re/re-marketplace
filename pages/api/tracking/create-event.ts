@@ -86,11 +86,8 @@ async function createEvent(req: Request, res: Response) {
         action: action,
         companyId: company.id,
         consumerId: consumerId === "" ? null : consumerId,
-        itemId: itemId,
-        skuId: skuId,
-        // TODO(Suhana): Replace the above with the below once 'null constraint violation' error is resolved
-        // itemId: itemId === "" ? null : itemId,
-        // skuId: skuId === "" ? null : skuId,
+        itemId: itemId === "" ? null : itemId,
+        skuId: skuId === "" ? null : skuId,
         locationId: locationId,
         trackingLocation: trackingLocation === "" ? null : trackingLocation,
         timestamp: timestamp ? new Date(timestamp) : new Date()
