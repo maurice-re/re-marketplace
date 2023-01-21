@@ -84,14 +84,18 @@ model Event {
   @@index([companyId])
 }
 
-model Hardware {
-  id         String   @id @default(cuid())
-  location   Location @relation(fields: [locationId], references: [id])
-  locationId String
-  notes      String?
-  return     Boolean  @default(false)
+model Group {
+  id        String     @id @default(cuid())
+  createdAt DateTime
+  name      String
+  locations Location[]
+}
 
-  @@index([locationId])
+enum Action {
+  BORROW
+  EOL
+  LOST
+  RETURN
 }
 
 model Image {
@@ -108,15 +112,12 @@ model Location {
   country          String?
   displayName      String?
   events           Event[]
-  hardware         Hardware[]
+  group            Group         @relation(fields: [groupId], references: [id])
+  groupId          String
   line1            String?
   line2            String?
   orderItems       OrderItem[]
-<<<<<<< HEAD
-  penalty          Penalty       @default(NONE)
-=======
   owners           User[]        @relation(name: "LocationOwners")
->>>>>>> 78d0038 (location-based schema changes 1)
   sampleOrders     SampleOrder[]
   settings         Settings?
   shippingName     String?
