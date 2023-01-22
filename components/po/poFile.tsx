@@ -46,7 +46,9 @@ function POFile({
     shippedVia,
     requestioner,
     fobPoint,
-    terms
+    terms,
+    routingNumber,
+    accountNumber
 }: {
     items: POItem[];
     totals: POTotal[];
@@ -69,7 +71,10 @@ function POFile({
     shippedVia: string;
     fobPoint: string;
     terms: string;
+    routingNumber: string;
+    accountNumber: string;
 }) {
+    // TODO(Suhana): Put new props in the PDF
     return (
         <Fragment>
             <PDFViewer width="1000" height="600" className="app">
