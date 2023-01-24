@@ -1,8 +1,8 @@
-import "tailwindcss/tailwind.css";
-import ReLogo from "../../../components/form/re-logo";
-import POFile from "../../../components/po/poFile";
+import 'tailwindcss/tailwind.css';
+import POFile from '../../../components/po/poFile';
+import ReLogo from '../../../components/form/re-logo';
+import { calculatePriceFromCatalog } from '../../../utils/prisma/dbUtils';
 import prisma from "../../../constants/prisma";
-import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";
 
 export type POItem = {
     qty: number;
@@ -34,23 +34,8 @@ export default async function Page({
         accountNumber: string;
     };
 }) {
-    if (
-        !(
-            searchParams &&
-            searchParams.orderString &&
-            searchParams.buyerName &&
-            searchParams.buyerBillingAddressLine &&
-            searchParams.buyerShippingAddressLine &&
-            searchParams.buyerPhone &&
-            searchParams.buyerTaxId &&
-            searchParams.requestioner &&
-            searchParams.shippedVia &&
-            searchParams.fobPoint &&
-            searchParams.terms &&
-            searchParams.routingNumber &&
-            searchParams.accountNumber
-        )
-    ) {
+    if (!(searchParams && searchParams.orderString && searchParams.buyerName && searchParams.buyerBillingAddressLine && searchParams.buyerShippingAddressLine && searchParams.buyerPhone && searchParams.buyerTaxId && searchParams.routingNumber && searchParams.accountNumber)) {
+        console.log(searchParams);
         return <div>An error occurred</div>;
     }
 
@@ -72,24 +57,19 @@ export default async function Page({
     // TODO(Suhana): Pass this down instead of re-fetching
     const skus = await prisma.sku.findMany({});
 
-    const items: POItem[] = [];
+    let items: POItem[] = [];
 
-    const orderItems: {
-        amount: number;
-        locationId: string;
-        quantity: number;
-        skuId: string;
-    }[] = [];
-    orderString.split("*").forEach((ordersByLocation) => {
+    const orderItems: { amount: number; locationId: string; quantity: number; skuId: string; }[] = [];
+    orderString.split("*").forEach(ordersByLocation => {
         const locationId = ordersByLocation.split("_")[0];
         const ordersForLocation = ordersByLocation.split("_").slice(1);
-        ordersForLocation.forEach((order) => {
+        ordersForLocation.forEach(order => {
             const [skuId, quantity] = order.split("~");
             orderItems.push({
                 amount: calculatePriceFromCatalog(skus, skuId, quantity),
                 locationId: locationId,
                 quantity: parseInt(quantity),
-                skuId: skuId,
+                skuId: skuId
             });
         });
     });
@@ -97,14 +77,8 @@ export default async function Page({
     let subtotal = 0;
     let item: POItem;
 
-    orderItems.forEach((orderItem) => {
-        item = {
-            qty: orderItem.quantity,
-            unit: " ",
-            unitPrice: calculatePriceFromCatalog(skus, orderItem.skuId, 1),
-            description: orderItem.skuId,
-            total: orderItem.amount,
-        };
+    orderItems.forEach(orderItem => {
+        item = { qty: orderItem.quantity, unit: " ", unitPrice: calculatePriceFromCatalog(skus, orderItem.skuId, 1), description: orderItem.skuId, total: orderItem.amount };
         items.push(item);
         subtotal += item.unitPrice * item.qty;
     });
@@ -114,16 +88,7 @@ export default async function Page({
     const other = 0;
     const total = subtotal + tax;
 
-    const totals: POTotal[] = [
-        { name: "Subtotal", value: parseFloat(subtotal.toFixed(2)) },
-        { name: "Sales Tax (7.25%)", value: parseFloat(tax.toFixed(2)) },
-        {
-            name: "Shipping and Handling",
-            value: parseFloat(shippingAndHandling.toFixed(2)),
-        },
-        { name: "Other", value: parseFloat(other.toFixed(2)) },
-        { name: "Total", value: parseFloat(total.toFixed(2)) },
-    ];
+    const totals: POTotal[] = [{ name: "Subtotal", value: parseFloat(subtotal.toFixed(2)), }, { name: "Sales Tax (7.25%)", value: parseFloat(tax.toFixed(2)), }, { name: "Shipping and Handling", value: parseFloat(shippingAndHandling.toFixed(2)), }, { name: "Other", value: parseFloat(other.toFixed(2)), }, { name: "Total", value: parseFloat(total.toFixed(2)), }];
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">

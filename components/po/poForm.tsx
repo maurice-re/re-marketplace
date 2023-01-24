@@ -9,30 +9,44 @@ type POFormProps = {
     orderString: string;
 };
 
+type POFormInputs = {
+    buyerTaxId: string;
+    buyerPhone: string;
+    buyerShippingAddressLine: string;
+    buyerBillingAddressLine: string;
+    buyerName: string;
+    bankName: string;
+    accountNumber: string;
+    routingNumber: string;
+    requestioner: string;
+    shippedVia: string;
+    fobPoint: string;
+    terms: string;
+};
+
 export default function POForm({
     orderString,
 }: POFormProps) {
-    const [inputValue, setInputValue] = useState({ bankName: "", accountNumber: "", routingNumber: "" });
-    const { bankName, accountNumber, routingNumber } = inputValue;
+    const [inputValues, setInputValues] = useState<POFormInputs>({ buyerTaxId: "", buyerPhone: "", buyerShippingAddressLine: "", buyerBillingAddressLine: "", buyerName: "", bankName: "", accountNumber: "", routingNumber: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "" });
+    const { terms, buyerTaxId, buyerPhone, buyerShippingAddressLine, buyerBillingAddressLine, buyerName, bankName, accountNumber, routingNumber, requestioner, shippedVia, fobPoint } = inputValues;
+    // TODO(Suhana): Pass in all of the new fields, and create the new ones, and pass it all in
+
+    const canSubmit = () => {
+        // Check for required fields
+        if (orderString !== "" && buyerPhone !== "" && buyerShippingAddressLine !== "" && buyerBillingAddressLine !== "" && buyerName !== "" && bankName !== "" && accountNumber !== "" && routingNumber !== "") {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setInputValue((prev) => ({
+        setInputValues((prev) => ({
             ...prev,
             [name]: value,
         }));
-        console.log(inputValue);
     };
-
-    const [buyerName, setBuyerName] = useState<string>("");
-    const [buyerBillingAddressLine, setBuyerBillingAddressLine] = useState<string>("");
-    const [buyerShippingAddressLine, setBuyerShippingAddressLine] = useState<string>("");
-    const [buyerPhone, setBuyerPhone] = useState<string>("");
-    const [buyerTaxId, setBuyerTaxId] = useState<string>("");
-    const [requestioner, setRequestioner] = useState<string>("");
-    const [shippedVia, setShippedVia] = useState<string>("");
-    const [fobPoint, setFobPoint] = useState<string>("");
-    const [terms, setTerms] = useState<string>("");
 
     return (
         <form
@@ -41,115 +55,28 @@ export default function POForm({
             <div>
                 <div className="py-4">
                     <div className="text-lg font-semibold">Your Info</div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Name"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t"}
-                            type="text"
-                            value={buyerName}
-                            placeholder={"Name"}
-                            onChange={(e) => setBuyerName(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Billing Address Line"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
-                            type="text"
-                            value={buyerBillingAddressLine}
-                            placeholder={"Billing Address Line"}
-                            onChange={(e) => setBuyerBillingAddressLine(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Shipping Address Line"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
-                            type="text"
-                            value={buyerShippingAddressLine}
-                            placeholder={"Shipping Address Line"}
-                            onChange={(e) => setBuyerShippingAddressLine(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Phone Number"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
-                            type="text"
-                            value={buyerPhone}
-                            placeholder={"Phone Number"}
-                            onChange={(e) => setBuyerPhone(e.target.value)}
-                            required
-                        />
-                    </div>
+                    <InputField top required placeholder={"Name"} value={buyerName} name={"buyerName"} onChange={handleChange} />
+                    <InputField required placeholder={"Billing Address Line"} value={buyerBillingAddressLine} name={"buyerBillingAddressLine"} onChange={handleChange} />
+                    <InputField required placeholder={"Billing Shipping Line"} value={buyerShippingAddressLine} name={"buyerShippingAddressLine"} onChange={handleChange} />
+                    <InputField bottom required placeholder={"Phone Number"} value={buyerPhone} name={"buyerPhone"} onChange={handleChange} />
                 </div>
             </div>
             <div>
                 <div className="py-4">
                     <div className="text-lg font-semibold">Payment Info</div>
-                    {/* TODO(Suhana): Make sure required fields are enforced correctly */}
                     {/* TODO(Suhana): Use the field components for the rest of the inputs as well */}
-                    <InputField top required={true} placeholder={"Bank Name"} value={bankName} name={"bankName"} onChange={handleChange} />
-                    <DoubleInputField leftName="accountNumber" leftPlaceholder="Account Number" leftValue={accountNumber} required={true} rightName="routingNumber" rightPlaceholder="Routing Number" rightValue={routingNumber} onChange={handleChange} />
-                    <div className="p-0 my-0">
-                        <input
-                            name={"EIN"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-b-2 mb-2 rounded-b"}
-                            type="text"
-                            value={buyerTaxId}
-                            placeholder={"EIN"}
-                            onChange={(e) => setBuyerTaxId(e.target.value)}
-                            required
-                        />
-                    </div>
+                    <InputField top required placeholder={"Bank Name"} value={bankName} name={"bankName"} onChange={handleChange} />
+                    <DoubleInputField leftName="accountNumber" leftPlaceholder="Account Number" leftValue={accountNumber} required rightName="routingNumber" rightPlaceholder="Routing Number" rightValue={routingNumber} onChange={handleChange} />
+                    <InputField bottom required placeholder={"EIN"} value={buyerTaxId} name={"buyerTaxId"} onChange={handleChange} />
                 </div>
             </div>
             <div>
                 <div className="py-4">
                     <div className="text-lg font-semibold">Other Info</div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Requestioner"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t"}
-                            type="text"
-                            value={requestioner}
-                            placeholder={"Requestioner"}
-                            onChange={(e) => setRequestioner(e.target.value)}
-                        />
-                    </div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Shipped Via"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
-                            type="text"
-                            value={shippedVia}
-                            placeholder={"Shipped Via"}
-                            onChange={(e) => setShippedVia(e.target.value)}
-                        />
-                    </div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"FOB Point"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800"}
-                            type="text"
-                            value={fobPoint}
-                            placeholder={"FOB Point"}
-                            onChange={(e) => setFobPoint(e.target.value)}
-                        />
-                    </div>
-                    <div className="p-0 my-0">
-                        <input
-                            name={"Terms"}
-                            className={"p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-b-2 mb-2 rounded-b"}
-                            type="text"
-                            value={terms}
-                            placeholder={"Terms"}
-                            onChange={(e) => setTerms(e.target.value)}
-                        />
-                    </div>
+                    <InputField top placeholder={"Requestioner"} value={requestioner} name={"requestioner"} onChange={handleChange} />
+                    <InputField placeholder={"Shipped Via"} value={shippedVia} name={"shippedVia"} onChange={handleChange} />
+                    <InputField placeholder={"FOB Point"} value={fobPoint} name={"fobPoint"} onChange={handleChange} />
+                    <InputField bottom placeholder={"Terms"} value={terms} name={"terms"} onChange={handleChange} />
                 </div>
             </div>
             <Link
@@ -168,16 +95,16 @@ export default function POForm({
                         requestioner: requestioner,
                         shippedVia: shippedVia,
                         fobPoint: fobPoint,
-                        terms: terms
+                        terms: terms,
+                        bankName: bankName,
                     },
                 }}>
                 <button
-                    id="submit"
-                    className={`${orderString === ""
+                    className={`${!canSubmit()
                         ? "text-re-gray-300 border-1/2 border-re-gray-300"
                         : "bg-re-blue"
-                        }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
-                    disabled={orderString == ""}
+                        } self-center rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+                    disabled={!canSubmit()}
                 >
                     Go to PDF
                 </button>
