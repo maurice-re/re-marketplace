@@ -2,13 +2,15 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
 }
 
 model Account {
@@ -27,14 +29,6 @@ model Account {
   userId        String
 
   @@unique([provider, providerId])
-  @@index([userId])
-}
-
-enum Action {
-  BORROW
-  EOL
-  LOST
-  RETURN
 }
 
 model ApiKey {
@@ -54,21 +48,17 @@ model ApiLogging {
 
 model Company {
   id                  String               @id @default(cuid())
-  apiKey              ApiKey?
   createdAt           DateTime
   customerId          String
-  events              Event[]
   name                String
   productDevelopments ProductDevelopment[]
   subscriptionType    SubscriptionType     @default(FREE)
-  untracked           UntrackedInventory[]
   users               User[]
 }
 
 model Event {
   id               String   @id @default(cuid())
   action           Action
-  company          Company  @relation(fields: [companyId], references: [id])
   companyId        String
   consumerId       String?
   itemId           String?
@@ -78,10 +68,6 @@ model Event {
   skuId            String?
   timestamp        DateTime @default(now())
   trackingLocation String?
-
-  @@index([skuId])
-  @@index([locationId])
-  @@index([companyId])
 }
 
 model Group {
@@ -107,29 +93,25 @@ model Image {
 }
 
 model Location {
-  id               String        @id @default(cuid())
+  id               String               @id @default(cuid())
   city             String?
   country          String?
   displayName      String?
   events           Event[]
-  group            Group         @relation(fields: [groupId], references: [id])
-  groupId          String
+  groups           Group[]
   line1            String?
   line2            String?
-  orderItems       OrderItem[]
-  owners           User[]        @relation(name: "LocationOwners")
+  orders           Order[]
+  owners           User[]               @relation(name: "LocationOwners")
   sampleOrders     SampleOrder[]
   settings         Settings?
   shippingName     String?
   state            String?
   trackingLocation String?
-  trackingType     TrackingType  @default(NONE)
-  type             LocationType  @default(SHIPPING)
-  viewers          User[]        @relation(name: "LocationViewers")
+  type             LocationType         @default(SHIPPING)
+  untracked        UntrackedInventory[]
+  viewers          User[]               @relation(name: "LocationViewers")
   zip              String?
-
-  @@index([tagId])
-  @@index([companyId])
 }
 
 enum LocationType {
@@ -139,17 +121,16 @@ enum LocationType {
 }
 
 model Order {
-  id        String      @id @default(cuid())
-  amount    Float
-  createdAt DateTime
-  items     OrderItem[]
-  status    Status      @default(SUBMITTED)
-  user      User        @relation(fields: [userId], references: [id])
-  userId    String
-  paymentId String?
-
-  @@index([userId])
-  @@index([companyId])
+  id         String      @id @default(cuid())
+  amount     Float
+  createdAt  DateTime
+  items      OrderItem[]
+  location   Location    @relation(fields: [locationId], references: [id])
+  locationId String
+  status     Status      @default(SUBMITTED)
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String
+  paymentId  String?
 }
 
 model OrderItem {
@@ -157,8 +138,6 @@ model OrderItem {
   amount     Float
   comments   String?
   createdAt  DateTime
-  location   Location  @relation(fields: [locationId], references: [id])
-  locationId String
   order      Order     @relation(fields: [orderId], references: [id])
   orderId    String
   quantity   Int
@@ -168,15 +147,6 @@ model OrderItem {
   sku        Sku       @relation(fields: [skuId], references: [id])
   skuId      String
   status     Status    @default(SUBMITTED)
-
-  @@index([skuId])
-  @@index([orderId])
-  @@index([locationId])
-}
-
-enum Penalty {
-  NONE
-  DEPOSIT
 }
 
 model Product {
@@ -204,8 +174,6 @@ model ProductDevelopment {
   researchFee      Float
   split            Float     @default(0.7)
   status           Status    @default(PROPOSED)
-
-  @@index([companyId])
 }
 
 enum Region {
@@ -227,9 +195,6 @@ model SampleOrder {
   createdAt  DateTime
   skuIds     String
   status     Status   @default(SUBMITTED)
-
-  @@index([locationId])
-  @@index([companyId])
 }
 
 model Session {
@@ -238,8 +203,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
 }
 
 model Settings {
@@ -252,7 +215,7 @@ model Settings {
 model Sku {
   id            String               @id @default(cuid())
   color         String
-  events        Event[]
+  events        Event[]              @relation(fields: [])
   images        Image[]
   mainImage     String
   material      String
@@ -263,8 +226,6 @@ model Sku {
   priceTable    String               @default("0:10")
   untracked     UntrackedInventory[]
   size          String
-
-  @@index([productId])
 }
 
 enum Status {
@@ -285,14 +246,13 @@ enum SubscriptionType {
 }
 
 model UntrackedInventory {
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String
-  sku       Sku     @relation(fields: [skuId], references: [id])
-  skuId     String
-  quantity  Int
+  location   Location @relation(fields: [locationId], references: [id])
+  locationId String
+  sku        Sku      @relation(fields: [skuId], references: [id])
+  skuId      String
+  quantity   Int
 
-  @@unique([companyId, skuId])
-  @@index([skuId])
+  @@unique([locationId, skuId])
 }
 
 model User {
