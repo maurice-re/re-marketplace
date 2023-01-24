@@ -39,7 +39,7 @@ export default function SignUpForm({
   }
 
   return (
-    <div className="flex flex-col bg-re-dark-green-400 border-[0.5px] border-re-gray-500 rounded min-w-56 w-1/4">
+    <div className="flex flex-col bg-re-dark-green-400 border-[0.5px] border-re-gray-500 rounded min-w-56 lg:w-1/4">
       <h1 className="mx-4 my-5 text-xl">Create Account</h1>
       <div className="h-0.5 w-full bg-re-gray-500"></div>
       <form className="flex flex-col mx-4 text-lg my-5" onSubmit={handleSignIn}>

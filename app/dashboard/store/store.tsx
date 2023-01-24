@@ -1,6 +1,14 @@
 "use client";
 
-import { Company, Location, LocationType, Product, Sku } from "@prisma/client";
+import {
+  Company,
+  Location,
+  LocationType,
+  Penalty,
+  Product,
+  Sku,
+  TrackingType,
+} from "@prisma/client";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
@@ -114,9 +122,11 @@ export default function StorePage({
       displayName: null,
       line1: formElements[2].value,
       line2: formElements[3].value,
+      penalty: Penalty.NONE,
       trackingLocation: "",
       shippingName: formElements[0].value,
       state: formElements[6].value,
+      trackingType: TrackingType.NONE,
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
       tagId: "",

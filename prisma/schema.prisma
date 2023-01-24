@@ -4,7 +4,7 @@
 datasource db {
   provider             = "mysql"
   url                  = env("DATABASE_URL")
-  relationMode = "prisma"
+  relationMode         = "prisma"
 }
 
 generator client {
@@ -29,6 +29,13 @@ model Account {
 
   @@unique([provider, providerId])
   @@index([userId])
+}
+
+enum Action {
+  BORROW
+  EOL
+  LOST
+  RETURN
 }
 
 model ApiKey {
@@ -78,16 +85,19 @@ model Event {
   timestamp        DateTime  @default(now())
   trackingLocation String?
 
+  @@index([skuId])
   @@index([locationId])
   @@index([companyId])
-  @@index([skuId])
 }
 
-enum Action {
-  BORROW
-  EOL
-  LOST
-  RETURN
+model Hardware {
+  id            String  @id @default(cuid())
+  location      Location @relation(fields: [locationId], references: [id])
+  locationId    String
+  notes         String?
+  return        Boolean @default(false)
+
+  @@index([locationId])
 }
 
 model Image {
@@ -106,20 +116,23 @@ model Location {
   companyId        String
   displayName      String?
   events           Event[]
+  hardware         Hardware[]
   line1            String?
   line2            String?
   orderItems       OrderItem[]
+  penalty          Penalty       @default(NONE)
   sampleOrders     SampleOrder[]
   shippingName     String?
   state            String?
   tag              Tag?          @relation(fields: [tagId], references: [id])
   tagId            String?
   trackingLocation String?
+  trackingType     TrackingType  @default(NONE)
   type             LocationType  @default(SHIPPING)
   zip              String?
 
-  @@index([companyId])
   @@index([tagId])
+  @@index([companyId])
 }
 
 enum LocationType {
@@ -140,8 +153,8 @@ model Order {
   userId    String
   paymentId String?
 
-  @@index([companyId])
   @@index([userId])
+  @@index([companyId])
 }
 
 model OrderItem {
@@ -164,6 +177,11 @@ model OrderItem {
   @@index([skuId])
   @@index([orderId])
   @@index([locationId])
+}
+
+enum Penalty {
+  NONE
+  DEPOSIT
 }
 
 model Product {
@@ -241,7 +259,7 @@ model Settings {
 model Sku {
   id            String               @id @default(cuid())
   color         String
-  events        Event[]              @relation(fields: [])
+  events        Event[]              
   images        Image[]
   mainImage     String
   material      String
@@ -282,6 +300,13 @@ model Tag {
   locations Location[]
 
   @@index([companyId])
+}
+
+enum TrackingType {
+  NONE
+  USER
+  CONTAINER
+  BOTH
 }
 
 model UntrackedInventory {
