@@ -29,7 +29,6 @@ export default function POForm({
 }: POFormProps) {
     const [inputValues, setInputValues] = useState<POFormInputs>({ buyerPhone: "", buyerCity: "", buyerState: "", buyerZip: "", buyerCountry: "", buyerAddressLine: "", buyerCompany: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "", buyerEmail: "" });
     const { terms, buyerPhone, buyerCity, buyerState, buyerZip, buyerCountry, buyerAddressLine, buyerCompany, requestioner, shippedVia, fobPoint, buyerEmail } = inputValues;
-    // TODO(Suhana): Pass in all of the new fields, and create the new ones, and pass it all in
 
     const canSubmit = () => {
         // Check for required fields
