@@ -22,9 +22,9 @@ function Cart({
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">
         Shopping Cart
       </h1>
-      {orderString != "" && (<div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
-        {
-          orderString.split("*").map((orderForLocation, index) => {
+      {orderString != "" && (
+        <div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
+          {orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
             const location = locations.find(
@@ -74,7 +74,11 @@ function Cart({
                         </div>
                         <div className="w-1/4">
                           <h2>
-                            {"$" + getPriceFromTable(sku.priceTable, quantity)}
+                            {"$" +
+                              getPriceFromTable(
+                                sku.priceTable,
+                                quantity
+                              ).toFixed(2)}
                           </h2>
                         </div>
                       </div>
@@ -84,7 +88,8 @@ function Cart({
               </div>
             );
           })}
-      </div>)}
+        </div>
+      )}
       {orderString == "" && (
         <div className="flex items-center flex-col 4 my-auto">
           <svg
@@ -148,7 +153,9 @@ function Cart({
             Shipping and taxes calculated at checkout.
           </h2>
           <Link
-            className={`w-full my-4 ${orderString == "" && "pointer-events-none"}`}
+            className={`w-full my-4 ${
+              orderString == "" && "pointer-events-none"
+            }`}
             href={{
               pathname: "/checkout",
               query: {
@@ -157,20 +164,20 @@ function Cart({
             }}
           >
             <button
-              className={`${orderString === ""
-                ? "text-re-gray-300 border-1/2 border-re-gray-300"
-                : "bg-re-blue"
-                }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              className={`${
+                orderString === ""
+                  ? "text-re-gray-300 border-1/2 border-re-gray-300"
+                  : "bg-re-blue-500"
+              }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               disabled={orderString == ""}
             >
               Checkout
             </button>
           </Link>
           <div
-            className={`${orderString === ""
-              ? "text-re-gray-300"
-              : "text-white"
-              }  text-sm w-full flex justify-center items-center`}
+            className={`${
+              orderString === "" ? "text-re-gray-300" : "text-white"
+            }  text-sm w-full flex justify-center items-center`}
           >
             <h2 className="text-center">Or,</h2>
             <Link
@@ -184,14 +191,16 @@ function Cart({
             >
               <button
                 disabled={orderString == ""}
-                className={`${orderString === ""
-                  ? "decoration-re-gray-300"
-                  : "decoration-re-blue"
-                  } decoration-1 underline underline-offset-2 px-1`}
-              >generate</button>
+                className={`${
+                  orderString === ""
+                    ? "decoration-re-gray-300"
+                    : "decoration-re-blue"
+                } decoration-1 underline underline-offset-2 px-1`}
+              >
+                generate
+              </button>
             </Link>
             <h2 className="text-center mr-1">purchase order</h2>
-
           </div>
         </div>
       </div>

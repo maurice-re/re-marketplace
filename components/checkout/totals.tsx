@@ -1,5 +1,5 @@
 import { Product, ProductDevelopment, Sku } from ".prisma/client";
-import { CheckoutType } from "../../utils/checkoutUtils";
+import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 
 export default function Totals({
@@ -14,7 +14,7 @@ export default function Totals({
   products: Product[] | null;
   skus: Sku[] | null;
   type: CheckoutType;
-}): JSX.Element[] {
+}): JSX.Element {
   const items: JSX.Element[] = [];
 
   if (type == CheckoutType.PRODUCT_DEVELOPMENT && productDevelopment) {
@@ -98,51 +98,41 @@ export default function Totals({
     const subtotal = getOrderStringTotal(orderString, products, skus);
     const total = getOrderStringTotal(orderString, products, skus, 1.07);
     items.push(
-      <div
-        className="flex columns-2 pl-16 justify-between mr-6 mb-0.5 text-gray-200"
-        key="subtotal"
-      >
-        <div className="">
-          <div className="text-sm font-semibold mb-0.5">Subtotal</div>
-        </div>
-        <div className="">
-          <div className="text-sm font-semibold mb-0.5">{`$${subtotal.toFixed(
-            2
-          )}`}</div>
+      <div className="px-10 flex justify-between text-lg" key={"subtotal"}>
+        <div>Subtotal</div>
+        <div>
+          {`$${getOrderStringTotal(
+            orderString,
+            products ?? [],
+            skus ?? []
+          ).toFixed(2)}`}
         </div>
       </div>
     );
     items.push(
-      <div
-        className="flex columns-2 pl-16 justify-between mr-6 mb-4 text-gray-300"
-        key="tax"
-      >
-        <div className="">
-          <div className="text-xs font-semibold mb-0.5">Tax (7%)</div>
-        </div>
-        <div className="">
-          <div className="text-xs font-semibold mb-0.5">{`$${(
-            total - subtotal
-          ).toFixed(2)}`}</div>
-        </div>
+      <div className="px-10 flex justify-between text-re-gray-text" key="tax">
+        <div>Tax (7%)</div>
+        <div>{`$${(
+          getOrderStringTotal(orderString, products ?? [], skus ?? []) * 0.07
+        ).toFixed(2)}`}</div>
       </div>
     );
     items.push(
-      <div
-        className="flex columns-2 pl-16 justify-between mr-6 mb-8"
-        key="total"
-      >
-        <div className="">
-          <div className="text-sm font-semibold mb-0.5">Total due</div>
-        </div>
-        <div className="">
-          <div className="text-sm font-semibold mb-0.5">{`$${total.toFixed(
-            2
-          )}`}</div>
+      <div className="px-10 flex justify-between text-lg" key="tax">
+        <div>Total Payment</div>
+        <div>
+          {`$${getCheckoutTotal(
+            orderString,
+            null,
+            products ?? [],
+            skus ?? [],
+            CheckoutType.ORDER
+          ).toFixed(2)}
+            `}
         </div>
       </div>
     );
   }
 
-  return items;
+  return <>{items}</>;
 }

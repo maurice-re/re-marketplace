@@ -98,7 +98,7 @@ export default function Page() {
   });
 
   return (
-    <div className="w-screen h-screen bg-black flex">
+    <div className="w-screen h-screen bg-re-black flex">
       <head>
         <title>Your perfect setup</title>
         <meta name="summary" content="Review your perfect setup" />

@@ -15,7 +15,7 @@ type Totals = {
     eol: number;
 };
 
-function getTotals(events: Event[]): Totals {
+export function getTotals(events: Event[]): Totals {
     /* Given an array of Events, returns the total number of borrowed,
     returned, EOL'ed, and lost items, in a Totals object. */
 
@@ -124,7 +124,6 @@ export function getItemsInUse(events: Event[]): number {
 
     const totals = getTotals(events);
 
-    let itemsInUse;
 
     const totalBorrowed = totals.borrow;
     const totalLost = totals.lost;
@@ -136,7 +135,7 @@ export function getItemsInUse(events: Event[]): number {
     // console.log("totalLost: ", totalLost);
     // console.log("totalEol: ", totalEol);
 
-    itemsInUse = totalBorrowed - totalReturned - totalLost - totalEol;
+    const itemsInUse = totalBorrowed - totalReturned - totalLost - totalEol;
 
     // console.log("itemsInUse: ", itemsInUse);
 
@@ -168,7 +167,7 @@ export function getReuseRate(events: Event[]): number {
 
     // to get itemsReused: calculate # of distinct items that appear at least twice
     // to get itemsUsed: calculate # of distinct items
-    let itemsUsed = getItemIds(events); // arr of unique item ids
+    const itemsUsed = getItemIds(events); // arr of unique item ids
     let itemsReused = 0;
 
     let matchedEvents;
@@ -214,14 +213,14 @@ export function getItemsByDay(month: number, year: number, daysInMonth: number[]
 
     // console.log("In getItemsByDay");
 
-    let itemsByDay: number[] = new Array(daysInMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
+    const itemsByDay: number[] = new Array(daysInMonth.length).fill(0); // index 0 corresponds to 1st of the month (day-1 = index)
     let date: Date;
     let matchedEvents: Event[];
 
     daysInMonth.forEach(day => {
         date = new Date(year, month - 1, day); // month-1 b/c January is 0
         matchedEvents = events.filter(event =>
-            ((new Date(event.timestamp)).getTime() === date.getTime()) && (event.action === action)
+            ((new Date(event.timestamp)).toDateString() === date.toDateString()) && (event.action === action)
         );
 
         if (matchedEvents.length > 0) {
@@ -247,7 +246,7 @@ export function getItemsByMonth(year: number, events: Event[], action: Action): 
 
     // console.log("In getItemsByMonth");
 
-    let itemsByMonth: number[] = new Array(12).fill(0); // index 0 = "January"
+    const itemsByMonth: number[] = new Array(12).fill(0); // index 0 = "January"
     let daysInMonth;
     let itemsByDay: number[];
 
@@ -261,7 +260,6 @@ export function getItemsByMonth(year: number, events: Event[], action: Action): 
     }
 
     // console.log("itemsByMonth: ");
-    // console.log(itemsByMonth);
 
     return itemsByMonth;
 }
@@ -293,12 +291,12 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: nu
 
     // console.log("In getAvgDaysBetweenBorrowAndReturn");
 
-    let daysBetweenBorrowAndReturn: number[] = [];
+    const daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
 
     console.log("Got ", setBuffer);
 
-    let buffer = (setBuffer && setBuffer !== 0) ? setBuffer : 10; // by default, only consider dayDiffs > 10
+    const buffer = (setBuffer && setBuffer !== 0) ? setBuffer : 10; // by default, only consider dayDiffs > 10
 
     console.log("buffer:");
     console.log(buffer);
@@ -315,8 +313,8 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: nu
     // to the daysBetweenBorrowAndReturn array - this is fine, just find the avg
 
     // Sort by time in case they aren't already
-    let borrowEvents = sortByDate(getEventsByAction(events, Action.BORROW));
-    let returnEvents = sortByDate(getEventsByAction(events, Action.RETURN));
+    const borrowEvents = sortByDate(getEventsByAction(events, Action.BORROW));
+    const returnEvents = sortByDate(getEventsByAction(events, Action.RETURN));
 
     let matchedReturnEvent;
     let daysDiff = 0;

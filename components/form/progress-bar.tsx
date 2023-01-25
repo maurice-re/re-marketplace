@@ -7,7 +7,7 @@ function ProgressBar({ pageName }: { pageName: string }) {
   );
   return (
     <div
-      className=" bg-re-blue h-3 absolute left-0 top-0"
+      className=" bg-re-blue-500 h-3 absolute left-0 top-0"
       style={{
         width: `${((currentRouteIndex + 1) / routes.length) * 100}%`,
       }}

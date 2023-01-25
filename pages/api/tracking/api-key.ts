@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { nanoid } from "../../../utils/api/apiUtils";
+import { nanoid } from "../../../utils/apiUtils";
 
 async function createApiKey(req: Request, res: Response) {
 

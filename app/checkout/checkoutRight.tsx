@@ -14,8 +14,6 @@ import {
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import Addresses from "../../components/checkout/addresses";
-import Info from "../../components/checkout/info";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 
 export default function CheckoutRight({
@@ -107,10 +105,8 @@ export default function CheckoutRight({
         },
         redirect: "if_required",
       });
-      console.log(paymentIntent);
 
       if (error) {
-        console.log("error", error);
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
           hasError = true;
@@ -193,29 +189,17 @@ export default function CheckoutRight({
 
     setIsLoading(false);
   };
-
   return (
     <form
       id="payment-form"
       onSubmit={handleSubmit}
-      className="flex-col border-l border-grey-500 rounded px-10 py-4 h-full items-start overflow-auto"
+      className="flex-col rounded px-10 py-4 h-full items-start"
     >
-      <div>
-        {Info({
-          productDevelopment: productDevelopment,
-          user: user,
-          type: type,
-        })}
-        {Addresses({
-          locations: locations,
-          orderString: orderString,
-          type: type,
-        })}
-      </div>
       {company != null && paymentMethods && (
         <select
-          className={`w-full bg-stripe-gray border-white border rounded py-2 ${dropdown == "new" ? "mb-2" : "mb-6"
-            }`}
+          className={`w-full bg-re-dark-green-200  border border-re-gray-300 rounded p-4 ${
+            dropdown == "new" ? "mb-2" : "mb-6"
+          }`}
           value={dropdown}
           onChange={(e) => setDropdown(e.target.value)}
         >
@@ -241,8 +225,9 @@ export default function CheckoutRight({
           onClick={() => document.getElementById("eol-modal")?.click()}
           type="button"
           disabled={isLoading || !stripe || !elements || dropdown == ""}
-          className={`btn modal-button text-center mb-6 w-full ${eol ? "" : "btn-error btn-outline"
-            }`}
+          className={`btn modal-button text-center mb-6 w-full ${
+            eol ? "text-re-green-500" : "btn-error btn-outline"
+          }`}
         >
           {eol ? (
             <svg
@@ -274,8 +259,9 @@ export default function CheckoutRight({
             (type == CheckoutType.ORDER && !eol)
           }
           id="submit"
-          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${isLoading ? "loading" : ""
-            }`}
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
+            isLoading ? "loading" : ""
+          }`}
         >
           Pay Now
         </button>

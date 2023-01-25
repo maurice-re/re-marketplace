@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { logApi } from "../../../utils/api/logging";
+import { logApi } from "../../../utils/apiUtils";
 
 async function editUser(req: Request, res: Response) {
   const { id, firstName, lastName }: { id: string, firstName: string, lastName: string; } = req.body;

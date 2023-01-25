@@ -1,5 +1,5 @@
 import { Action, Event } from "@prisma/client";
-import { getEventsByAction } from "./tracking/trackingUtils";
+import { getEventsByAction, getTotals } from "./tracking/trackingUtils";
 export const productionAndDistributionEmission = 565.33 + 321.95;
 export const washingEmission = 44.14;
 
@@ -37,7 +37,19 @@ export function getSingleUseEmissions(numUsed: number): number {
 }
 
 export function calculatePercent(events: Event[]): number {
-  const reduction =
-    getEmissions(events) / getSingleUseEmissions(getEventsByAction(events, Action.BORROW).length);
-  return 1 - reduction;
+    const reduction =
+      getEmissions(events) / getSingleUseEmissions(getEventsByAction(events, Action.BORROW).length);
+    return 1 - reduction;
+  }
+
+export function getWasteSaved(events: Event[]): number {
+  const totals = getTotals(events);
+  const rate = (totals.return / totals.borrow);
+  const lost = (totals.borrow - rate * totals.borrow);
+  
+  const singleWaste = totals.borrow*.035;
+  const reuseWaste = lost*.226;
+
+
+  return singleWaste - reuseWaste;
 }

@@ -178,7 +178,7 @@ export default function StorePage({
               </div>
             )}
           </div>
-          <div className="flex flex-col w-full re-gray-100 font-theinhardt-300 text-sm mt-1">
+          <div className="flex flex-col w-full font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
             <h2 className="leading-none">
               {location.city + ", " + location.country + ", " + location.zip}
@@ -211,12 +211,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
-        {/* <head>
-          <title>Store</title>
-          <meta name="store" content="shop for products" />
-          <link rel="icon" href="/favicon.ico" />
-        </head> */}
+      <div className="h-screen bg-re-black flex">
         <input
           type="checkbox"
           id="newLocation-modal"
@@ -260,9 +255,6 @@ export default function StorePage({
           </div>
         </div>
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -340,10 +332,10 @@ export default function StorePage({
               <h3 className="text-white text-lg leading-none">
                 {product.name}
               </h3>
-              <h3 className="mt-2 leading-none text-re-gray-100">
+              <h3 className="mt-2 leading-none text-re-gray-text">
                 {product.materials}
               </h3>
-              <h3 className="mt-1 leading-none text-re-gray-100">
+              <h3 className="mt-1 leading-none text-re-gray-text">
                 {product.sizes.split(", ").join(" | ")}
               </h3>
             </div>
@@ -398,16 +390,8 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
-        {/* <head>
-        <title>Store</title>
-        <meta name="store" content="shop for products" />
-        <link rel="icon" href="/favicon.ico" />
-      </head> */}
+      <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt-300">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -455,7 +439,6 @@ export default function StorePage({
     const sizes = product.sizes.split(", ");
     const materials = product.materials.split(", ");
     const colors = product.colors.split(", ");
-    console.log(colors);
 
     breadcrumbsInfo[0].passed = true;
     breadcrumbsInfo[1].passed = true;
@@ -481,7 +464,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
+      <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
@@ -527,7 +510,7 @@ export default function StorePage({
                         {`$${getPriceFromTable(
                           sku.priceTable,
                           quantity == "" ? 1 : quantity
-                        )}`}
+                        ).toFixed(2)}`}
                       </h2>
                       <div className="flex gap-2 text-white text-md items-center">
                         <svg
@@ -555,7 +538,7 @@ export default function StorePage({
                       <h2 className="text-white text-lg mt-4 mb-2">
                         Description
                       </h2>
-                      <h2 className="text-re-gray-100 text-lg leading-tight">
+                      <h2 className="text-re-gray-text text-lg leading-tight">
                         {product.description && product.description !== ""
                           ? product.description
                           : "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}
@@ -619,18 +602,18 @@ export default function StorePage({
                         className="rounded-md"
                       />
                       <div className="flex  items-center justify-center mt-4 font-theinhardt-300 text-md text-white">
-                        <div className="flex py-2 w-1/5 rounded-l-md justify-center h-full items-center border-re-blue border-1/2">
+                        <div className="flex py-2 w-1/5 rounded-l-md justify-center h-full items-center border-re-blue-500 border-1/2">
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none"
+                            className="input w-full pr-1 items-center h-full text-center bg-re-black focus:outline-none"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                           />
                         </div>
                         <button
-                          className="bg-re-blue border-re-blue border-1/2 w-4/5 h-full rounded-r-md text-lg"
+                          className="bg-re-blue-500 border-re-blue-500 border-1/2 w-4/5 h-full rounded-r-md text-lg"
                           onClick={handleAddToCart}
                           disabled={quantity === ""}
                         >
@@ -702,7 +685,7 @@ export default function StorePage({
   }
 
   return (
-    <div className=" h-screen bg-black flex">
+    <div className=" h-screen bg-re-black flex">
       <head>
         <title>Store</title>
         <meta name="store" content="shop for products" />

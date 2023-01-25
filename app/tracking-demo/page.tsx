@@ -1,14 +1,14 @@
-import { Company, Settings, User } from "@prisma/client";
+import { Company, Event, Settings, User } from "@prisma/client";
 import Link from "next/link";
-import prisma from "../dashboard/tracking/../../../constants/prisma";
+import prisma from "../../constants/prisma";
 import Tracking from "../dashboard/tracking/tracking";
 
 export type UserSettings =
   | (User & {
-    company: Company & {
-      settings: Settings | null;
-    };
-  })
+      company: Company & {
+        settings: Settings | null;
+      };
+    })
   | null;
 
 async function getSkus() {
@@ -34,15 +34,14 @@ async function getUser() {
 
 export default async function Page() {
   const user: UserSettings = await getUser();
+  if (!user) return <div>Not found</div>;
   const skus = await getSkus();
+  const events: Event[] = await prisma.event.findMany({
+    where: { companyId: user.companyId },
+  });
 
   return (
-    <div className="w-full h-full bg-black flex overflow-auto">
-      {/* <head>
-        <title>Tracking</title>
-        <meta name="tracking" content="Tracking" />
-        <link rel="icon" href="/favicon.ico" />
-      </head> */}
+    <div className="w-full h-screen bg-re-black flex overflow-auto">
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Link href={"/dashboard"}>
           <button className="w-full mb-8 flex items-center justify-start gap-2">
@@ -88,7 +87,7 @@ export default async function Page() {
             </button>
           </Link>
         </div>
-        <Tracking user={user} skus={skus} demo={true} />
+        <Tracking user={user} skus={skus} demo={true} events={events} />
       </main>
     </div>
   );

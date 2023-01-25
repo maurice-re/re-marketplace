@@ -88,7 +88,7 @@ export default function CheckoutLeft({
     appearance,
   };
   return (
-    <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
+    <div className="w-screen h-screen bg-re-black flex items-center justify-center text-white">
       <ReLogo />
       <input type="checkbox" id="eol-modal" className="modal-toggle" />
       <div className="modal">
@@ -124,22 +124,23 @@ export default function CheckoutLeft({
             skus ?? [],
             type
           )}`}</h1>
-          {LineItems({
-            locations: locations ?? [],
-            orderString: orderString,
-            skus: skus ?? [],
-            productDevelopment: productDevelopment ?? null,
-            products: products ?? [],
-            type: type,
-          })}
+          <LineItems
+            locations={locations ?? []}
+            orderString={orderString}
+            skus={skus ?? []}
+            showLocation
+            productDevelopment={productDevelopment ?? null}
+            products={products ?? []}
+            type={type}
+          />
           <div className="ml-16 mr-6 border my-4" />
-          {Totals({
-            orderString: orderString,
-            skus: skus ?? [],
-            productDevelopment: productDevelopment ?? null,
-            products: products ?? [],
-            type: type,
-          })}
+          <Totals
+            orderString={orderString}
+            skus={skus ?? []}
+            productDevelopment={productDevelopment ?? null}
+            products={products ?? []}
+            type={type}
+          />
         </div>
         <div className="w-1/2 h-full">
           {clientSecret && (
