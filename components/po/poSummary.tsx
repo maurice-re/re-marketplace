@@ -34,8 +34,6 @@ export default function POSummary({
   type,
   user,
 }: POSummaryProps) {
-  console.log("In PO page, got ", orderString);
-
   return (
     <main className="w-full h-full text-white overflow-auto">
       <div className="py-6 flex flex-col items-center w-full justify-center">

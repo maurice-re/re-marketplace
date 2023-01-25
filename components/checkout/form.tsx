@@ -13,7 +13,7 @@ import {
 } from "@stripe/react-stripe-js";
 import type { PaymentMethod } from "@stripe/stripe-js";
 import { useRouter } from "next/router";
-import { FormEvent, Fragment, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import Addresses from "./addresses";
 import Info from "./info";
@@ -107,10 +107,8 @@ export default function CheckoutForm({
         },
         redirect: "if_required",
       });
-      console.log(paymentIntent);
 
       if (error) {
-        console.log("error", error);
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
           hasError = true;
@@ -214,8 +212,9 @@ export default function CheckoutForm({
       </div>
       {company != null && paymentMethods && (
         <select
-          className={`w-full bg-stripe-gray border-white border rounded py-2 ${dropdown == "new" ? "mb-2" : "mb-6"
-            }`}
+          className={`w-full bg-stripe-gray border-white border rounded py-2 ${
+            dropdown == "new" ? "mb-2" : "mb-6"
+          }`}
           value={dropdown}
           onChange={(e) => setDropdown(e.target.value)}
         >
@@ -241,8 +240,9 @@ export default function CheckoutForm({
           onClick={() => document.getElementById("eol-modal")?.click()}
           type="button"
           disabled={isLoading || !stripe || !elements || dropdown == ""}
-          className={`btn modal-button text-center mb-6 w-full ${eol ? "" : "btn-error btn-outline"
-            }`}
+          className={`btn modal-button text-center mb-6 w-full ${
+            eol ? "" : "btn-error btn-outline"
+          }`}
         >
           {eol ? (
             <svg
@@ -274,8 +274,9 @@ export default function CheckoutForm({
             (type == CheckoutType.ORDER && !eol)
           }
           id="submit"
-          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${isLoading ? "loading" : ""
-            }`}
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
+            isLoading ? "loading" : ""
+          }`}
         >
           Pay Now
         </button>

@@ -24,9 +24,6 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
     e.preventDefault();
     setIsLoading(true);
 
-    console.log("Got newUser");
-    console.log("Using ", user.companyId);
-
     if (user) {
       const res = await fetch("/api/user/create-peer-user", {
         method: "POST",

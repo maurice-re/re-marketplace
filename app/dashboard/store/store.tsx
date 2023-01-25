@@ -439,7 +439,6 @@ export default function StorePage({
     const sizes = product.sizes.split(", ");
     const materials = product.materials.split(", ");
     const colors = product.colors.split(", ");
-    console.log(colors);
 
     breadcrumbsInfo[0].passed = true;
     breadcrumbsInfo[1].passed = true;

@@ -47,7 +47,6 @@ export default async function Page({
       searchParams.terms
     )
   ) {
-    console.log(searchParams);
     return <div>An error occurred</div>;
   }
 
@@ -67,7 +66,7 @@ export default async function Page({
   // TODO(Suhana): Pass this down instead of re-fetching
   const skus = await prisma.sku.findMany({});
 
-  let items: POItem[] = [];
+  const items: POItem[] = [];
 
   const orderItems: {
     amount: number;

@@ -124,22 +124,23 @@ export default function CheckoutLeft({
             skus ?? [],
             type
           )}`}</h1>
-          {LineItems({
-            locations: locations ?? [],
-            orderString: orderString,
-            skus: skus ?? [],
-            productDevelopment: productDevelopment ?? null,
-            products: products ?? [],
-            type: type,
-          })}
+          <LineItems
+            locations={locations ?? []}
+            orderString={orderString}
+            skus={skus ?? []}
+            showLocation
+            productDevelopment={productDevelopment ?? null}
+            products={products ?? []}
+            type={type}
+          />
           <div className="ml-16 mr-6 border my-4" />
-          {Totals({
-            orderString: orderString,
-            skus: skus ?? [],
-            productDevelopment: productDevelopment ?? null,
-            products: products ?? [],
-            type: type,
-          })}
+          <Totals
+            orderString={orderString}
+            skus={skus ?? []}
+            productDevelopment={productDevelopment ?? null}
+            products={products ?? []}
+            type={type}
+          />
         </div>
         <div className="w-1/2 h-full">
           {clientSecret && (

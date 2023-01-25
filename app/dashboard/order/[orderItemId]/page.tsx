@@ -18,7 +18,6 @@ export default async function Page({
   }
 
   const { orderItemId } = params;
-  console.log(orderItemId);
 
   const orderItem: OrderItemLocation | null = await prisma.orderItem.findFirst({
     where: {

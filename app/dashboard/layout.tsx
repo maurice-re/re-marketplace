@@ -275,9 +275,6 @@ export default async function Layout({
     });
   }
 
-  // console.log("In layout");
-  // console.log(pathname);
-
   return (
     <div className="flex flex-grow bg-re-black">
       <div className="flex flex-col items-center text-white px-8 border-r-1/2 border-re-gray-300">

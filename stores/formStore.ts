@@ -57,12 +57,10 @@ interface FormStore {
     skuCatalog: [],
     activateRoute: (route: string, city: string) =>
         set((state) => {
-            console.log(city);
-            console.log(route);
+
             const index = state.routes.findIndex(
                 (r) => r.name.startsWith("form/" + route) && r.active == false && r.city == city
                 );
-                console.log(index);
             if (index > -1) {
                 const newRoutes = state.routes.map((r, i) => {
                     if (i == index) {

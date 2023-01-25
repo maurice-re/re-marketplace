@@ -6,7 +6,6 @@ import { Route } from "./layout";
 export default function Header({ routes }: { routes: Route[] }) {
   const pathname = usePathname();
   let title = routes.find((route) => route.link == pathname)?.title;
-  console.log(pathname);
   if (pathname?.startsWith("/dashboard/order/")) {
     title = "Order";
   }

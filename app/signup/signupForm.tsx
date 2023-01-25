@@ -33,7 +33,6 @@ export default function SignUpForm({
     if (res.status === 200) {
       await signIn("email", { email: email });
     } else {
-      console.log("Error creating user");
       setLoading(false);
     }
   }

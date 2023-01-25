@@ -105,10 +105,8 @@ export default function CheckoutRight({
         },
         redirect: "if_required",
       });
-      console.log(paymentIntent);
 
       if (error) {
-        console.log("error", error);
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
           hasError = true;
@@ -139,7 +137,6 @@ export default function CheckoutRight({
           ),
         }),
       });
-      console.log(res);
       if (res.status != 200) {
         hasError = true;
         const { message } = await res.json();
@@ -171,7 +168,6 @@ export default function CheckoutRight({
         }
         return;
       } else if (type == CheckoutType.ORDER && company && user) {
-        console.log("order");
         await fetch("/api/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -193,10 +189,6 @@ export default function CheckoutRight({
 
     setIsLoading(false);
   };
-
-  console.log("company", company);
-  console.log("paymentMethods", paymentMethods);
-
   return (
     <form
       id="payment-form"

@@ -20,10 +20,6 @@ export default function UserForm({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log("Got newUser");
-    console.log(newUser);
-
-    // console.log(newUser);
 
     if (newUser && newUser.firstName && newUser.lastName && newUser.id) {
       const res = await fetch("/api/user/edit-user", {

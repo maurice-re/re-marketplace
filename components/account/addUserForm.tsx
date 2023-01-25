@@ -32,10 +32,6 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
     e.preventDefault();
     setIsLoading(true);
 
-    console.log("Got newUser");
-    console.log(newUser);
-    console.log("Using ", user.companyId);
-
     if (
       user &&
       newUser &&
