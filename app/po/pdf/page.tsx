@@ -21,9 +21,12 @@ export default async function Page({
 }: {
     searchParams?: {
         orderString: string;
-        buyerName: string;
-        buyerBillingAddressLine: string;
-        buyerShippingAddressLine: string;
+        buyerCompany: string;
+        buyerAddressLine: string;
+        buyerCity: string;
+        buyerState: string;
+        buyerZip: string;
+        buyerCountry: string;
         buyerPhone: string;
         buyerEmail: string;
         requestioner: string;
@@ -32,16 +35,19 @@ export default async function Page({
         terms: string;
     };
 }) {
-    if (!(searchParams && searchParams.orderString && searchParams.buyerName && searchParams.buyerBillingAddressLine && searchParams.buyerShippingAddressLine && searchParams.buyerPhone && searchParams.buyerEmail)) {
+    if (!(searchParams && searchParams.orderString && searchParams.buyerCompany && searchParams.buyerAddressLine && searchParams.buyerCity && searchParams.buyerState && searchParams.buyerZip && searchParams.buyerCountry && searchParams.buyerPhone && searchParams.buyerEmail)) {
         console.log(searchParams);
         return <div>An error occurred</div>;
     }
 
     const {
         orderString,
-        buyerName,
-        buyerBillingAddressLine,
-        buyerShippingAddressLine,
+        buyerCompany,
+        buyerAddressLine,
+        buyerCity,
+        buyerState,
+        buyerZip,
+        buyerCountry,
         buyerPhone,
         buyerEmail,
         requestioner,
@@ -103,18 +109,21 @@ export default async function Page({
                         sellerState='Delaware'
                         sellerZip='19804'
                         sellerCountry='USA'
-                        sellerWebsite='wwww.re.company'
+                        sellerWebsite='www.re.company'
                         sellerPhone='+1 9295054562'
                         sellerTaxId="87-2179396"
                         sellerBankName="Chase Bank"
                         sellerRoutingNumber={815505463}
                         sellerAccountNumber={325070760}
-                        sellerPONumber={57}
+                        poNumber={57}
                         // TODO(Suhana): Add city, state, zip, and country for both billing and shipping
-                        buyerBillingAddressLine={buyerBillingAddressLine}
-                        buyerShippingAddressLine={buyerShippingAddressLine}
+                        buyerAddressLine={buyerAddressLine}
+                        buyerCity={buyerCity}
+                        buyerState={buyerState}
+                        buyerZip={buyerZip}
+                        buyerCountry={buyerCountry}
                         // TODO(Suhana): Add first and last name fields
-                        buyerName={buyerName}
+                        buyerCompany={buyerCompany}
                         buyerPhone={buyerPhone}
                         requestioner={requestioner}
                         shippedVia={shippedVia}

@@ -36,13 +36,17 @@ function POFile({
     sellerState,
     sellerZip,
     sellerCountry,
+    buyerCity,
+    buyerState,
+    buyerZip,
+    buyerCountry,
     sellerWebsite,
     sellerPhone,
     sellerTaxId,
-    sellerPONumber,
+    poNumber,
     buyerPhone,
-    buyerBillingAddressLine,
-    buyerName,
+    buyerAddressLine,
+    buyerCompany,
     shippedVia,
     requestioner,
     fobPoint,
@@ -61,13 +65,16 @@ function POFile({
     sellerState: string;
     sellerZip: string;
     sellerCountry: string;
+    buyerCity: string;
+    buyerState: string;
+    buyerZip: string;
+    buyerCountry: string;
     sellerWebsite: string;
     sellerPhone: string;
     sellerTaxId: string;
-    sellerPONumber: number;
-    buyerBillingAddressLine: string;
-    buyerShippingAddressLine: string;
-    buyerName: string;
+    poNumber: number;
+    buyerAddressLine: string;
+    buyerCompany: string;
     buyerPhone: string;
     requestioner: string;
     shippedVia: string;
@@ -87,7 +94,7 @@ function POFile({
                     <Page size="A4" style={styles.page}>
                         <POTitle sellerCompany={sellerCompany} />
                         <POSellerAddress sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerWebsite={sellerWebsite} sellerPhone={sellerPhone} />
-                        <PODocumentInfo sellerCompany={sellerCompany} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerPONumber={sellerPONumber} buyerBillingAddressLine={"buyerBillingAddressLine"} buyerShippingAddressLine={buyerBillingAddressLine} buyerName={buyerName} buyerPhone={buyerPhone} sellerEmail={sellerEmail} buyerEmail={buyerEmail} />
+                        <PODocumentInfo sellerCompany={sellerCompany} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} buyerCity={buyerCity} buyerState={buyerState} buyerZip={buyerZip} buyerCountry={buyerCountry} poNumber={poNumber} buyerAddressLine={buyerAddressLine} buyerCompany={buyerCompany} buyerPhone={buyerPhone} sellerEmail={sellerEmail} buyerEmail={buyerEmail} />
                         <POTermsTable requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
                         <POItemsTable items={items} />
                         <POItemsTotals totals={totals} />

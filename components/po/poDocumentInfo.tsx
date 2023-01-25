@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 });
 
 // Display information like To, From, and  involved
-const PODocumentInfo = ({ sellerCompany, sellerAddressLine, sellerCity, sellerState, sellerZip, sellerCountry, sellerPONumber, buyerBillingAddressLine, buyerShippingAddressLine, buyerName, buyerPhone, sellerEmail, buyerEmail }: { sellerCompany: string; sellerAddressLine: string; sellerCity: string; sellerState: string; sellerZip: string; sellerCountry: string; sellerPONumber: number; buyerBillingAddressLine: string; buyerShippingAddressLine: string; buyerName: string; buyerPhone: string; sellerEmail: string; buyerEmail: string; }) => (
+const PODocumentInfo = ({ sellerCompany, sellerAddressLine, sellerCity, sellerState, sellerZip, sellerCountry, buyerCity, buyerState, buyerZip, buyerCountry, poNumber, buyerAddressLine, buyerCompany, buyerPhone, sellerEmail, buyerEmail }: { sellerCompany: string; sellerAddressLine: string; sellerCity: string; sellerState: string; sellerZip: string; sellerCountry: string; buyerCity: string; buyerState: string; buyerZip: string; buyerCountry: string; poNumber: number; buyerAddressLine: string; buyerCompany: string; buyerPhone: string; sellerEmail: string; buyerEmail: string; }) => (
     <View style={styles.billingInfoContainer}>
         <View style={styles.textContainer}>
             <Text style={styles.heading}>Bill From:</Text>
@@ -35,15 +35,16 @@ const PODocumentInfo = ({ sellerCompany, sellerAddressLine, sellerCity, sellerSt
         </View>
         <View style={styles.textContainer}>
             <Text style={styles.heading}>Bill To:</Text>
-            <Text style={styles.body}>{buyerBillingAddressLine}</Text>
-            <Text style={styles.body}>{buyerShippingAddressLine}</Text>
-            <Text style={styles.body}>{buyerName}</Text>
+            <Text style={styles.body}>{buyerCompany}</Text>
+            <Text style={styles.body}>{buyerAddressLine}</Text>
+            <Text style={styles.body}>{buyerCity}, {buyerState}</Text>
+            <Text style={styles.body}>{buyerZip} {buyerCountry}</Text>
             <Text style={styles.body}>{buyerPhone}</Text>
             <Text style={styles.body}>{buyerEmail}</Text>
         </View>
         <View style={styles.textContainer}>
             <Text style={styles.heading}>P.O. NUMBER: </Text>
-            <Text style={styles.body}>{sellerPONumber}</Text>
+            <Text style={styles.body}>{poNumber}</Text>
         </View>
     </View>
 );

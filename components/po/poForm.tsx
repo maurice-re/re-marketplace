@@ -11,9 +11,12 @@ type POFormProps = {
 
 type POFormInputs = {
     buyerPhone: string;
-    buyerShippingAddressLine: string;
-    buyerBillingAddressLine: string;
-    buyerName: string;
+    buyerCity: string;
+    buyerState: string;
+    buyerZip: string;
+    buyerCountry: string;
+    buyerAddressLine: string;
+    buyerCompany: string;
     requestioner: string;
     shippedVia: string;
     fobPoint: string;
@@ -24,13 +27,13 @@ type POFormInputs = {
 export default function POForm({
     orderString,
 }: POFormProps) {
-    const [inputValues, setInputValues] = useState<POFormInputs>({ buyerPhone: "", buyerShippingAddressLine: "", buyerBillingAddressLine: "", buyerName: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "", buyerEmail: "" });
-    const { terms, buyerPhone, buyerShippingAddressLine, buyerBillingAddressLine, buyerName, requestioner, shippedVia, fobPoint, buyerEmail } = inputValues;
+    const [inputValues, setInputValues] = useState<POFormInputs>({ buyerPhone: "", buyerCity: "", buyerState: "", buyerZip: "", buyerCountry: "", buyerAddressLine: "", buyerCompany: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "", buyerEmail: "" });
+    const { terms, buyerPhone, buyerCity, buyerState, buyerZip, buyerCountry, buyerAddressLine, buyerCompany, requestioner, shippedVia, fobPoint, buyerEmail } = inputValues;
     // TODO(Suhana): Pass in all of the new fields, and create the new ones, and pass it all in
 
     const canSubmit = () => {
         // Check for required fields
-        if (orderString !== "" && buyerPhone !== "" && buyerShippingAddressLine !== "" && buyerBillingAddressLine !== "" && buyerName !== "" && buyerEmail !== "") {
+        if (orderString !== "" && buyerPhone !== "" && buyerCity !== "" && buyerState !== "" && buyerZip !== "" && buyerCompany !== "" && buyerAddressLine !== "" && buyerCompany !== "" && buyerEmail !== "") {
             return true;
         } else {
             return false;
@@ -52,11 +55,12 @@ export default function POForm({
             <div>
                 <div className="py-4">
                     <div className="text-lg font-semibold">Contact Info</div>
-                    <InputField top required placeholder={"Name"} value={buyerName} name={"buyerName"} onChange={handleChange} />
-                    <InputField required placeholder={"Billing Address Line"} value={buyerBillingAddressLine} name={"buyerBillingAddressLine"} onChange={handleChange} />
-                    <InputField required placeholder={"Billing Shipping Line"} value={buyerShippingAddressLine} name={"buyerShippingAddressLine"} onChange={handleChange} />
+                    <InputField top required placeholder={"Name"} value={buyerCompany} name={"buyerCompany"} onChange={handleChange} />
+                    <InputField required placeholder={"Address Line"} value={buyerAddressLine} name={"buyerAddressLine"} onChange={handleChange} />
+                    <DoubleInputField required leftPlaceholder={"City"} leftValue={buyerCity} leftName={"buyerCity"} rightPlaceholder={"State"} rightValue={buyerState} rightName={"buyerState"} onChange={handleChange} />
+                    <DoubleInputField required leftPlaceholder={"Zip"} leftValue={buyerZip} leftName={"buyerZip"} rightPlaceholder={"Country"} rightValue={buyerCountry} rightName={"buyerCountry"} onChange={handleChange} />
+                    <InputField required placeholder={"Phone Number"} value={buyerPhone} name={"buyerPhone"} onChange={handleChange} />
                     <InputField required placeholder={"Email"} value={buyerEmail} name={"buyerEmail"} onChange={handleChange} />
-                    <InputField bottom required placeholder={"Phone Number"} value={buyerPhone} name={"buyerPhone"} onChange={handleChange} />
                 </div>
             </div>
             <div>
@@ -74,9 +78,12 @@ export default function POForm({
                     pathname: "/po/pdf",
                     query: {
                         orderString: orderString,
-                        buyerName: buyerName,
-                        buyerBillingAddressLine: buyerBillingAddressLine,
-                        buyerShippingAddressLine: buyerShippingAddressLine,
+                        buyerCompany: buyerCompany,
+                        buyerAddressLine: buyerAddressLine,
+                        buyerCity: buyerCity,
+                        buyerState: buyerState,
+                        buyerZip: buyerZip,
+                        buyerCountry: buyerCountry,
                         buyerPhone: buyerPhone,
                         buyerEmail: buyerEmail,
                         requestioner: requestioner,
