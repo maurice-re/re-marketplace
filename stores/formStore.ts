@@ -1,5 +1,5 @@
 import { Product, Sku } from "@prisma/client";
-import create from "zustand";
+import { create } from "zustand";
 import { calculatePriceFromCatalog } from "../utils/prisma/dbUtils";
 
 
@@ -43,7 +43,7 @@ interface FormStore {
     removeLocation: (location: string) => void;
     setCustomerId: (id: string) => void;
     skipToCheckout: (checkout: string) => void;
-  };
+  }
 
   export const useFormStore = create<FormStore>((set, get) => ({
     locations: [],
@@ -209,8 +209,8 @@ interface FormStore {
     skipToCheckout: (checkout: string) =>
         set((state) => {
             const separated = checkout.split("*");
-            let newLocations: string[] = [];
-            let newCart: CartOrder[] = [];
+            const newLocations: string[] = [];
+            const newCart: CartOrder[] = [];
 
             separated.forEach((itemOrder) => {
                 const [location, quantity, size] = itemOrder.split("^");
