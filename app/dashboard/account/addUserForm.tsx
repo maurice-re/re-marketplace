@@ -51,14 +51,14 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
           type="text"
           placeholder="Email"
           id="email"
-          className="w-full text-white bg-black bg-opacity-30 rounded-md p-2 mb-2"
+          className="w-full text-white bg-re-black bg-opacity-30 rounded-md p-2 mb-2"
           value={form["email"] ?? ""}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
         <label className="text-re-gray-text">Role</label>
         <select
           id="role"
-          className="w-full text-white bg-black bg-opacity-30 rounded-md p-2 mb-2"
+          className="w-full text-white bg-re-black bg-opacity-30 rounded-md p-2 mb-2"
           value={form["role"] ?? ""}
           onChange={(e) => setForm({ ...form, role: e.target.value as Role })}
         >

@@ -12,15 +12,17 @@ export default function LineItems({
   productDevelopment,
   products,
   skus,
+  showLocation,
   type,
 }: {
   locations: Location[] | null;
   orderString: string;
   productDevelopment: ProductDevelopment | null;
   products: Product[] | null;
+  showLocation: boolean;
   skus: Sku[] | null;
   type: CheckoutType;
-}): JSX.Element[] {
+}): JSX.Element {
   console.log(orderString);
   const items: JSX.Element[] = [];
 
@@ -99,7 +101,11 @@ export default function LineItems({
       }
       items.push(
         <div className="flex w-5/6 gap-3 mb-4" key={locationId}>
-          <div className="w-3/5 px-5 py-4 bg-re-dark-green-300 border border-re-gray-300 rounded-md">
+          <div
+            className={`px-5 py-4 bg-re-dark-green-300 border border-re-gray-300 rounded-md ${
+              showLocation ? "w-3/5" : "w-full"
+            }`}
+          >
             <div className="mb-5 text-lg">{`${
               location.displayName ?? location.city
             } orders`}</div>
@@ -155,48 +161,50 @@ export default function LineItems({
               <div className="text-re-gray-text">Calculated later</div>
             </div>
           </div>
-          <div className=" w-2/5 flex flex-col justify-center">
-            <div className="bg-re-dark-green-500 border border-re-gray-300 rounded-md flex flex-col">
-              <div className="p-4">{`${
-                location.displayName ?? location.city
-              } shipping address`}</div>
-              <div className="h-px bg-re-gray-300 w-full"></div>
-              <div
-                className={`px-6 py-2 ${
-                  location.displayName ? "text-white" : "text-re-gray-text"
-                }`}
-              >
-                {location.displayName ? location.displayName : "Display Name"}
+          {showLocation && (
+            <div className=" w-2/5 flex flex-col justify-center">
+              <div className="bg-re-dark-green-500 border border-re-gray-300 rounded-md flex flex-col">
+                <div className="p-4">{`${
+                  location.displayName ?? location.city
+                } shipping address`}</div>
+                <div className="h-px bg-re-gray-300 w-full"></div>
+                <div
+                  className={`px-6 py-2 ${
+                    location.displayName ? "text-white" : "text-re-gray-text"
+                  }`}
+                >
+                  {location.displayName ? location.displayName : "Display Name"}
+                </div>
+                <div className="h-px bg-re-gray-300 w-full"></div>
+                <div className="px-6 py-2">{location.country}</div>
+                <div className="h-px bg-re-gray-300 w-full"></div>
+                <div className="px-6 py-2">{location.line1}</div>
+                <div className="h-px bg-re-gray-300 w-full"></div>
+                <div
+                  className={`px-6 py-2 ${
+                    location.line2 && location.line2.length > 1
+                      ? "text-white"
+                      : "text-re-gray-text"
+                  }`}
+                >
+                  {location.line2 ? location.line2 : "Line 2"}
+                </div>
+                <div className="h-px bg-re-gray-300 w-full"></div>
+                <div className="flex">
+                  <div className="pl-6 py-2 w-1/3">{location.city}</div>
+                  <div className="w-px h-full bg-re-gray-300" />
+                  <div className="px-6 py-2">{location.zip}</div>
+                </div>
+                <div className="h-px bg-re-gray-300 w-full"></div>
+                <div className="px-6 py-1">{location.state}</div>
               </div>
-              <div className="h-px bg-re-gray-300 w-full"></div>
-              <div className="px-6 py-2">{location.country}</div>
-              <div className="h-px bg-re-gray-300 w-full"></div>
-              <div className="px-6 py-2">{location.line1}</div>
-              <div className="h-px bg-re-gray-300 w-full"></div>
-              <div
-                className={`px-6 py-2 ${
-                  location.line2 && location.line2.length > 1
-                    ? "text-white"
-                    : "text-re-gray-text"
-                }`}
-              >
-                {location.line2 ? location.line2 : "Line 2"}
-              </div>
-              <div className="h-px bg-re-gray-300 w-full"></div>
-              <div className="flex">
-                <div className="pl-6 py-2 w-1/3">{location.city}</div>
-                <div className="w-px h-full bg-re-gray-300" />
-                <div className="px-6 py-2">{location.zip}</div>
-              </div>
-              <div className="h-px bg-re-gray-300 w-full"></div>
-              <div className="px-6 py-1">{location.state}</div>
             </div>
-          </div>
+          )}
         </div>
       );
     });
   }
   // console.log(items);
 
-  return items;
+  return <>{items}</>;
 }

@@ -116,14 +116,15 @@ export default async function Page({
           CheckoutType.ORDER
         )}`}</div>
       </div>
-      {LineItems({
-        locations: company.locations ?? [],
-        orderString: orderString,
-        skus: skus,
-        productDevelopment: null,
-        products: products,
-        type: CheckoutType.ORDER,
-      })}
+      <LineItems
+        locations={company.locations ?? []}
+        orderString={orderString}
+        skus={skus}
+        showLocation
+        productDevelopment={null}
+        products={products}
+        type={CheckoutType.ORDER}
+      />
       <Payment
         company={company}
         orderString={orderString}

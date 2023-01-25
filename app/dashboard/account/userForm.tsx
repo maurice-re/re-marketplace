@@ -82,7 +82,8 @@ export default function UserForm({
           type="text"
           placeholder="First Name"
           id="firstName"
-          className="w-full text-white bg-black bg-opacity-30 rounded-md p-2 mb-2"
+          disabled
+          className="w-full text-white bg-re-black bg-opacity-30 rounded-md p-2 mb-2"
           value={newUser.firstName ?? ""}
           onChange={(e) => handleNameChange(e.target.value, true)}
         />
@@ -91,7 +92,8 @@ export default function UserForm({
           type="text"
           placeholder="Last Name"
           id="lastName"
-          className="w-full text-white bg-black bg-opacity-40 rounded-md p-2 mb-2"
+          disabled
+          className="w-full text-white bg-re-black bg-opacity-40 rounded-md p-2 mb-2"
           value={newUser.lastName ?? ""}
           onChange={(e) => handleNameChange(e.target.value, true)}
         />
@@ -100,7 +102,8 @@ export default function UserForm({
           type="text"
           placeholder="email"
           id="email"
-          className="w-full text-white bg-black bg-opacity-30 rounded-md p-2"
+          disabled
+          className="w-full text-white bg-re-black bg-opacity-30 rounded-md p-2"
           value={newUser.email ?? ""}
           onChange={(e) => handleNameChange(e.target.value, true)}
         />

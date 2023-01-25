@@ -178,7 +178,7 @@ export default function StorePage({
               </div>
             )}
           </div>
-          <div className="flex flex-col w-full re-gray-100 font-theinhardt-300 text-sm mt-1">
+          <div className="flex flex-col w-full font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
             <h2 className="leading-none">
               {location.city + ", " + location.country + ", " + location.zip}
@@ -332,10 +332,10 @@ export default function StorePage({
               <h3 className="text-white text-lg leading-none">
                 {product.name}
               </h3>
-              <h3 className="mt-2 leading-none text-re-gray-100">
+              <h3 className="mt-2 leading-none text-re-gray-text">
                 {product.materials}
               </h3>
-              <h3 className="mt-1 leading-none text-re-gray-100">
+              <h3 className="mt-1 leading-none text-re-gray-text">
                 {product.sizes.split(", ").join(" | ")}
               </h3>
             </div>
@@ -539,7 +539,7 @@ export default function StorePage({
                       <h2 className="text-white text-lg mt-4 mb-2">
                         Description
                       </h2>
-                      <h2 className="text-re-gray-100 text-lg leading-tight">
+                      <h2 className="text-re-gray-text text-lg leading-tight">
                         {product.description && product.description !== ""
                           ? product.description
                           : "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}

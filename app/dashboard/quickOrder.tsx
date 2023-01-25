@@ -138,7 +138,7 @@ function QuickOrder({
                     skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
                   }
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
-                  className="bg-black rounded py-1 bg-opacity-40 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
+                  className="bg-re-black rounded py-1 bg-opacity-40 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
                 />
               </div>
             ))}
@@ -162,7 +162,7 @@ function QuickOrder({
             <div className="flex justify-between mb-4 items-center">
               <div>Location:</div>
               <select
-                className="bg-black bg-opacity-40 text-sm py-2 px-px rounded enabled:border-black ml-2"
+                className="bg-re-black bg-opacity-40 text-sm py-2 px-px rounded enabled:border-black ml-2"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               >
