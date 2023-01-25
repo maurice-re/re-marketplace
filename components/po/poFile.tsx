@@ -5,11 +5,12 @@ import { Page, Document, StyleSheet } from '@react-pdf/renderer';
 import POTitle from './poTitle';
 import POTermsTable from './poTermsTable';
 import POSellerAddress from './poSellerAddress';
-import POBillingInfo from './poBillingInfo';
+import PODocumentInfo from './poDocumentInfo';
 import { POItem, POTotal } from '../../app/po/pdf/page';
 import POItemsTable from './poItemsTable';
 import POItemsTotals from './poItemsTotals';
 import POSignoff from './poSignoff';
+import POPaymentInfo from './poPaymentInfo';
 
 // The generation of the PO was based on this invoice example by Kagunda JM: https://kags.me.ke/post/generate-dynamic-pdf-incoice-using-react-pdf/
 
@@ -41,14 +42,16 @@ function POFile({
     sellerPONumber,
     buyerPhone,
     buyerBillingAddressLine,
-    buyerTaxId,
     buyerName,
     shippedVia,
     requestioner,
     fobPoint,
     terms,
-    routingNumber,
-    accountNumber
+    sellerRoutingNumber,
+    sellerAccountNumber,
+    sellerBankName,
+    sellerEmail,
+    buyerEmail,
 }: {
     items: POItem[];
     totals: POTotal[];
@@ -66,13 +69,15 @@ function POFile({
     buyerShippingAddressLine: string;
     buyerName: string;
     buyerPhone: string;
-    buyerTaxId: number;
     requestioner: string;
     shippedVia: string;
     fobPoint: string;
     terms: string;
-    routingNumber: string;
-    accountNumber: string;
+    sellerRoutingNumber: number;
+    sellerAccountNumber: number;
+    sellerBankName: string;
+    sellerEmail: string;
+    buyerEmail: string;
 }) {
     // TODO(Suhana): Put new props in the PDF
     return (
@@ -82,10 +87,11 @@ function POFile({
                     <Page size="A4" style={styles.page}>
                         <POTitle sellerCompany={sellerCompany} />
                         <POSellerAddress sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerWebsite={sellerWebsite} sellerPhone={sellerPhone} />
-                        <POBillingInfo sellerCompany={sellerCompany} sellerTaxId={sellerTaxId} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerPONumber={sellerPONumber} buyerBillingAddressLine={"buyerBillingAddressLine"} buyerShippingAddressLine={buyerBillingAddressLine} buyerName={buyerName} buyerPhone={buyerPhone} buyerTaxId={buyerTaxId} />
+                        <PODocumentInfo sellerCompany={sellerCompany} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerPONumber={sellerPONumber} buyerBillingAddressLine={"buyerBillingAddressLine"} buyerShippingAddressLine={buyerBillingAddressLine} buyerName={buyerName} buyerPhone={buyerPhone} sellerEmail={sellerEmail} buyerEmail={buyerEmail} />
                         <POTermsTable requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
                         <POItemsTable items={items} />
                         <POItemsTotals totals={totals} />
+                        <POPaymentInfo sellerAccountNumber={sellerAccountNumber} sellerRoutingNumber={sellerRoutingNumber} sellerBankName={sellerBankName} sellerTaxId={sellerTaxId} />
                         <POSignoff />
                     </Page>
                 </Document>

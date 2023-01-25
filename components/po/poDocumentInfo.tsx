@@ -10,35 +10,36 @@ const styles = StyleSheet.create({
     textContainer: {
         flexDirection: 'column',
         lineHeight: 1.25,
+        fontSize: 7,
     },
     heading: {
         color: '#000000',
-        fontSize: 7,
+        letterSpacing: 0.75,
         textTransform: 'uppercase',
     },
     body: {
         color: '#000000',
-        fontSize: 7,
     }
 });
 
-const POBillingInfo = ({ sellerCompany, sellerAddressLine, sellerCity, sellerState, sellerZip, sellerCountry, sellerTaxId, sellerPONumber, buyerBillingAddressLine, buyerShippingAddressLine, buyerName, buyerPhone, buyerTaxId }: { sellerCompany: string; sellerAddressLine: string; sellerCity: string; sellerState: string; sellerZip: string; sellerCountry: string; sellerTaxId: string; sellerPONumber: number; buyerBillingAddressLine: string; buyerShippingAddressLine: string; buyerName: string; buyerPhone: string; buyerTaxId: number; }) => (
+// Display information like To, From, and  involved
+const PODocumentInfo = ({ sellerCompany, sellerAddressLine, sellerCity, sellerState, sellerZip, sellerCountry, sellerPONumber, buyerBillingAddressLine, buyerShippingAddressLine, buyerName, buyerPhone, sellerEmail, buyerEmail }: { sellerCompany: string; sellerAddressLine: string; sellerCity: string; sellerState: string; sellerZip: string; sellerCountry: string; sellerPONumber: number; buyerBillingAddressLine: string; buyerShippingAddressLine: string; buyerName: string; buyerPhone: string; sellerEmail: string; buyerEmail: string; }) => (
     <View style={styles.billingInfoContainer}>
         <View style={styles.textContainer}>
-            <Text style={styles.heading}>To:</Text>
+            <Text style={styles.heading}>Bill From:</Text>
             <Text style={styles.body}>{sellerCompany}</Text>
             <Text style={styles.body}>{sellerAddressLine}</Text>
             <Text style={styles.body}>{sellerCity}, {sellerState}</Text>
             <Text style={styles.body}>{sellerZip} {sellerCountry}</Text>
-            <Text style={styles.body}>EIN: {sellerTaxId}</Text>
+            <Text style={styles.body}>{sellerEmail}</Text>
         </View>
         <View style={styles.textContainer}>
-            <Text style={styles.heading}>From:</Text>
+            <Text style={styles.heading}>Bill To:</Text>
             <Text style={styles.body}>{buyerBillingAddressLine}</Text>
             <Text style={styles.body}>{buyerShippingAddressLine}</Text>
             <Text style={styles.body}>{buyerName}</Text>
             <Text style={styles.body}>{buyerPhone}</Text>
-            <Text style={styles.body}>EIN: {buyerTaxId}</Text>
+            <Text style={styles.body}>{buyerEmail}</Text>
         </View>
         <View style={styles.textContainer}>
             <Text style={styles.heading}>P.O. NUMBER: </Text>
@@ -47,4 +48,4 @@ const POBillingInfo = ({ sellerCompany, sellerAddressLine, sellerCity, sellerSta
     </View>
 );
 
-export default POBillingInfo;
+export default PODocumentInfo;

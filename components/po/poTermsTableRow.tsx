@@ -27,12 +27,16 @@ const styles = StyleSheet.create({
 
 const date = new Date();
 const POTermsTableRow = ({ requestioner, shippedVia, fobPoint, terms }: { requestioner: string; shippedVia: string; fobPoint: string; terms: string; }) => {
+    function getValidatedEntry(entry: String) {
+        // Optional fields => need to check for "" and replace to maintain formatting
+        return entry === "" ? " " : entry;
+    };
     return (<Fragment><View style={styles.row}>
         <Text style={styles.column}>{date.toDateString()}</Text>
-        <Text style={styles.column}>{requestioner}</Text>
-        <Text style={styles.column}>{shippedVia}</Text>
-        <Text style={styles.column}>{fobPoint}</Text>
-        <Text style={styles.lastColumn}>{terms}</Text>
+        <Text style={styles.column}>{getValidatedEntry(requestioner)}</Text>
+        <Text style={styles.column}>{getValidatedEntry(shippedVia)}</Text>
+        <Text style={styles.column}>{getValidatedEntry(fobPoint)}</Text>
+        <Text style={styles.lastColumn}>{getValidatedEntry(terms)}</Text>
     </View></Fragment>);
 };
 

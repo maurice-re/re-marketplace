@@ -25,16 +25,14 @@ export default async function Page({
         buyerBillingAddressLine: string;
         buyerShippingAddressLine: string;
         buyerPhone: string;
-        buyerTaxId: number;
+        buyerEmail: string;
         requestioner: string;
         shippedVia: string;
         fobPoint: string;
         terms: string;
-        routingNumber: string;
-        accountNumber: string;
     };
 }) {
-    if (!(searchParams && searchParams.orderString && searchParams.buyerName && searchParams.buyerBillingAddressLine && searchParams.buyerShippingAddressLine && searchParams.buyerPhone && searchParams.buyerTaxId && searchParams.routingNumber && searchParams.accountNumber)) {
+    if (!(searchParams && searchParams.orderString && searchParams.buyerName && searchParams.buyerBillingAddressLine && searchParams.buyerShippingAddressLine && searchParams.buyerPhone && searchParams.buyerEmail)) {
         console.log(searchParams);
         return <div>An error occurred</div>;
     }
@@ -45,13 +43,11 @@ export default async function Page({
         buyerBillingAddressLine,
         buyerShippingAddressLine,
         buyerPhone,
-        buyerTaxId,
+        buyerEmail,
         requestioner,
         shippedVia,
         fobPoint,
-        terms,
-        routingNumber,
-        accountNumber
+        terms
     } = searchParams;
 
     // TODO(Suhana): Pass this down instead of re-fetching
@@ -110,6 +106,9 @@ export default async function Page({
                         sellerWebsite='wwww.re.company'
                         sellerPhone='+1 9295054562'
                         sellerTaxId="87-2179396"
+                        sellerBankName="Chase Bank"
+                        sellerRoutingNumber={815505463}
+                        sellerAccountNumber={325070760}
                         sellerPONumber={57}
                         // TODO(Suhana): Add city, state, zip, and country for both billing and shipping
                         buyerBillingAddressLine={buyerBillingAddressLine}
@@ -117,13 +116,12 @@ export default async function Page({
                         // TODO(Suhana): Add first and last name fields
                         buyerName={buyerName}
                         buyerPhone={buyerPhone}
-                        buyerTaxId={buyerTaxId}
                         requestioner={requestioner}
                         shippedVia={shippedVia}
                         fobPoint={fobPoint}
                         terms={terms}
-                        routingNumber={routingNumber}
-                        accountNumber={accountNumber}
+                        sellerEmail={"maddie@re.company"}
+                        buyerEmail={buyerEmail}
                     />
                 </div>
             </main>

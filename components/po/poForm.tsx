@@ -10,30 +10,27 @@ type POFormProps = {
 };
 
 type POFormInputs = {
-    buyerTaxId: string;
     buyerPhone: string;
     buyerShippingAddressLine: string;
     buyerBillingAddressLine: string;
     buyerName: string;
-    bankName: string;
-    accountNumber: string;
-    routingNumber: string;
     requestioner: string;
     shippedVia: string;
     fobPoint: string;
     terms: string;
+    buyerEmail: string;
 };
 
 export default function POForm({
     orderString,
 }: POFormProps) {
-    const [inputValues, setInputValues] = useState<POFormInputs>({ buyerTaxId: "", buyerPhone: "", buyerShippingAddressLine: "", buyerBillingAddressLine: "", buyerName: "", bankName: "", accountNumber: "", routingNumber: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "" });
-    const { terms, buyerTaxId, buyerPhone, buyerShippingAddressLine, buyerBillingAddressLine, buyerName, bankName, accountNumber, routingNumber, requestioner, shippedVia, fobPoint } = inputValues;
+    const [inputValues, setInputValues] = useState<POFormInputs>({ buyerPhone: "", buyerShippingAddressLine: "", buyerBillingAddressLine: "", buyerName: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "", buyerEmail: "" });
+    const { terms, buyerPhone, buyerShippingAddressLine, buyerBillingAddressLine, buyerName, requestioner, shippedVia, fobPoint, buyerEmail } = inputValues;
     // TODO(Suhana): Pass in all of the new fields, and create the new ones, and pass it all in
 
     const canSubmit = () => {
         // Check for required fields
-        if (orderString !== "" && buyerPhone !== "" && buyerShippingAddressLine !== "" && buyerBillingAddressLine !== "" && buyerName !== "" && bankName !== "" && accountNumber !== "" && routingNumber !== "") {
+        if (orderString !== "" && buyerPhone !== "" && buyerShippingAddressLine !== "" && buyerBillingAddressLine !== "" && buyerName !== "" && buyerEmail !== "") {
             return true;
         } else {
             return false;
@@ -54,25 +51,17 @@ export default function POForm({
         >
             <div>
                 <div className="py-4">
-                    <div className="text-lg font-semibold">Your Info</div>
+                    <div className="text-lg font-semibold">Contact Info</div>
                     <InputField top required placeholder={"Name"} value={buyerName} name={"buyerName"} onChange={handleChange} />
                     <InputField required placeholder={"Billing Address Line"} value={buyerBillingAddressLine} name={"buyerBillingAddressLine"} onChange={handleChange} />
                     <InputField required placeholder={"Billing Shipping Line"} value={buyerShippingAddressLine} name={"buyerShippingAddressLine"} onChange={handleChange} />
+                    <InputField required placeholder={"Email"} value={buyerEmail} name={"buyerEmail"} onChange={handleChange} />
                     <InputField bottom required placeholder={"Phone Number"} value={buyerPhone} name={"buyerPhone"} onChange={handleChange} />
                 </div>
             </div>
             <div>
                 <div className="py-4">
-                    <div className="text-lg font-semibold">Payment Info</div>
-                    {/* TODO(Suhana): Use the field components for the rest of the inputs as well */}
-                    <InputField top required placeholder={"Bank Name"} value={bankName} name={"bankName"} onChange={handleChange} />
-                    <DoubleInputField leftName="accountNumber" leftPlaceholder="Account Number" leftValue={accountNumber} required rightName="routingNumber" rightPlaceholder="Routing Number" rightValue={routingNumber} onChange={handleChange} />
-                    <InputField bottom required placeholder={"EIN"} value={buyerTaxId} name={"buyerTaxId"} onChange={handleChange} />
-                </div>
-            </div>
-            <div>
-                <div className="py-4">
-                    <div className="text-lg font-semibold">Other Info</div>
+                    <div className="text-lg font-semibold">Order Info</div>
                     <InputField top placeholder={"Requestioner"} value={requestioner} name={"requestioner"} onChange={handleChange} />
                     <InputField placeholder={"Shipped Via"} value={shippedVia} name={"shippedVia"} onChange={handleChange} />
                     <InputField placeholder={"FOB Point"} value={fobPoint} name={"fobPoint"} onChange={handleChange} />
@@ -89,14 +78,11 @@ export default function POForm({
                         buyerBillingAddressLine: buyerBillingAddressLine,
                         buyerShippingAddressLine: buyerShippingAddressLine,
                         buyerPhone: buyerPhone,
-                        buyerTaxId: buyerTaxId,
-                        routingNumber: routingNumber,
-                        accountNumber: accountNumber,
+                        buyerEmail: buyerEmail,
                         requestioner: requestioner,
                         shippedVia: shippedVia,
                         fobPoint: fobPoint,
                         terms: terms,
-                        bankName: bankName,
                     },
                 }}>
                 <button
