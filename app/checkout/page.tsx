@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
