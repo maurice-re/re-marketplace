@@ -1,4 +1,4 @@
-import { LocationType, Role } from "@prisma/client";
+import { LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../stores/formStore";
@@ -40,7 +40,6 @@ async function create(req: Request, res: Response) {
       email: form[2],
       firstName: form[0],
       lastName: form[1],
-      role: Role.ADMIN
     },
   });
 

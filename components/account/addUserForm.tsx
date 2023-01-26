@@ -34,7 +34,7 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
       newUser &&
       newUser.firstName &&
       newUser.lastName &&
-      newUser.email &&
+      newUser.email
     ) {
       const res = await fetch("/api/user/create-peer-user", {
         method: "POST",

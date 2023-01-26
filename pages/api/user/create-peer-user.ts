@@ -1,4 +1,3 @@
-import { Role } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 

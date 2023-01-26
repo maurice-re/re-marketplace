@@ -1,5 +1,4 @@
 "use client";
-import { Role } from "@prisma/client";
 import { FormEvent, useState } from "react";
 import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
 
@@ -7,15 +6,13 @@ type NewUser = {
   email: string;
   firstName: string;
   lastName: string;
-  role: Role;
   companyId: string;
   newCompanyName: string;
   newCompanyCustomerId: string;
 };
 
-export default function AddUserForm({ user }: { user: UserCompany }) {
-  const [form, setForm] = useState<Record<string, string | Role>>({
-    role: Role.USER,
+export default function AddUserForm({ user }: { user: UserCompany; }) {
+  const [form, setForm] = useState<Record<string, string>>({
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -52,7 +49,7 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
           value={form["email"] ?? ""}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
-        <label className="text-re-gray-text">Role</label>
+        {/* <label className="text-re-gray-text">Role</label>
         <select
           id="role"
           className="w-full text-white bg-re-black bg-opacity-30 rounded-md p-2 mb-2"
@@ -65,7 +62,7 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
           <option value={Role.ADMIN} key={Role.ADMIN}>
             Admin
           </option>
-        </select>
+        </select> */}
 
         <button
           disabled={!user}
