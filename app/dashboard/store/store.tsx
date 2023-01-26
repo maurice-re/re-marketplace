@@ -1,6 +1,14 @@
 "use client";
 
-import { Company, Location, LocationType, Product, Sku } from "@prisma/client";
+import {
+  Company,
+  Location,
+  LocationType,
+  Penalty,
+  Product,
+  Sku,
+  TrackingType,
+} from "@prisma/client";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
@@ -114,9 +122,11 @@ export default function StorePage({
       displayName: null,
       line1: formElements[2].value,
       line2: formElements[3].value,
+      penalty: Penalty.NONE,
       trackingLocation: "",
       shippingName: formElements[0].value,
       state: formElements[6].value,
+      trackingType: TrackingType.NONE,
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
       tagId: "",
@@ -168,7 +178,7 @@ export default function StorePage({
               </div>
             )}
           </div>
-          <div className="flex flex-col w-full re-gray-100 font-theinhardt-300 text-sm mt-1">
+          <div className="flex flex-col w-full font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
             <h2 className="leading-none">
               {location.city + ", " + location.country + ", " + location.zip}
@@ -187,8 +197,9 @@ export default function StorePage({
         key={"location" + info.step}
       >
         <div
-          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-            } mb-2 w-full`}
+          className={`h-0.5 ${
+            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+          } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -200,12 +211,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
-        {/* <head>
-          <title>Store</title>
-          <meta name="store" content="shop for products" />
-          <link rel="icon" href="/favicon.ico" />
-        </head> */}
+      <div className="h-screen bg-re-black flex">
         <input
           type="checkbox"
           id="newLocation-modal"
@@ -237,8 +243,9 @@ export default function StorePage({
                   Close
                 </button>
                 <button
-                  className={`btn btn-outline btn-accent ${loading ? "loading" : ""
-                    }`}
+                  className={`btn btn-outline btn-accent ${
+                    loading ? "loading" : ""
+                  }`}
                   type="submit"
                 >
                   Add
@@ -248,9 +255,6 @@ export default function StorePage({
           </div>
         </div>
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -328,10 +332,10 @@ export default function StorePage({
               <h3 className="text-white text-lg leading-none">
                 {product.name}
               </h3>
-              <h3 className="mt-2 leading-none text-re-gray-100">
+              <h3 className="mt-2 leading-none text-re-gray-text">
                 {product.materials}
               </h3>
-              <h3 className="mt-1 leading-none text-re-gray-100">
+              <h3 className="mt-1 leading-none text-re-gray-text">
                 {product.sizes.split(", ").join(" | ")}
               </h3>
             </div>
@@ -372,8 +376,9 @@ export default function StorePage({
         key={"sku" + info.step}
       >
         <div
-          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-            } mb-2 w-full`}
+          className={`h-0.5 ${
+            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+          } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -385,16 +390,8 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
-        {/* <head>
-        <title>Store</title>
-        <meta name="store" content="shop for products" />
-        <link rel="icon" href="/favicon.ico" />
-      </head> */}
+      <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt-300">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -442,7 +439,6 @@ export default function StorePage({
     const sizes = product.sizes.split(", ");
     const materials = product.materials.split(", ");
     const colors = product.colors.split(", ");
-    console.log(colors);
 
     breadcrumbsInfo[0].passed = true;
     breadcrumbsInfo[1].passed = true;
@@ -454,8 +450,9 @@ export default function StorePage({
         key={"product" + info.step}
       >
         <div
-          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-            } mb-2 w-full`}
+          className={`h-0.5 ${
+            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+          } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -467,7 +464,7 @@ export default function StorePage({
     ));
 
     return (
-      <div className="h-screen bg-black flex">
+      <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
           {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
             <h1 className="font-theinhardt text-lg">Shop</h1>
@@ -513,7 +510,7 @@ export default function StorePage({
                         {`$${getPriceFromTable(
                           sku.priceTable,
                           quantity == "" ? 1 : quantity
-                        )}`}
+                        ).toFixed(2)}`}
                       </h2>
                       <div className="flex gap-2 text-white text-md items-center">
                         <svg
@@ -541,7 +538,7 @@ export default function StorePage({
                       <h2 className="text-white text-lg mt-4 mb-2">
                         Description
                       </h2>
-                      <h2 className="text-re-gray-100 text-lg leading-tight">
+                      <h2 className="text-re-gray-text text-lg leading-tight">
                         {product.description && product.description !== ""
                           ? product.description
                           : "A carefully-crafted product available in various colours and sizes. Leak-proof and sustainably-sourced to help you fulfill all your packaging needs responsibly."}
@@ -551,10 +548,11 @@ export default function StorePage({
                         {sizes.map((size) => (
                           <button
                             key={size}
-                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${sku.size == size
-                              ? "border-re-green-500"
-                              : "border-re-gray-300"
-                              }`}
+                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${
+                              sku.size == size
+                                ? "border-re-green-500"
+                                : "border-re-gray-300"
+                            }`}
                             onClick={() => changeSize(size)}
                           >
                             {size}
@@ -566,13 +564,15 @@ export default function StorePage({
                         {colors.map((color) => (
                           <button
                             key={color}
-                            className={`rounded-full w-8 h-8 border-1/2 mr-2 ${color === "green"
-                              ? "bg-re-product-green"
-                              : "bg-re-product-gray"
-                              } ${sku.color == color
+                            className={`rounded-full w-8 h-8 border-1/2 mr-2 ${
+                              color === "green"
+                                ? "bg-re-product-green"
+                                : "bg-re-product-gray"
+                            } ${
+                              sku.color == color
                                 ? "border-white"
                                 : "border-none"
-                              }`}
+                            }`}
                             onClick={() => changeColor(color)}
                           ></button>
                         ))}
@@ -582,10 +582,11 @@ export default function StorePage({
                         {materials.map((material) => (
                           <button
                             key={material}
-                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${sku.material == material
-                              ? "border-re-green-500"
-                              : "border-re-gray-300"
-                              }`}
+                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${
+                              sku.material == material
+                                ? "border-re-green-500"
+                                : "border-re-gray-300"
+                            }`}
                           >
                             {material}
                           </button>
@@ -601,18 +602,18 @@ export default function StorePage({
                         className="rounded-md"
                       />
                       <div className="flex  items-center justify-center mt-4 font-theinhardt-300 text-md text-white">
-                        <div className="flex py-2 w-1/5 rounded-l-md justify-center h-full items-center border-re-blue border-1/2">
+                        <div className="flex py-2 w-1/5 rounded-l-md justify-center h-full items-center border-re-blue-500 border-1/2">
                           <input
                             type="number"
                             placeholder="0"
-                            className="input w-full pr-1 items-center h-full text-center bg-black focus:outline-none"
+                            className="input w-full pr-1 items-center h-full text-center bg-re-black focus:outline-none"
                             required
                             value={quantity}
                             onChange={(e) => setQuantity(e.target.value)}
                           />
                         </div>
                         <button
-                          className="bg-re-blue border-re-blue border-1/2 w-4/5 h-full rounded-r-md text-lg"
+                          className="bg-re-blue-500 border-re-blue-500 border-1/2 w-4/5 h-full rounded-r-md text-lg"
                           onClick={handleAddToCart}
                           disabled={quantity === ""}
                         >
@@ -657,10 +658,19 @@ export default function StorePage({
                       </div>
                       <div className="flex gap-2 text-white text-md items-center justify-center mt-1">
                         <h2>or go to checkout</h2>
-                        <svg transform="scale(0.8)" width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M11.045 2.4593L16.5858 8H1C0.44771 8 0 8.4478 0 9C0 9.5523 0.44771 10 1 10H16.5858L11.045 15.5408C10.6545 15.9313 10.6545 16.5645 11.045 16.955C11.4356 17.3455 12.0687 17.3455 12.4592 16.955L19.7071 9.7072C20.0976 9.3166 20.0976 8.6835 19.7071 8.2929L12.4592 1.04509C12.2633 0.849151 12.0063 0.751521 11.7495 0.752201C11.6864 0.752371 11.6233 0.758471 11.5611 0.770501C11.372 0.807111 11.1915 0.898641 11.045 1.04509C10.6545 1.43561 10.6545 2.06878 11.045 2.4593Z" fill="#58FEC4" />
+                        <svg
+                          transform="scale(0.8)"
+                          width="20"
+                          height="18"
+                          viewBox="0 0 20 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11.045 2.4593L16.5858 8H1C0.44771 8 0 8.4478 0 9C0 9.5523 0.44771 10 1 10H16.5858L11.045 15.5408C10.6545 15.9313 10.6545 16.5645 11.045 16.955C11.4356 17.3455 12.0687 17.3455 12.4592 16.955L19.7071 9.7072C20.0976 9.3166 20.0976 8.6835 19.7071 8.2929L12.4592 1.04509C12.2633 0.849151 12.0063 0.751521 11.7495 0.752201C11.6864 0.752371 11.6233 0.758471 11.5611 0.770501C11.372 0.807111 11.1915 0.898641 11.045 1.04509C10.6545 1.43561 10.6545 2.06878 11.045 2.4593Z"
+                            fill="#58FEC4"
+                          />
                         </svg>
-
                       </div>
                     </div>
                   </div>
@@ -675,7 +685,7 @@ export default function StorePage({
   }
 
   return (
-    <div className=" h-screen bg-black flex">
+    <div className=" h-screen bg-re-black flex">
       <head>
         <title>Store</title>
         <meta name="store" content="shop for products" />

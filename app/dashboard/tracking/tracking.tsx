@@ -1,5 +1,5 @@
-'use client';
-import { Action, Settings, Sku, User } from '@prisma/client';
+"use client";
+import { Action, Event, Settings, Sku } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -9,10 +9,9 @@ import {
   PointElement,
   Title,
   Tooltip,
-} from 'chart.js';
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import SettingsForm from './settingsForm';
+} from "chart.js";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Line } from "react-chartjs-2";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -29,16 +28,9 @@ import {
   getReuseRate,
   getYearsForMonthlyDropdown,
   sortByDate,
-  UserWithSettings,
-} from '../../../utils/tracking/trackingUtils';
-import useSWR from 'swr';
-import { UserSettings } from './page';
-
-const fetcher = (url: string) =>
-  fetch(url, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-  }).then((res) => res.json());
+} from "../../../utils/tracking/trackingUtils";
+import { UserSettings } from "./page";
+import SettingsForm from "./settingsForm";
 
 ChartJS.register(
   CategoryScale,
@@ -47,7 +39,7 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 );
 
 type Statistic = {
@@ -59,40 +51,50 @@ type Statistic = {
 
 const monthsInYear = getMonthsInYear();
 
-function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo: boolean; }) {
+function Tracking({
+  user,
+  skus,
+  demo,
+  events,
+}: {
+  user: UserSettings;
+  skus: Sku[];
+  demo: boolean;
+  events: Event[];
+}) {
   // "Dummy" data that is updated on changes
-  let baseData = {
+  const baseData = {
     labels: monthsInYear,
     datasets: [
       {
-        label: 'Borrows',
+        label: "Borrows",
         data: [0],
-        borderColor: 'rgb(138, 254, 213)',
-        backgroundColor: 'rgba(138, 254, 213, 0.5)',
+        borderColor: "rgb(84, 89, 234)",
+        backgroundColor: "rgba(84, 89, 234, 0.5)",
+        fill: true,
       },
       {
-        label: 'Returns',
+        label: "Returns",
         data: [0],
-        borderColor: 'rgb(61, 177, 137)',
-        backgroundColor: 'rgba(61, 177, 137, 0.5)',
+        borderColor: "rgb(0, 222, 163)",
+        backgroundColor: "rgba(0, 222, 163, 0.5)",
+        fill: true,
       },
     ],
   };
 
-  const [settings, setSettings] = useState<Settings>(user?.company.settings!);
-  const [graphTimePeriod, setGraphTimePeriod] = useState<string>('monthly');
-  const [monthYearForDaily, setMonthYearForDaily] = useState<string>('');
-  const [yearForMonthly, setYearForMonthly] = useState<string>('');
+  const [settings, setSettings] = useState<Settings>(
+    user?.company.settings ?? ({} as Settings)
+  );
+  const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
+  const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
+  const [yearForMonthly, setYearForMonthly] = useState<string>("");
   const [latestMonth, setLatestMonth] = useState<number>(0);
   const [latestYear, setLatestYear] = useState<number>(0);
-  const [
-    defaultItemsBorrowedMonthly,
-    setDefaultItemsBorrowedMonthly,
-  ] = useState([0]);
-  const [
-    defaultItemsReturnedMonthly,
-    setDefaultItemsReturnedMonthly,
-  ] = useState([0]);
+  const [defaultItemsBorrowedMonthly, setDefaultItemsBorrowedMonthly] =
+    useState([0]);
+  const [defaultItemsReturnedMonthly, setDefaultItemsReturnedMonthly] =
+    useState([0]);
   const [defaultItemsBorrowedDaily, setDefaultItemsBorrowedDaily] = useState([
     0,
   ]);
@@ -101,40 +103,44 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
   ]);
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
-  const { data: eventData } = useSWR(
-    `/api/tracking/get-events?companyId=${user?.companyId}`,
-    fetcher,
-  );
-  let events = eventData?.events;
-
   const [data, setData] = useState(baseData);
 
   useEffect(() => {
     if (events && events.length > 0) {
       const sortedEvents = sortByDate(events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
-      setMonthYearForDaily(latestMonthYear.map(String).join(','));
+      setMonthYearForDaily(latestMonthYear.map(String).join(","));
       setYearForMonthly(latestMonthYear[1].toString());
       setLatestMonth(latestMonthYear[0]);
       setLatestYear(latestMonthYear[1]);
 
-      const borrowedMonthly = getItemsByMonth(latestYear, events, Action.BORROW);
-      const returnedMonthly = getItemsByMonth(latestYear, events, Action.RETURN);
+      const borrowedMonthly = getItemsByMonth(
+        latestYear,
+        events,
+        Action.BORROW
+      );
+      const returnedMonthly = getItemsByMonth(
+        latestYear,
+        events,
+        Action.RETURN
+      );
 
-      let selectedData = {
+      const selectedData = {
         labels: monthsInYear,
         datasets: [
           {
-            label: 'Borrows',
+            label: "Borrows",
             data: [0],
-            borderColor: 'rgb(138, 254, 213)',
-            backgroundColor: 'rgba(138, 254, 213, 0.5)',
+            borderColor: "rgb(84, 89, 234)",
+            backgroundColor: "rgba(84, 89, 234, 0.5)",
+            fill: true,
           },
           {
-            label: 'Returns',
+            label: "Returns",
             data: [0],
-            borderColor: 'rgb(61, 177, 137)',
-            backgroundColor: 'rgba(61, 177, 137, 0.5)',
+            borderColor: "rgb(0, 222, 163)",
+            backgroundColor: "rgba(0, 222, 163, 0.5)",
+            fill: true,
           },
         ],
       };
@@ -152,14 +158,14 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
         latestYear,
         daysInMonth,
         events,
-        Action.BORROW,
+        Action.BORROW
       );
       const returnedDaily = getItemsByDay(
         latestMonth,
         latestYear,
         daysInMonth,
         events,
-        Action.RETURN,
+        Action.RETURN
       );
 
       setDefaultItemsBorrowedDaily(borrowedDaily);
@@ -179,34 +185,33 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
     );
   }
 
-  const handleTimePeriodChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const newGraphTimePeriod = event.target.value;
-    setGraphTimePeriod(newGraphTimePeriod);
+  const handleTimePeriodChange = (newTimePeriod: string) => {
+    setGraphTimePeriod(newTimePeriod);
 
-    if (newGraphTimePeriod === 'monthly') {
+    if (newTimePeriod === "monthly") {
       baseData.labels = monthsInYear;
       baseData.datasets[0].data = defaultItemsBorrowedMonthly;
       baseData.datasets[1].data = defaultItemsReturnedMonthly;
-    } else if (newGraphTimePeriod === 'daily') {
+    } else if (newTimePeriod === "daily") {
       baseData.labels = defaultDaysInMonth.map(String);
       baseData.datasets[0].data = defaultItemsBorrowedDaily;
       baseData.datasets[1].data = defaultItemsReturnedDaily;
     }
 
     // Set to default values
-    setMonthYearForDaily(latestMonth.toString() + ',' + latestYear.toString());
+    setMonthYearForDaily(latestMonth.toString() + "," + latestYear.toString());
     setYearForMonthly(latestYear.toString());
 
     setData(baseData);
   };
 
   const handleMonthYearForDailyChange = (
-    event: ChangeEvent<HTMLSelectElement>,
+    event: ChangeEvent<HTMLSelectElement>
   ) => {
     const newMonthYearForDaily = event.target.value;
     setMonthYearForDaily(newMonthYearForDaily);
 
-    const monthYear = newMonthYearForDaily.split(',');
+    const monthYear = newMonthYearForDaily.split(",");
     const month = parseInt(monthYear[0]);
     const year = parseInt(monthYear[1]);
 
@@ -216,14 +221,14 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
       year,
       daysInMonth,
       events,
-      Action.BORROW,
+      Action.BORROW
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
       events,
-      Action.RETURN,
+      Action.RETURN
     );
     baseData.labels = daysInMonth.map(String);
     baseData.datasets[0].data = itemsBorrowedDaily;
@@ -233,15 +238,15 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
   };
 
   const handleYearForMonthlyChange = (
-    event: ChangeEvent<HTMLSelectElement>,
+    event: ChangeEvent<HTMLSelectElement>
   ) => {
     const newYearForMonthly = event.target.value;
     setYearForMonthly(newYearForMonthly);
 
     const year = parseInt(newYearForMonthly);
 
-    let itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW);
-    let itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN);
+    const itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW);
+    const itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN);
 
     baseData.datasets[0].data = itemsBorrowedMonthly;
     baseData.datasets[1].data = itemsReturnedMonthly;
@@ -251,46 +256,52 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
 
   function getFormattedMonthYear(monthYear: string): string {
     // 6,2022 -> June 2022
-    const monthYearArr = monthYear.split(',');
+    const monthYearArr = monthYear.split(",");
     const formattedMonthYear =
       monthsInYear[parseInt(monthYearArr[0]) - 1] +
-      ' ' +
+      " " +
       parseInt(monthYearArr[1]);
     return formattedMonthYear;
   }
 
-  let stats: Statistic[] = [];
+  const stats: Statistic[] = [];
   stats.push({
-    title: 'In-use',
+    title: "Items In Use",
     value: getItemsInUse(events),
-    info: 'currently borrowed',
+    info: "currently borrowed",
     isPercent: false,
   });
   stats.push({
-    title: 'Used',
+    title: "Used",
     value: getLifetimeUses(events),
-    info: 'lifetime borrows',
+    info: "lifetime borrows",
     isPercent: false,
   });
   stats.push({
-    title: 'Reuse Rate',
+    title: "Reuse Rate",
     value: getReuseRate(events),
-    info: '(items used more than once) ÷ (items used)',
+    info: "(items used more than once) ÷ (items used)",
     isPercent: true,
   });
   stats.push({
-    title: 'Return Rate',
+    title: "Return Rate",
     value: getReturnRate(events),
-    info: '(items returned) ÷ (items borrowed)',
+    info: "(items returned) ÷ (items borrowed)",
     isPercent: true,
   });
   stats.push({
-    title: 'Avg Lifecycle',
+    title: "Avg. Days Borrowed",
     value: getAvgDaysBetweenBorrowAndReturn(
       events,
-      settings?.borrowReturnBuffer ?? undefined,
+      settings?.borrowReturnBuffer ?? undefined
     ),
-    info: 'days between borrow and return',
+    info: "days between borrow and return",
+    isPercent: false,
+  });
+  stats.push({
+    title: "Number of Users",
+    value: 61,
+    info: "unique users",
     isPercent: false,
   });
 
@@ -304,18 +315,17 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
   const allMonthYears = getMonthYearsForDailyDropdown(events);
   const allYears = getYearsForMonthlyDropdown(events);
 
-  let options = {
+  const options = {
     responsive: true,
+    scales: {
+      y: {
+        stacked: true,
+      },
+    },
     plugins: {
       legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text:
-          graphTimePeriod === 'monthly'
-            ? `Month-by-Month for ${yearForMonthly}`
-            : `Day-by-Day for ${getFormattedMonthYear(monthYearForDaily)}`,
+        display: false,
+        position: "top" as const,
       },
     },
   };
@@ -324,97 +334,131 @@ function Tracking({ user, skus, demo }: { user: UserSettings; skus: Sku[]; demo:
     // TODO(Suhana): Create more sub-components here
     <div>
       {/* <h1 className="ml-1 mb-8 font-theinhardt text-3xl">Tracking</h1> */}
-      <h1 className="ml-1 font-theinhardt text-2xl">
-        Lifetime Statistics
-      </h1>
-      <div className="flex w-full items-center justify-between mt-4 mb-8">
+      <div className="flex items-center justify-between mt-4 mb-10 w-full">
         {stats.map((stat) => (
           <div
             key={stat.title}
-            className="tooltip tooltip-bottom !pb-2"
+            className="tooltip tooltip-bottom !pb-1 w-48 2xl:w-56"
             data-tip={stat.info}
           >
-            <button className=" flex items-center items-justify flex-col w-48 2xl:w-64 border-2 rounded-xl py-8 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:border-re-green-300">
-              <div className="font-thin text-md uppercase tracking-wide leading-none">
+            <div className=" flex items-start items-justify flex-col bg-re-table-odd rounded-md py-4 pl-3 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:bg-re-green-500 text-white hover:text-black">
+              <div className="font-thin text-lg tracking-wide leading-none">
                 {stat.title}
               </div>
-              <div className="font-theinhardt text-4xl mt-2 text-re-green-500">
-                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
-                  }`}
+              <div className="font-theinhardt text-4xl mt-2">
+                {`${Math.round(stat.value * 10) / 10}${
+                  stat.isPercent ? `%` : ``
+                }`}
               </div>
-            </button>
+            </div>
           </div>
         ))}
       </div>
-      <h1 className="ml-1 py-2 font-theinhardt text-2xl">
-        Borrows and Returns
-      </h1>
+
       <div className="flex w-full gap-8">
-        <div className="flex-col w-1/6">
-          <div onChange={handleTimePeriodChange}>
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <span className="label-text">Monthly</span>
-                <input
-                  type="radio"
-                  name="radio-6"
-                  value="monthly"
-                  className="radio checked:bg-re-green-500"
-                  defaultChecked
-                />
-              </label>
-            </div>
-            <div className="form-control">
-              <label className="label cursor-pointer">
-                <span className="label-text">Daily</span>
-                <input
-                  type="radio"
-                  name="radio-6"
-                  value="daily"
-                  className="radio checked:bg-re-green-500"
-                />
-              </label>
-            </div>
-          </div>
-          {graphTimePeriod === 'monthly' && (
-            <div className="form-control w-full max-w-xs mt-2">
-              <select
-                className="select w-full max-w-xs"
-                value={yearForMonthly}
-                onChange={handleYearForMonthlyChange}
-              >
-                {allYears.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          {graphTimePeriod === 'daily' && (
-            <div className="form-control w-full max-w-xs mt-2">
-              <select
-                className="select w-full max-w-xs"
-                value={monthYearForDaily}
-                onChange={handleMonthYearForDailyChange}
-              >
-                {allMonthYears.map((monthYear) => (
-                  <option key={monthYear} value={monthYear}>
-                    {getFormattedMonthYear(monthYear)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+        <div className="flex w-1/3 h-148 overflow-scroll border border-re-gray-300 rounded-md">
+          <table className="w-full h-min font-theinhardt-300">
+            <thead>
+              <tr className="text-re-gray-text text-lg text-left p-4">
+                <th className="py-2 pl-2 sticky top-0 bg-re-black">SKU</th>
+                <th className="sticky top-0 bg-re-black">Action</th>
+                <th className="sticky top-0 bg-re-black">Location</th>
+                <th className="sticky top-0 bg-re-black">Company</th>
+              </tr>
+            </thead>
+            <tbody className="text-left">
+              {events.map((event) => (
+                <tr
+                  key={event.id}
+                  className="even:bg-re-table-even odd:bg-re-table-odd hover:bg-re-table-hover"
+                >
+                  <td className="py-3 pl-2">{event.skuId}</td>
+                  <td>
+                    {event.action[0] + event.action.slice(1).toLowerCase()}
+                  </td>
+                  <td>{event.locationId ?? "Singapore"}</td>
+                  <td>Salad Stop!</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className="w-5/6">
-          <Line options={options} data={data} />
+
+        <div className="w-2/3 flex-col bg-re-dark-green-300 border h-min rounded-md border-re-gray-300 p-4">
+          <div className="flex items-center h-min pb-4">
+            <h2 className="text-lg mr-4">Borrows and Returns</h2>
+            <button
+              className={`mr-2 text-sm py-1 px-2 rounded ${
+                graphTimePeriod === "monthly"
+                  ? "bg-re-gray-active"
+                  : "bg-re-gray-button"
+              }`}
+              onClick={() => handleTimePeriodChange("monthly")}
+            >
+              Monthly
+            </button>
+            <button
+              className={`mr-2 text-sm py-1 px-2 rounded ${
+                graphTimePeriod === "daily"
+                  ? "bg-re-gray-active"
+                  : "bg-re-gray-button"
+              }`}
+              onClick={() => handleTimePeriodChange("daily")}
+            >
+              Daily
+            </button>
+            {graphTimePeriod === "monthly" && (
+              <div className="form-control text-sm">
+                <select
+                  className="py-[6px] px-2 bg-re-gray-button rounded"
+                  value={yearForMonthly}
+                  onChange={handleYearForMonthlyChange}
+                >
+                  {allYears.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {graphTimePeriod === "daily" && (
+              <div className="form-control text-sm">
+                <select
+                  className="py-[6px] px-2 bg-re-gray-button rounded"
+                  value={monthYearForDaily}
+                  onChange={handleMonthYearForDailyChange}
+                >
+                  {allMonthYears.map((monthYear) => (
+                    <option key={monthYear} value={monthYear}>
+                      {getFormattedMonthYear(monthYear)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="flex-grow"></div>
+            <div className="w-5 h-5 rounded-full bg-re-graph-blue mr-1"></div>
+            <div className="mr-2 ">Borrows</div>
+            <div className="w-5 h-5 rounded-full bg-re-graph-green mr-1"></div>
+            <div>Returns</div>
+          </div>
+
+          <div className="h-120">
+            <Line options={options} data={data} />
+          </div>
         </div>
       </div>
-      {!demo && (<><h1 className="pt-8 ml-1 font-theinhardt text-2xl">Configure Settings</h1>
-        <div className="flex w-full gap-8">
-          <SettingsForm settings={settings} setSettings={setSettings} />
-        </div></>)}
+      {!demo && (
+        <>
+          <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
+            Configure Settings
+          </h1>
+          <div className="flex w-full gap-8">
+            <SettingsForm settings={settings} setSettings={setSettings} />
+          </div>
+        </>
+      )}
       <div className="py-6"></div>
     </div>
   ) : (

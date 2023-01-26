@@ -107,10 +107,8 @@ export default function CheckoutForm({
         },
         redirect: "if_required",
       });
-      console.log(paymentIntent);
 
       if (error) {
-        console.log("error", error);
         // This will only be reached if there is a payment error
         if (error.type === "card_error" || error.type === "validation_error") {
           hasError = true;

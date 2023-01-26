@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { logApi } from "../../../utils/api/logging";
+import { logApi } from "../../../utils/apiUtils";
 
 async function getEvents(req: Request, res: Response) {
   const { companyId } = req.query;

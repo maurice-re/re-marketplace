@@ -5,7 +5,7 @@ import prisma from "../../constants/prisma";
 async function handler(req: Request, res: Response) {
   const { location, locationId }: { location: Location; locationId: string } =
     req.body;
-  const { companyId, withItems } = req.query;
+  const { companyId, id, withItems, hardware } = req.query;
 
   if (req.method == "POST") {
     const newLocation = await prisma.location.create({
@@ -49,6 +49,17 @@ async function handler(req: Request, res: Response) {
       });
       res.status(200).send({ locations: locations });
     }
+  }
+  if (req.method == "GET" && typeof id == "string") {
+    const location = await prisma.location.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        hardware: !!hardware,
+      }
+    });
+    res.status(200).send({ location: location });
   }
 }
 

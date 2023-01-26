@@ -63,7 +63,7 @@ function QuickOrder({
   }
 
   function createOrderString(): string {
-    let orderString = location == "New Location" ? "new" : location;
+    const orderString = location == "New Location" ? "new" : location;
     return skuIdQuantity.reduce((orders, tuple) => {
       const [sku, quantity] = tuple;
       return orders + "_" + [sku.id, quantity].join("~");
@@ -71,14 +71,12 @@ function QuickOrder({
   }
 
   return (
-    <div className="flex flex-col mx-1 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-2xl items-start">
-      <h1 className=" text-re-green-500 font-theinhardt text-2xl mb-2">
-        Quick Order
-      </h1>
-      <div className="h-px bg-white mb-4 w-full" />
-      <div className="flex justify-between w-full gap-4">
+    <div className="flex flex-col bg-re-dark-green-300 border border-re-gray-300 rounded-md items-start">
+      <h1 className=" font-theinhardt text-2xl p-4">Quick Order</h1>
+      <div className="h-px bg-re-gray-300 mb-4 w-full" />
+      <div className="flex justify-between w-full gap-4 p-4">
         <div
-          className={`grid gap-4 h-96 overflow-y-auto w-full pr-1 items-start ${
+          className={`grid gap-2 h-96 overflow-y-auto w-full pr-1 items-start ${
             selected.length == 0
               ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
               : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
@@ -130,7 +128,7 @@ function QuickOrder({
                   </div>
                 </div>
                 <div className="text-sm font-theinhardt text-center">
-                  {`\$${getPriceFromTable(
+                  {`$${getPriceFromTable(
                     sku.priceTable,
                     getQuantityOfSku(sku.id)
                   )}`}
@@ -140,15 +138,15 @@ function QuickOrder({
                     skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
                   }
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
-                  className="bg-re-gray-500 rounded-lg py-0.5 bg-opacity-70 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
+                  className="bg-re-black rounded py-1 bg-opacity-40 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
                 />
               </div>
             ))}
-            <div className="h-px mb-3 bg-white bg-opacity-70" />
+            <div className="h-px mb-3 bg-re-gray-300 bg-opacity-70" />
             <div className="flex justify-between mb-2">
               <div>Total:</div>
               <div>
-                {`\$${skuIdQuantity
+                {`$${skuIdQuantity
                   .reduce(
                     (prev, [sku, quantity]) =>
                       calculatePriceFromCatalog(
@@ -161,10 +159,10 @@ function QuickOrder({
                   .toFixed(2)}`}
               </div>
             </div>
-            <div className="flex justify-between mb-4">
+            <div className="flex justify-between mb-4 items-center">
               <div>Location:</div>
               <select
-                className="bg-re-gray-500 bg-opacity-70 text-sm rounded enabled:border-black ml-2"
+                className="bg-re-black bg-opacity-40 text-sm py-2 px-px rounded enabled:border-black ml-2"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               >
@@ -185,7 +183,7 @@ function QuickOrder({
               }}
               // as={`/checkout/${new Date().getTime()}`}
             >
-              <button className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black">
+              <button className="px-3 py-2 bg-re-purple-500 rounded hover:bg-re-purple-600 w-full">
                 Buy now
               </button>
             </Link>

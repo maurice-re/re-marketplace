@@ -22,9 +22,9 @@ function Cart({
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">
         Shopping Cart
       </h1>
-      <div className="flex flex-col gap-4 text-white mt-4 overflow-y-auto flex-grow-0 mb-4">
-        {orderString != "" &&
-          orderString.split("*").map((orderForLocation, index) => {
+      {orderString != "" && (
+        <div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
+          {orderString.split("*").map((orderForLocation, index) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
             const location = locations.find(
@@ -74,7 +74,11 @@ function Cart({
                         </div>
                         <div className="w-1/4">
                           <h2>
-                            {"$" + getPriceFromTable(sku.priceTable, quantity)}
+                            {"$" +
+                              getPriceFromTable(
+                                sku.priceTable,
+                                quantity
+                              ).toFixed(2)}
                           </h2>
                         </div>
                       </div>
@@ -84,7 +88,8 @@ function Cart({
               </div>
             );
           })}
-      </div>
+        </div>
+      )}
       {orderString == "" && (
         <div className="flex items-center flex-col 4 my-auto">
           <svg
@@ -136,7 +141,7 @@ function Cart({
           </div>
         )}
         <div className="px-6 font-theinhardt-300 text-lg flex items-center justify-center w-full flex-col border-t-1/2 border-re-gray-300 py-4 ">
-          <div className="flex items-center w-full justify-between mb-2">
+          <div className="flex items-center w-full justify-between mb-1">
             <h2 className="font-theinhardt-300 text-left text-white">
               Subtotal
             </h2>
@@ -144,11 +149,13 @@ function Cart({
               ${getOrderStringTotal(orderString, [], skus ?? []).toFixed(2)}
             </h2>
           </div>
-          <h2 className="text-re-gray-300 text-sm leading-none mb-6 w-full">
+          <h2 className="text-re-gray-300 text-sm leading-none w-full">
             Shipping and taxes calculated at checkout.
           </h2>
           <Link
-            className={`w-full ${orderString == "" && "pointer-events-none"}`}
+            className={`w-full my-4 ${
+              orderString == "" && "pointer-events-none"
+            }`}
             href={{
               pathname: "/checkout",
               query: {
@@ -160,13 +167,41 @@ function Cart({
               className={`${
                 orderString === ""
                   ? "text-re-gray-300 border-1/2 border-re-gray-300"
-                  : "bg-re-blue"
+                  : "bg-re-blue-500"
               }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               disabled={orderString == ""}
             >
               Checkout
             </button>
           </Link>
+          <div
+            className={`${
+              orderString === "" ? "text-re-gray-300" : "text-white"
+            }  text-sm w-full flex justify-center items-center`}
+          >
+            <h2 className="text-center">Or,</h2>
+            <Link
+              className={` ${orderString == "" && "pointer-events-none"}`}
+              href={{
+                pathname: "/po",
+                query: {
+                  orderString: orderString,
+                },
+              }}
+            >
+              <button
+                disabled={orderString == ""}
+                className={`${
+                  orderString === ""
+                    ? "decoration-re-gray-300"
+                    : "decoration-re-blue"
+                } decoration-1 underline underline-offset-2 px-1`}
+              >
+                generate
+              </button>
+            </Link>
+            <h2 className="text-center mr-1">purchase order</h2>
+          </div>
         </div>
       </div>
     </div>

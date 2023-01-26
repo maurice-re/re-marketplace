@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
-import { logApi } from "../../../utils/api/logging";
+import { logApi } from "../../../utils/apiUtils";
 
 async function editSettings(req: Request, res: Response) {
   const { companyId, borrowReturnBuffer }: { companyId: string, borrowReturnBuffer: number; } = req.body;

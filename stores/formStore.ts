@@ -1,5 +1,5 @@
 import { Product, Sku } from "@prisma/client";
-import create from "zustand";
+import { create } from "zustand";
 import { calculatePriceFromCatalog } from "../utils/prisma/dbUtils";
 
 
@@ -43,7 +43,7 @@ interface FormStore {
     removeLocation: (location: string) => void;
     setCustomerId: (id: string) => void;
     skipToCheckout: (checkout: string) => void;
-  };
+  }
 
   export const useFormStore = create<FormStore>((set, get) => ({
     locations: [],
@@ -57,12 +57,10 @@ interface FormStore {
     skuCatalog: [],
     activateRoute: (route: string, city: string) =>
         set((state) => {
-            console.log(city);
-            console.log(route);
+
             const index = state.routes.findIndex(
                 (r) => r.name.startsWith("form/" + route) && r.active == false && r.city == city
                 );
-                console.log(index);
             if (index > -1) {
                 const newRoutes = state.routes.map((r, i) => {
                     if (i == index) {
@@ -211,8 +209,8 @@ interface FormStore {
     skipToCheckout: (checkout: string) =>
         set((state) => {
             const separated = checkout.split("*");
-            let newLocations: string[] = [];
-            let newCart: CartOrder[] = [];
+            const newLocations: string[] = [];
+            const newCart: CartOrder[] = [];
 
             separated.forEach((itemOrder) => {
                 const [location, quantity, size] = itemOrder.split("^");

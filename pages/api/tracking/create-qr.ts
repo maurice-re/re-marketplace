@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { nanoid } from "../../../utils/api/apiUtils";
+import { nanoid } from "../../../utils/apiUtils";
 
 
 async function createQr(req: Request, res: Response) {

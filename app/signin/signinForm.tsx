@@ -23,7 +23,7 @@ export default function SignInForm({ emails }: { emails: string[] }) {
   }
 
   return (
-    <div className="flex flex-col bg-re-dark-green-400 border-[0.5px] border-re-gray-500 rounded min-w-56 w-1/4">
+    <div className="flex flex-col bg-re-dark-green-400 border-[0.5px] border-re-gray-500 rounded min-w-56 lg:w-1/4">
       <h1 className="mx-4 my-5 text-xl">Sign in</h1>
       <div className="h-0.5 w-full bg-re-gray-500"></div>
       <form className="flex flex-col mx-4 text-lg my-5" onSubmit={handleSignIn}>
@@ -32,7 +32,7 @@ export default function SignInForm({ emails }: { emails: string[] }) {
           <input
             type={"email"}
             required
-            className="rounded bg-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
+            className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           ></input>

@@ -11,7 +11,7 @@ export default async function Page() {
   });
 
   return (
-    <div className="w-screen h-screen bg-black flex items-center justify-center text-white">
+    <div className="w-screen h-screen bg-re-black flex items-center justify-center text-white">
       <ReLogo />
       <main className="flex flex-col w-full container mx-auto h-full justify-start py-3 items-start pr-5">
         <div className="ml-1 font-theinhardt text-4xl pt-10 text-left">

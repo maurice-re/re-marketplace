@@ -2,14 +2,14 @@ import { ReactNode } from "react";
 
 export function FullContainer({ children }: { children: ReactNode }) {
   return (
-    <div className="flex my-4 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-xl w-full">
+    <div className="flex px-4 py-3 bg-re-dark-green-300 border border-re-gray-300 rounded-md w-full">
       {children}
     </div>
   );
 }
 export function HalfContainer({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col my-4 px-4 py-4 bg-re-gray-500 bg-opacity-70 rounded-xl w-[48%]">
+    <div className="flex flex-col px-4 py-3 border border-re-gray-300 rounded-md w-[49%] bg-re-dark-green-300 h-min">
       {children}
     </div>
   );

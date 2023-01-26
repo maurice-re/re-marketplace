@@ -80,7 +80,7 @@ export default function Page() {
 
   const chosen = locations.map((city) => (
     <div
-      className="bg-black text-sm text-white pr-2 py-1 rounded mr-3 my-1 flex border border-white font-theinhardt-300"
+      className="bg-re-black text-sm text-white pr-2 py-1 rounded mr-3 my-1 flex border border-white font-theinhardt-300"
       key={city}
     >
       <button
@@ -98,7 +98,7 @@ export default function Page() {
     : " rounded-10";
 
   return (
-    <div className=" w-screen h-screen bg-black flex">
+    <div className=" w-screen h-screen bg-re-black flex">
       <Head>
         <title>What cities do you operate in</title>
         <meta
@@ -132,7 +132,7 @@ export default function Page() {
         <div className="w-3/5 max-w-lg">
           <input
             className={
-              "text-25 pl-8 py-2 border-2 border-white bg-black w-full text-white font-theinhardt-300" +
+              "text-25 pl-8 py-2 border-2 border-white bg-re-black w-full text-white font-theinhardt-300" +
               inputBorderRadius
             }
             type="text"
@@ -145,7 +145,7 @@ export default function Page() {
           />
           {!drawerOpen && <div className="flex flex-wrap pt-2">{chosen}</div>}
           {drawerOpen && (
-            <div className=" bg-black border-2 border-t-0 max-h-64 overflow-auto">
+            <div className=" bg-re-black border-2 border-t-0 max-h-64 overflow-auto">
               {options}
             </div>
           )}
