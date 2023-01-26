@@ -1,19 +1,17 @@
 "use client";
 
-import { Location, OrderItem, Product, Sku } from "@prisma/client";
+import { Location, OrderItem } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { SkuWithProduct } from "../../server-store";
 
 type RowProps = {
-  item: OrderItem & {
-    location: Location;
-    sku: Sku & {
-      product: Product;
-    };
-  };
+  item: OrderItem;
+  location: Location | undefined;
   orderId: string;
+  sku: SkuWithProduct | undefined;
 };
 
-export default function TableRow({ item, orderId }: RowProps) {
+export default function TableRow({ item, location, orderId, sku }: RowProps) {
   const router = useRouter();
   return (
     <tr
@@ -21,11 +19,11 @@ export default function TableRow({ item, orderId }: RowProps) {
       className="even:bg-re-table-even odd:bg-re-table-odd hover:bg-re-table-hover hover:cursor-pointer"
     >
       <td className="py-3 pl-2">{orderId}</td>
-      <td>{item.sku.product.name}</td>
+      <td>{sku?.product.name}</td>
       <td>{item.quantity}</td>
-      <td>{item.sku.size}</td>
-      <td>{item.sku.material}</td>
-      <td>{item.location.displayName ?? item.location.city}</td>
+      <td>{sku?.size}</td>
+      <td>{sku?.material}</td>
+      <td>{location?.displayName ?? location?.city}</td>
       <td>{item.status}</td>
       <td>{item.status}</td>
     </tr>

@@ -1,20 +1,11 @@
-import { Sku } from "@prisma/client";
+import { Location, Sku } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "../../../stores/cartStore";
-import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getOrderStringTotal } from "../../../utils/dashboard/orderStringUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 
-function Cart({
-  companyId,
-  locations,
-  skus,
-}: {
-  companyId: string;
-  locations: LocationWithOneItem[];
-  skus: Sku[];
-}) {
+function Cart({ locations, skus }: { locations: Location[]; skus: Sku[] }) {
   const orderString = useCartStore((state) => state.orderString);
   const clearCart = useCartStore((state) => state.clearCart);
   return (

@@ -1,6 +1,5 @@
 import {
   Company,
-  Location,
   Product,
   ProductDevelopment,
   Sku,
@@ -20,7 +19,6 @@ export default function CheckoutRight({
   company,
   customerId,
   eol,
-  locations,
   orderString,
   paymentIntentId,
   paymentMethods,
@@ -33,7 +31,6 @@ export default function CheckoutRight({
   company: Company | null;
   customerId: string;
   eol: boolean;
-  locations: Location[] | null;
   orderString: string;
   paymentIntentId: string;
   paymentMethods?: PaymentMethod[];

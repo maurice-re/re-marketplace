@@ -1,21 +1,6 @@
-import { Company, Location, Order, OrderItem, Product, Sku, Status, User } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
-export type UserOrderItems = User & {
-  company: {
-    name: string;
-    customerId: string;
-  };
-  orders: (Order & {
-    items: (OrderItem & {
-      sku: SkuProduct;
-      location: {
-        displayName: string | null;
-        city: string;
-      };
-    })[];
-  })[];
-};
 
 export type ItemSkuProduct = OrderItem & {
   sku: Sku & {
@@ -25,23 +10,6 @@ export type ItemSkuProduct = OrderItem & {
     displayName: string | null;
     city: string | null;
   };
-};
-
-export type SkuProduct = Sku & {
-  product: Product;
-};
-
-export type OrderCustomerOrderItems = Order & {
-  company: {
-    name?: string;
-    customerId: string;
-  };
-  orderItems: (OrderItem & {
-    location: Location;
-    sku: Sku & {
-      product: Product;
-    };
-  })[];
 };
 
 export type OrderWithItemsLocationSku = Order & {
@@ -65,10 +33,6 @@ export type ItemLocationSkuProduct = OrderItem & {
   sku: Sku & {
     product: Product;
   };
-};
-
-export type OrderWithItems = Order & {
-  items: OrderItem[];
 };
 
 export type UserCompany = User & {

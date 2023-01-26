@@ -8,13 +8,14 @@ import ReLogo from "../../components/form/re-logo";
 import prisma from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
+import { useServerStore } from "../server-store";
 import CheckoutLeft from "./checkoutLeft";
 import Payment from "./payment";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string; };
+  searchParams?: { orderString: string };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -70,21 +71,16 @@ export default async function Page({
   }
 
   // Order
-  const session = await unstable_getServerSession(authOptions);
-  if (session == null) {
-    redirect("/signin");
-  }
-  const user = session.user as User;
-  const company = await prisma.company.findUnique({
-    where: { id: user.companyId },
-  });
+  const user = await useServerStore.getState().getUser();
+  const company = await useServerStore.getState().getCompany(user.companyId);
 
   if (company == null) {
     redirect("404");
   }
 
+  const skus = await useServerStore.getState().getSkus();
+  const locations = await useServerStore.getState().getLocations(user.id);
   const products = await prisma.product.findMany({});
-  const skus = await prisma.sku.findMany({});
 
   const { clientSecret, paymentIntentId, paymentMethods } = await fetch(
     `${process.env.NEXTAUTH_URL}/api/payment/create`,
@@ -118,7 +114,7 @@ export default async function Page({
         )}`}</div>
       </div>
       <LineItems
-        locations={[]}
+        locations={locations}
         orderString={orderString}
         skus={skus}
         showLocation

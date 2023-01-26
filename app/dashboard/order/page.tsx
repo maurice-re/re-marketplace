@@ -1,40 +1,14 @@
-import { Company, User } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import prisma from "../../../constants/prisma";
-import { authOptions } from "../../../pages/api/auth/[...nextauth]";
+import { Company } from "@prisma/client";
+import { useServerStore } from "../../server-store";
 import TableRow from "./tableRow";
 
 export default async function Page() {
-  const session = await unstable_getServerSession(authOptions);
-  if (session == null) {
-    redirect("signin");
-  }
-  const user = session.user as User;
+  const user = await useServerStore.getState().getUser();
+  const orders = await useServerStore.getState().getOrders(user.id);
+  const locations = await useServerStore.getState().getLocations(user.id);
+  const skus = await useServerStore.getState().getSkus();
 
-  const orders = await prisma.order.findMany({
-    where: {
-      companyId: user.companyId,
-    },
-    include: {
-      company: true,
-      items: {
-        include: {
-          sku: {
-            include: {
-              product: true,
-            },
-          },
-          location: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  const company: Company = orders[0].company;
+  const company: Company = {} as Company;
 
   if (!orders || orders.length == 0 || !company) {
     return (
@@ -87,9 +61,21 @@ export default async function Page() {
             </thead>
             <tbody className="text-left text-sm">
               {orders.map((order) =>
-                order.items.map((item) => (
-                  <TableRow key={item.id} item={item} orderId={order.id} />
-                ))
+                order.items.map((item) => {
+                  const location = locations.find(
+                    (location) => location.id == order.locationId
+                  );
+                  const sku = skus.find((sku) => sku.id == item.skuId);
+                  return (
+                    <TableRow
+                      key={item.id}
+                      item={item}
+                      location={location}
+                      orderId={order.id}
+                      sku={sku}
+                    />
+                  );
+                })
               )}
             </tbody>
           </table>

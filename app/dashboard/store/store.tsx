@@ -20,7 +20,7 @@ import Cart from "./cart";
 
 type StoreProps = {
   company: Company;
-  initialLocations: LocationWithOneItem[];
+  initialLocations: Location[];
   products: Product[];
   skus: Sku[];
 };
@@ -90,15 +90,12 @@ export default function StorePage({
     setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
   }
 
-  function getLocationById(
-    locationId: string
-  ): LocationWithOneItem | undefined {
+  function getLocationById(locationId: string): Location | undefined {
     return locations.find((location) => location.id === locationId);
   }
 
   function getLocationName(locationId: string): string {
-    const location: LocationWithOneItem | undefined =
-      getLocationById(locationId);
+    const location: Location | undefined = getLocationById(locationId);
     return location?.displayName ?? location?.city ?? "Your Location";
   }
 
@@ -118,18 +115,15 @@ export default function StorePage({
       id: "",
       city: formElements[4].value,
       country: formElements[1].value,
-      companyId: company.id,
       displayName: null,
       line1: formElements[2].value,
       line2: formElements[3].value,
       penalty: Penalty.NONE,
-      trackingLocation: "",
       shippingName: formElements[0].value,
       state: formElements[6].value,
       trackingType: TrackingType.NONE,
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
-      tagId: "",
     };
 
     await fetch("/api/location", {
@@ -162,7 +156,7 @@ export default function StorePage({
             <h2 className="text-left text-lg leading-none text-white">
               {location.displayName ?? location.city}
             </h2>
-            {location.orderItems.length != 0 && (
+            {/* {location.orderItems.length != 0 && (
               <div className="rounded-2xl px-2 bg-re-product-green border-re-product-green">
                 <div className="flex items-center text-sm font-theinhardt-300 w-full gap-1">
                   <div className="text-gray-200">
@@ -176,7 +170,7 @@ export default function StorePage({
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
           <div className="flex flex-col w-full font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
@@ -300,7 +294,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -426,7 +420,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -466,9 +460,6 @@ export default function StorePage({
     return (
       <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -677,7 +668,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -694,7 +685,7 @@ export default function StorePage({
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
         <div className="text-white font-theinhardt text-28">Coming Soon</div>
       </main>
-      <Cart companyId={company.id} locations={locations} skus={skus} />
+      <Cart locations={locations} skus={skus} />
     </div>
   );
 }

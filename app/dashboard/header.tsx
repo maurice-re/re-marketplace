@@ -1,6 +1,8 @@
 "use client";
 
+import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { BiLogOut } from "react-icons/bi";
 import { Route } from "./layout";
 
 export default function Header({ routes }: { routes: Route[] }) {
@@ -10,14 +12,16 @@ export default function Header({ routes }: { routes: Route[] }) {
     title = "Order";
   }
   return (
-    // <div className="w-full">
-    //     <div className="h-screen bg-re-black flex">
-    //         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt min-h-screen max-h-screen">
-    <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-      <h1 className="font-theinhardt text-lg">{title}</h1>
+    <div className="flex flex-col">
+      <div className="flex justify-end pr-4 py-1 text-xl">
+        <BiLogOut
+          className="cursor-pointer text-white hover:text-re-gray-text"
+          onClick={() => signOut()}
+        />
+      </div>
+      <div className="flex py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
+        <h1 className="font-theinhardt text-lg">{title}</h1>
+      </div>
     </div>
-    //         </main>
-    //     </div>
-    // </div>
   );
 }
