@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     }
 });
 
-// TODO(Suhana): Need to take in all items and fields
 function POFile({
     items,
     totals,
@@ -86,7 +85,6 @@ function POFile({
     sellerEmail: string;
     buyerEmail: string;
 }) {
-    // TODO(Suhana): Put new props in the PDF
     return (
         <Fragment>
             <PDFViewer width="1000" height="600" className="app">

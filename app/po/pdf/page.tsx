@@ -116,13 +116,11 @@ export default async function Page({
                         sellerRoutingNumber={815505463}
                         sellerAccountNumber={325070760}
                         poNumber={57}
-                        // TODO(Suhana): Add city, state, zip, and country for both billing and shipping
                         buyerAddressLine={buyerAddressLine}
                         buyerCity={buyerCity}
                         buyerState={buyerState}
                         buyerZip={buyerZip}
                         buyerCountry={buyerCountry}
-                        // TODO(Suhana): Add first and last name fields
                         buyerCompany={buyerCompany}
                         buyerPhone={buyerPhone}
                         requestioner={requestioner}
