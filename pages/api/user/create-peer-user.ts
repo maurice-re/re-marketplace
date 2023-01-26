@@ -5,13 +5,12 @@ import prisma from "../../../constants/prisma";
 
 async function createPeerUser(req: Request, res: Response) {
   const {
-    companyId, firstName, lastName, email, role, newCompanyName, newCompanyCustomerId
+    companyId, firstName, lastName, email, newCompanyName, newCompanyCustomerId
   }: {
     companyId: string,
     firstName: string,
     lastName: string,
     email: string,
-    role: Role,
     newCompanyName: string,
     newCompanyCustomerId: string;
   } = req.body;
@@ -48,7 +47,6 @@ async function createPeerUser(req: Request, res: Response) {
       email: email,
       firstName: firstName,
       lastName: lastName,
-      role: role
     },
   });
 

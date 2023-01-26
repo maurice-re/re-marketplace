@@ -1,4 +1,3 @@
-import { Role } from "@prisma/client";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { UserCompany } from "../../utils/dashboard/dashboardUtils";
 
@@ -6,18 +5,16 @@ type NewUser = {
   email: string;
   firstName: string;
   lastName: string;
-  role: Role;
   companyId: string;
   newCompanyName: string;
   newCompanyCustomerId: string;
 };
 
-export default function AddUserForm({ user }: { user: UserCompany }) {
+export default function AddUserForm({ user }: { user: UserCompany; }) {
   const [newUser, setNewUser] = useState<NewUser>({
     email: "",
     firstName: "",
     lastName: "",
-    role: Role.USER,
     companyId: user.companyId,
     newCompanyName: "",
     newCompanyCustomerId: "",
@@ -38,7 +35,6 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
       newUser.firstName &&
       newUser.lastName &&
       newUser.email &&
-      newUser.role
     ) {
       const res = await fetch("/api/user/create-peer-user", {
         method: "POST",
@@ -48,7 +44,6 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           email: newUser.email,
-          role: newUser.role,
           newCompanyName: "", // newUser.newCompanyName for adding user to diff company
           newCompanyCustomerId: "", // newUser.newCompanyCustomerId for adding user to diff company
         }),
@@ -94,12 +89,12 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
   //   }));
   // };
 
-  const handleRoleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setNewUser((prevState) => ({
-      ...prevState,
-      role: event.target.value === "ADMIN" ? Role.ADMIN : Role.USER,
-    }));
-  };
+  // const handleRoleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+  //   setNewUser((prevState) => ({
+  //     ...prevState,
+  //     role: event.target.value === "ADMIN" ? Role.ADMIN : Role.USER,
+  //   }));
+  // };
   return (
     <form id="account-form" onSubmit={handleSubmit}>
       <div className="form-control w-full max-w-sm">
@@ -144,7 +139,7 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
           onChange={(e) => handleEmailChange(e.target.value)}
         />
       </div>
-      <div className="form-control w-full max-w-sm">
+      {/* <div className="form-control w-full max-w-sm">
         <label className="label mt-1">
           <span className="label-text">Role</span>
         </label>
@@ -160,7 +155,7 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
             User
           </option>
         </select>
-      </div>
+      </div> */}
       {/* Uncomment the below for adding user to diff company */}
       {/* <div className="form-control w-full max-w-sm">
         <label className="label mt-1">
@@ -191,18 +186,16 @@ export default function AddUserForm({ user }: { user: UserCompany }) {
           newUser === successUser
         }
         id="submit"
-        className={`btn btn-accent btn-outline w-28 mt-5 ${
-          isLoading ? "loading" : ""
-        }`}
+        className={`btn btn-accent btn-outline w-28 mt-5 ${isLoading ? "loading" : ""
+          }`}
       >
         Create
       </button>
       {message && (errorUser === newUser || successUser === newUser) && (
         <div
           id="error-message"
-          className={`font-theinhardt text-left mt-4 ${
-            errorUser === newUser ? "text-error" : "text-re-green-500"
-          }`}
+          className={`font-theinhardt text-left mt-4 ${errorUser === newUser ? "text-error" : "text-re-green-500"
+            }`}
         >
           {message}
         </div>

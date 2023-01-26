@@ -14,7 +14,7 @@ import Payment from "./payment";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string };
+  searchParams?: { orderString: string; };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -77,7 +77,6 @@ export default async function Page({
   const user = session.user as User;
   const company = await prisma.company.findUnique({
     where: { id: user.companyId },
-    include: { locations: true },
   });
 
   if (company == null) {
@@ -119,7 +118,7 @@ export default async function Page({
         )}`}</div>
       </div>
       <LineItems
-        locations={company.locations ?? []}
+        locations={[]}
         orderString={orderString}
         skus={skus}
         showLocation
