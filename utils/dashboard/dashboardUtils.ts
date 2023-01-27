@@ -21,11 +21,14 @@ export type ItemLocationSku = OrderItem & {
   sku: Sku;
 };
 
-export type OrderItemLocation = OrderItem & {
-  location: Location;
+export type OrderItemSku = OrderItem & {
   sku: Sku & {
     product: Product;
   };
+};
+
+export type OrderLocation = Order & {
+  location: Location;
 };
 
 export type ItemLocationSkuProduct = OrderItem & {

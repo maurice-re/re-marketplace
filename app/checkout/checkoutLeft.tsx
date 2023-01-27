@@ -150,7 +150,6 @@ export default function CheckoutLeft({
                 company={company ?? null}
                 customerId={customerId}
                 eol={eol}
-                locations={locations ?? []}
                 orderString={orderString}
                 paymentMethods={paymentMethods}
                 paymentIntentId={paymentIntentId}

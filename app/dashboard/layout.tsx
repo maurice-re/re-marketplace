@@ -1,4 +1,4 @@
-import { Status, User } from "@prisma/client";
+import { Status, User, Order } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -24,7 +24,7 @@ export default async function Layout({
     redirect("/signin");
   }
   const user = session.user as User;
-  const orders = await useServerStore.getState().getOrders(user.id);
+  const orders: Order[] = await useServerStore.getState().getOrders(user.id);
   const completedOrders = orders.filter(
     (order) => order.status === Status.COMPLETED
   );
