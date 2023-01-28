@@ -4,14 +4,10 @@ import { redirect } from "next/navigation";
 import { create } from "zustand";
 import prisma from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
-
+import { SkuProduct } from "../utils/dashboard/dashboardUtils";
 
 export type OrderWithItems = Order & {
-    items: OrderItem[];
-};
-
-export type SkuWithProduct = Sku & {
-    product: Product;
+  items: OrderItem[];
 };
 
 interface serverStore {
@@ -21,8 +17,8 @@ interface serverStore {
   getCompany: (companyId: string) => Promise<Company | null>;
   getLocations: (userId: string) => Promise<Location[]>;
   getOrders: (userId: string) => Promise<OrderWithItems[]>;
-  getSkus: () => Promise<SkuWithProduct[]>;
-  
+  getSkus: () => Promise<SkuProduct[]>;
+  getOrderItems: (orderId: string) => Promise<OrderItem[]>;
 }
 
 export const useServerStore = create<serverStore>((set, get) => ({
@@ -35,7 +31,7 @@ export const useServerStore = create<serverStore>((set, get) => ({
     } else if (
       refresh ||
       get().sessionLastUpdated.getTime() <
-        new Date().getTime() - 1000 * 60 * 60 * 24
+      new Date().getTime() - 1000 * 60 * 60 * 24
     ) {
       // If the session is older than 24 hours, refresh it
       const session = await unstable_getServerSession(authOptions);
@@ -66,7 +62,7 @@ export const useServerStore = create<serverStore>((set, get) => ({
     if (!user) return [];
     return [...user.ownedLocations, ...user.viewableLocations];
   },
-  getOrders: async (userId) => {
+  getOrders: async (userId: string) => {
     const user = await prisma.user.findUnique({
       where: {
         id: userId
@@ -97,11 +93,11 @@ export const useServerStore = create<serverStore>((set, get) => ({
     const viewableOrders = user.viewableLocations.flatMap(location => location.orders);
     return [...ownedOrders, ...viewableOrders];
   },
-  getSkus: async () => {
-    return await prisma.sku.findMany({
-      include: {
-        product: true,
-      }
+  getOrderItems: async (orderId: string) => {
+    return await prisma.orderItem.findMany({
+      where: {
+        orderId: orderId
+      },
     });
-  }
+  },
 }));

@@ -1,5 +1,5 @@
 import { Company, Location, Status, User } from "@prisma/client";
-import { useServerStore } from "../server-store";
+import { OrderWithItems, useServerStore } from "../server-store";
 import Home from "./home";
 
 export default async function Page() {
@@ -7,15 +7,15 @@ export default async function Page() {
   const locations: Location[] = await useServerStore
     .getState()
     .getLocations(user.id);
-  const orders = await useServerStore.getState().getOrders(user.id);
+  const orders: OrderWithItems[] = await useServerStore.getState().getOrders(user.id);
   const company = await useServerStore.getState().getCompany(user.companyId);
   const skus = await useServerStore.getState().getSkus();
 
   const completeOrders = orders.filter(
-    (order) => order.status === Status.COMPLETED
+    (order: OrderWithItems) => order.status === Status.COMPLETED
   );
   const incompleteOrders = orders.filter(
-    (order) => order.status !== Status.COMPLETED
+    (order: OrderWithItems) => order.status !== Status.COMPLETED
   );
 
   const hasCompleteOrder: boolean =

@@ -1,7 +1,6 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
-
 export type ItemSkuProduct = OrderItem & {
   sku: Sku & {
     product: Product;
@@ -36,6 +35,10 @@ export type ItemLocationSkuProduct = OrderItem & {
   sku: Sku & {
     product: Product;
   };
+};
+
+export type SkuProduct = Sku & {
+  product: Product;
 };
 
 export type UserCompany = User & {
@@ -99,8 +102,8 @@ export function addDays(date: Date, numDays: number) {
   return d;
 }
 
-export function skuName(sku: SkuProduct): string {
-  return sku.size + " " + sku.materialShort + " " + sku.product.name;
+export function skuName(sku: SkuProduct | undefined): string {
+  return sku ? sku.size + " " + sku.materialShort + " " + sku.product.name : "";
 }
 
 function getLocationIds(orders: OrderItem[]): string[] {
