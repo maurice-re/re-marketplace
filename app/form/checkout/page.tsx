@@ -5,7 +5,7 @@ import { Appearance, loadStripe } from "@stripe/stripe-js";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import CheckoutForm from "./formCheckout";
@@ -19,7 +19,7 @@ export default function Page() {
   // TODO(Suhana): If form checkout continues, add payment intent ID to this
   // const [paymentIntentId, setPaymentIntentId] = useState("");
   const { calculatePrice, calculateTotal, cart, locations, setCustomerId } =
-    useFormStore((state) => ({
+    useFormStore((state: FormStore) => ({
       calculatePrice: state.calculatePrice,
       calculateTotal: state.calculateTotal,
       cart: state.cart,
@@ -65,7 +65,7 @@ export default function Page() {
       );
     }
     items.push(
-      cart.map((order) => {
+      cart.map((order: CartOrder) => {
         if (order.location != city) {
           return (
             <div key={order.location + order.sku.id + "hidden"} hidden></div>

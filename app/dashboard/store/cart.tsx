@@ -16,7 +16,7 @@ function Cart({ locations, skus }: { locations: Location[]; skus: Sku[]; }) {
       </h1>
       {orderString != "" && (
         <div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
-          {orderString.split("*").map((orderForLocation: string, index: number) => {
+          {orderString.split("*").map((orderForLocation: string) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
             const location = locations.find(

@@ -1,4 +1,4 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Sku, User, Settings } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export type ItemSkuProduct = OrderItem & {
@@ -43,6 +43,10 @@ export type SkuProduct = Sku & {
 
 export type UserCompany = User & {
   company: Company;
+};
+
+export type LocationSettings = Location & {
+  settings: Settings | null;
 };
 
 export type LocationWithOneItem = Location & {

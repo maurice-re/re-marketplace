@@ -1,5 +1,5 @@
 "use client";
-import { Action, Event, Settings, Sku } from "@prisma/client";
+import { Action, Event, Settings, Sku, Location } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -12,6 +12,8 @@ import {
 } from "chart.js";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import SettingsForm from "../../../components/tracking/settingsForm";
+import { LocationSettings, UserCompany } from "../../../utils/dashboard/dashboardUtils";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -29,8 +31,6 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
 } from "../../../utils/tracking/trackingUtils";
-import { UserSettings } from "./page";
-import SettingsForm from "./settingsForm";
 
 ChartJS.register(
   CategoryScale,
@@ -56,11 +56,13 @@ function Tracking({
   skus,
   demo,
   events,
+  location
 }: {
-  user: UserSettings;
+  user: UserCompany;
   skus: Sku[];
   demo: boolean;
   events: Event[];
+  location: LocationSettings;
 }) {
   // "Dummy" data that is updated on changes
   const baseData = {
@@ -84,7 +86,7 @@ function Tracking({
   };
 
   const [settings, setSettings] = useState<Settings>(
-    user?.company.settings ?? ({} as Settings)
+    location.settings ?? ({} as Settings)
   );
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
@@ -346,9 +348,8 @@ function Tracking({
                 {stat.title}
               </div>
               <div className="font-theinhardt text-4xl mt-2">
-                {`${Math.round(stat.value * 10) / 10}${
-                  stat.isPercent ? `%` : ``
-                }`}
+                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                  }`}
               </div>
             </div>
           </div>
@@ -388,21 +389,19 @@ function Tracking({
           <div className="flex items-center h-min pb-4">
             <h2 className="text-lg mr-4">Borrows and Returns</h2>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${
-                graphTimePeriod === "monthly"
-                  ? "bg-re-gray-active"
-                  : "bg-re-gray-button"
-              }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "monthly"
+                ? "bg-re-gray-active"
+                : "bg-re-gray-button"
+                }`}
               onClick={() => handleTimePeriodChange("monthly")}
             >
               Monthly
             </button>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${
-                graphTimePeriod === "daily"
-                  ? "bg-re-gray-active"
-                  : "bg-re-gray-button"
-              }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "daily"
+                ? "bg-re-gray-active"
+                : "bg-re-gray-button"
+                }`}
               onClick={() => handleTimePeriodChange("daily")}
             >
               Daily

@@ -6,11 +6,11 @@ import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
 import ProgressBar from "../../../components/form/progress-bar";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 
 export default function Page() {
-  const { cart, locations, prettyString } = useFormStore((state) => ({
+  const { cart, locations, prettyString } = useFormStore((state: FormStore) => ({
     cart: state.cart,
     locations: state.locations,
     prettyString: state.prettyString,
@@ -26,11 +26,9 @@ export default function Page() {
       shippingInfo.push(formElements[i].value);
     }
     setIsLoading(true);
-    const message = `New quote requested through product matching tool! \n Name: ${
-      shippingInfo[0]
-    } \n Email: ${shippingInfo[1]} \n Company Name: ${
-      shippingInfo[2]
-    } \n Cart: ${prettyString()}`;
+    const message = `New quote requested through product matching tool! \n Name: ${shippingInfo[0]
+      } \n Email: ${shippingInfo[1]} \n Company Name: ${shippingInfo[2]
+      } \n Cart: ${prettyString()}`;
 
     await fetch("/api/mail/send-quote", {
       method: "POST",
@@ -57,7 +55,7 @@ export default function Page() {
           <div className=" text-white text-28 pl-8 pt-4 mb-2">{city}</div>
         )}
         <div className="flex flex-wrap justify-evenly" key={city + "items"}>
-          {cart.map((order) => {
+          {cart.map((order: CartOrder) => {
             if (order.location != city) {
               return;
             }

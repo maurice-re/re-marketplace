@@ -25,7 +25,7 @@ function Home({
   hasCompleteOrder: boolean;
   hasIncompleteOrder: boolean;
 }) {
-  const incompleteOrders = orders.filter(
+  const incompleteOrders: OrderWithItems[] = orders.filter(
     (order) => order.status != Status.COMPLETED
   );
 
@@ -267,7 +267,7 @@ function Home({
                     ))}
                   </ul>
                   <div className="flex flex-col w-full p-4">
-                    {incompleteOrders[0].items.map((item, index) => {
+                    {incompleteOrders[0].items.map((item: OrderWithItems, index: number) => {
                       const location = locations.find(
                         (location) =>
                           location.id == incompleteOrders[0].locationId

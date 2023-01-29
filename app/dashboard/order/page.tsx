@@ -1,4 +1,4 @@
-import { Company, Order, OrderItem, Location, Sku, User } from "@prisma/client";
+import { Company, OrderItem, Location, Sku, User } from "@prisma/client";
 import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
 import { OrderWithItems, useServerStore } from "../../server-store";
 import TableRow from "./tableRow";

@@ -3,11 +3,11 @@ import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
 
 async function getSettings(req: Request, res: Response) {
-  const { companyId } = req.query;
-  if (req.method == "GET" && typeof companyId == "string") {
+  const { locationId } = req.query;
+  if (req.method == "GET" && typeof locationId == "string") {
     const settings = await prisma.settings.findUnique({
       where: {
-        companyId: companyId,
+        locationId: locationId,
       },
     });
     res.status(200).send({ settings: settings });
