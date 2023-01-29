@@ -164,12 +164,11 @@ export default function CheckoutRight({
           setMessage("An unexpected error occurred.");
         }
         return;
-      } else if (type == CheckoutType.ORDER && company && user) {
+      } else if (type == CheckoutType.ORDER && user) {
         await fetch("/api/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            companyId: company.id,
             orderString: orderString,
             products: products,
             skus: skus,
@@ -194,9 +193,8 @@ export default function CheckoutRight({
     >
       {company != null && paymentMethods && (
         <select
-          className={`w-full bg-re-dark-green-200  border border-re-gray-300 rounded p-4 ${
-            dropdown == "new" ? "mb-2" : "mb-6"
-          }`}
+          className={`w-full bg-re-dark-green-200  border border-re-gray-300 rounded p-4 ${dropdown == "new" ? "mb-2" : "mb-6"
+            }`}
           value={dropdown}
           onChange={(e) => setDropdown(e.target.value)}
         >
@@ -222,9 +220,8 @@ export default function CheckoutRight({
           onClick={() => document.getElementById("eol-modal")?.click()}
           type="button"
           disabled={isLoading || !stripe || !elements || dropdown == ""}
-          className={`btn modal-button text-center mb-6 w-full ${
-            eol ? "text-re-green-500" : "btn-error btn-outline"
-          }`}
+          className={`btn modal-button text-center mb-6 w-full ${eol ? "text-re-green-500" : "btn-error btn-outline"
+            }`}
         >
           {eol ? (
             <svg
@@ -256,9 +253,8 @@ export default function CheckoutRight({
             (type == CheckoutType.ORDER && !eol)
           }
           id="submit"
-          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${
-            isLoading ? "loading" : ""
-          }`}
+          className={`btn btn-accent btn-outline px-4 py-2 w-1/2 mb-4 ${isLoading ? "loading" : ""
+            }`}
         >
           Pay Now
         </button>

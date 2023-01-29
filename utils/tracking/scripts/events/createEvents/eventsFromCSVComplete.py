@@ -2,6 +2,8 @@ import requests
 import json
 import csv
 
+# TODO(Suhana): Add companyId here, remove trackingLocation
+
 # Usage
 # npm run dev
 # Use API key for the desired company in "Bearer ..." (create new API Key using createAPIKey.py if needed)

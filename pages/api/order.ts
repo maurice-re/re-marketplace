@@ -5,13 +5,12 @@ import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
 
 async function handler(req: Request, res: Response) {
-    const { orderString, companyId, products, skus, userId, paymentId }: { orderString: string, companyId: string, products: Product[], skus: Sku[], userId: string, paymentId: string; } = req.body;
+    const { orderString, products, skus, userId, paymentId }: { orderString: string, products: Product[], skus: Sku[], userId: string, paymentId: string; } = req.body;
     const now = new Date();
     if (req.method == "POST") {
         const newOrder = await prisma.order.create({
             data: {
                 amount: getOrderStringTotal(orderString, products, skus, 1.07),
-                companyId: companyId,
                 createdAt: now,
                 userId: userId,
                 paymentId: paymentId,
