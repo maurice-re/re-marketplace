@@ -9,7 +9,7 @@ import { CheckoutType } from "../../utils/checkoutUtils";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string };
+  searchParams?: { orderString: string; };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -25,7 +25,6 @@ export default async function Page({
   const user = session.user as User;
   const company = await prisma.company.findUnique({
     where: { id: user.companyId },
-    include: { locations: true },
   });
   const products = await prisma.product.findMany({});
   const skus = await prisma.sku.findMany({});
@@ -38,12 +37,10 @@ export default async function Page({
             locations: Location[];
           }
         }
-        locations={JSON.parse(JSON.stringify(company?.locations))}
         orderString={orderString}
         products={products}
         skus={skus}
         type={CheckoutType.ORDER}
-        user={JSON.parse(JSON.stringify(user))}
       />
     </div>
   );

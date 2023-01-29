@@ -27,12 +27,10 @@ type POSummaryProps = {
 
 export default function POSummary({
     company,
-    locations,
     orderString,
     products,
     skus,
     type,
-    user,
 }: POSummaryProps) {
 
     return (

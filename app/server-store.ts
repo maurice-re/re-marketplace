@@ -1,7 +1,7 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { create } from "zustand";
+import create from "zustand";
 import prisma from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 import { SkuProduct } from "../utils/dashboard/dashboardUtils";
@@ -10,7 +10,7 @@ export type OrderWithItems = Order & {
   items: OrderItem[];
 };
 
-interface serverStore {
+interface ServerStore {
   sessionLastUpdated: Date;
   _user: User | null;
   getUser: (refresh?: boolean, redirectUrl?: string) => Promise<User>;
@@ -21,7 +21,7 @@ interface serverStore {
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
 }
 
-export const useServerStore = create<serverStore>((set, get) => ({
+export const useServerStore = create<ServerStore>((set, get) => ({
   _user: null,
   sessionLastUpdated: new Date(1 - 1 - 1970),
   getUser: async (refresh?: boolean, redirectUrl?: string) => {
@@ -61,6 +61,13 @@ export const useServerStore = create<serverStore>((set, get) => ({
     });
     if (!user) return [];
     return [...user.ownedLocations, ...user.viewableLocations];
+  },
+  getSkus: async () => {
+    return await prisma.sku.findMany({
+      include: {
+        product: true,
+      },
+    });
   },
   getOrders: async (userId: string) => {
     const user = await prisma.user.findUnique({

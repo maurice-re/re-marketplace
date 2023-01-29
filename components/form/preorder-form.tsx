@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { useFormStore } from "../../stores/formStore";
+import { FormStore, useFormStore } from "../../stores/formStore";
 import { saveToLocalStorage } from "../../utils/form/localStorage";
 import AddressField from "./address-field";
 import DoubleAddressField from "./double-address-field";
@@ -7,7 +7,7 @@ import DoubleAddressField from "./double-address-field";
 export default function PreOrderForm() {
   const [message] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { cart, locations, customerId } = useFormStore((state) => ({
+  const { cart, locations, customerId } = useFormStore((state: FormStore) => ({
     cart: state.cart,
     locations: state.locations,
     customerId: state.customerId,

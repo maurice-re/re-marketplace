@@ -26,11 +26,18 @@ export default async function Page() {
   if (!user) return <div>Not found</div>;
   const skus = await getSkus();
 
-  // TODO(Suhana): Implement location selection after switch to location-based, and get location/events from that
+  // TODO(Suhana): URGENT - Implement location selection after switch to location-based, and get location/events from that
   const events: Event[] = await prisma.event.findMany({
     where: { companyId: user.companyId },
   });
-  const location: LocationSettings = await prisma.location.findUnique({ id: "219" });
+  const location: LocationSettings | null = await prisma.location.findUnique({
+    where: {
+      id: "219"
+    },
+    include: {
+      settings: true,
+    }
+  });
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
@@ -79,7 +86,7 @@ export default async function Page() {
             </button>
           </Link>
         </div>
-        <Tracking user={user} skus={skus} demo={true} events={events} location={location} />
+        <Tracking user={user} skus={skus} demo={true} events={events} location={location ?? {} as LocationSettings} />
       </main>
     </div>
   );

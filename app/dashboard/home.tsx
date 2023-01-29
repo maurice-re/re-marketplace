@@ -267,7 +267,7 @@ function Home({
                     ))}
                   </ul>
                   <div className="flex flex-col w-full p-4">
-                    {incompleteOrders[0].items.map((item: OrderWithItems, index: number) => {
+                    {incompleteOrders[0].items.map((item: OrderItem, index: number) => {
                       const location = locations.find(
                         (location) =>
                           location.id == incompleteOrders[0].locationId

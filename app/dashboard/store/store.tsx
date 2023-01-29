@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Company,
+  User,
   Location,
   LocationType,
   Penalty,
@@ -19,7 +19,7 @@ import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import Cart from "./cart";
 
 type StoreProps = {
-  company: Company;
+  user: User;
   initialLocations: Location[];
   products: Product[];
   skus: Sku[];
@@ -50,7 +50,7 @@ const breadcrumbsInfo: BreadcrumbsInfo[] = [
 ];
 
 export default function StorePage({
-  company,
+  user,
   initialLocations,
   products,
   skus,
@@ -133,7 +133,7 @@ export default function StorePage({
     }).then(async (res) => await res.json());
 
     const results = await fetch(
-      `/api/location?companyId=${company.id}&withItems=true`,
+      `/api/location?userId=${user.id}&withItems=true`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -536,8 +536,8 @@ export default function StorePage({
                           <button
                             key={size}
                             className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${sku.size == size
-                                ? "border-re-green-500"
-                                : "border-re-gray-300"
+                              ? "border-re-green-500"
+                              : "border-re-gray-300"
                               }`}
                             onClick={() => changeSize(size)}
                           >
@@ -551,8 +551,8 @@ export default function StorePage({
                           <button
                             key={color}
                             className={`rounded-full w-8 h-8 border-1/2 mr-2 ${color === "green"
-                                ? "bg-re-product-green"
-                                : "bg-re-product-gray"
+                              ? "bg-re-product-green"
+                              : "bg-re-product-gray"
                               } ${sku.color == color
                                 ? "border-white"
                                 : "border-none"
@@ -567,8 +567,8 @@ export default function StorePage({
                           <button
                             key={material}
                             className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${sku.material == material
-                                ? "border-re-green-500"
-                                : "border-re-gray-300"
+                              ? "border-re-green-500"
+                              : "border-re-gray-300"
                               }`}
                           >
                             {material}

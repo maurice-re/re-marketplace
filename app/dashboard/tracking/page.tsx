@@ -31,7 +31,7 @@ export default async function Page() {
   const user: UserCompany = await getUser(session);
   const skus = await getSkus();
 
-  // TODO(Suhana): Implement location selection after switch to location-based, and get location/events from that
+  // TODO(Suhana): URGENT - Implement location selection after switch to location-based, and get location/events from that
   const events: Event[] = await prisma.event.findMany({
     where: { companyId: user?.company.id ?? "" },
   });

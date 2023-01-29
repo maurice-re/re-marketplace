@@ -2,8 +2,7 @@ import { Product, Sku } from "@prisma/client";
 import { create } from "zustand";
 import { calculatePriceFromCatalog } from "../utils/prisma/dbUtils";
 
-
-type FormRoute = {
+export type FormRoute = {
     active: boolean;
     city: string;
     name: string;

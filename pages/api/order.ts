@@ -4,7 +4,6 @@ import prisma from "../../constants/prisma";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
 
-
 async function handler(req: Request, res: Response) {
     const { orderString, companyId, products, skus, userId, paymentId }: { orderString: string, companyId: string, products: Product[], skus: Sku[], userId: string, paymentId: string; } = req.body;
     const now = new Date();
