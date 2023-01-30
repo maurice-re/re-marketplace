@@ -1,5 +1,5 @@
 "use client";
-import { Action, Event, Settings, Sku, User } from "@prisma/client";
+import { Action, Event, Settings, Sku } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -12,6 +12,8 @@ import {
 } from "chart.js";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import SettingsForm from "../../../components/tracking/settingsForm";
+import { LocationSettings } from "../../../utils/dashboard/dashboardUtils";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -29,7 +31,6 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
 } from "../../../utils/tracking/trackingUtils";
-import SettingsForm from "./settingsForm";
 
 ChartJS.register(
   CategoryScale,
@@ -55,11 +56,13 @@ function Tracking({
   skus,
   demo,
   events,
+  location,
 }: {
   user: User;
   skus: Sku[];
   demo: boolean;
   events: Event[];
+  location: LocationSettings;
 }) {
   // "Dummy" data that is updated on changes
   const baseData = {
@@ -82,7 +85,9 @@ function Tracking({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings>({} as Settings);
+  const [settings, setSettings] = useState<Settings>(
+    location.settings ?? ({} as Settings)
+  );
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
   const [yearForMonthly, setYearForMonthly] = useState<string>("");

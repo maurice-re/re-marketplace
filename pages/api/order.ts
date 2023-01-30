@@ -5,7 +5,6 @@ import { orderNanoid } from "../../utils/apiUtils";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
 
-
 async function handler(req: Request, res: Response) {
     const { orderString, products, skus, userId, paymentId }: { orderString: string, products: Product[], skus: Sku[], userId: string, paymentId: string; } = req.body;
     const now = new Date();

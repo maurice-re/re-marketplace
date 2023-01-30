@@ -30,7 +30,6 @@ export default async function Page({
         products={products}
         skus={skus}
         type={CheckoutType.ORDER}
-        user={JSON.parse(JSON.stringify(user))}
       />
     </div>
   );

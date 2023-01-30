@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProgressBar from "../../../components/form/progress-bar";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 
 const stripePromise = loadStripe(
@@ -16,7 +16,7 @@ const stripePromise = loadStripe(
 
 export default function Page() {
   const [eol, checkEol] = useState<boolean>(false);
-  const { calculateTotal, cart, skipToCheckout } = useFormStore((state) => ({
+  const { calculateTotal, cart, skipToCheckout } = useFormStore((state: FormStore) => ({
     calculateTotal: state.calculateTotal,
     cart: state.cart,
     skipToCheckout: state.skipToCheckout,
@@ -46,7 +46,7 @@ export default function Page() {
         key={city + " border"}
       >
         <div className=" text-white text-25 pl-8 pt-4">{city}</div>
-        {cart.map((order) => {
+        {cart.map((order: CartOrder) => {
           if (order.location != city) {
             return;
           }

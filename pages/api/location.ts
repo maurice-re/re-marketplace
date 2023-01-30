@@ -1,26 +1,14 @@
-import { Location } from "@prisma/client";
+import { Location, User } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../constants/prisma";
 
 async function handler(req: Request, res: Response) {
-  const { location, locationId }: { location: Location; locationId: string } =
+  const { location, locationId }: { location: Location; locationId: string; } =
     req.body;
-  const { companyId, id, withItems, hardware } = req.query;
+  const { userId, id, withItems, hardware } = req.query;
 
-  if (req.method == "POST") {
-    const newLocation = await prisma.location.create({
-      data: {
-        city: location.city,
-        country: location.country,
-        companyId: location.companyId,
-        line1: location.line1,
-        line2: location.line2,
-        shippingName: location.shippingName,
-        state: location.state,
-        zip: location.zip,
-      },
-    });
-    res.status(200).send({ id: newLocation.id });
+  if (!userId) {
+    res.status(400).send("Invalid user ID");
   }
 
   if (req.method == "DELETE") {
@@ -28,25 +16,85 @@ async function handler(req: Request, res: Response) {
     res.status(200).send();
   }
 
-  if (req.method == "GET" && typeof companyId == "string") {
-    if (withItems == "true") {
-      const locations = await prisma.location.findMany({
-        where: {
-          companyId: companyId,
-        },
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId as string,
+    },
+    include: {
+      ownedLocations: {
         include: {
-          orderItems: {
-            take: 1,
+          orders: {
+            include: {
+              items: true
+            }
           }
         }
-      });
+      },
+    }
+  });
+
+  const userWithItems = await prisma.user.findUnique({
+    where: {
+      id: userId as string,
+    },
+    include: {
+      ownedLocations: {
+        include: {
+          orders: {
+            include: {
+              items: true
+            }
+          }
+        }
+      },
+    }
+  });
+
+  const userWithoutItems = await prisma.user.findUnique({
+    where: {
+      id: userId as string,
+    },
+    include: {
+      ownedLocations: {
+        include: {
+          orders: true
+        }
+      },
+    }
+  });
+
+
+  if (req.method == "POST") {
+    const newLocation = await prisma.location.create({
+      data: {
+        city: location.city,
+        country: location.country,
+        line1: location.line1,
+        line2: location.line2,
+        shippingName: location.shippingName,
+        state: location.state,
+        zip: location.zip,
+      },
+    });
+    await prisma.user.update({
+      where: {
+        id: userId as string,
+      },
+      data: {
+        ownedLocations: {
+          set: [newLocation]
+        },
+      },
+    });
+    res.status(200).send({ id: newLocation.id });
+  }
+
+  if (req.method == "GET" && typeof userId == "string") {
+    if (withItems == "true") {
+      const locations = userWithItems?.ownedLocations ?? [];
       res.status(200).send({ locations: locations });
     } else {
-      const locations = await prisma.location.findMany({
-        where: {
-          companyId: companyId,
-        },
-      });
+      const locations = userWithoutItems?.ownedLocations ?? [];
       res.status(200).send({ locations: locations });
     }
   }

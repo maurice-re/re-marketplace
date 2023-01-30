@@ -15,7 +15,8 @@ export default function CheckoutForm() {
 
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { cart, locations, customerId } = useFormStore((state) => ({
+  // TODO: Type
+  const { cart, locations, customerId } = useFormStore((state: any) => ({
     cart: state.cart,
     locations: state.locations,
     customerId: state.customerId,
@@ -87,7 +88,7 @@ export default function CheckoutForm() {
     }
   };
 
-  const addresses = locations.map((city) => (
+  const addresses = locations.map((city: string) => (
     <div className="py-4" key={city}>
       {locations.length > 1 ? (
         <div className="text-lg font-semibold">{`${city} Shipping Address`}</div>

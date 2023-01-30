@@ -2,13 +2,13 @@
 
 import { Location, OrderItem } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { SkuWithProduct } from "../../server-store";
+import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
 
 type RowProps = {
   item: OrderItem;
   location: Location | undefined;
   orderId: string;
-  sku: SkuWithProduct | undefined;
+  sku: SkuProduct | undefined;
 };
 
 export default function TableRow({ item, location, orderId, sku }: RowProps) {

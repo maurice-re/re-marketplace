@@ -10,25 +10,24 @@ export default async function handler(req: Request, res: Response) {
         let _companyId = typeof companyId == "string" ? companyId : "";
 
         if (_companyId == "") {
-        const company = await prisma.company.create({
-            data: {
-                createdAt: now,
-                customerId: customerId,
-                name: companyName,
-            }
-        })
-        _companyId = company.id;
-        await prisma.user.create({
-            data: {
-                companyId: company.id,
-                createdAt: now,
-                email: email,
-                firstName: firstName,
-                lastName: lastName,
-                role: "ADMIN",
-            }
-        });
-    }
+            const company = await prisma.company.create({
+                data: {
+                    createdAt: now,
+                    customerId: customerId,
+                    name: companyName,
+                }
+            });
+            _companyId = company.id;
+            await prisma.user.create({
+                data: {
+                    companyId: company.id,
+                    createdAt: now,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                }
+            });
+        }
         await prisma.productDevelopment.update({
             where: {
                 id: id,

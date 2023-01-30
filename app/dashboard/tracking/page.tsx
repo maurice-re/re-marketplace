@@ -21,6 +21,16 @@ export default async function Page() {
     where: { companyId: user.companyId },
   });
 
+  // TODO(Suhana): URGENT - Implement location selection after switch to location-based, and get location/events from that
+  const location: LocationSettings | null = await prisma.location.findUnique({
+    where: {
+      id: "219",
+    },
+    include: {
+      settings: true,
+    },
+  });
+
   return (
     <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
       {/* <head>
@@ -29,12 +39,12 @@ export default async function Page() {
         <link rel="icon" href="/favicon.ico" />
       </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-        {/* TODO: Revert back to non demo */}
         <Tracking
           user={user}
           skus={skus}
-          demo={true}
+          demo={false}
           events={JSON.parse(JSON.stringify(events))}
+          location={location ?? ({} as LocationSettings)}
         />
       </main>
     </div>

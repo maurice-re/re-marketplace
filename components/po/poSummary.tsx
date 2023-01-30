@@ -26,13 +26,10 @@ type POSummaryProps = {
 };
 
 export default function POSummary({
-  company,
   locations,
   orderString,
   products,
   skus,
-  type,
-  user,
 }: POSummaryProps) {
   return (
     <div className="w-full h-screen bg-black flex items-start justify-center text-white">
