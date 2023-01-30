@@ -2,37 +2,34 @@
 import { Location } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
+import { skuName } from "../../utils/dashboard/dashboardUtils";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
+import { SkuWithProduct } from "../server-store";
 
 function QuickOrder({
   companyId,
-  customerId,
   locations,
-  userId,
   skus,
 }: {
   companyId: string;
   customerId: string;
   locations: Location[];
   userId: string;
-  skus: SkuProduct[];
+  skus: SkuWithProduct[];
 }) {
-  const [selected, setSelected] = useState<SkuProduct[]>([]);
-  const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
-    []
-  );
+  const [selected, setSelected] = useState<SkuWithProduct[]>([]);
+  const [skuIdQuantity, setSkuIdQuantity] = useState<
+    [SkuWithProduct, string][]
+  >([]);
   const [location, setLocation] = useState<string>(
     locations.length > 1 ? locations[0].id : "new"
   );
-  const router = useRouter();
 
-  function handleItemPress(skuSelected: SkuProduct) {
+  function handleItemPress(skuSelected: SkuWithProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
     if (isSelected) {
       setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
@@ -51,7 +48,7 @@ function QuickOrder({
     return "1";
   }
 
-  function handleQuantityChange(val: string, skuSelected: SkuProduct) {
+  function handleQuantityChange(val: string, skuSelected: SkuWithProduct) {
     setSkuIdQuantity((prev) => {
       return prev.map((tup) => {
         if (tup[0].id == skuSelected.id) {
@@ -134,9 +131,7 @@ function QuickOrder({
                   )}`}
                 </div>
                 <input
-                  value={
-                    skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
-                  }
+                  value={skuIdQuantity.find(([s]) => s.id == sku.id)?.[1] ?? ""}
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
                   className="bg-re-black rounded py-1 bg-opacity-40 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
                 />

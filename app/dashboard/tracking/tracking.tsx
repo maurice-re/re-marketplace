@@ -1,5 +1,5 @@
 "use client";
-import { Action, Event, Settings, Sku } from "@prisma/client";
+import { Action, Event, Settings, Sku, User } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -29,7 +29,6 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
 } from "../../../utils/tracking/trackingUtils";
-import { UserSettings } from "./page";
 import SettingsForm from "./settingsForm";
 
 ChartJS.register(
@@ -57,7 +56,7 @@ function Tracking({
   demo,
   events,
 }: {
-  user: UserSettings;
+  user: User;
   skus: Sku[];
   demo: boolean;
   events: Event[];
@@ -83,9 +82,7 @@ function Tracking({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings>(
-    user?.company.settings ?? ({} as Settings)
-  );
+  const [settings, setSettings] = useState<Settings>({} as Settings);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
   const [yearForMonthly, setYearForMonthly] = useState<string>("");

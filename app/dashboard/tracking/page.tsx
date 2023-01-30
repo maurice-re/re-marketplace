@@ -1,7 +1,6 @@
 import { Company, Event, Settings, User } from "@prisma/client";
-import { Session, unstable_getServerSession } from "next-auth";
 import prisma from "../../../constants/prisma";
-import { authOptions } from "../../../pages/api/auth/[...nextauth]";
+import { useServerStore } from "../../server-store";
 import Tracking from "./tracking";
 
 // https://github.com/nextauthjs/next-auth/issues/5647
@@ -14,37 +13,12 @@ export type UserSettings =
     })
   | null;
 
-async function getSkus() {
-  const skus = await prisma.sku.findMany();
-  return JSON.parse(JSON.stringify(skus));
-}
-
-async function getUser(session: Session) {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: session?.user?.email ?? "",
-    },
-    include: {
-      company: {
-        include: {
-          settings: true,
-        },
-      },
-    },
-  });
-  return JSON.parse(JSON.stringify(user));
-}
-
 export default async function Page() {
-  const session = await unstable_getServerSession(authOptions);
-  if (session == null) {
-    //TODO: redirect to login
-    return <div>Not logged in</div>;
-  }
-  const user: UserSettings = await getUser(session);
-  const skus = await getSkus();
+  const user = await useServerStore.getState().getUser();
+  const skus = await useServerStore.getState().getSkus();
+
   const events: Event[] = await prisma.event.findMany({
-    where: { companyId: user?.company.id ?? "" },
+    where: { companyId: user.companyId },
   });
 
   return (
