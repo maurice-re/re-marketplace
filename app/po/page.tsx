@@ -16,8 +16,8 @@ export default async function Page({
   const { orderString } = searchParams;
 
   const user = await useServerStore.getState().getUser();
-  const company = await useServerStore.getState().getCompany(user.companyId);
-  const locations = await useServerStore.getState().getLocations(user.id);
+  const company = await useServerStore.getState().getCompany();
+  const locations = await useServerStore.getState().getLocations();
   const products = await prisma.product.findMany({});
   const skus = await prisma.sku.findMany({});
 

@@ -72,14 +72,14 @@ export default async function Page({
 
   // Order
   const user = await useServerStore.getState().getUser();
-  const company = await useServerStore.getState().getCompany(user.companyId);
+  const company = await useServerStore.getState().getCompany();
 
   if (company == null) {
     redirect("404");
   }
 
   const skus = await useServerStore.getState().getSkus();
-  const locations = await useServerStore.getState().getLocations(user.id);
+  const locations = await useServerStore.getState().getLocations();
   const products = await prisma.product.findMany({});
 
   const { clientSecret, paymentIntentId, paymentMethods } = await fetch(

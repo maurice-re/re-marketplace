@@ -1,28 +1,33 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import create from "zustand";
+import { create } from "zustand";
 import prisma from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
-import { SkuProduct } from "../utils/dashboard/dashboardUtils";
 
 export type OrderWithItems = Order & {
   items: OrderItem[];
 };
 
+export type SkuWithProduct = Sku & {
+  product: Product;
+};
+
 interface ServerStore {
   sessionLastUpdated: Date;
   _user: User | null;
+  _company: Company | null;
   getUser: (refresh?: boolean, redirectUrl?: string) => Promise<User>;
-  getCompany: (companyId: string) => Promise<Company | null>;
-  getLocations: (userId: string) => Promise<Location[]>;
-  getOrders: (userId: string) => Promise<OrderWithItems[]>;
-  getSkus: () => Promise<SkuProduct[]>;
+  getCompany: () => Promise<Company | null>;
+  getLocations: () => Promise<Location[]>;
+  getOrders: () => Promise<OrderWithItems[]>;
+  getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
   _user: null,
+  _company: null,
   sessionLastUpdated: new Date(1 - 1 - 1970),
   getUser: async (refresh?: boolean, redirectUrl?: string) => {
     const user = get()._user;
@@ -42,17 +47,24 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     }
     redirect(redirectUrl ?? "/signin");
   },
-  getCompany: async (companyId: string) => {
-    return await prisma.company.findUnique({
+  getCompany: async () => {
+    const company = get()._company;
+    if (company) {
+      return company;
+    }
+      const _company = await prisma.company.findUnique({
       where: {
-        id: companyId
+        id: get()._user?.companyId
       },
     });
+    set({ _company: _company });
+    return _company;
+  
   },
-  getLocations: async (userId: string) => {
+  getLocations: async () => {
     const user = await prisma.user.findUnique({
       where: {
-        id: userId
+        id: get()._user?.id
       },
       include: {
         ownedLocations: true,
@@ -69,10 +81,10 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       },
     });
   },
-  getOrders: async (userId: string) => {
+  getOrders: async () => {
     const user = await prisma.user.findUnique({
       where: {
-        id: userId
+        id: get()._user?.id
       },
       include: {
         ownedLocations: {

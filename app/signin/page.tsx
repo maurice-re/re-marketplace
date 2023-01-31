@@ -11,7 +11,7 @@ export default async function Page() {
 
   if (session) {
     const user = session.user as User;
-    const orders = await useServerStore.getState().getOrders(user.id);
+    const orders = await useServerStore.getState().getOrders();
 
     if (orders.length === 0) {
       // redirect to shop if they have no orders, including if they just signed in for

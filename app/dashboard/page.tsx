@@ -4,11 +4,9 @@ import Home from "./home";
 
 export default async function Page() {
   const user: User = await useServerStore.getState().getUser();
-  const locations: Location[] = await useServerStore
-    .getState()
-    .getLocations(user.id);
-  const orders: OrderWithItems[] = await useServerStore.getState().getOrders(user.id);
-  const company = await useServerStore.getState().getCompany(user.companyId);
+  const locations: Location[] = await useServerStore.getState().getLocations();
+  const orders: OrderWithItems[] = await useServerStore.getState().getOrders();
+  const company = await useServerStore.getState().getCompany();
   const skus = await useServerStore.getState().getSkus();
 
   const completeOrders = orders.filter(
