@@ -1,7 +1,10 @@
-import { Company, Event, Settings, User } from "@prisma/client";
+import { Event } from "@prisma/client";
 import Link from "next/link";
 import prisma from "../../constants/prisma";
-import { LocationSettings, UserCompany } from "../../utils/dashboard/dashboardUtils";
+import {
+  LocationSettings,
+  UserCompany,
+} from "../../utils/dashboard/dashboardUtils";
 import Tracking from "../dashboard/tracking/tracking";
 
 async function getSkus() {
@@ -32,11 +35,11 @@ export default async function Page() {
   });
   const location: LocationSettings | null = await prisma.location.findUnique({
     where: {
-      id: "219"
+      id: "219",
     },
     include: {
       settings: true,
-    }
+    },
   });
 
   return (
@@ -86,7 +89,12 @@ export default async function Page() {
             </button>
           </Link>
         </div>
-        <Tracking user={user} skus={skus} demo={true} events={events} location={location ?? {} as LocationSettings} />
+        <Tracking
+          skus={skus}
+          demo={true}
+          events={events}
+          location={location ?? ({} as LocationSettings)}
+        />
       </main>
     </div>
   );

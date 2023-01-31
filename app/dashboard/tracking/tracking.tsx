@@ -52,13 +52,11 @@ type Statistic = {
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
-  user,
   skus,
   demo,
   events,
   location,
 }: {
-  user: User;
   skus: Sku[];
   demo: boolean;
   events: Event[];

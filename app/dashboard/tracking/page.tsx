@@ -41,7 +41,6 @@ export default async function Page() {
       </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Tracking
-          user={user}
           skus={skus}
           demo={false}
           events={JSON.parse(JSON.stringify(events))}
