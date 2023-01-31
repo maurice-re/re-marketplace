@@ -1,7 +1,7 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { create } from "zustand";
+import create from "zustand";
 import prisma from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
@@ -52,14 +52,14 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     if (company) {
       return company;
     }
-      const _company = await prisma.company.findUnique({
+    const _company = await prisma.company.findUnique({
       where: {
         id: get()._user?.companyId
       },
     });
     set({ _company: _company });
     return _company;
-  
+
   },
   getLocations: async () => {
     const user = await prisma.user.findUnique({

@@ -1,14 +1,13 @@
 import { Location, Sku } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore } from "../../../stores/cartStore";
+import { CartStore, useCartStore } from "../../../stores/cartStore";
 import { getOrderStringTotal } from "../../../utils/dashboard/orderStringUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 
 function Cart({ locations, skus }: { locations: Location[]; skus: Sku[]; }) {
-  // TODO: Type
-  const orderString = useCartStore((state: any) => state.orderString);
-  const clearCart = useCartStore((state: any) => state.clearCart);
+  const orderString = useCartStore((state: CartStore) => state.orderString);
+  const clearCart = useCartStore((state: CartStore) => state.clearCart);
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between border-l border-l-re-gray-500 flex-grow-0">
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">

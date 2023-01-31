@@ -1,5 +1,5 @@
 import { Product, Sku } from "@prisma/client";
-import { create } from "zustand";
+import create from "zustand";
 import { calculatePriceFromCatalog } from "../utils/prisma/dbUtils";
 
 export type FormRoute = {

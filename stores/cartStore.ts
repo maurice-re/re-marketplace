@@ -1,13 +1,12 @@
-import { create } from "zustand";
+import create from "zustand";
 
-interface CartStore {
+export interface CartStore {
   orderString: string;
   addToCart: (locationId: string, skuQuantity: string) => void;
   removeFromCart: (locationId: string, skuQuantity: string) => void;
   clearCart: () => void;
 }
 
-// TODO: Type
 export const useCartStore = create<CartStore>((set) => ({
   orderString: "",
   addToCart: (locationId, skuQuantity) =>
