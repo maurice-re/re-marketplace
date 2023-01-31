@@ -14,7 +14,12 @@ export function getOrderStringTotal(orderString: string, products: Product[], sk
   }, 0);
 }
 
-export function getOrderString(order?: OrderWithItems, orderItem?: OrderItem, locationId?: string) {
+export function getOrderString(order?: OrderWithItems, orderItem?: OrderItem, locationId?: string, orders?: OrderWithItems[]): string {
+  if (orders) {
+    return orders.reduce((orderString, order) => {
+      return orderString + `*${getOrderString(order)}`
+    }, "").slice(1);
+  } else
     if (order) {
       return order.items.reduce((orderString, item) => {
           return orderString + `_${item.skuId}~${item.quantity}`
