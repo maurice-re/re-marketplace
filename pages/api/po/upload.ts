@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { customAlphabet } from "nanoid";
+import AWS from 'aws-sdk';
 
-const AWS = require("aws-sdk");
 const nanoid = customAlphabet("0123456789", 10);
 
 AWS.config.update({
@@ -13,7 +13,7 @@ const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
 const s3DefaultParams = {
     ACL: "public-read",
-    Bucket: process.env.S3_BUCKET_NAME,
+    Bucket: process.env.S3_BUCKET_NAME ?? "",
     Conditions: [
         ["content-length-range", 0, 1024000], // 1 Mb
         { acl: "public-read" },
