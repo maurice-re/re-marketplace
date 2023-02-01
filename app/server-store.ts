@@ -1,7 +1,7 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import create from "zustand";
+import { create } from "zustand";
 import prisma from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
