@@ -1,7 +1,5 @@
 "use client";
-import { Fragment } from 'react';
-import { PDFViewer } from '@react-pdf/renderer';
-import { Page, Document, StyleSheet } from '@react-pdf/renderer';
+import { View, Text, Page, Document, StyleSheet, PDFViewer, BlobProvider } from '@react-pdf/renderer';
 import POTitle from './poTitle';
 import POTermsTable from './poTermsTable';
 import POSellerAddress from './poSellerAddress';
@@ -11,6 +9,7 @@ import POItemsTable from './poItemsTable';
 import POItemsTotals from './poItemsTotals';
 import POSignoff from './poSignoff';
 import POPaymentInfo from './poPaymentInfo';
+import POUpload from './poUpload';
 
 // The generation of the PO was based on this invoice example by Kagunda JM: https://kags.me.ke/post/generate-dynamic-pdf-incoice-using-react-pdf/
 
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
     }
 });
 
-function POFile({
+function POViewer({
     items,
     totals,
     sellerCompany,
@@ -85,24 +84,37 @@ function POFile({
     sellerEmail: string;
     buyerEmail: string;
 }) {
+    const PODocument = (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <POTitle sellerCompany={sellerCompany} />
+                <POSellerAddress sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerWebsite={sellerWebsite} sellerPhone={sellerPhone} />
+                <PODocumentInfo sellerCompany={sellerCompany} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} buyerCity={buyerCity} buyerState={buyerState} buyerZip={buyerZip} buyerCountry={buyerCountry} poNumber={poNumber} buyerAddressLine={buyerAddressLine} buyerCompany={buyerCompany} buyerPhone={buyerPhone} sellerEmail={sellerEmail} buyerEmail={buyerEmail} />
+                <POTermsTable requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
+                <POItemsTable items={items} />
+                <POItemsTotals totals={totals} />
+                <POPaymentInfo sellerAccountNumber={sellerAccountNumber} sellerRoutingNumber={sellerRoutingNumber} sellerBankName={sellerBankName} sellerTaxId={sellerTaxId} />
+                <POSignoff />
+            </Page>
+        </Document>
+    );
+
     return (
-        <Fragment>
+        <div>
             <PDFViewer width="1000" height="600" className="app">
-                <Document>
-                    <Page size="A4" style={styles.page}>
-                        <POTitle sellerCompany={sellerCompany} />
-                        <POSellerAddress sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} sellerWebsite={sellerWebsite} sellerPhone={sellerPhone} />
-                        <PODocumentInfo sellerCompany={sellerCompany} sellerAddressLine={sellerAddressLine} sellerCity={sellerCity} sellerState={sellerState} sellerZip={sellerZip} sellerCountry={sellerCountry} buyerCity={buyerCity} buyerState={buyerState} buyerZip={buyerZip} buyerCountry={buyerCountry} poNumber={poNumber} buyerAddressLine={buyerAddressLine} buyerCompany={buyerCompany} buyerPhone={buyerPhone} sellerEmail={sellerEmail} buyerEmail={buyerEmail} />
-                        <POTermsTable requestioner={requestioner} shippedVia={shippedVia} fobPoint={fobPoint} terms={terms} />
-                        <POItemsTable items={items} />
-                        <POItemsTotals totals={totals} />
-                        <POPaymentInfo sellerAccountNumber={sellerAccountNumber} sellerRoutingNumber={sellerRoutingNumber} sellerBankName={sellerBankName} sellerTaxId={sellerTaxId} />
-                        <POSignoff />
-                    </Page>
-                </Document>
+                {PODocument}
             </PDFViewer>
-        </Fragment>
+            <div>
+                <BlobProvider document={PODocument}>
+                    {({ blob, url, loading, error }) => {
+                        console.log("Inside blob provider with url ", url, " and blob ");
+                        console.log(blob);
+                        return <POUpload blob={blob} />;
+                    }}
+                </BlobProvider>
+            </div>
+        </div>
     );
 }
 
-export default POFile;
+export default POViewer;

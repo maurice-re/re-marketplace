@@ -14,7 +14,7 @@ import POForm from "./poForm";
 import POItems from "./poItems";
 
 type POSummaryProps = {
-  company?: Company & { locations: Location[] };
+  company?: Company & { locations: Location[]; };
   locations?: Location[];
   loggedIn?: boolean;
   orderString: string;
@@ -34,7 +34,7 @@ export default function POSummary({
   return (
     <div className="w-full h-screen bg-black flex items-start justify-center text-white">
       <ReLogo />
-      <div className="w-full flex">
+      <div className="w-full flex mt-20">
         <POItems
           locations={locations}
           orderString={orderString}
