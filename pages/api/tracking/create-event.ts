@@ -4,7 +4,6 @@ import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
 
 async function createEvent(req: Request, res: Response) {
-
   //Check method
   if (req.method != "POST") {
     await logApi(`${req.method} event`, false, "HTTP Operation not supported");
@@ -18,58 +17,41 @@ async function createEvent(req: Request, res: Response) {
     return;
   }
 
-  // Get company with locations and untracked inventory
-  // If company doesn't exist API key is invalid so send that
-  const apiWithCompany = await prisma.apiKey.findFirst({
-    where: {
-      id: authorization.slice(7)
-    },
-    include: {
-      company: {
-        include: {
-          locations: true,
-          untracked: true
-        }
-      }
-    }
-  });
-
-  if (!apiWithCompany || apiWithCompany.company == undefined) {
-    await logApi("create-event", false, `Unauthorized access/API key invalid: ${JSON.stringify(apiWithCompany)}`);
-    res.status(401).send(`Unauthorized access/API key invalid: ${JSON.stringify(apiWithCompany)}`);
-    return;
-  }
 
   // Get request info
   const {
+    companyId,
     consumerId,
     itemId,
     locationId,
-    trackingLocation,
     skuId,
     action,
     timestamp
   }: {
+    companyId: string;
     action: Action;
     consumerId: string;
     itemId: string;
     locationId: string;
-    trackingLocation: string;
     skuId: string;
     timestamp: string;
   } = req.body;
 
-  const company = apiWithCompany.company;
+  const company = prisma.company.findUnique({
+    where: {
+      id: companyId
+    },
+  });
 
   if (company == undefined) {
-    await logApi(action, false, "API Key invalid/outdated");
-    res.status(400).send("API Key invalid/outdated");
+    await logApi(action, false, "Company invalid/outdated");
+    res.status(400).send("Company invalid/outdated");
     return;
   }
 
   if (skuId !== "") {
     // TODO: HANDLE RE MADE QR CODES
-    const skus = await prisma.sku.findMany();
+    const skus: Sku[] = await prisma.sku.findMany();
     const sku: Sku | undefined = authorization.startsWith("Bearer re_")
       ? skus.find(sku => sku.id == "TODO")
       : skus.find(sku => sku.id == skuId);
@@ -84,15 +66,11 @@ async function createEvent(req: Request, res: Response) {
     await prisma.event.create({
       data: {
         action: action,
-        companyId: company.id,
+        companyId: companyId,
         consumerId: consumerId === "" ? null : consumerId,
-        itemId: itemId,
-        skuId: skuId,
-        // TODO(Suhana): Replace the above with the below once 'null constraint violation' error is resolved
-        // itemId: itemId === "" ? null : itemId,
-        // skuId: skuId === "" ? null : skuId,
+        itemId: itemId === "" ? null : itemId,
+        skuId: skuId === "" ? null : skuId,
         locationId: locationId,
-        trackingLocation: trackingLocation === "" ? null : trackingLocation,
         timestamp: timestamp ? new Date(timestamp) : new Date()
       },
     });
@@ -109,37 +87,37 @@ async function createEvent(req: Request, res: Response) {
 export default createEvent;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- TODO: Implement
-async function updateUntracked(
-  itemId: string,
-  company: Company & { untracked: UntrackedInventory[]; },
-  skuId: string
-): Promise<void> {
-  const numEvents = await prisma.event.count({
-    where: {
-      itemId: itemId,
-    },
-  });
+// async function updateUntracked(
+//   itemId: string,
+//   company: Company & { untracked: UntrackedInventory[]; },
+//   skuId: string
+// ): Promise<void> {
+//   const numEvents = await prisma.event.count({
+//     where: {
+//       itemId: itemId,
+//     },
+//   });
 
-  if (numEvents == 1) {
-    const untracked = company.untracked.find((data) => data.skuId == skuId);
-    if (!untracked) {
-      return;
-    }
+//   if (numEvents == 1) {
+//     const untracked = company.untracked.find((data) => data.skuId == skuId);
+//     if (!untracked) {
+//       return;
+//     }
 
-    if (untracked.quantity == 1) {
-      await prisma.untrackedInventory.delete({
-        where: {
-          companyId_skuId: { companyId: company.id, skuId: skuId },
-        },
-      });
-    }
-    await prisma.untrackedInventory.update({
-      where: {
-        companyId_skuId: { companyId: company.id, skuId: skuId },
-      },
-      data: {
-        quantity: untracked.quantity - 1,
-      },
-    });
-  }
-}
+//     if (untracked.quantity == 1) {
+//       await prisma.untrackedInventory.delete({
+//         where: {
+//           companyId_skuId: { companyId: company.id, skuId: skuId },
+//         },
+//       });
+//     }
+//     await prisma.untrackedInventory.update({
+//       where: {
+//         companyId_skuId: { companyId: company.id, skuId: skuId },
+//       },
+//       data: {
+//         quantity: untracked.quantity - 1,
+//       },
+//     });
+//   }
+// }

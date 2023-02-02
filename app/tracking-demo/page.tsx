@@ -1,15 +1,11 @@
-import { Company, Event, Settings, User } from "@prisma/client";
+import { Event } from "@prisma/client";
 import Link from "next/link";
 import prisma from "../../constants/prisma";
+import {
+  LocationSettings,
+  UserCompany,
+} from "../../utils/dashboard/dashboardUtils";
 import Tracking from "../dashboard/tracking/tracking";
-
-export type UserSettings =
-  | (User & {
-      company: Company & {
-        settings: Settings | null;
-      };
-    })
-  | null;
 
 async function getSkus() {
   const skus = await prisma.sku.findMany();
@@ -22,22 +18,28 @@ async function getUser() {
       email: "lewis@example.com", // Complete
     },
     include: {
-      company: {
-        include: {
-          settings: true,
-        },
-      },
+      company: true,
     },
   });
   return JSON.parse(JSON.stringify(user));
 }
 
 export default async function Page() {
-  const user: UserSettings = await getUser();
+  const user: UserCompany = await getUser();
   if (!user) return <div>Not found</div>;
   const skus = await getSkus();
+
+  // TODO(Suhana): URGENT - Implement location selection after switch to location-based, and get location/events from that
   const events: Event[] = await prisma.event.findMany({
     where: { companyId: user.companyId },
+  });
+  const location: LocationSettings | null = await prisma.location.findUnique({
+    where: {
+      id: "219",
+    },
+    include: {
+      settings: true,
+    },
   });
 
   return (
@@ -87,7 +89,12 @@ export default async function Page() {
             </button>
           </Link>
         </div>
-        <Tracking user={user} skus={skus} demo={true} events={events} />
+        <Tracking
+          skus={skus}
+          demo={true}
+          events={events}
+          location={location ?? ({} as LocationSettings)}
+        />
       </main>
     </div>
   );

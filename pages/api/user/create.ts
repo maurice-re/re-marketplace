@@ -1,4 +1,4 @@
-import { LocationType, Role } from "@prisma/client";
+import { LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { CartOrder } from "../../../stores/formStore";
@@ -40,17 +40,16 @@ async function create(req: Request, res: Response) {
       email: form[2],
       firstName: form[0],
       lastName: form[1],
-      role: Role.ADMIN
     },
   });
 
   const order = await prisma.order.create({
     data: {
       amount: calculateAmount(cart, tax),
-      companyId: company.id,
       createdAt: now,
       userId: user.id,
-      paymentId: customerId
+      paymentId: customerId,
+      // TODO(Suhana): Add locationId here
     },
   });
 
@@ -60,7 +59,6 @@ async function create(req: Request, res: Response) {
       data: {
         city: shippingInfo[4 + 7 * formIndex],
         country: shippingInfo[1 + 7 * formIndex],
-        companyId: company.id,
         line1: shippingInfo[2 + 7 * formIndex],
         line2: shippingInfo[3 + 7 * formIndex],
         shippingName: shippingInfo[0 + 7 * formIndex],
@@ -75,7 +73,6 @@ async function create(req: Request, res: Response) {
           data: {
             amount: calculatePriceFromCatalog(orderItem.sku, orderItem.sku.id, orderItem.quantity, tax),
             createdAt: now,
-            locationId: location.id,
             orderId: order.id,
             quantity: orderItem.quantity,
             skuId: orderItem.sku.id,

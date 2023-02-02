@@ -8,13 +8,13 @@ const styles = StyleSheet.create({
         marginTop: 30,
     },
     logo: {
-        width: 169,
-        height: 170,
+        width: 84,
+        height: 85,
         marginRight: 'auto',
         marginLeft: 0
     },
     signoff: {
-        width: '55%',
+        width: '75%',
         flexDirection: 'column',
         color: '#666666',
         justifyContent: 'space-between'

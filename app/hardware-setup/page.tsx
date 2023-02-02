@@ -1,26 +1,11 @@
-import { User } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import prisma from "../../constants/prisma";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { useServerStore } from "../server-store";
 import HardwareForm from "./hardwareForm";
 
 export default async function Page() {
-  const session = await unstable_getServerSession(authOptions);
-  if (!session) {
-    redirect("/signin");
-  }
+  const user = await useServerStore.getState().getUser();
+  const locations = await useServerStore.getState().getLocations();
 
-  const user = session.user as User;
-  const company = await prisma.company.findUnique({
-    where: { id: user.companyId },
-    include: { locations: true },
-  });
-
-  if (!company) {
-    redirect("/signin");
-  }
-  if (!company.locations) {
+  if (!locations) {
     return (
       <div className="flex flex-col h-screen w-full bg-re-dark-green-500 items-center justify-center font-theinhardt">
         <div className="flex">
@@ -38,7 +23,7 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col h-screen w-full bg-re-dark-green-500 items-center justify-center font-theinhardt">
-      <HardwareForm locations={company.locations} />
+      <HardwareForm locations={[]} />
     </div>
   );
 }

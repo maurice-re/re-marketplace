@@ -12,6 +12,8 @@ import {
 } from "chart.js";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import SettingsForm from "../../../components/tracking/settingsForm";
+import { LocationSettings } from "../../../utils/dashboard/dashboardUtils";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -29,8 +31,6 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
 } from "../../../utils/tracking/trackingUtils";
-import { UserSettings } from "./page";
-import SettingsForm from "./settingsForm";
 
 ChartJS.register(
   CategoryScale,
@@ -52,15 +52,15 @@ type Statistic = {
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
-  user,
   skus,
   demo,
   events,
+  location,
 }: {
-  user: UserSettings;
   skus: Sku[];
   demo: boolean;
   events: Event[];
+  location: LocationSettings;
 }) {
   // "Dummy" data that is updated on changes
   const baseData = {
@@ -84,7 +84,7 @@ function Tracking({
   };
 
   const [settings, setSettings] = useState<Settings>(
-    user?.company.settings ?? ({} as Settings)
+    location.settings ?? ({} as Settings)
   );
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");

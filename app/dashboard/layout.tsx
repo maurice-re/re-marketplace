@@ -1,12 +1,8 @@
-import { Order, Status, User } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
+import { Order, Status } from "@prisma/client";
 import Image from "next/image";
-import { redirect } from "next/navigation";
-import prisma from "../../constants/prisma";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import { useServerStore } from "../server-store";
 import Header from "./header";
 import SidebarIcon from "./sidebarIcon";
-// import { usePathname } from "next/navigation";
 
 export type Route = {
   icon: JSX.Element;
@@ -19,31 +15,14 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  // const setUser = useAuthStore((state) => state.setUser);
-  // const pathname = usePathname();
-
-  const session = await unstable_getServerSession(authOptions);
-  if (session == null) {
-    redirect("/signin");
-  }
-  const user = session.user as User;
-  // setUser(user);
-
-  const completedOrders: Order[] = await prisma.order.findMany({
-    where: {
-      companyId: user.companyId,
-      status: Status.COMPLETED,
-    },
-  });
-
-  const incompleteOrders: Order[] = await prisma.order.findMany({
-    where: {
-      companyId: user.companyId,
-      NOT: {
-        status: Status.COMPLETED,
-      },
-    },
-  });
+  const user = await useServerStore.getState().getUser();
+  const orders: Order[] = await useServerStore.getState().getOrders();
+  const completedOrders = orders.filter(
+    (order) => order.status === Status.COMPLETED
+  );
+  const incompleteOrders = orders.filter(
+    (order) => order.status !== Status.COMPLETED
+  );
 
   // Need to be test user or have at least one complete order
   const hasCompleteOrder: boolean =

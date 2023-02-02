@@ -25,7 +25,7 @@ export default function SettingsForm({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          companyId: settings.companyId,
+          locationId: settings.locationId,
           borrowReturnBuffer: borrowReturnBuffer,
         }),
       });
@@ -38,7 +38,7 @@ export default function SettingsForm({
       }
 
       const settingsRes = await fetch(
-        `/api/tracking/get-settings?companyId=${settings?.companyId}`,
+        `/api/tracking/get-settings?locationId=${settings?.locationId}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -84,9 +84,8 @@ export default function SettingsForm({
           borrowReturnBuffer === initialBorrowReturnBuffer
         }
         id="submit"
-        className={`btn btn-accent btn-outline w-28 mt-4 ${
-          isLoading ? "loading" : ""
-        }`}
+        className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""
+          }`}
       >
         Update
       </button>

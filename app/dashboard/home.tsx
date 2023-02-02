@@ -1,23 +1,15 @@
 import { signOut } from "next-auth/react";
-import {
-  addDays,
-  ItemLocationSku,
-  ItemLocationSkuProduct,
-  OrderItemLocationName,
-  OrderWithItems,
-  separateByLocationId,
-  skuName,
-  SkuProduct,
-  UserCompany,
-} from "../../utils/dashboard/dashboardUtils";
+import { addDays, skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
 
-import { Location, OrderItem, Status } from "@prisma/client";
+import { Company, Location, OrderItem, Status, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
+import { OrderWithItems } from "../server-store";
 import QuickOrder from "./quickOrder";
 
 function Home({
+  company,
   locations,
   orders,
   user,
@@ -25,14 +17,15 @@ function Home({
   hasCompleteOrder,
   hasIncompleteOrder,
 }: {
+  company: Company;
   locations: Location[];
-  orders: OrderItemLocationName[];
-  user: UserCompany;
+  orders: OrderWithItems[];
+  user: User;
   skus: SkuProduct[];
   hasCompleteOrder: boolean;
   hasIncompleteOrder: boolean;
 }) {
-  const incompleteOrders = orders.filter(
+  const incompleteOrders: OrderWithItems[] = orders.filter(
     (order) => order.status != Status.COMPLETED
   );
 
@@ -56,7 +49,7 @@ function Home({
     }
   }
 
-  function orderSubmittedRecently(order: OrderItemLocationName): boolean {
+  function orderSubmittedRecently(order: OrderWithItems): boolean {
     // Only show order submitted flag if order was submitted in the last 2 days
     return (
       new Date().getTime() - new Date(order.createdAt).getTime() <
@@ -68,7 +61,8 @@ function Home({
     return (
       <div className="flex flex-col overflow-auto">
         <h1 className="border-b-1/2 border-re-gray-300 bg-re-black py-2 pl-6 text-lg text-white">
-          Welcome {user.firstName} – {user.company.name}
+          {/* TODO: USER Company */}
+          Welcome {user.firstName} – {company.name}
         </h1>
         <main className="flex flex-col text-white font-theinhardt bg-re-dark-green-500 h-screen overflow-auto">
           <div className="flex items-center justify-center p-4">
@@ -105,55 +99,40 @@ function Home({
                 </div>
                 <div className="h-px bg-re-gray-300 mb-2 w-full" />
                 <div className="flex flex-col w-full p-4">
-                  {separateByLocationId(
-                    orders[0].items as unknown as OrderItem[]
-                  ).map((arr, index) => (
-                    <div key={arr[0].locationId}>
-                      <div className="flex justify-between mt-1 mb-3">
-                        <h2 className="text-xl font-theinhardt">
-                          {(arr[0] as ItemLocationSku).location.displayName ??
-                            (arr[0] as ItemLocationSku).location.city}
-                        </h2>
-                        <h3 className="text-lg font-theinhardt-300">{`$${arr.reduce(
-                          (prev, curr) => prev + curr.amount,
-                          0
-                        )}`}</h3>
-                      </div>
-                      {arr.map((item) => (
-                        <div
-                          className="flex justify-between"
-                          key={item.id + "items"}
-                        >
+                  {orders[0].items.map((item: OrderItem, index: number) => {
+                    const location = locations.find(
+                      (location) => location.id == orders[0].locationId
+                    );
+                    const sku: SkuProduct | undefined = skus.find((sku) => sku.id == item.skuId);
+                    return (
+                      <div key={item.id + "items"}>
+                        <div className="flex justify-between mt-1 mb-3">
+                          <h2 className="text-xl font-theinhardt">
+                            {location?.displayName ?? location?.city}
+                          </h2>
+                          <h3 className="text-lg font-theinhardt-300">{`$${orders[0].items.reduce(
+                            (prev: number, curr: OrderItem) => prev + curr.amount,
+                            0
+                          )}`}</h3>
+                        </div>
+                        <div className="flex justify-between">
                           <div
-                            className={`flex items-center ${
-                              index + 1 != arr.length ? "mb-3" : ""
-                            }`}
+                            className={`flex items-center ${index + 1 != orders[0].items.length ? "mb-3" : ""
+                              }`}
                           >
                             <Image
-                              src={
-                                (item as ItemLocationSkuProduct).sku.mainImage
-                              }
+                              src={sku?.mainImage ?? ""}
                               height={96}
                               width={96}
-                              alt={skuName(
-                                (item as ItemLocationSkuProduct).sku
-                              )}
+                              alt={skuName(sku)}
                               className="rounded"
                             />
                             <div className="flex-col text-start ml-4">
                               <div className="text-base font-theinhardt">
-                                {
-                                  (item as ItemLocationSkuProduct).sku.product
-                                    .name
-                                }
+                                {sku?.product.name}
                               </div>
                               <div className="text-sm font-theinhardt-300">
-                                {`${
-                                  (item as ItemLocationSkuProduct).sku.size
-                                } | ${
-                                  (item as ItemLocationSkuProduct).sku
-                                    .materialShort
-                                }`}
+                                {`${sku?.size} | ${sku?.materialShort}`}
                               </div>
                             </div>
                           </div>
@@ -186,14 +165,14 @@ function Home({
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ))}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               <QuickOrder
                 companyId={user.companyId}
-                customerId={user.company.customerId}
+                customerId={company.customerId}
                 locations={locations}
                 skus={skus}
                 userId={user.id}
@@ -213,7 +192,7 @@ function Home({
     return (
       <div className="flex flex-col overflow-auto">
         <h1 className="border-b-1/2 border-re-gray-300 bg-re-black py-2 pl-6 text-lg text-white">
-          Welcome {user.firstName} – {user.company.name}
+          Welcome {user.firstName} – {company.name}
         </h1>
         <main className="flex flex-col text-white font-theinhardt bg-re-dark-green-500 h-screen overflow-auto">
           <div className="flex flex-col mx-4 mt-2">
@@ -280,64 +259,51 @@ function Home({
                     {statuses.map((status, index) => (
                       <li
                         key={index}
-                        className={`step text-xs leading-tight ${
-                          progress.includes(status) ? "step-accent" : ""
-                        }`}
+                        className={`step text-xs leading-tight ${progress.includes(status) ? "step-accent" : ""
+                          }`}
                       >
                         {status.replace(/_/, " ")}
                       </li>
                     ))}
                   </ul>
                   <div className="flex flex-col w-full p-4">
-                    {separateByLocationId(
-                      orders[0].items as unknown as OrderItem[]
-                    ).map((arr, index) => (
-                      <div key={arr[0].locationId}>
-                        <div className="flex justify-between mt-1 mb-3">
-                          <h2 className="text-xl font-theinhardt">
-                            {(arr[0] as ItemLocationSku).location.displayName ??
-                              (arr[0] as ItemLocationSku).location.city}
-                          </h2>
-                          <h3 className="text-lg font-theinhardt-300">{`$${arr.reduce(
-                            (prev, curr) => prev + curr.amount,
-                            0
-                          )}`}</h3>
-                        </div>
-                        {arr.map((item) => (
-                          <div
-                            className="flex justify-between"
-                            key={item.id + "items"}
-                          >
+                    {incompleteOrders[0].items.map((item: OrderItem, index: number) => {
+                      const location = locations.find(
+                        (location) =>
+                          location.id == incompleteOrders[0].locationId
+                      );
+                      const sku = skus.find((sku) => sku.id == item.skuId);
+                      return (
+                        <div key={item.id + "items"}>
+                          <div className="flex justify-between mt-1 mb-3">
+                            <h2 className="text-xl font-theinhardt">
+                              {location?.displayName ?? location?.city}
+                            </h2>
+                            <h3 className="text-lg font-theinhardt-300">{`$${orders[0].items.reduce(
+                              (prev: number, curr: OrderItem) => prev + curr.amount,
+                              0
+                            )}`}</h3>
+                          </div>
+                          <div className="flex justify-between">
                             <div
-                              className={`flex items-center ${
-                                index + 1 != arr.length ? "mb-3" : ""
-                              }`}
+                              className={`flex items-center ${index + 1 != orders[0].items.length
+                                ? "mb-3"
+                                : ""
+                                }`}
                             >
                               <Image
-                                src={
-                                  (item as ItemLocationSkuProduct).sku.mainImage
-                                }
+                                src={sku?.mainImage ?? ""}
                                 height={96}
                                 width={96}
-                                alt={skuName(
-                                  (item as ItemLocationSkuProduct).sku
-                                )}
+                                alt={skuName(sku)}
                                 className="rounded"
                               />
                               <div className="flex-col text-start ml-4">
                                 <div className="text-base font-theinhardt">
-                                  {
-                                    (item as ItemLocationSkuProduct).sku.product
-                                      .name
-                                  }
+                                  {sku?.product.name}
                                 </div>
                                 <div className="text-sm font-theinhardt-300">
-                                  {`${
-                                    (item as ItemLocationSkuProduct).sku.size
-                                  } | ${
-                                    (item as ItemLocationSkuProduct).sku
-                                      .materialShort
-                                  }`}
+                                  {`${sku?.size} | ${sku?.materialShort}`}
                                 </div>
                               </div>
                             </div>
@@ -370,9 +336,9 @@ function Home({
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    ))}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -387,13 +353,12 @@ function Home({
         {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
-            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
-              user.companyId == "616" ? "Agent Coulson" : user.firstName
-            }!`}</h1>
+            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId == "616" ? "Agent Coulson" : user.firstName
+              }!`}</h1>
             <div className="flex items-center">
               <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
               <div className="bg-white w-px h-5/6 mx-2" />
-              <h1 className=" font-theinhardt text-3xl">{user.company.name}</h1>
+              <h1 className=" font-theinhardt text-3xl">{company.name}</h1>
               <button
                 className="ml-6 px-4 py-1 bg-re-gray-400 rounded-10 text-white hover:bg-re-green-600 hover:text-black"
                 onClick={() => signOut({ callbackUrl: "/form/location" })}
@@ -406,7 +371,7 @@ function Home({
             <div className="flex flex-col w-3/5 justify-between pb-4">
               <QuickOrder
                 companyId={user.companyId}
-                customerId={user.company.customerId}
+                customerId={company.customerId}
                 locations={locations}
                 skus={skus}
                 userId={user.id}

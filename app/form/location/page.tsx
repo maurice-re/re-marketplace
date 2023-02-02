@@ -9,7 +9,7 @@ import FormNextButton from "../../../components/form/next-button";
 import ProgressBar from "../../../components/form/progress-bar";
 import ReLogo from "../../../components/form/re-logo";
 import { cities } from "../../../constants/cities";
-import { useFormStore } from "../../../stores/formStore";
+import { FormStore, useFormStore } from "../../../stores/formStore";
 
 export default function Page() {
   const {
@@ -19,7 +19,7 @@ export default function Page() {
     initializeCatalog,
     locations,
     removeLocation,
-  } = useFormStore((state) => ({
+  } = useFormStore((state: FormStore) => ({
     addLocation: state.addLocation,
     addSummary: state.addSummary,
     disableCheckout: state.disableCheckout,
@@ -78,7 +78,7 @@ export default function Page() {
       </div>
     ));
 
-  const chosen = locations.map((city) => (
+  const chosen = locations.map((city: string) => (
     <div
       className="bg-re-black text-sm text-white pr-2 py-1 rounded mr-3 my-1 flex border border-white font-theinhardt-300"
       key={city}

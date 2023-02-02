@@ -1,22 +1,13 @@
-import { Sku } from "@prisma/client";
+import { Location, Sku } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore } from "../../../stores/cartStore";
-import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
+import { CartStore, useCartStore } from "../../../stores/cartStore";
 import { getOrderStringTotal } from "../../../utils/dashboard/orderStringUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 
-function Cart({
-  companyId,
-  locations,
-  skus,
-}: {
-  companyId: string;
-  locations: LocationWithOneItem[];
-  skus: Sku[];
-}) {
-  const orderString = useCartStore((state) => state.orderString);
-  const clearCart = useCartStore((state) => state.clearCart);
+function Cart({ locations, skus }: { locations: Location[]; skus: Sku[]; }) {
+  const orderString = useCartStore((state: CartStore) => state.orderString);
+  const clearCart = useCartStore((state: CartStore) => state.clearCart);
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between border-l border-l-re-gray-500 flex-grow-0">
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">
@@ -24,7 +15,7 @@ function Cart({
       </h1>
       {orderString != "" && (
         <div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
-          {orderString.split("*").map((orderForLocation, index) => {
+          {orderString.split("*").map((orderForLocation: string) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
             const location = locations.find(
@@ -153,9 +144,8 @@ function Cart({
             Shipping and taxes calculated at checkout.
           </h2>
           <Link
-            className={`w-full my-4 ${
-              orderString == "" && "pointer-events-none"
-            }`}
+            className={`w-full my-4 ${orderString == "" && "pointer-events-none"
+              }`}
             href={{
               pathname: "/checkout",
               query: {
@@ -164,20 +154,18 @@ function Cart({
             }}
           >
             <button
-              className={`${
-                orderString === ""
-                  ? "text-re-gray-300 border-1/2 border-re-gray-300"
-                  : "bg-re-blue-500"
-              }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+              className={`${orderString === ""
+                ? "text-re-gray-300 border-1/2 border-re-gray-300"
+                : "bg-re-blue-500"
+                }  rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
               disabled={orderString == ""}
             >
               Checkout
             </button>
           </Link>
           <div
-            className={`${
-              orderString === "" ? "text-re-gray-300" : "text-white"
-            }  text-sm w-full flex justify-center items-center`}
+            className={`${orderString === "" ? "text-re-gray-300" : "text-white"
+              }  text-sm w-full flex justify-center items-center`}
           >
             <h2 className="text-center">Or,</h2>
             <Link
@@ -191,11 +179,10 @@ function Cart({
             >
               <button
                 disabled={orderString == ""}
-                className={`${
-                  orderString === ""
-                    ? "decoration-re-gray-300"
-                    : "decoration-re-blue"
-                } decoration-1 underline underline-offset-2 px-1`}
+                className={`${orderString === ""
+                  ? "decoration-re-gray-300"
+                  : "decoration-re-blue"
+                  } decoration-1 underline underline-offset-2 px-1`}
               >
                 generate
               </button>

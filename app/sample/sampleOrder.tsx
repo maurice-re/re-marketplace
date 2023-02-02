@@ -47,7 +47,6 @@ function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
       createdAt: now,
       quantity: 1,
       locationId: "",
-      companyId: "",
       skuIds,
       status: Status.PROCESSING,
     };
@@ -73,8 +72,8 @@ function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
             >
               <button
                 className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selected.includes(sku)
-                    ? "border-re-green-600 border-3"
-                    : "border"
+                  ? "border-re-green-600 border-3"
+                  : "border"
                   }`}
                 onClick={() => handleItemPress(sku)}
               >

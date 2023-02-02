@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Company,
+  User,
   Location,
   LocationType,
   Penalty,
@@ -19,8 +19,8 @@ import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import Cart from "./cart";
 
 type StoreProps = {
-  company: Company;
-  initialLocations: LocationWithOneItem[];
+  user: User;
+  initialLocations: Location[];
   products: Product[];
   skus: Sku[];
 };
@@ -50,7 +50,7 @@ const breadcrumbsInfo: BreadcrumbsInfo[] = [
 ];
 
 export default function StorePage({
-  company,
+  user,
   initialLocations,
   products,
   skus,
@@ -62,7 +62,7 @@ export default function StorePage({
   const [skuId, setSkuId] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState<string>("");
 
-  const addToCart = useCartStore((state) => state.addToCart);
+  const addToCart = useCartStore((state: any) => state.addToCart);
 
   function changeSize(newSize: string) {
     if (skuId == undefined) {
@@ -90,15 +90,12 @@ export default function StorePage({
     setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
   }
 
-  function getLocationById(
-    locationId: string
-  ): LocationWithOneItem | undefined {
+  function getLocationById(locationId: string): Location | undefined {
     return locations.find((location) => location.id === locationId);
   }
 
   function getLocationName(locationId: string): string {
-    const location: LocationWithOneItem | undefined =
-      getLocationById(locationId);
+    const location: Location | undefined = getLocationById(locationId);
     return location?.displayName ?? location?.city ?? "Your Location";
   }
 
@@ -118,18 +115,15 @@ export default function StorePage({
       id: "",
       city: formElements[4].value,
       country: formElements[1].value,
-      companyId: company.id,
       displayName: null,
       line1: formElements[2].value,
       line2: formElements[3].value,
       penalty: Penalty.NONE,
-      trackingLocation: "",
       shippingName: formElements[0].value,
       state: formElements[6].value,
       trackingType: TrackingType.NONE,
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
-      tagId: "",
     };
 
     await fetch("/api/location", {
@@ -139,7 +133,7 @@ export default function StorePage({
     }).then(async (res) => await res.json());
 
     const results = await fetch(
-      `/api/location?companyId=${company.id}&withItems=true`,
+      `/api/location?userId=${user.id}&withItems=true`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -162,7 +156,7 @@ export default function StorePage({
             <h2 className="text-left text-lg leading-none text-white">
               {location.displayName ?? location.city}
             </h2>
-            {location.orderItems.length != 0 && (
+            {/* {location.orderItems.length != 0 && (
               <div className="rounded-2xl px-2 bg-re-product-green border-re-product-green">
                 <div className="flex items-center text-sm font-theinhardt-300 w-full gap-1">
                   <div className="text-gray-200">
@@ -176,7 +170,7 @@ export default function StorePage({
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
           <div className="flex flex-col w-full font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
@@ -197,9 +191,8 @@ export default function StorePage({
         key={"location" + info.step}
       >
         <div
-          className={`h-0.5 ${
-            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-          } mb-2 w-full`}
+          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+            } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -243,9 +236,8 @@ export default function StorePage({
                   Close
                 </button>
                 <button
-                  className={`btn btn-outline btn-accent ${
-                    loading ? "loading" : ""
-                  }`}
+                  className={`btn btn-outline btn-accent ${loading ? "loading" : ""
+                    }`}
                   type="submit"
                 >
                   Add
@@ -300,7 +292,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -376,9 +368,8 @@ export default function StorePage({
         key={"sku" + info.step}
       >
         <div
-          className={`h-0.5 ${
-            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-          } mb-2 w-full`}
+          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+            } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -426,7 +417,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -450,9 +441,8 @@ export default function StorePage({
         key={"product" + info.step}
       >
         <div
-          className={`h-0.5 ${
-            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-          } mb-2 w-full`}
+          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+            } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -466,9 +456,6 @@ export default function StorePage({
     return (
       <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -548,11 +535,10 @@ export default function StorePage({
                         {sizes.map((size) => (
                           <button
                             key={size}
-                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${
-                              sku.size == size
-                                ? "border-re-green-500"
-                                : "border-re-gray-300"
-                            }`}
+                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${sku.size == size
+                              ? "border-re-green-500"
+                              : "border-re-gray-300"
+                              }`}
                             onClick={() => changeSize(size)}
                           >
                             {size}
@@ -564,15 +550,13 @@ export default function StorePage({
                         {colors.map((color) => (
                           <button
                             key={color}
-                            className={`rounded-full w-8 h-8 border-1/2 mr-2 ${
-                              color === "green"
-                                ? "bg-re-product-green"
-                                : "bg-re-product-gray"
-                            } ${
-                              sku.color == color
+                            className={`rounded-full w-8 h-8 border-1/2 mr-2 ${color === "green"
+                              ? "bg-re-product-green"
+                              : "bg-re-product-gray"
+                              } ${sku.color == color
                                 ? "border-white"
                                 : "border-none"
-                            }`}
+                              }`}
                             onClick={() => changeColor(color)}
                           ></button>
                         ))}
@@ -582,11 +566,10 @@ export default function StorePage({
                         {materials.map((material) => (
                           <button
                             key={material}
-                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${
-                              sku.material == material
-                                ? "border-re-green-500"
-                                : "border-re-gray-300"
-                            }`}
+                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${sku.material == material
+                              ? "border-re-green-500"
+                              : "border-re-gray-300"
+                              }`}
                           >
                             {material}
                           </button>
@@ -677,7 +660,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -694,7 +677,7 @@ export default function StorePage({
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
         <div className="text-white font-theinhardt text-28">Coming Soon</div>
       </main>
-      <Cart companyId={company.id} locations={locations} skus={skus} />
+      <Cart locations={locations} skus={skus} />
     </div>
   );
 }

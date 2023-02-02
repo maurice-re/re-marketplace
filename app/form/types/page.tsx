@@ -12,7 +12,7 @@ import {
   food_types,
   FormButtonModel,
 } from "../../../constants/form";
-import { useFormStore } from "../../../stores/formStore";
+import { FormStore, useFormStore } from "../../../stores/formStore";
 
 export default function Page() {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
@@ -41,7 +41,7 @@ export default function Page() {
   }
 
   const { activateRoute, deactivateRoute, locations } = useFormStore(
-    (state) => ({
+    (state: FormStore) => ({
       activateRoute: state.activateRoute,
       deactivateRoute: state.deactivateRoute,
       locations: state.locations,

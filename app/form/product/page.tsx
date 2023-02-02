@@ -8,7 +8,7 @@ import FormNextButton from "../../../components/form/next-button";
 import ProgressBar from "../../../components/form/progress-bar";
 import SkuQuantityField from "../../../components/form/quantity_input";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { FormStore, useFormStore } from "../../../stores/formStore";
 import FormOptionButton from "../option-button";
 
 const emptyProduct = {
@@ -26,7 +26,7 @@ const emptyProduct = {
 export default function Page() {
   const path = usePathname();
   const searchParams = useSearchParams();
-  const { locations, productCatalog } = useFormStore((state) => ({
+  const { locations, productCatalog } = useFormStore((state: FormStore) => ({
     locations: state.locations,
     productCatalog: state.productCatalog,
   }));
@@ -47,7 +47,7 @@ export default function Page() {
     if (productCatalog) {
       const productId = id == "swapcup" ? "SC1" : "SB1";
       const _product =
-        productCatalog.find((p) => productId == p.id) ?? emptyProduct;
+        productCatalog.find((p: Product) => productId == p.id) ?? emptyProduct;
       setProduct(_product);
     }
   }, [id, productCatalog]);
@@ -75,7 +75,7 @@ export default function Page() {
 
   const sizes = product.sizes
     .split(", ")
-    .map((size) => (
+    .map((size: string) => (
       <FormOptionButton
         handleClick={() =>
           handleOptionClick(size, chosenSizes, setChosenSizes, true)
@@ -88,7 +88,7 @@ export default function Page() {
 
   const materials = product.materials
     .split(", ")
-    .map((material) => (
+    .map((material: string) => (
       <FormOptionButton
         handleClick={() =>
           handleOptionClick(material, chosenMaterial, setChosenMaterial, false)
