@@ -55,7 +55,7 @@ async function create(req: Request, res: Response) {
 
   let formIndex = 0;
   allLocations(cart).forEach(async (city) => {
-    const location = await prisma.location.create({
+    await prisma.location.create({
       data: {
         city: shippingInfo[4 + 7 * formIndex],
         country: shippingInfo[1 + 7 * formIndex],

@@ -1,4 +1,4 @@
-import { Location, User } from "@prisma/client";
+import { Location } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../constants/prisma";
 
@@ -16,22 +16,6 @@ async function handler(req: Request, res: Response) {
     res.status(200).send();
   }
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: userId as string,
-    },
-    include: {
-      ownedLocations: {
-        include: {
-          orders: {
-            include: {
-              items: true
-            }
-          }
-        }
-      },
-    }
-  });
 
   const userWithItems = await prisma.user.findUnique({
     where: {
@@ -42,22 +26,9 @@ async function handler(req: Request, res: Response) {
         include: {
           orders: {
             include: {
-              items: true
+              items: !!withItems
             }
           }
-        }
-      },
-    }
-  });
-
-  const userWithoutItems = await prisma.user.findUnique({
-    where: {
-      id: userId as string,
-    },
-    include: {
-      ownedLocations: {
-        include: {
-          orders: true
         }
       },
     }
@@ -90,13 +61,8 @@ async function handler(req: Request, res: Response) {
   }
 
   if (req.method == "GET" && typeof userId == "string") {
-    if (withItems == "true") {
       const locations = userWithItems?.ownedLocations ?? [];
       res.status(200).send({ locations: locations });
-    } else {
-      const locations = userWithoutItems?.ownedLocations ?? [];
-      res.status(200).send({ locations: locations });
-    }
   }
   if (req.method == "GET" && typeof id == "string") {
     const location = await prisma.location.findUnique({

@@ -4,7 +4,7 @@ import { logApi } from "../../../utils/apiUtils";
 
 async function editEvents(req: Request, res: Response) {
   if (req.method == "POST") {
-    const updateEvents = await prisma.event.updateMany({
+    await prisma.event.updateMany({
       where: {
         skuId: "",
       },

@@ -1,4 +1,4 @@
-import { Action, Company, Sku, UntrackedInventory } from "@prisma/client";
+import { Action, Sku } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";

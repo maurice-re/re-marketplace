@@ -1,6 +1,6 @@
+import AWS from 'aws-sdk';
 import { Request, Response } from "express";
 import { customAlphabet } from "nanoid";
-import AWS from 'aws-sdk';
 
 const nanoid = customAlphabet("0123456789", 10);
 
@@ -20,7 +20,7 @@ const s3DefaultParams = {
     ],
 };
 
-async function handleFileUpload(file: any) {
+async function handleFileUpload(file: Buffer): Promise<AWS.S3.ManagedUpload.SendData> {
     return new Promise((resolve, reject) => {
         s3.upload(
             {
@@ -30,7 +30,7 @@ async function handleFileUpload(file: any) {
                 Body: file,
                 ContentEncoding: "base64",
             },
-            (err: any, data: any) => {
+            (err: Error, data: AWS.S3.ManagedUpload.SendData) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -50,7 +50,7 @@ async function upload(req: Request, res: Response) {
     const base64 = req.body;
     const base64Data = Buffer.from(base64.replace(/^data:application\/\w+;base64,/, ""), "base64");
 
-    const response: any = await handleFileUpload(base64Data);
+    const response: AWS.S3.ManagedUpload.SendData = await handleFileUpload(base64Data);
 
     const url = response.Location;
 

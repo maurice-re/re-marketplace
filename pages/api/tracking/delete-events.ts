@@ -7,7 +7,7 @@ async function deleteEvent(req: Request, res: Response) {
         return;
     }
 
-    const result = await prisma.event.deleteMany({
+    await prisma.event.deleteMany({
         where: {
             AND: [
                 {

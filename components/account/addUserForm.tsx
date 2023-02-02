@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { UserCompany } from "../../utils/dashboard/dashboardUtils";
 
 type NewUser = {
@@ -10,7 +10,7 @@ type NewUser = {
   newCompanyCustomerId: string;
 };
 
-export default function AddUserForm({ user }: { user: UserCompany; }) {
+export default function AddUserForm({ user }: { user: UserCompany }) {
   const [newUser, setNewUser] = useState<NewUser>({
     email: "",
     firstName: "",
@@ -186,16 +186,18 @@ export default function AddUserForm({ user }: { user: UserCompany; }) {
           newUser === successUser
         }
         id="submit"
-        className={`btn btn-accent btn-outline w-28 mt-5 ${isLoading ? "loading" : ""
-          }`}
+        className={`btn btn-accent btn-outline w-28 mt-5 ${
+          isLoading ? "loading" : ""
+        }`}
       >
         Create
       </button>
       {message && (errorUser === newUser || successUser === newUser) && (
         <div
           id="error-message"
-          className={`font-theinhardt text-left mt-4 ${errorUser === newUser ? "text-error" : "text-re-green-500"
-            }`}
+          className={`font-theinhardt text-left mt-4 ${
+            errorUser === newUser ? "text-error" : "text-re-green-500"
+          }`}
         >
           {message}
         </div>

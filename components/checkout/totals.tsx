@@ -95,8 +95,6 @@ export default function Totals({
   }
 
   if (type == CheckoutType.ORDER && products && skus) {
-    const subtotal = getOrderStringTotal(orderString, products, skus);
-    const total = getOrderStringTotal(orderString, products, skus, 1.07);
     items.push(
       <div className="px-10 flex justify-between text-lg" key={"subtotal"}>
         <div>Subtotal</div>
