@@ -1,4 +1,4 @@
-import { Location, Penalty, TrackingType, LocationType } from "@prisma/client";
+import { Penalty, TrackingType, LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 
@@ -32,7 +32,7 @@ async function handler(req: Request, res: Response) {
         req.body;
 
     if (!userId || typeof userId != "string") {
-        res.status(400).send("No user ID provided.");
+        res.status(400).send({ message: "No user ID provided." });
     }
 
     const user = await prisma.user.findUnique({
@@ -46,7 +46,7 @@ async function handler(req: Request, res: Response) {
     });
 
     if (!user) {
-        res.status(400).send("Invalid user.");
+        res.status(400).send({ message: "Invalid user." });
     }
 
     if (req.method == "POST") {
@@ -78,30 +78,7 @@ async function handler(req: Request, res: Response) {
                 },
             },
         });
-        // await prisma.user.update({
-        //     where: {
-        //         id: userId as string,
-        //     },
-        //     include: {
-        //         ownedLocations: true,
-        //         viewableLocations: true,
-        //     },
-        //     data: {
-        //         ownedLocations: {
-        //             connect: [
-        //                 {
-        //                     id: newLocation?.id,
-        //                 }],
-        //         },
-        //         viewableLocations: {
-        //             connect: [
-        //                 {
-        //                     id: newLocation?.id,
-        //                 }],
-        //         },
-        //     },
-        // });
-        res.status(200).send({ id: newLocation.id });
+        res.status(200).send({ message: "Created new location with ID " + newLocation.id + "." });
     }
 }
 

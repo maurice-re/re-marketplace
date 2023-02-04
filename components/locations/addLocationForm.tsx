@@ -34,6 +34,9 @@ export default function AddLocationForm({ user, company }: { user: User; company
         type: LocationType.SHIPPING,
         zip: "",
     });
+    const [errorInputValues, setErrorInputValues] = useState<AddLocationFormInputs>();
+    const [successInputValues, setSuccessInputValues] = useState<AddLocationFormInputs>();
+
     const {
         city,
         country,
@@ -53,11 +56,13 @@ export default function AddLocationForm({ user, company }: { user: User; company
         if (city != "" &&
             country != "" &&
             displayName != "" &&
-            (line1 != "" ||
-                line2 != "") &&
+            (line1 != "" || line2 != "") &&
             shippingName != "" &&
             state != "" &&
-            zip != "") {
+            zip != "" &&
+            inputValues != errorInputValues &&
+            inputValues !== successInputValues
+        ) {
             return true;
         } else {
             return false;
@@ -102,13 +107,12 @@ export default function AddLocationForm({ user, company }: { user: User; company
                 }),
             });
             if (res.status != 200) {
-                const { id } = await res.json();
-                setMessage(id);
-                console.log("Created new location with ID ", id);
+                setErrorInputValues(inputValues);
             } else {
-
+                setSuccessInputValues(inputValues);
             }
-
+            const { message } = await res.json();
+            setMessage(message);
             setIsLoading(false);
         }
     };
@@ -150,10 +154,11 @@ export default function AddLocationForm({ user, company }: { user: User; company
             >
                 Create
             </button>
-            {message && (
+            {message && (errorInputValues === inputValues || successInputValues === inputValues) && (
                 <div
                     id="error-message"
-                    className={`font-theinhardt text-left mt-4 ${true ? "text-error" : "text-re-green-500"}`}
+                    className={`font-theinhardt text-left mt-4 ${errorInputValues === inputValues ? "text-error" : "text-re-green-500"
+                        }`}
                 >
                     {message}
                 </div>
