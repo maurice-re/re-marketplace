@@ -19,19 +19,19 @@ function DropdownField({
   options: string[];
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
 }) {
-  let inputClass =
+  let selectClass =
     "p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800";
   if (top) {
-    inputClass += " border-t-2 mt-2 rounded-t";
+    selectClass += " border-t-2 mt-2 rounded-t";
   }
   if (bottom) {
-    inputClass += " border-b-2 mb-2 rounded-b";
+    selectClass += " border-b-2 mb-2 rounded-b";
   }
   return (
     <div className="p-0 my-0">
       <select
         name={name}
-        className={inputClass}
+        className={selectClass}
         onChange={onChange}
         required={required}
         placeholder={placeholder}

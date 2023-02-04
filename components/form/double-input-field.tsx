@@ -9,6 +9,7 @@ function DoubleInputField({
   rightPlaceholder,
   rightValue,
   top,
+  bottom,
   onChange,
 }: {
   leftName: string;
@@ -19,6 +20,7 @@ function DoubleInputField({
   rightPlaceholder: string;
   rightValue?: string;
   top?: boolean;
+  bottom?: boolean;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }) {
   let leftInputClass =
@@ -28,6 +30,10 @@ function DoubleInputField({
   if (top) {
     leftInputClass += " rounded-tl mt-2";
     rightInputClass += " rounded-tr mt-2";
+  }
+  if (bottom) {
+    leftInputClass += " rounded-bl mb-2";
+    rightInputClass += " rounded-br mb-2";
   }
   return (
     <div className="p-0 my-0 flex-row">

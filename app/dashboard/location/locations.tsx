@@ -12,7 +12,7 @@ function Locations({
     company: Company;
 }) {
     return (
-        <div className="flex items-center justify-between mt-4 mb-10 w-full">
+        <div className="flex items-center justify-center w-full">
             <AddLocationForm user={user} company={company} />
         </div>
     );
