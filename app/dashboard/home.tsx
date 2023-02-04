@@ -146,7 +146,7 @@ function Home({
                                 {getEstimation(item)}
                               </div>
                             </div>
-                            <div className="flex items-center mx-6">
+                            <div className="flex items-center ml-14">
                               <Link
                                 href={{
                                   pathname: "/checkout",
@@ -317,7 +317,7 @@ function Home({
                                   {getEstimation(item)}
                                 </div>
                               </div>
-                              <div className="flex items-center mx-6">
+                              <div className="flex items-center ml-14">
                                 <Link
                                   href={{
                                     pathname: "/checkout",

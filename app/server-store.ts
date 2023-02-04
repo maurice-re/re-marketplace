@@ -18,7 +18,7 @@ interface ServerStore {
   _user: User | null;
   _company: Company | null;
   getUser: (refresh?: boolean, redirectUrl?: string) => Promise<User>;
-  getCompany: () => Promise<Company | null>;
+  getCompany: () => Promise<Company>;
   getLocations: () => Promise<Location[]>;
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
@@ -58,8 +58,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       },
     });
     set({ _company: _company });
-    return _company;
-
+    return _company ?? {} as Company;
   },
   getLocations: async () => {
     const user = await prisma.user.findUnique({
