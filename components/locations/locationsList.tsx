@@ -1,8 +1,21 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { User, Location } from "@prisma/client";
+import Link from "next/link";
 
 export default function LocationsList({ user, locations, owned }: { user: User; locations: Location[]; owned: boolean; }) {
-    const [loading, setIsLoading] = useState<boolean>(false);
+    //     const [ownersModalOpen, setOwnersModalOpen] = useState<boolean>(false);
+    //     const [viewersModalOpen, setViewersModalOpen] = useState<boolean>(false);
+
+    //     function toggleModal(owned: boolean) {
+    // if (
+    // owned
+    // ) {
+
+    // }  else{
+
+    // }    }
+
+    // TODO(Suhana): When they click a location, send them to a page which has a list of the viewers of that location.
     return (
         <div className="justify-center items-center flex w-1/2 flex-col">
             <h1>{owned ? `Owned` : `Viewable`} Locations</h1>
@@ -13,40 +26,21 @@ export default function LocationsList({ user, locations, owned }: { user: User; 
                         key={index}
                     >
                         <h1>{location.displayName}</h1>
-                        <div>
-                            <input
-                                type="checkbox"
-                                id="location-modal"
-                                className="modal-toggle"
-                            />
-                            <div className="modal">
-                                <div className="modal-box">
-                                    <h3 className="font-bold text-lg">Remove a User</h3>
-                                    <form id="remove-user-form" onSubmit={undefined}>
-                                        {/* TODO(Suhana): Get modal working to allow them to view owners and/or viewers, and allow owners to remove either owners or viewers. */}
-                                        <div className="modal-action flex">
-                                            <button
-                                                className="btn btn-outline btn-error"
-                                                type="button"
-                                                disabled={loading}
-                                                onClick={() =>
-                                                    document.getElementById("location-modal")?.click()
-                                                }
-                                            >
-                                                Close
-                                            </button>
-                                            <button
-                                                className={`btn btn-outline btn-accent ${loading ? "loading" : ""
-                                                    }`}
-                                                type="submit"
-                                            >
-                                                Remove
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        <Link
+                            className={`flex flex-col my-1 w-1/2 mx-auto`}
+                            href={{
+                                pathname: "/location",
+                                query: {
+                                    locationId: location.id,
+                                },
+                            }}>
+                            <button
+                                className={"bg-re-blue self-center rounded-md py-1 font-theinhardt-300 text-white text-lg w-full"}
+                            >
+                                Go to PDF
+                            </button>
+
+                        </Link>
                     </div>
                 ))}
             </div>

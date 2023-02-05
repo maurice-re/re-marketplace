@@ -139,7 +139,7 @@ export default async function Layout({
             />
           </svg>
         ),
-        link: "/dashboard/location",
+        link: "/dashboard/locations",
         title: "Locations",
       },
       {

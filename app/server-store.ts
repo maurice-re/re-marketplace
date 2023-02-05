@@ -20,6 +20,7 @@ interface ServerStore {
   getUser: (refresh?: boolean, redirectUrl?: string) => Promise<User>;
   getCompany: () => Promise<Company>;
   getLocations: (owned: boolean) => Promise<Location[]>;
+  getLocationUsers: (locationId: string, owned: boolean) => Promise<User[]>;
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
@@ -72,6 +73,19 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     });
     if (!user) return [];
     return owned ? [...user.ownedLocations] : [...user.viewableLocations];
+  },
+  getLocationUsers: async (locationdId: string, owned: boolean) => {
+    const location = await prisma.location.findUnique({
+      where: {
+        id: locationdId,
+      },
+      include: {
+        owners: true,
+        viewers: true,
+      }
+    });
+    if (!location) return [];
+    return owned ? [...location.owners] : [...location.viewers];
   },
   getSkus: async () => {
     return await prisma.sku.findMany({

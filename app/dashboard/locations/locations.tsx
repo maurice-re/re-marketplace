@@ -16,13 +16,18 @@ function Locations({
     ownedLocations: Location[];
     viewableLocations: Location[];
 }) {
+    const [loading, setIsLoading] = useState<boolean>(false);
+
     return (
-        <div className="flex items-center justify-center w-full flex-col">
-            <div className="flex w-full justify-center items-center">
-                <LocationsList user={user} locations={ownedLocations} owned={true} />
-                <LocationsList user={user} locations={viewableLocations} owned={false} />
-            </div>
-            <AddLocationForm user={user} company={company} />
+        <div className="h-screen bg-re-black flex">
+
+            <main className="flex items-center justify-center w-full flex-col">
+                <div className="flex w-full justify-center items-center">
+                    <LocationsList user={user} locations={ownedLocations} owned={true} />
+                    <LocationsList user={user} locations={viewableLocations} owned={false} />
+                </div>
+                <AddLocationForm user={user} company={company} />
+            </main>
         </div>
     );
 }

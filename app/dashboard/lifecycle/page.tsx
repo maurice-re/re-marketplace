@@ -139,7 +139,7 @@ export default async function Page() {
               className="tooltip tooltip-bottom !pb-1 w-48 2xl:w-56"
               data-tip={stat.tooltip}
             >
-              <div className=" flex items-start items-justify flex-col bg-re-table-odd rounded-md py-4 pl-3 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:bg-re-green-500 text-white hover:text-black">
+              <div className="flex items-start items-justify flex-col bg-re-table-odd rounded-md py-4 pl-3 transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-105  duration-300 hover:bg-re-green-500 text-white hover:text-black">
                 <div className="font-thin text-lg tracking-wide leading-none">
                   {stat.title}
                 </div>
