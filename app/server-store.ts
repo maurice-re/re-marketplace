@@ -97,7 +97,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
   getOrders: async () => {
     const user = await prisma.user.findUnique({
       where: {
-        id: get()._user?.id
+        id: get()._user?.id ?? "616"
       },
       include: {
         ownedLocations: {

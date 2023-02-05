@@ -20,7 +20,7 @@ async function handler(req: Request, res: Response) {
         },
         include: {
             viewers: true,
-            owneds: true,
+            owners: true,
         },
     });
 
