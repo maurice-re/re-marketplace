@@ -1,9 +1,7 @@
 "use client";
 import { User, Company, Location } from "@prisma/client";
-import { useEffect, useState } from "react";
 import AddLocationForm from "../../../components/locations/addLocationForm";
 import LocationsList from "../../../components/locations/locationsList";
-import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
 
 function Locations({
     user,
@@ -16,16 +14,14 @@ function Locations({
     ownedLocations: Location[];
     viewableLocations: Location[];
 }) {
-    const [loading, setIsLoading] = useState<boolean>(false);
-
     return (
         <div className="h-screen bg-re-black flex">
-
-            <main className="flex items-center justify-center w-full flex-col">
-                <div className="flex w-full justify-center items-center">
+            <main className="flex items-start justify-center w-full flex-col">
+                <div className="flex w-full justify-center items-center gap-6 pt-8">
                     <LocationsList user={user} locations={ownedLocations} owned={true} />
                     <LocationsList user={user} locations={viewableLocations} owned={false} />
                 </div>
+                <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
                 <AddLocationForm user={user} company={company} />
             </main>
         </div>

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { BiLogOut } from "react-icons/bi";
 import { Route } from "./layout";
 
-export default function Header({ routes }: { routes: Route[] }) {
+export default function Header({ routes }: { routes: Route[]; }) {
   const pathname = usePathname();
   let title = routes.find((route) => route.link == pathname)?.title;
   if (pathname?.startsWith("/dashboard/order/")) {

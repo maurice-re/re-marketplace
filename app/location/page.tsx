@@ -28,7 +28,10 @@ export default async function Page({
                 <h1 className="text-2xl font-theinhardt text-white text-center py-10">
                     Location Details
                 </h1>
-                <div className="flex w-full flex-col items-center justify-center">
+                <h2 className="text-lg font-theinhardt text-white text-center pb-6">
+                    As an owner, you're able to add and remove other owners, and viewers.
+                </h2>
+                <div className="flex w-full flex-col items-center justify-center space-y-4">
                     <h1>Owners</h1>
                     <LocationUsersList locationId={locationId} users={owners} owned={true} />
                     <h1>Viewers</h1>

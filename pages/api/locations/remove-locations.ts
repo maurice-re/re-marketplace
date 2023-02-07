@@ -65,7 +65,7 @@ async function handler(req: Request, res: Response) {
             }
         });
 
-        res.status(200).send({ message: "Removed  new location with ID " + userId + "." });
+        res.status(200).send({ message: "Disconnected location(s) from user ID " + userId + "." });
     }
 }
 
