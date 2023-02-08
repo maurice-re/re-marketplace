@@ -13,7 +13,7 @@ export default function Header({ routes }: { routes: Route[]; }) {
   }
   return (
     <div className="flex flex-col">
-      <div className="flex justify-end pr-4 py-1 text-xl">
+      <div className="flex justify-end pr-4 py-3 text-xl">
         <BiLogOut
           className="cursor-pointer text-white hover:text-re-gray-text"
           onClick={() => signOut()}

@@ -1,5 +1,6 @@
 "use client";
 import { User, Company, Location } from "@prisma/client";
+import AddGroupForm from "../../../components/locations/addGroupForm";
 import AddLocationForm from "../../../components/locations/addLocationForm";
 import LocationsList from "../../../components/locations/locationsList";
 
@@ -21,8 +22,17 @@ function Locations({
                     <LocationsList user={user} locations={ownedLocations} owned={true} />
                     <LocationsList user={user} locations={viewableLocations} owned={false} />
                 </div>
-                <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
-                <AddLocationForm user={user} company={company} />
+                <div
+                    className="w-full flex gap-8">
+                    <div className="flex-col w-1/2 flex items-start justify-start">
+                        <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
+                        <AddLocationForm user={user} company={company} />
+                    </div>
+                    <div className="flex-col w-1/2 flex items-start justify-start">
+                        <h1 className="w-full text-xl text-left pb-2 pt-8">Add Group</h1>
+                        <AddGroupForm user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} />
+                    </div>
+                </div>
             </main>
         </div>
     );

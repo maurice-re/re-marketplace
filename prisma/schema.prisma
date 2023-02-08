@@ -2,13 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider             = "mysql"
-  url                  = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 model Account {
@@ -31,8 +31,8 @@ model Account {
 }
 
 model ApiKey {
-  id        String  @id
-  admin     Boolean @default(false)
+  id    String  @id
+  admin Boolean @default(false)
 }
 
 model ApiLogging {
@@ -54,16 +54,16 @@ model Company {
 }
 
 model Event {
-  id               String   @id @default(cuid())
-  action           Action
-  companyId        String
-  consumerId       String?
-  itemId           String?
-  location         Location @relation(fields: [locationId], references: [id])
-  locationId       String
-  sku              Sku?     @relation(fields: [skuId], references: [id])
-  skuId            String?
-  timestamp        DateTime @default(now())
+  id         String   @id @default(cuid())
+  action     Action
+  companyId  String
+  consumerId String?
+  itemId     String?
+  location   Location @relation(fields: [locationId], references: [id])
+  locationId String
+  sku        Sku?     @relation(fields: [skuId], references: [id])
+  skuId      String?
+  timestamp  DateTime @default(now())
 
   @@index([locationId])
   @@index([skuId])
@@ -82,6 +82,7 @@ model Hardware {
   locationId String
   notes      String?
   return     Boolean  @default(false)
+
   @@index([locationId])
 }
 
@@ -101,27 +102,27 @@ model Image {
 }
 
 model Location {
-  id               String               @id @default(cuid())
-  city             String?
-  country          String?
-  displayName      String?
-  events           Event[]
-  groups           Group[]
-  hardware         Hardware[]
-  line1            String?
-  line2            String?
-  orders           Order[]
-  owners           User[]               @relation(name: "LocationOwners")
-  penalty          Penalty          @default(NONE)
-  sampleOrders     SampleOrder[]
-  settings         Settings?
-  shippingName     String?
-  state            String?
-  trackingType     TrackingType       @default(NONE)
-  type             LocationType         @default(SHIPPING)
-  untracked        UntrackedInventory[]
-  viewers          User[]               @relation(name: "LocationViewers")
-  zip              String?
+  id           String               @id @default(cuid())
+  city         String?
+  country      String?
+  displayName  String?
+  events       Event[]
+  groups       Group[]
+  hardware     Hardware[]
+  line1        String?
+  line2        String?
+  orders       Order[]
+  owners       User[]               @relation(name: "LocationOwners")
+  penalty      Penalty              @default(NONE)
+  sampleOrders SampleOrder[]
+  settings     Settings?
+  shippingName String?
+  state        String?
+  trackingType TrackingType         @default(NONE)
+  type         LocationType         @default(SHIPPING)
+  untracked    UntrackedInventory[]
+  viewers      User[]               @relation(name: "LocationViewers")
+  zip          String?
 }
 
 enum LocationType {

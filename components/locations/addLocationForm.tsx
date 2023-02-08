@@ -122,7 +122,7 @@ export default function AddLocationForm({ user, company }: { user: User; company
     const locationTypes = [LocationType.SHIPPING, LocationType.SAMPLE, LocationType.TRACKING];
 
     return (
-        <form id="add-location-form" className="justify-center items-center flex w-1/2 flex-col" onSubmit={handleSubmit}>
+        <form id="add-location-form" className="justify-center items-center flex w-full flex-col" onSubmit={handleSubmit}>
             <div className="pt-2 w-full">
                 <div className="text-lg font-semibold">Address</div>
                 <InputField top placeholder={"Display Name"} value={displayName} name={"displayName"} onChange={handleChange} />

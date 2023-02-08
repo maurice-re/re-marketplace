@@ -20,7 +20,7 @@ function DropdownField({
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
 }) {
   let selectClass =
-    "p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800";
+    "px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b";
   if (top) {
     selectClass += " border-t-2 mt-2 rounded-t";
   }
