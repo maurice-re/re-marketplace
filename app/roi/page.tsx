@@ -144,7 +144,7 @@ export default function Page() {
                 }
               ></input>
             </label>
-            <label className="text-re-gray-text mb-1">
+            {/* <label className="text-re-gray-text mb-1">
               Number of Locations
               <input
                 type="number"
@@ -154,7 +154,7 @@ export default function Page() {
                   setForm({ ...form, locations: parseInt(e.target.value) })
                 }
               ></input>
-            </label>
+            </label> */}
           </div>
         </div>
         <div className="bg-re-dark-green-300 border border-re-gray-300 rounded-md">
