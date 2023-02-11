@@ -11,13 +11,22 @@ export default async function handler(req: Request, res: Response) {
             pass: process.env.EMAIL_PASS,
         },
     });
-    const email = {
+
+    const emailToCustomer = {
         from: "Re Platform",
         to: to,
         subject: "Update to Your Order",
         text: "Order #" + orderId + " is now " + status + ".",
     };
-    await transporter.sendMail(email).catch(e => console.log(e));
+    await transporter.sendMail(emailToCustomer).catch(e => console.log(e));
+
+    const emailToSales = {
+        from: "Re Platform",
+        to: "matt@re.company",
+        subject: "Update to Order #" + orderId,
+        text: "Order #" + orderId + " is now " + status + ".",
+    };
+    await transporter.sendMail(emailToSales).catch(e => console.log(e));
 
     res.send();
 }
