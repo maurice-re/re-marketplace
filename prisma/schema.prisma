@@ -74,6 +74,11 @@ model Group {
   createdAt DateTime
   name      String
   locations Location[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
+  @@index([userId])
+
 }
 
 model Hardware {
@@ -297,6 +302,7 @@ model User {
   email             String     @unique()
   emailVerified     DateTime?
   firstName         String?
+  groups            Group[]
   lastName          String?
   ownedLocations    Location[] @relation(name: "LocationOwners")
   viewableLocations Location[] @relation(name: "LocationViewers")

@@ -15,7 +15,7 @@ import Payment from "./payment";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string };
+  searchParams?: { orderString: string; };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -79,7 +79,7 @@ export default async function Page({
   }
 
   const skus = await useServerStore.getState().getSkus();
-  const locations = await useServerStore.getState().getLocations();
+  const locations = await useServerStore.getState().getLocations(true);
   const products = await prisma.product.findMany({});
 
   const { clientSecret, paymentIntentId, paymentMethods } = await fetch(

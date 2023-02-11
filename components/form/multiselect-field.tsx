@@ -4,22 +4,14 @@ import { Location } from "@prisma/client";
 
 function MultiselectField({
   bottom,
-  name,
-  placeholder,
-  required,
   top,
-  value,
   options,
   onChange
 }: {
   bottom?: boolean;
-  name: string;
-  placeholder: string;
-  required?: boolean;
   top?: boolean;
-  value?: string;
   options: string[];
-  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (id: string) => void;
 }) {
   let selectClass =
     "p-1 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800";
@@ -34,7 +26,7 @@ function MultiselectField({
 
   const [selected, setSelected] = useState<string[]>([]);
 
-  const toggleOption = (id: string) => {
+  const handleChange = (id: string) => {
     setSelected((prevSelected: string[]) => {
       // if it's in, remove
       const newArray = [...prevSelected];
@@ -56,7 +48,7 @@ function MultiselectField({
         {options.map((locationId, index) => {
           const isSelected = selected.includes(locationId);
           return (
-            <li key={index} className="flex items-center px-2 py-4 cursor-pointer hover:bg-re-gray-500 rounded" onClick={() => toggleOption(locationId)}>
+            <li key={index} className="flex items-center px-2 py-4 cursor-pointer hover:bg-re-gray-500 rounded" onClick={() => onChange(locationId)}>
               <input type="checkbox" checked={isSelected} className="mr-2" readOnly />
               <span>{locationId}</span>
             </li>
