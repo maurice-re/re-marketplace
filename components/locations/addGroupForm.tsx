@@ -1,7 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { User, Company, Location, LocationType, Penalty, TrackingType } from "@prisma/client";
+import { User, Company, Location } from "@prisma/client";
 import InputField from "../form/input-field";
-import MultiselectField from "../form/multiselect-field";
 import { BsChevronUp, BsChevronDown } from "react-icons/bs";
 
 type AddGroupFormInputs = {
@@ -27,7 +26,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
         // Check that required fields were entered
         if (name != "" &&
             locations.length > 0 &&
-            inputValues != errorInputValues &&
+            inputValues !== errorInputValues &&
             inputValues !== successInputValues
         ) {
             return true;
@@ -46,21 +45,8 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
 
     // All locations available to add/remove
     const ownedAndViewableLocations = [...ownedLocations, ...viewableLocations];
-    const ownedAndViewableLocationIds = [...ownedLocations.map(location => location.id), ...viewableLocations.map(location => location.id)];
 
     const handleMultiselectDropdownChange = (location: Location) => {
-        // let newLocations = locations;
-        // if ((newLocations.map(location => location.id)).includes(id)) {
-        //     // It's in, so remove
-        //     newLocations = newLocations.filter(location => location.id != id);
-        // } else {
-        //     // It's not in, so add
-        //     newLocations.push(ownedAndViewableLocations.filter(location => location.id == id)[0]);
-        // }
-        // setInputValues((prev) => ({
-        //     ...prev,
-        //     ["locations"]: newLocations,
-        // }));
         let newLocations = locations;
         if (newLocations.includes(location)) {
             // It's in, so remove
@@ -86,7 +72,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
             user &&
             location
         ) {
-            const res = await fetch(`/api/groups/add-group?userId=${user.id}`, {
+            const res = await fetch(`/api/groups/group?userId=${user.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -113,9 +99,6 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
             </div>
             <div className="pt-2 w-full">
                 <div className="text-lg font-semibold">Locations</div>
-                {/* TODO(Suhana): Show the location IDs, but send the locations themselves. */}
-                {/* <MultiselectField top bottom options={ownedAndViewableLocationIds} placeholder={"Locations"} value={locations} name={"locations"} onChange={handleMultiselectDropdownChange} /> */}
-
                 <div className="p-0 my-0 relative w-full">
                     <div className="flex cursor-pointer px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b" onClick={() => setDropdownOpen(!dropdownOpen)}>
                         <h1 className="w-full">{locations.length} selected</h1>
