@@ -37,29 +37,6 @@ async function handler(req: Request, res: Response) {
     req.body;
   const { userId, locationId, withItems, hardware } = req.query;
 
-  /* Validate user. */
-
-  const userWithItems = await prisma.user.findUnique({
-    where: {
-      id: userId as string,
-    },
-    include: {
-      ownedLocations: {
-        include: {
-          orders: {
-            include: {
-              items: !!withItems
-            }
-          }
-        }
-      },
-    }
-  });
-
-  if (!userWithItems) {
-    res.status(400).send({ message: "Invalid user." });
-  }
-
   /* Handle location DELETE behaviour. */
 
   if (req.method == "DELETE") {
@@ -82,6 +59,8 @@ async function handler(req: Request, res: Response) {
               },
             },
           });
+
+          res.status(200).send({ message: "Disconnected owner(s) from location with ID " + locationId + "." });
         } else {
           // Disconnect viewers
           await prisma.location.update({
@@ -98,6 +77,8 @@ async function handler(req: Request, res: Response) {
               },
             },
           });
+
+          res.status(200).send({ message: "Disconnected viewer(s) from location with ID " + locationId + "." });
         }
       });
     } else if ((userId && typeof userId == "string") && locationIds) {
@@ -119,6 +100,8 @@ async function handler(req: Request, res: Response) {
               },
             },
           });
+
+          res.status(200).send({ message: "Disconnected location(s) from owner with ID " + userId + "." });
         } else {
           // Disconnect viewers
           await prisma.user.update({
@@ -136,10 +119,36 @@ async function handler(req: Request, res: Response) {
             },
           });
         }
+
+        res.status(200).send({ message: "Disconnected location(s) from viewer with ID " + userId + "." });
       });
     }
 
-    res.status(200).send({ message: "Disconnected location(s) from user ID " + userId + "." });
+    return;
+  }
+
+  /* Validate user. */
+
+  const userWithItems = await prisma.user.findUnique({
+    where: {
+      id: userId ?? "",
+    },
+    include: {
+      ownedLocations: {
+        include: {
+          orders: {
+            include: {
+              items: !!withItems
+            }
+          }
+        }
+      },
+    }
+  });
+
+  if (!userWithItems) {
+    res.status(400).send({ message: "Invalid user." });
+    return;
   }
 
   /* Handle location GET behaviour. */
@@ -158,7 +167,9 @@ async function handler(req: Request, res: Response) {
         hardware: !!hardware,
       }
     });
+
     res.status(200).send({ location: location });
+    return;
   }
 
   /* Handle location POST behaviour. */
@@ -192,7 +203,9 @@ async function handler(req: Request, res: Response) {
         },
       },
     });
+
     res.status(200).send({ message: "Created new location with ID " + newLocation.id + "." });
+    return;
   }
 }
 
