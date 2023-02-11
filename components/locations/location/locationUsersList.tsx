@@ -6,11 +6,11 @@ import { GrClose } from "react-icons/gr";
 export default function LocationUsersList({ locationId, users, owned }: { locationId: string; users: User[]; owned: boolean; }) {
     const handleRemoveUser = async (e: FormEvent<HTMLFormElement>, userId: string, owned: boolean) => {
         e.preventDefault();
-        const res = await fetch("/api/locations/remove-users", {
-            method: "POST",
+        const res = await fetch(`/api/locations/location?locationId=${locationId}`, {
+            method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                locationId: locationId, userIds: [userId], owned: owned
+                userIds: [userId], owned: owned
             }),
         });
         if (res.status == 200) {

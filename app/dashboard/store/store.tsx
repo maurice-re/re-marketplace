@@ -126,10 +126,22 @@ export default function StorePage({
       zip: formElements[5].value,
     };
 
-    await fetch("/api/locations/location", {
+    await fetch(`/api/locations/location?userId=${user.id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ location: newLocation }),
+      body: JSON.stringify({
+        city: newLocation.city,
+        country: newLocation.country,
+        displayName: newLocation.displayName,
+        line1: newLocation.line1,
+        line2: newLocation.line2,
+        penalty: newLocation.penalty,
+        shippingName: newLocation.shippingName,
+        state: newLocation.state,
+        trackingType: newLocation.trackingType,
+        type: newLocation.type,
+        zip: newLocation.zip,
+      }),
     }).then(async (res) => await res.json());
 
     const results = await fetch(

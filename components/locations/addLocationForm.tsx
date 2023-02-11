@@ -88,11 +88,10 @@ export default function AddLocationForm({ user, company }: { user: User; company
             user &&
             location
         ) {
-            const res = await fetch("/api/locations/add-location", {
+            const res = await fetch(`/api/locations/location?userId=${user.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: user.id,
                     city: city,
                     country: country,
                     displayName: displayName,
