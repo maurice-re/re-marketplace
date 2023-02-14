@@ -24,6 +24,7 @@ interface ServerStore {
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
+  getGroups: () => Promise<Group[]>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -131,5 +132,45 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         orderId: orderId
       },
     });
+  },
+  getGroups: async () => {
+    const groupsWithOwnedLocations = await prisma.group.findMany({
+      where: {
+        // Find groups where..
+        locations: {
+          some: {
+            // ..at least one (some) locations..
+            owners: {
+              some: {
+                // .. have at least one owner ..
+                id: {
+                  in: [get()._user?.id], // .. with an ID that matches one of the following.
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    const groupsWithViewableLocations = await prisma.group.findMany({
+      where: {
+        // Find groups where..
+        locations: {
+          some: {
+            // ..at least one (some) locations..
+            viewers: {
+              some: {
+                // .. have at least one owner ..
+                id: {
+                  in: [get()._user?.id], // .. with an ID that matches one of the following.
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!groupsWithOwnedLocations && !groupsWithViewableLocations) return [];
+    return [...groupsWithOwnedLocations, groupsWithViewableLocations];
   },
 }));

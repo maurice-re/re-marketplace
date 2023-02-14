@@ -6,11 +6,12 @@ export default async function Page() {
   const company = await useServerStore.getState().getCompany();
   const ownedLocations = await useServerStore.getState().getLocations(true);
   const viewableLocations = await useServerStore.getState().getLocations(false);
+  const groups = await useServerStore.getState().getGroups();
 
   return (
     <div className="w-full h-screen flex overflow-auto px-6">
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-        <Locations user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} />
+        <Locations user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} groups={groups} />
       </main>
     </div>
   );
