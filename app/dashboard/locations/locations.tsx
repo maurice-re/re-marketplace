@@ -26,9 +26,6 @@ function Locations({
                     <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." />
                 </div>
                 <div className="w-full flex gap-8">
-                    <GroupsList user={user} groups={groups} />
-                </div>
-                <div className="w-full flex gap-8">
                     <div className="flex-col w-1/2 flex items-start justify-start">
                         <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
                         <AddLocationForm user={user} company={company} />
@@ -38,7 +35,9 @@ function Locations({
                         <AddGroupForm user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} />
                     </div>
                 </div>
-
+                <div className="w-full flex gap-8">
+                    <GroupsList user={user} groups={groups} />
+                </div>
             </div>
         </div>
     );
