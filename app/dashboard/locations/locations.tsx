@@ -19,11 +19,14 @@ function Locations({
     groups: Group[];
 }) {
     return (
-        <div className="h-screen bg-re-black flex">
-            <main className="flex items-start justify-center w-full flex-col">
-                <div className="flex w-full justify-center items-center gap-6 pt-8">
+        <div className="bg-re-black flex">
+            <div className="flex items-start justify-center w-full flex-col">
+                <div className="flex w-full justify-center items-center gap-6">
                     <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." />
                     <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." />
+                </div>
+                <div className="w-full flex gap-8">
+                    <GroupsList user={user} groups={groups} />
                 </div>
                 <div className="w-full flex gap-8">
                     <div className="flex-col w-1/2 flex items-start justify-start">
@@ -35,10 +38,8 @@ function Locations({
                         <AddGroupForm user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} />
                     </div>
                 </div>
-                <div className="w-full flex gap-8">
-                    <GroupsList user={user} groups={groups} />
-                </div>
-            </main>
+
+            </div>
         </div>
     );
 }
