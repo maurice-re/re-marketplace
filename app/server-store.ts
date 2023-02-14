@@ -1,4 +1,4 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Sku, User, Group } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
@@ -25,6 +25,7 @@ interface ServerStore {
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
   getGroups: () => Promise<Group[]>;
+  getGroupLocations: (groupId: string) => Promise<Location[]>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -132,6 +133,18 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         orderId: orderId
       },
     });
+  },
+  getGroupLocations: async (groupId: string) => {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      include: {
+        locations: true,
+      }
+    });
+    if (!group) return [];
+    return group.locations;
   },
   getGroups: async () => {
     const groupsWithOwnedLocations = await prisma.group.findMany({

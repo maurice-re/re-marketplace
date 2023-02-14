@@ -1,12 +1,12 @@
 import { User, Location } from "@prisma/client";
 import Link from "next/link";
 
-export default function LocationsList({ user, locations, owned }: { user: User; locations: Location[]; owned: boolean; }) {
+export default function LocationsList({ locations, title, caption }: { locations: Location[]; title: string, caption: string; }) {
 
     return (
         <div className="justify-center items-center flex w-1/2 flex-col">
-            <h1 className="pt-3 text-xl pb-4">{owned ? `Owned` : `Viewable`} Locations</h1>
-            <h2 className="text-lg pb-4">{owned ? `The locations you can make orders for.` : `The locations you can view orders of.`}</h2>
+            <h1 className="pt-3 text-xl pb-4">{title}</h1>
+            <h2 className="text-lg pb-4">{caption}</h2>
             <div className="grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {locations.map((location, index) => (
                     <Link
