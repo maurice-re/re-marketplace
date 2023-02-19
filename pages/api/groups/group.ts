@@ -11,7 +11,52 @@ async function handler(req: Request, res: Response) {
         locations: Location[];
     } =
         req.body;
-    const { userId } = req.query;
+    const { userId, groupId } = req.query;
+
+    /* Handle DELETE behaviour. */
+
+    if (req.method == "DELETE") {
+        const group = await prisma.group.findUnique({
+            where: {
+                id: groupId ?? "",
+            },
+        });
+
+        if (!group) {
+            console.log("Failing 1");
+            res.status(400).send({ message: "Invalid group indicated." });
+            return;
+        }
+
+        // Disconnect all locations from the group
+        const locations = await prisma.location.findMany();
+
+        const locationIds: any[] = [];
+        locations.forEach(async (location) => {
+            locationIds.push({ id: location.id });
+        });
+
+        await prisma.group.update({
+            where: {
+                id: groupId ?? ""
+            },
+            data: {
+                locations: {
+                    disconnect: locationIds,
+                },
+            },
+        });
+
+        // Delete group
+        await prisma.group.delete({
+            where: {
+                id: groupId ?? ""
+            },
+        });
+
+        res.status(200).send({ message: "Deleted group with ID " + groupId + "." });
+        return;
+    }
 
     /* Validate user.  */
 
@@ -73,38 +118,26 @@ async function handler(req: Request, res: Response) {
 
     /* Handle POST behaviour. */
 
-    if (!name || typeof name != "string") {
-        res.status(400).send({ message: "No name provided." });
-        return;
-    }
-
-    if (!locations || locations.length == 0) {
-        res.status(400).send({ message: "At least one location must be provided." });
-        return;
-    }
-
     if (req.method == "POST") {
-        const newGroup = await prisma.group.create({
-            data: {
-                userId: userId,
-                name: name,
-                locations: {
-                    connect: locationIds,
-                },
-                createdAt: now,
-            },
+        if (!name || typeof name != "string") {
+            console.log("Failing 2");
+            res.status(400).send({ message: "No name provided." });
+            return;
+        }
+
+        if (!locations || locations.length == 0) {
+            console.log("Failing 3");
+            res.status(400).send({ message: "At least one location must be provided." });
+            return;
+        }
+
+        const now = new Date();
+
+        const locationIds: any[] = [];
+        locations.forEach(async (location) => {
+            locationIds.push({ id: location.id });
         });
-        res.status(200).send({ message: "Created new group with ID " + newGroup.id + "." });
-    }
 
-    const now = new Date();
-
-    const locationIds: any[] = [];
-    locations.forEach(async (location) => {
-        locationIds.push({ id: location.id });
-    });
-
-    if (req.method == "POST") {
         const newGroup = await prisma.group.create({
             data: {
                 userId: userId,

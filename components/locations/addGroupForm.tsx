@@ -44,7 +44,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
     };
 
     // All locations available to add/remove
-    const ownedAndViewableLocations = [...ownedLocations, ...viewableLocations];
+    const addableLocations = ownedLocations; // TODO(Suhana): If viewable locations can definitely not be added here, stop passing in
 
     const handleMultiselectDropdownChange = (location: Location) => {
         let newLocations = locations;
@@ -53,7 +53,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
             newLocations = newLocations.filter(loc => loc != location);
         } else {
             // It's not in, so add
-            newLocations.push(ownedAndViewableLocations.filter(loc => loc == location)[0]);
+            newLocations.push(addableLocations.filter(loc => loc == location)[0]);
         }
         setInputValues((prev) => ({
             ...prev,
@@ -105,7 +105,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
                         {dropdownOpen ? (<div className="flex items-center justify-center">< BsChevronUp size={20} /></div>
                         ) : (<div className="flex items-center justify-center"><BsChevronDown size={20} /></div>)}                    </div>
                     <ul className={`${dropdownOpen ? "block" : "hidden"} hover:block absolute left-0 w-full bg-re-dark-green-200 rounded-lg`}>
-                        {ownedAndViewableLocations.map((location, index) => {
+                        {addableLocations.map((location, index) => {
                             const isSelected = locations.includes(location);
                             return (
                                 <li key={index} className="flex items-center px-2 py-4 cursor-pointer hover:bg-re-gray-500 rounded" onClick={() => handleMultiselectDropdownChange(location)}>
