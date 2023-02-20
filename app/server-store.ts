@@ -147,43 +147,16 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     return group.locations;
   },
   getGroups: async () => {
-    const groupsWithOwnedLocations = await prisma.group.findMany({
+    const user = await prisma.user.findUnique({
       where: {
-        // Find groups where..
-        locations: {
-          some: {
-            // ..at least one (some) locations..
-            owners: {
-              some: {
-                // .. have at least one owner ..
-                id: {
-                  in: [get()._user?.id], // .. with an ID that matches one of the following.
-                },
-              },
-            },
-          },
-        },
+        id: get()._user?.id, // .. with an ID that matches one of the following.
+
       },
+      include: {
+        memberGroups: true,
+      }
     });
-    const groupsWithViewableLocations = await prisma.group.findMany({
-      where: {
-        // Find groups where..
-        locations: {
-          some: {
-            // ..at least one (some) locations..
-            viewers: {
-              some: {
-                // .. have at least one owner ..
-                id: {
-                  in: [get()._user?.id], // .. with an ID that matches one of the following.
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-    if (!groupsWithOwnedLocations && !groupsWithViewableLocations) return [];
-    return [...groupsWithOwnedLocations, groupsWithViewableLocations];
+    if (!user || !user.memberGroups) return [];
+    return user.memberGroups;
   },
 }));

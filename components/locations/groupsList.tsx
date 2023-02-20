@@ -4,21 +4,23 @@ import { BiX } from "react-icons/bi";
 
 export default function GroupsList({ user, groups }: { user: User; groups: Group[]; }) {
     const handleDelete = async (groupId: string) => {
-        const res = await fetch(`/api/groups/group?groupId=${groupId}`, {
+        console.log("Using user ID", user.id);
+        const res = await fetch(`/api/groups/group?userId=${user.id}&groupId=${groupId}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
         });
+        const { message } = await res.json();
         if (res.status != 200) {
-            console.log("Delete group error");
+            console.log("Delete group error: ", message);
         } else {
-            console.log("Delete group success");
+            console.log("Delete group success: ", message);
         }
     };
 
-    return (
+    return user && (
         <div className="justify-center items-center flex w-full flex-col">
             <h1 className="pt-3 text-xl pb-4">Groups</h1>
-            <h2 className="text-lg pb-4">This group has x locations, and you can view y.</h2>
+            <h2 className="text-lg pb-4">Groups you are a member of.</h2>
             <div className="grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {groups.map((group, index) => (
                     <div key={index} className="flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg">
@@ -43,7 +45,6 @@ export default function GroupsList({ user, groups }: { user: User; groups: Group
                                 {group.name}
                             </button>
                         </Link>
-
                     </div>
                 ))}
             </div>

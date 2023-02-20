@@ -6,12 +6,30 @@ async function handler(req: Request, res: Response) {
     const {
         name,
         locations,
+        memberEmails
     }: {
         name: string;
         locations: Location[];
+        memberEmails: string[];
     } =
         req.body;
     const { userId, groupId } = req.query;
+
+    /* Validate user.  */
+
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId ?? "",
+        },
+        include: {
+            memberGroups: true,
+        }
+    });
+
+    if (!user) {
+        res.status(400).send({ message: "Invalid user indicated." });
+        return;
+    }
 
     /* Handle DELETE behaviour. */
 
@@ -23,7 +41,6 @@ async function handler(req: Request, res: Response) {
         });
 
         if (!group) {
-            console.log("Failing 1");
             res.status(400).send({ message: "Invalid group indicated." });
             return;
         }
@@ -36,6 +53,7 @@ async function handler(req: Request, res: Response) {
             locationIds.push({ id: location.id });
         });
 
+        // Disconnect locations and members
         await prisma.group.update({
             where: {
                 id: groupId ?? ""
@@ -43,6 +61,9 @@ async function handler(req: Request, res: Response) {
             data: {
                 locations: {
                     disconnect: locationIds,
+                },
+                members: {
+                    disconnect: [{ id: userId }],
                 },
             },
         });
@@ -58,61 +79,10 @@ async function handler(req: Request, res: Response) {
         return;
     }
 
-    /* Validate user.  */
-
-    const user = await prisma.user.findUnique({
-        where: {
-            id: userId ?? "",
-        },
-    });
-
-    if (!user) {
-        res.status(400).send({ message: "Invalid user indicated." });
-        return;
-    }
-
     /* Handle GET behaviour. */
 
     if (req.method == "GET") {
-        // Return all groups with at least one location that the specified user is an owner or viewer of.
-        const groupsWithOwnedLocations = await prisma.group.findMany({
-            where: {
-                // Find groups where..
-                locations: {
-                    some: {
-                        // ..at least one (some) locations..
-                        owners: {
-                            some: {
-                                // .. have at least one owner ..
-                                id: {
-                                    in: [userId], // .. with an ID that matches one of the following.
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-        const groupsWithViewableLocations = await prisma.group.findMany({
-            where: {
-                // Find groups where..
-                locations: {
-                    some: {
-                        // ..at least one (some) locations..
-                        viewers: {
-                            some: {
-                                // .. have at least one owner ..
-                                id: {
-                                    in: [userId], // .. with an ID that matches one of the following.
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-
-        res.status(200).send({ groups: [...groupsWithOwnedLocations, ...groupsWithViewableLocations] });
+        res.status(200).send({ groups: user.memberGroups });
         return;
     }
 
@@ -120,13 +90,11 @@ async function handler(req: Request, res: Response) {
 
     if (req.method == "POST") {
         if (!name || typeof name != "string") {
-            console.log("Failing 2");
             res.status(400).send({ message: "No name provided." });
             return;
         }
 
         if (!locations || locations.length == 0) {
-            console.log("Failing 3");
             res.status(400).send({ message: "At least one location must be provided." });
             return;
         }
@@ -138,18 +106,63 @@ async function handler(req: Request, res: Response) {
             locationIds.push({ id: location.id });
         });
 
-        const newGroup = await prisma.group.create({
-            data: {
-                userId: userId,
-                name: name,
-                locations: {
-                    connect: locationIds,
+        // Get all user emails
+        const users = await prisma.user.findMany();
+        const userEmails = users.map(user => user.email);
+
+        let memberIds: any[] = [];
+        let foundMember: User | null;
+        let foundMembers: User[] | null;
+        let found = false;
+
+        // Convert member emails to member objects
+        new Promise<void>((resolve, reject) => {
+            memberEmails.forEach(async (memberEmail: string, index: number) => {
+                // Check if user email is valid
+                if (userEmails.includes(memberEmail)) {
+                    // Find first user with matching email
+                    foundMembers = await prisma.user.findMany({ where: { email: memberEmail } });
+                    foundMember = foundMembers[0];
+                    memberIds.push({ id: foundMember.id });
+                } else {
+                    res.status(400).send({ message: "Invalid member email " + memberEmail + "." });
+                    return;
+                }
+                if (memberEmail == user.email) {
+                    found = true;
+                }
+                if (index === memberEmails.length - 1) resolve();
+            });
+        }).then(async () => {
+            if (memberIds.length == 0) {
+                res.status(400).send({ message: "At least one valid member email must be provided." });
+                return;
+            }
+
+            // The creator of the group should be a member
+            if (!found) {
+                res.status(400).send({ message: "The creator of the group must be provided in the members list." });
+                return;
+            }
+
+            const newGroup = await prisma.group.create({
+                data: {
+                    userId: userId,
+                    name: name,
+                    locations: {
+                        connect: locationIds,
+                    },
+                    members: {
+                        connect: memberIds,
+                    },
+                    createdAt: now,
                 },
-                createdAt: now,
-            },
+            });
+            res.status(200).send({ message: "Created new group with ID " + newGroup.id + "." });
+            return;
         });
-        res.status(200).send({ message: "Created new group with ID " + newGroup.id + "." });
-        return;
+
+
     }
 }
 

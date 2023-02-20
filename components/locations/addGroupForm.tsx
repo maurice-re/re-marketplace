@@ -1,17 +1,23 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { User, Company, Location } from "@prisma/client";
 import InputField from "../form/input-field";
-import { BsChevronUp, BsChevronDown } from "react-icons/bs";
+import { BsChevronUp, BsChevronDown, BsArrowRight } from "react-icons/bs";
+import AddUserForm from "../account/addUserForm";
+import { BiX } from "react-icons/bi";
 
 type AddGroupFormInputs = {
     name: string;
     locations: Location[];
+    memberEmails: string[];
+    memberEmail: string;
 };
 
 export default function AddGroupForm({ user, company, ownedLocations, viewableLocations }: { user: User; company: Company; ownedLocations: Location[]; viewableLocations: Location[]; }) {
     const [inputValues, setInputValues] = useState<AddGroupFormInputs>({
         name: "",
         locations: [] as Location[],
+        memberEmails: [user.email], // The creator of the group must be a memberEmail of the group
+        memberEmail: ""
     });
     const [errorInputValues, setErrorInputValues] = useState<AddGroupFormInputs>();
     const [successInputValues, setSuccessInputValues] = useState<AddGroupFormInputs>();
@@ -19,6 +25,8 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
     const {
         name,
         locations,
+        memberEmails,
+        memberEmail
     } = inputValues;
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
@@ -26,6 +34,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
         // Check that required fields were entered
         if (name != "" &&
             locations.length > 0 &&
+            memberEmails.length > 0 &&
             inputValues !== errorInputValues &&
             inputValues !== successInputValues
         ) {
@@ -61,6 +70,24 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
         }));
     };
 
+    const addMember = () => {
+        if (memberEmail !== "") {
+            memberEmails.push(memberEmail);
+            setInputValues((prev) => ({
+                ...prev,
+                ["memberEmail"]: "",
+            }));
+        }
+    };
+
+    const removeMember = (emailToRemove: string) => {
+        const index = memberEmails.indexOf(emailToRemove);
+        memberEmails.splice(index, 1);
+        setInputValues((prev) => ({
+            ...prev,
+            ["memberEmails"]: memberEmails,
+        }));
+    };
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [message, setMessage] = useState<string>("");
@@ -78,6 +105,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
                 body: JSON.stringify({
                     name: name,
                     locations: locations,
+                    memberEmails: memberEmails
                 }),
             });
             if (res.status != 200) {
@@ -96,6 +124,21 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
             <div className="pt-2 w-full">
                 <div className="text-lg font-semibold">Name</div>
                 <InputField top bottom placeholder={"Name"} value={name} name={"name"} onChange={handleChange} />
+            </div>
+            <div className="pt-2 w-full">
+                <div className="text-lg font-semibold">Members</div>
+                <div className='w-full flex'>
+                    <InputField top bottom placeholder={"Member Email"} value={memberEmail} name={"memberEmail"} onChange={handleChange} />
+                    <BsArrowRight className={`self-center ml-2 ${memberEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addMember()} />
+                </div>
+                {memberEmails.map((email, index) => {
+                    return (
+                        <div key={index} className="leading-tight flex">
+                            <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeMember(email)} />
+                            <span>{email}</span>
+                        </div>
+                    );
+                })}
             </div>
             <div className="pt-2 w-full">
                 <div className="text-lg font-semibold">Locations</div>

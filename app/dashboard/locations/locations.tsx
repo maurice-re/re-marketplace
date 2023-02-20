@@ -10,7 +10,7 @@ function Locations({
     company,
     ownedLocations,
     viewableLocations,
-    groups
+    groups,
 }: {
     user: User;
     company: Company;
