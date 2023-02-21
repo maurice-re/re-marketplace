@@ -1,29 +1,49 @@
 import { User, Location } from "@prisma/client";
 import Link from "next/link";
+import { BiX } from "react-icons/bi";
 
 export default function LocationsList({ locations, title, caption }: { locations: Location[]; title: string, caption: string; }) {
-
+    const handleDelete = async (locationId: string) => {
+        const res = await fetch(`/api/locations/location?locationId=${locationId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+        const { message } = await res.json();
+        if (res.status != 200) {
+            console.log("Delete location error: ", message);
+        } else {
+            console.log("Delete location success: ", message);
+        }
+    };
     return (
         <div className="justify-center items-center flex w-1/2 flex-col">
             <h1 className="pt-3 text-xl pb-4">{title}</h1>
             <h2 className="text-lg pb-4">{caption}</h2>
             <div className="grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {locations.map((location, index) => (
-                    <Link
-                        key={index}
-                        className="flex flex-col items-center mx-1 mb-2 max-w-24 h-16 bg-re-dark-green-100 border-lg rounded-lg hover:bg-re-dark-green-200"
-                        href={{
-                            pathname: "/location",
-                            query: {
-                                locationId: location.id,
-                            },
-                        }}>
-                        <button
-                            className={"w-full h-full leading-tight p-2 overflow-y-auto"}
-                        >
-                            {location.displayName}
-                        </button>
-                    </Link>
+                    <div key={index} className="flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg bg-re-dark-green-200">
+                        <div className="flex justify-end mr-2 mt-2 text-xl">
+                            <BiX
+                                size={18}
+                                className="self-end cursor-pointer text-white hover:text-red-600"
+                                onClick={() => handleDelete(location.id)}
+                            />
+                        </div>
+                        <Link
+                            className="justify-center leading-none items-center flex"
+                            href={{
+                                pathname: "/location",
+                                query: {
+                                    locationId: location.id,
+                                },
+                            }}>
+                            <button
+                                className={"pt-2 pb-8 hover:text-re-green-500"}
+                            >
+                                {location.displayName}
+                            </button>
+                        </Link>
+                    </div>
                 ))}
             </div>
         </div>

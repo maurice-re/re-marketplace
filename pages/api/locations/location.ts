@@ -126,8 +126,57 @@ async function handler(req: Request, res: Response) {
 
         res.status(200).send({ message: "Disconnected location(s) from viewer with ID " + userId + "." });
       });
-    }
+    } else if (locationId && typeof locationId == "string") {
+      const location = await prisma.location.findUnique({
+        where: {
+          id: locationId ?? "",
+        },
+        include: {
+          owners: true,
+          viewers: true,
+          groups: true
+        }
+      });
+      let ownerIds: any[] = [];
+      let viewerIds: any[] = [];
+      let groupIds: any[] = [];
 
+      (location.owners).forEach(owner => {
+        ownerIds.push({ id: owner.id });
+      });
+      (location.viewers).forEach(viewer => {
+        viewerIds.push({ id: viewer.id });
+      });
+      (location.groups).forEach(group => {
+        groupIds.push({ id: group.id });
+      });
+
+      // Disconnect all owners and viewers from location
+      // Disconnect groups from location
+      await prisma.location.update({
+        where: {
+          id: locationId ?? "",
+        },
+        data: {
+          owners: {
+            disconnect: ownerIds,
+          },
+          viewers: {
+            disconnect: viewerIds,
+          },
+          groups: {
+            disconnect: groupIds,
+          },
+        },
+      });
+
+      // Delete location
+      await prisma.location.delete({
+        where: {
+          id: locationId ?? ""
+        },
+      });
+    }
     return;
   }
 
@@ -150,7 +199,6 @@ async function handler(req: Request, res: Response) {
     }
   });
 
-  console.log("A");
   if (!userWithItems) {
     res.status(400).send({ message: "Invalid user." });
     return;
@@ -180,7 +228,6 @@ async function handler(req: Request, res: Response) {
   /* Handle location POST behaviour. */
 
   if (req.method == "POST") {
-    console.log("B");
     // Get all user emails
     const users = await prisma.user.findMany();
     const allUserEmails = users.map(user => user.email);

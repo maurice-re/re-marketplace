@@ -23,11 +23,11 @@ export default function GroupsList({ user, groups }: { user: User; groups: Group
             <h2 className="text-lg pb-4">Groups you are a member of.</h2>
             <div className="grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {groups.map((group, index) => (
-                    <div key={index} className="flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg">
+                    <div key={index} className="flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg bg-re-dark-green-200">
                         <div className="flex justify-end mr-2 mt-2 text-xl">
                             <BiX
                                 size={25}
-                                className="self-end cursor-pointer text-white hover:text-re-gray-text"
+                                className="self-end cursor-pointer text-white hover:text-red-600"
                                 onClick={() => handleDelete(group.id)}
                             />
                         </div>
