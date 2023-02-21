@@ -2,7 +2,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { NextAuthOptions, Theme } from "next-auth";
 import EmailProvider, { SendVerificationRequestParams } from "next-auth/providers/email";
 import { createTransport } from "nodemailer";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 
 async function sendVerificationRequest(params: SendVerificationRequestParams) {
   const { identifier, url, provider, theme } = params

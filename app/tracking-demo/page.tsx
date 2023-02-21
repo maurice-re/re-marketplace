@@ -1,6 +1,6 @@
 import { Event } from "@prisma/client";
 import Link from "next/link";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import {
   LocationSettings,
   UserCompany,

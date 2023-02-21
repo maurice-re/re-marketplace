@@ -1,6 +1,6 @@
 import { Location } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 
 async function handler(req: Request, res: Response) {
   const { location, locationId }: { location: Location; locationId: string; } =

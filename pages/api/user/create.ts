@@ -1,6 +1,6 @@
 import { LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { CartOrder } from "../../../stores/formStore";
 import { allLocations, calculateAmount } from "../../../utils/form/cart";
 import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";

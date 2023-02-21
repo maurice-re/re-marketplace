@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 
 async function deleteEvent(req: Request, res: Response) {
     if (req.method != "POST") {

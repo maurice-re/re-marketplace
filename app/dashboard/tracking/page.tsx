@@ -1,5 +1,5 @@
 import { Company, Event, Settings, User } from "@prisma/client";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { LocationSettings } from "../../../utils/dashboard/dashboardUtils";
 import { useServerStore } from "../../server-store";
 import Tracking from "./tracking";

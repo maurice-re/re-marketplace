@@ -5,7 +5,7 @@ import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LineItems from "../../components/checkout/lineItems";
 import ReLogo from "../../components/form/re-logo";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import { useServerStore } from "../server-store";

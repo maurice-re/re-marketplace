@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { ApiError } from "next/dist/server/api-utils";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 
 async function handler(req: Request, res: Response) {
   if (req.method == "POST") {

@@ -1,7 +1,7 @@
 import { Action } from "@prisma/client";
 
 import { HalfContainer } from "../../../components/dashboard/dashboardContainers";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import {
   calculatePercent,
   getEmissions,

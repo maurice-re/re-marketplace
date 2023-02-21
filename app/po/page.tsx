@@ -1,6 +1,6 @@
 import "tailwindcss/tailwind.css";
 import POSummary from "../../components/po/poSummary";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import { CheckoutType } from "../../utils/checkoutUtils";
 import { useServerStore } from "../server-store";
 
