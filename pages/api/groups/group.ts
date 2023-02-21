@@ -117,6 +117,7 @@ async function handler(req: Request, res: Response) {
 
         // Convert member emails to member objects
         new Promise<void>((resolve, reject) => {
+            if (memberEmails.length === 0) resolve();
             memberEmails.forEach(async (memberEmail: string, index: number) => {
                 // Check if user email is valid
                 if (userEmails.includes(memberEmail)) {
@@ -161,8 +162,6 @@ async function handler(req: Request, res: Response) {
             res.status(200).send({ message: "Created new group with ID " + newGroup.id + "." });
             return;
         });
-
-
     }
 }
 

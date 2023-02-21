@@ -16,7 +16,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
     const [inputValues, setInputValues] = useState<AddGroupFormInputs>({
         name: "",
         locations: [] as Location[],
-        memberEmails: [user.email], // The creator of the group must be a memberEmail of the group
+        memberEmails: [user.email], // The creator of the group must be a member of the group
         memberEmail: ""
     });
     const [errorInputValues, setErrorInputValues] = useState<AddGroupFormInputs>();
@@ -126,21 +126,6 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
                 <InputField top bottom placeholder={"Name"} value={name} name={"name"} onChange={handleChange} />
             </div>
             <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Members</div>
-                <div className='w-full flex'>
-                    <InputField top bottom placeholder={"Member Email"} value={memberEmail} name={"memberEmail"} onChange={handleChange} />
-                    <BsArrowRight className={`self-center ml-2 ${memberEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addMember()} />
-                </div>
-                {memberEmails.map((email, index) => {
-                    return (
-                        <div key={index} className="leading-tight flex">
-                            <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeMember(email)} />
-                            <span>{email}</span>
-                        </div>
-                    );
-                })}
-            </div>
-            <div className="pt-2 w-full">
                 <div className="text-lg font-semibold">Locations</div>
                 <div className="p-0 my-0 relative w-full">
                     <div className="flex cursor-pointer px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b" onClick={() => setDropdownOpen(!dropdownOpen)}>
@@ -159,6 +144,25 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
                         })}
                     </ul>
                 </div>
+            </div>
+            <div className="pt-2 w-full">
+                <div className="text-lg font-semibold">Members</div>
+                <div className='w-full flex'>
+                    <div className="w-full">
+                        <InputField top bottom placeholder={"Member Email"} value={memberEmail} name={"memberEmail"} onChange={handleChange} />
+                    </div>
+                    <div className="justify-center items-center">
+                        <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${memberEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addMember()} />
+                    </div>
+                </div>
+                {memberEmails.map((email, index) => {
+                    return (
+                        <div key={index} className="leading-tight flex">
+                            <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeMember(email)} />
+                            <span>{email}</span>
+                        </div>
+                    );
+                })}
             </div>
             <button
                 id="submit"
