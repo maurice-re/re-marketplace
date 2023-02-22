@@ -1,6 +1,7 @@
 import 'tailwindcss/tailwind.css';
 import ReLogo from '../../components/form/re-logo';
 import LocationUsersList from '../../components/locations/location/locationUsersList';
+import UpdateLocationForm from '../../components/locations/updateLocationForm';
 import { useServerStore } from '../server-store';
 
 export default async function Page({
@@ -8,35 +9,54 @@ export default async function Page({
 }: {
     searchParams?: {
         locationId: string;
+        owned: string;
     };
 }) {
-    if (!(searchParams && searchParams.locationId)) {
+    if (!(searchParams && searchParams.locationId && searchParams.owned)) {
         return <div>An error occurred</div>;
     }
 
     const {
-        locationId
+        locationId,
+        owned
     } = searchParams;
 
+    const user = await useServerStore.getState().getUser();
     const owners = await useServerStore.getState().getLocationUsers(locationId, true);
     const viewers = await useServerStore.getState().getLocationUsers(locationId, false);
+    const location = await useServerStore.getState().getLocationById(locationId);
+    const ownerEmails = await useServerStore.getState().getLocationUserEmails(locationId, true);
+    const viewerEmails = await useServerStore.getState().getLocationUserEmails(locationId, false);
+
+    console.log("Got owned ", owned);
+    console.log(ownerEmails);
+    console.log(viewerEmails);
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
             <ReLogo />
-            <main className="flex flex-col items-center justify-center w-full py-6 text-white font-theinhardt px-4">
-                <h1 className="text-2xl font-theinhardt text-white text-center py-10">
+            <main className="flex flex-col items-center justify-start w-full pb-6 text-white font-theinhardt px-4 pt-10 h-screen overflow-y-auto">
+                <h1 className="text-2xl font-theinhardt text-white text-center pt-10 pb-3">
                     Location Details
                 </h1>
                 <h2 className="text-lg font-theinhardt text-white text-center pb-6">
-                    As an owner, you're able to add and remove other owners, and viewers.
+                    Owners are able to add/remove other owners and viewers. Viewers are able to view the location and its owners and viewers.
                 </h2>
-                <div className="flex w-full flex-col items-center justify-center space-y-4">
-                    <h1>Owners</h1>
-                    <LocationUsersList locationId={locationId} users={owners} owned={true} />
-                    <h1>Viewers</h1>
-                    <LocationUsersList locationId={locationId} users={viewers} owned={false} />
+                <div className="flex w-full gap-4 items-center justify-center space-y-4">
+                    <div className='w-1/2 flex flex-col items-center justify-center'>
+                        <h1>Owners</h1>
+                        <LocationUsersList locationId={locationId} users={owners} owned={owned} owner={true} />
+                    </div>
+                    <div className='w-1/2 flex flex-col items-center justify-center'>
+                        <h1>Viewers</h1>
+                        <LocationUsersList locationId={locationId} users={viewers} owned={owned} owner={false} />
+                    </div>
                 </div>
+                {/* Only let them update the location if they are an owner of the location. */}
+                {owned === "owner" && (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
+                    <h1>Update Location</h1>
+                    <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
+                </div>)}
             </main>
         </div>
     );

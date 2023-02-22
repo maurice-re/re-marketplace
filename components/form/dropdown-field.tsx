@@ -35,6 +35,7 @@ function DropdownField({
         onChange={onChange}
         required={required}
         placeholder={placeholder}
+        value={value}
       >
         {options.map((val) => (
           <option key={val} value={val}>

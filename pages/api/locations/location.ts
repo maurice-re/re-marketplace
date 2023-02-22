@@ -18,6 +18,7 @@ async function handler(req: Request, res: Response) {
     locationIds,
     userIds,
     owned,
+    owner,
     ownerEmails,
     viewerEmails
   }: {
@@ -35,6 +36,7 @@ async function handler(req: Request, res: Response) {
     locationIds: string[];
     userIds: string[];
     owned: boolean;
+    owner: boolean;
     ownerEmails: string[],
     viewerEmails: string[],
   } =
@@ -47,7 +49,7 @@ async function handler(req: Request, res: Response) {
     if ((locationId && typeof locationId == "string") && userIds) {
       // Disconnect provided users from specified location
       userIds.forEach(async userId => {
-        if (owned) {
+        if (owner) {
           // Disconnect owners
           await prisma.location.update({
             where: {
@@ -81,7 +83,6 @@ async function handler(req: Request, res: Response) {
               },
             },
           });
-
           res.status(200).send({ message: "Disconnected viewer(s) from location with ID " + locationId + "." });
         }
       });
@@ -232,7 +233,8 @@ async function handler(req: Request, res: Response) {
     const users = await prisma.user.findMany();
     const allUserEmails = users.map(user => user.email);
 
-    let userIds: any[] = [];
+    let ownerIds: any[] = [];
+    let viewerIds: any[] = [];
     let foundUser: User | null;
     let foundUsers: User[] | null;
     let found = false;
@@ -246,7 +248,7 @@ async function handler(req: Request, res: Response) {
           // Find first user with matching email
           foundUsers = await prisma.user.findMany({ where: { email: ownerEmail } });
           foundUser = foundUsers[0];
-          userIds.push({ id: foundUser.id });
+          ownerIds.push({ id: foundUser.id });
         } else {
           res.status(400).send({ message: "Invalid owner email " + ownerEmail + "." });
           return;
@@ -257,10 +259,12 @@ async function handler(req: Request, res: Response) {
         if (index === ownerEmails.length - 1) resolve();
       });
     }).then(async () => {
-      if (userIds.length == 0) {
+      if (ownerIds.length == 0) {
         res.status(400).send({ message: "At least one valid owner email must be provided." });
         return;
       }
+      console.log("Created ownerIds");
+      console.log(ownerIds);
 
       // The creator of the location should be an owner
       if (!found) {
@@ -277,48 +281,67 @@ async function handler(req: Request, res: Response) {
             // Find first user with matching email
             foundUsers = await prisma.user.findMany({ where: { email: viewerEmail } });
             foundUser = foundUsers[0];
-            userIds.push({ id: foundUser.id });
+            viewerIds.push({ id: foundUser.id });
           } else {
             res.status(400).send({ message: "Invalid viewer email " + viewerEmail + "." });
             return;
           }
-          if (viewerEmail == userWithItems.email) {
-            found = true;
-          }
-          console.log("D");
           if (index === viewerEmails.length - 1) resolve();
         });
       }).then(async () => {
-        const newLocation = await prisma.location.create({
-          data: {
-            city: city,
-            country: country,
-            displayName: displayName,
-            line1: line1,
-            line2: line2,
-            penalty: penalty,
-            shippingName: shippingName,
-            state: state,
-            trackingType: trackingType,
-            type: type,
-            zip: zip,
-            owners: {
-              connect: [
-                {
-                  id: userId,
-                }],
+        if (locationId && typeof locationId == "string") {
+          // Update
+          await prisma.location.update({
+            where: {
+              id: locationId ?? ""
             },
-            viewers: {
-              connect: [
-                {
-                  id: userId,
-                }
-              ],
+            data: {
+              city: city,
+              country: country,
+              displayName: displayName,
+              line1: line1,
+              line2: line2,
+              penalty: penalty,
+              shippingName: shippingName,
+              state: state,
+              trackingType: trackingType,
+              type: type,
+              zip: zip,
+              owners: {
+                connect: ownerIds,
+              },
+              viewers: {
+                connect: viewerIds,
+              },
             },
-          },
-        });
-
-        res.status(200).send({ message: "Created new location with ID " + newLocation.id + "." });
+          });
+          res.status(200).send({ message: "Updated location with ID " + locationId + "." });
+        }
+        else {
+          // Create
+          const newLocation = await prisma.location.create({
+            data: {
+              city: city,
+              country: country,
+              displayName: displayName,
+              line1: line1,
+              line2: line2,
+              penalty: penalty,
+              shippingName: shippingName,
+              state: state,
+              trackingType: trackingType,
+              type: type,
+              zip: zip,
+              owners: {
+                connect: ownerIds,
+              },
+              viewers: {
+                connect: viewerIds,
+              },
+            },
+          });
+          res.status(200).send({ message: "Created new location with ID " + newLocation.id + "." });
+        }
         return;
       });
     });

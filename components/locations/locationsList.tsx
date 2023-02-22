@@ -2,7 +2,7 @@ import { User, Location } from "@prisma/client";
 import Link from "next/link";
 import { BiX } from "react-icons/bi";
 
-export default function LocationsList({ locations, title, caption }: { locations: Location[]; title: string, caption: string; }) {
+export default function LocationsList({ locations, title, caption, owned }: { locations: Location[]; title: string, caption: string; owned: boolean; }) {
     const handleDelete = async (locationId: string) => {
         const res = await fetch(`/api/locations/location?locationId=${locationId}`, {
             method: "DELETE",
@@ -22,7 +22,7 @@ export default function LocationsList({ locations, title, caption }: { locations
             <div className="grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {locations.map((location, index) => (
                     <div key={index} className="flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg bg-re-dark-green-200">
-                        <div className="flex justify-end mr-2 mt-2 text-xl">
+                        <div className="flex justify-end mr-1 mt-1 text-xl">
                             <BiX
                                 size={18}
                                 className="self-end cursor-pointer text-white hover:text-red-600"
@@ -34,11 +34,13 @@ export default function LocationsList({ locations, title, caption }: { locations
                             href={{
                                 pathname: "/location",
                                 query: {
+                                    // TODO(Suhana): Investigate need to put string in owner field
                                     locationId: location.id,
+                                    owned: owned ? "owner" : "viewer"
                                 },
                             }}>
                             <button
-                                className={"pt-2 pb-8 hover:text-re-green-500"}
+                                className={"pt-2 px-2 hover:text-re-green-500"}
                             >
                                 {location.displayName}
                             </button>

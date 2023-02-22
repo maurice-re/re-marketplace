@@ -21,6 +21,8 @@ interface ServerStore {
   getCompany: () => Promise<Company>;
   getLocations: (owned: boolean) => Promise<Location[]>;
   getLocationUsers: (locationId: string, owned: boolean) => Promise<User[]>;
+  getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
+  getLocationById: (locationId: string) => Promise<Location>;
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
@@ -49,6 +51,14 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     }
     redirect(redirectUrl ?? "/signin");
+  },
+  getLocationById: async (locationId: string) => {
+    const location = await prisma.location.findUnique({
+      where: {
+        id: locationId
+      },
+    });
+    return location as Location;
   },
   getCompany: async () => {
     const company = get()._company;
@@ -88,6 +98,27 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     });
     if (!location) return [];
     return owned ? [...location.owners] : [...location.viewers];
+  },
+  getLocationUserEmails: async (locationdId: string, owned: boolean) => {
+    const location = await prisma.location.findUnique({
+      where: {
+        id: locationdId,
+      },
+      include: {
+        owners: true,
+        viewers: true,
+      }
+    });
+    if (!location) return [];
+    let ownerEmails: string[] = [];
+    let viewerEmails: string[] = [];
+    (location.owners).forEach(owner => {
+      ownerEmails.push(owner.email);
+    });
+    (location.viewers).forEach(viewer => {
+      viewerEmails.push(viewer.email);
+    });
+    return owned ? ownerEmails : viewerEmails;
   },
   getSkus: async () => {
     return await prisma.sku.findMany({

@@ -19,6 +19,7 @@ export default async function Page({
         groupId
     } = searchParams;
 
+    const user = await useServerStore.getState().getUser();
     const locations = await useServerStore.getState().getGroupLocations(groupId);
 
     return (
@@ -30,7 +31,7 @@ export default async function Page({
                 </h1>
                 {/* TODO(Suhana): Add/remove locations */}
                 <div className="flex w-full flex-col items-center justify-center space-y-4">
-                    <LocationsList locations={locations} title="Group Locations" caption="You're an owner of x locations and viewer of y locations out of these z locations." />
+                    <LocationsList locations={locations} title="Group Locations" caption="You're an owner of x locations and viewer of y locations out of these z locations." owned={true} />
                 </div>
             </main>
         </div>
