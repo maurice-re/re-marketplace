@@ -20,8 +20,8 @@ function Locations({
     createdGroups: Group[];
     memberGroups: Group[];
 }) {
-    const handleDeleteLocation = async (locationId: string) => {
-        const res = await fetch(`/api/locations/location?locationId=${locationId}`, {
+    const deleteLocation = async (location: Location) => {
+        const res = await fetch(`/api/locations/location?locationId=${location.id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
         });
@@ -36,8 +36,8 @@ function Locations({
         <div className="bg-re-black flex">
             <div className="flex items-start justify-center w-full flex-col">
                 <div className="flex w-full justify-center items-center gap-6">
-                    <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." owned={true} handleDelete={handleDeleteLocation} />
-                    <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." owned={false} handleDelete={null} />
+                    <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." handleDelete={deleteLocation} deleteDescription="delete a location" />
+                    <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." handleDelete={null} deleteDescription="delete a location" />
                 </div>
                 <div className="w-full flex gap-8">
                     <div className="flex-col w-1/2 flex items-start justify-start">

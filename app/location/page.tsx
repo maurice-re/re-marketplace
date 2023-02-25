@@ -9,16 +9,14 @@ export default async function Page({
 }: {
     searchParams?: {
         locationId: string;
-        owned: string;
     };
 }) {
-    if (!(searchParams && searchParams.locationId && searchParams.owned)) {
+    if (!(searchParams && searchParams.locationId)) {
         return <div>An error occurred</div>;
     }
 
     const {
         locationId,
-        owned
     } = searchParams;
 
     const user = await useServerStore.getState().getUser();
@@ -27,10 +25,8 @@ export default async function Page({
     const location = await useServerStore.getState().getLocationById(locationId);
     const ownerEmails = await useServerStore.getState().getLocationUserEmails(locationId, true);
     const viewerEmails = await useServerStore.getState().getLocationUserEmails(locationId, false);
-
-    console.log("Got owned ", owned);
-    console.log(ownerEmails);
-    console.log(viewerEmails);
+    const ownedLocations = await useServerStore.getState().getLocations(true);
+    const owned = ownedLocations.some(l => l.id === locationId);
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
@@ -45,11 +41,11 @@ export default async function Page({
                 <div className="flex w-full gap-4 items-center justify-center space-y-4">
                     <div className='w-1/2 flex flex-col items-center justify-center'>
                         <h1>Owners</h1>
-                        <LocationUsersList locationId={locationId} users={owners} owned={owned} owner={true} />
+                        <LocationUsersList locationId={locationId} users={owners} owned={owned ? "owned" : "viewable"} owner={true} />
                     </div>
                     <div className='w-1/2 flex flex-col items-center justify-center'>
                         <h1>Viewers</h1>
-                        <LocationUsersList locationId={locationId} users={viewers} owned={owned} owner={false} />
+                        <LocationUsersList locationId={locationId} users={viewers} owned={owned ? "owned" : "viewable"} owner={false} />
                     </div>
                 </div>
                 {/* Only let them update the location if they are an owner of the location. */}

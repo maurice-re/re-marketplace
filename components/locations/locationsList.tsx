@@ -3,7 +3,7 @@ import { User, Location } from "@prisma/client";
 import Link from "next/link";
 import { BiX } from "react-icons/bi";
 
-export default function LocationsList({ locations, title, caption, owned, handleDelete }: { locations: Location[]; title: string, caption: string; owned: boolean; handleDelete: ((locationId: string) => Promise<void>) | null; }) {
+export default function LocationsList({ locations, title, caption, handleDelete, deleteDescription }: { locations: Location[]; title: string, caption: string; handleDelete: ((location: Location) => Promise<void>) | null; deleteDescription: string; }) {
     return (
         <div className="justify-center items-center flex w-1/2 flex-col">
             <h1 className="pt-3 text-xl pb-1">{title}</h1>
@@ -16,10 +16,10 @@ export default function LocationsList({ locations, title, caption, owned, handle
                             size={18}
                             className="text-white hover:text-red-600"
                         />
-                        <h3>to delete the location.</h3>
+                        <h3>to {deleteDescription}.</h3>
                     </>
                 ) : (
-                    <>Only owners can delete locations.</>
+                    <>You have to be an owner to {deleteDescription}.</>
                 )}
             </div>
             <div className="pt-4 grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
@@ -30,7 +30,7 @@ export default function LocationsList({ locations, title, caption, owned, handle
                                 <BiX
                                     size={18}
                                     className="self-end cursor-pointer text-white hover:text-red-600"
-                                    onClick={() => handleDelete(location.id)}
+                                    onClick={() => handleDelete(location)}
                                 />
                             </div>
                         </div>)}
@@ -41,7 +41,6 @@ export default function LocationsList({ locations, title, caption, owned, handle
                                 query: {
                                     // TODO(Suhana): Investigate need to put string in owner field
                                     locationId: location.id,
-                                    owned: owned ? "owner" : "viewer"
                                 },
                             }}>
                             <button

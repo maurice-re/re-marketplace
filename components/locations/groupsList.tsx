@@ -16,7 +16,7 @@ export default function GroupsList({ user, createdGroups, memberGroups }: { user
         }
     };
 
-    const userCreatedGroup = (groupId: string): boolean => {
+    const createdGroup = (groupId: string): boolean => {
         return createdGroups.some(g => g.id === groupId);
     };
 
@@ -34,8 +34,8 @@ export default function GroupsList({ user, createdGroups, memberGroups }: { user
             </div>
             <div className="pt-4 grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {memberGroups.map((group, index) => (
-                    <div key={index} className={`flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg ${userCreatedGroup(group.id) ? "bg-re-dark-green-100" : "bg-re-dark-green-200"}`}>
-                        {userCreatedGroup(group.id) && (
+                    <div key={index} className={`flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg ${createdGroup(group.id) ? "bg-re-dark-green-100" : "bg-re-dark-green-200"}`}>
+                        {createdGroup(group.id) && (
                             <div className="flex justify-end mr-1 mt-1 text-xl">
                                 <div className="tooltip tooltip-left" data-tip="Delete">
                                     <BiX
@@ -46,7 +46,7 @@ export default function GroupsList({ user, createdGroups, memberGroups }: { user
                                 </div>
                             </div>)}
                         <Link
-                            className={`${!userCreatedGroup(group.id) && "my-auto"} justify-center leading-none items-center flex`}
+                            className={`${!createdGroup(group.id) && "my-auto"} justify-center leading-none items-center flex`}
                             href={{
                                 pathname: "/group",
                                 query: {

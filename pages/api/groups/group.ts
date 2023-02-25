@@ -11,6 +11,7 @@ async function handler(req: Request, res: Response) {
         name: string;
         locations: Location[];
         memberEmails: string[];
+        locationIds:
     } =
         req.body;
     const { userId, groupId } = req.query;
@@ -39,7 +40,8 @@ async function handler(req: Request, res: Response) {
                 id: groupId ?? "",
             },
             include: {
-                members: true
+                members: true,
+                locations: true
             }
         });
 
@@ -48,48 +50,72 @@ async function handler(req: Request, res: Response) {
             return;
         }
 
-        // Disconnect all locations from the group
-        const locationIds: any[] = [];
-        const locations = await prisma.location.findMany();
-        locations.forEach(async (location) => {
-            locationIds.push({ id: location.id });
-        });
-
-        // Disconnect all members from the group
-        const memberIds: any[] = [];
-        (group.members).forEach(async (member: User) => {
-            memberIds.push({ id: member.id });
-        });
-
-        // Disconnect locations and members
-        await prisma.group.update({
-            where: {
-                id: groupId ?? ""
-            },
-            data: {
-                locations: {
-                    disconnect: locationIds,
+        if ((groupId && typeof groupId == "string") && locations) {
+            // Disconnect given locations from the group
+            const locationIds: any[] = [];
+            (locations).forEach(async (location: Location) => {
+                locationIds.push({ id: location.id });
+            });
+            // Disconnect locations
+            await prisma.group.update({
+                where: {
+                    id: groupId ?? ""
                 },
-                members: {
-                    disconnect: memberIds,
+                data: {
+                    locations: {
+                        disconnect: locationIds,
+                    },
                 },
-            },
-        });
+            });
+            res.status(200).send({ message: "Disconnected provided location(s) from group with ID " + groupId + "." });
+            return;
+        } else if (groupId && typeof groupId == "string") {
+            // Delete group
 
-        // Delete group
-        await prisma.group.delete({
-            where: {
-                id: groupId ?? ""
-            },
-        });
+            // Disconnect all locations from the group
+            const locationIds: any[] = [];
+            (group.locations).forEach(async (location: Location) => {
+                locationIds.push({ id: location.id });
+            });
 
-        res.status(200).send({ message: "Deleted group with ID " + groupId + "." });
-        return;
+            // Disconnect all members from the group
+            const memberIds: any[] = [];
+            (group.members).forEach(async (member: User) => {
+                memberIds.push({ id: member.id });
+            });
+
+            // Disconnect locations and members
+            await prisma.group.update({
+                where: {
+                    id: groupId ?? ""
+                },
+                data: {
+                    locations: {
+                        disconnect: locationIds,
+                    },
+                    members: {
+                        disconnect: memberIds,
+                    },
+                },
+            });
+
+            // Delete group
+            await prisma.group.delete({
+                where: {
+                    id: groupId ?? ""
+                },
+            });
+
+            res.status(200).send({ message: "Deleted group with ID " + groupId + "." });
+            return;
+        }
+
     }
 
     /* Handle GET behaviour. */
 
     if (req.method == "GET") {
+        // Send groups that the user a member of
         res.status(200).send({ groups: user.memberGroups });
         return;
     }

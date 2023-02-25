@@ -1,8 +1,7 @@
 import 'tailwindcss/tailwind.css';
 import ReLogo from '../../components/form/re-logo';
-import LocationUsersList from '../../components/locations/location/locationUsersList';
-import LocationsList from '../../components/locations/locationsList';
 import { useServerStore } from '../server-store';
+import Group from './group';
 
 export default async function Page({
     searchParams,
@@ -19,19 +18,14 @@ export default async function Page({
         groupId
     } = searchParams;
 
-    const user = await useServerStore.getState().getUser();
-    const locations = await useServerStore.getState().getGroupLocations(groupId);
+    const createdGroups = await useServerStore.getState().getGroups(true);
+    const groupLocations = await useServerStore.getState().getGroupLocations(groupId);
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
             <ReLogo />
             <main className="flex flex-col items-center justify-center w-full py-6 text-white font-theinhardt px-4">
-                <h1 className="text-2xl font-theinhardt text-white text-center py-10">
-                    Group Details
-                </h1>
-                <div className="flex w-full flex-col items-center justify-center space-y-4">
-                    <LocationsList locations={locations} title="Group Locations" caption="You're an owner of x locations and viewer of y locations out of these z locations." owned={true} />
-                </div>
+                <Group groupId={groupId} groupLocations={groupLocations} createdGroups={createdGroups} />
             </main>
         </div>
     );
