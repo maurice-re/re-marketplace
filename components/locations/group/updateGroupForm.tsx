@@ -33,7 +33,6 @@ export default function UpdateGroupForm({ group, user, initialMemberEmails, owne
 
     const checkCanSubmit = () => {
         // Check that required fields were entered
-        console.log("In here");
         if (name != "" &&
             locations.length > 0 &&
             memberEmails.length > 0 &&
@@ -41,14 +40,8 @@ export default function UpdateGroupForm({ group, user, initialMemberEmails, owne
             inputValues !== successInputValues &&
             inputValues !== initialGroupValues
         ) {
-            console.log("returning true");
             return true;
         } else {
-            console.log(locations);
-            console.log(memberEmails);
-            console.log(inputValues === errorInputValues);
-            console.log(inputValues === successInputValues);
-            console.log(inputValues === initialGroupValues);
             return false;
         }
     };

@@ -1,7 +1,61 @@
-import { Location, User } from "@prisma/client";
+import { Location, User, Group } from "@prisma/client";
+import { group } from "console";
 import type { Request, Response } from "express";
 import e from "express";
 import prisma from "../../../constants/prisma";
+
+async function disconnectGroupLocations(group: Group) {
+    // Disconnect all locations from the group
+    const locationIds: any[] = [];
+    (group.locations).forEach(async (location: Location) => {
+        locationIds.push({ id: location.id });
+    });
+
+    // Disconnect locations and members
+    await prisma.group.update({
+        where: {
+            id: group.id ?? ""
+        },
+        data: {
+            locations: {
+                disconnect: locationIds,
+            },
+        },
+    });
+}
+
+async function getGroupById(groupId: Group): Promise<Group> {
+    const group = await prisma.group.findUnique({
+        where: {
+            id: groupId ?? "",
+        },
+        include: {
+            members: true,
+            locations: true
+        }
+    });
+    return group as Group;
+}
+
+async function disconnectGroupMembers(group: Group) {
+    // Disconnect all members from the group
+    const memberIds: any[] = [];
+    (group.members).forEach(async (member: User) => {
+        memberIds.push({ id: member.id });
+    });
+
+    // Disconnect locations and members
+    await prisma.group.update({
+        where: {
+            id: group.id ?? ""
+        },
+        data: {
+            members: {
+                disconnect: memberIds,
+            },
+        },
+    });
+}
 
 async function handler(req: Request, res: Response) {
     const {
@@ -35,15 +89,7 @@ async function handler(req: Request, res: Response) {
     /* Handle DELETE behaviour. */
 
     if (req.method == "DELETE") {
-        const group = await prisma.group.findUnique({
-            where: {
-                id: groupId ?? "",
-            },
-            include: {
-                members: true,
-                locations: true
-            }
-        });
+        const group = await getGroupById(groupId);
 
         if (!group) {
             res.status(400).send({ message: "Invalid group indicated." });
@@ -52,54 +98,15 @@ async function handler(req: Request, res: Response) {
 
         if ((groupId && typeof groupId == "string") && locations) {
             // Disconnect given locations from the group
-            const locationIds: any[] = [];
-            (locations).forEach(async (location: Location) => {
-                locationIds.push({ id: location.id });
-            });
-            // Disconnect locations
-            await prisma.group.update({
-                where: {
-                    id: groupId ?? ""
-                },
-                data: {
-                    locations: {
-                        disconnect: locationIds,
-                    },
-                },
-            });
+            await disconnectGroupLocations(group);
+
             res.status(200).send({ message: "Disconnected provided location(s) from group with ID " + groupId + "." });
             return;
         } else if (groupId && typeof groupId == "string") {
-            // Delete group
+            // Disconnect locations and members, then delete group
+            await disconnectGroupLocations(group);
+            await disconnectGroupMembers(group);
 
-            // Disconnect all locations from the group
-            const locationIds: any[] = [];
-            (group.locations).forEach(async (location: Location) => {
-                locationIds.push({ id: location.id });
-            });
-
-            // Disconnect all members from the group
-            const memberIds: any[] = [];
-            (group.members).forEach(async (member: User) => {
-                memberIds.push({ id: member.id });
-            });
-
-            // Disconnect locations and members
-            await prisma.group.update({
-                where: {
-                    id: groupId ?? ""
-                },
-                data: {
-                    locations: {
-                        disconnect: locationIds,
-                    },
-                    members: {
-                        disconnect: memberIds,
-                    },
-                },
-            });
-
-            // Delete group
             await prisma.group.delete({
                 where: {
                     id: groupId ?? ""
@@ -109,7 +116,6 @@ async function handler(req: Request, res: Response) {
             res.status(200).send({ message: "Deleted group with ID " + groupId + "." });
             return;
         }
-
     }
 
     /* Handle GET behaviour. */
@@ -232,9 +238,13 @@ async function handler(req: Request, res: Response) {
             });
 
             if (groupId && typeof groupId == "string") {
-                console.log("Reached update case");
-
                 // Update existing group
+                const group = await getGroupById(groupId);
+
+                // Disconnect all group locations and members
+                await disconnectGroupLocations(group);
+                await disconnectGroupMembers(group);
+
                 await prisma.group.update({
                     where: {
                         id: groupId
