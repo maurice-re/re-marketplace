@@ -49,10 +49,12 @@ export default async function Page({
                     </div>
                 </div>
                 {/* Only let them update the location if they are an owner of the location. */}
-                {owned && (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
-                    <h1>Update Location</h1>
-                    <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
-                </div>)}
+                {owned &&
+                    (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
+                        <h1>Update Location</h1>
+                        <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
+                    </div>)
+                }
             </main>
         </div>
     );

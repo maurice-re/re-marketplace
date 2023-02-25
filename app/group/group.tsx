@@ -1,22 +1,27 @@
 "use client";
 import { User, Company, Location, Group } from "@prisma/client";
+import UpdateGroupForm from "../../components/locations/group/updateGroupForm";
 import LocationsList from "../../components/locations/locationsList";
 
 function Group({
-    groupId,
+    group,
     groupLocations,
     createdGroups,
-    user
+    user,
+    memberEmails,
+    ownedLocations
 }: {
-    groupId: string;
+    group: Group;
     groupLocations: Location[];
     createdGroups: Group[];
     user: User;
+    ownedLocations: Location[];
+    memberEmails: string[];
 }) {
-    const createdGroup: boolean = createdGroups.some(g => g.id === groupId);
+    const createdGroup: boolean = createdGroups.some(g => g.id === group.id);
 
     const disconnectLocationFromGroup = async (location: Location) => {
-        const res = await fetch(`/api/groups/group?groupId=${groupId}&userId=${user.id}`, {
+        const res = await fetch(`/api/groups/group?groupId=${group.id}&userId=${user.id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -38,6 +43,13 @@ function Group({
             <div className="flex w-full flex-col items-center justify-center space-y-4">
                 <LocationsList locations={groupLocations} title="Group Locations" caption="The locations that are part of this group, each of which you are either an owner or viewer of." handleDelete={createdGroup ? disconnectLocationFromGroup : null} deleteDescription="disconnect a location from the group" />
             </div>
+            {/* Only let them update the location if they are an owner of the location. */}
+            {createdGroup &&
+                (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
+                    <h1>Update Group</h1>
+                    <UpdateGroupForm user={user} group={group} ownedLocations={ownedLocations} initialMemberEmails={memberEmails} />
+                </div>)
+            }
         </div>
     );
 }

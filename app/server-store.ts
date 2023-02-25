@@ -22,12 +22,14 @@ interface ServerStore {
   getLocations: (owned: boolean) => Promise<Location[]>;
   getLocationUsers: (locationId: string, owned: boolean) => Promise<User[]>;
   getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
+  getGroupMemberEmails: (groupId: string) => Promise<string[]>;
   getLocationById: (locationId: string) => Promise<Location>;
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
   getGroups: (created: boolean) => Promise<Group[]>;
   getGroupLocations: (groupId: string) => Promise<Location[]>;
+  getGroupById: (groupId: string) => Promise<Group>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -59,6 +61,18 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       },
     });
     return location as Location;
+  },
+  getGroupById: async (groupId: string) => {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: groupId
+      },
+      include: {
+        locations: true,
+        members: true,
+      }
+    });
+    return group as Group;
   },
   getCompany: async () => {
     const company = get()._company;
@@ -119,6 +133,22 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       viewerEmails.push(viewer.email);
     });
     return owned ? ownerEmails : viewerEmails;
+  },
+  getGroupMemberEmails: async (groupId: string) => {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: groupId,
+      },
+      include: {
+        members: true,
+      }
+    });
+    if (!group) return [];
+    let groupMemberEmails: string[] = [];
+    (group.members).forEach(member => {
+      groupMemberEmails.push(member.email);
+    });
+    return groupMemberEmails;
   },
   getSkus: async () => {
     return await prisma.sku.findMany({

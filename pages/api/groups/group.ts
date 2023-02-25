@@ -1,5 +1,6 @@
 import { Location, User } from "@prisma/client";
 import type { Request, Response } from "express";
+import e from "express";
 import prisma from "../../../constants/prisma";
 
 async function handler(req: Request, res: Response) {
@@ -122,6 +123,7 @@ async function handler(req: Request, res: Response) {
     /* Handle POST behaviour. */
 
     if (req.method == "POST") {
+        // Update or create new group
         if (!name || typeof name != "string") {
             res.status(400).send({ message: "No name provided." });
             return;
@@ -147,9 +149,6 @@ async function handler(req: Request, res: Response) {
                     owners: true,
                 }
             });
-
-            console.log("Location owners: ");
-            console.log(locationWithOwners?.owners);
 
             // Validate location
             if (!((locationWithOwners?.owners).some(o => o.id === userId))) {
@@ -184,6 +183,7 @@ async function handler(req: Request, res: Response) {
                     res.status(400).send({ message: "Invalid member email " + memberEmail + "." });
                     return;
                 }
+                console.log("Got memberEmail ", memberEmail);
                 if (memberEmail == user.email) {
                     found = true;
                 }
@@ -231,22 +231,47 @@ async function handler(req: Request, res: Response) {
                 });
             });
 
-            // Create new group
-            const newGroup = await prisma.group.create({
-                data: {
-                    userId: userId,
-                    name: name,
-                    locations: {
-                        connect: locationIds,
+            if (groupId && typeof groupId == "string") {
+                console.log("Reached update case");
+
+                // Update existing group
+                await prisma.group.update({
+                    where: {
+                        id: groupId
                     },
-                    members: {
-                        connect: memberIds,
+                    data: {
+                        name: name,
+                        locations: {
+                            connect: locationIds,
+                        },
+                        members: {
+                            connect: memberIds,
+                        },
+                        createdAt: now,
                     },
-                    createdAt: now,
-                },
-            });
-            res.status(200).send({ message: "Created new group with ID " + newGroup.id + "." });
-            return;
+                });
+                res.status(200).send({ message: "Updated group with ID " + groupId + "." });
+                return;
+            } else {
+                // Create new group
+                const newGroup = await prisma.group.create({
+                    data: {
+                        userId: userId,
+                        name: name,
+                        locations: {
+                            connect: locationIds,
+                        },
+                        members: {
+                            connect: memberIds,
+                        },
+                        createdAt: now,
+                    },
+                });
+                res.status(200).send({ message: "Created new group with ID " + newGroup.id + "." });
+                return;
+            }
+
+
         });
     }
 }

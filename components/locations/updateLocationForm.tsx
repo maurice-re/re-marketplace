@@ -227,7 +227,7 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
                         <InputField top bottom placeholder={"Owner Email"} value={ownerEmail} name={"ownerEmail"} onChange={handleChange} />
                     </div>
                     <div className="justify-center items-center">
-                        <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${viewerEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addUser(true)} />
+                        <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${ownerEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addUser(true)} />
                     </div>
                 </div>
                 {ownerEmails.map((email, index) => {
