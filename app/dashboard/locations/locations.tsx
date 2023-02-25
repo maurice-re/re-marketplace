@@ -18,12 +18,24 @@ function Locations({
     viewableLocations: Location[];
     groups: Group[];
 }) {
+    const handleDeleteLocation = async (locationId: string) => {
+        const res = await fetch(`/api/locations/location?locationId=${locationId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+        });
+        const { message } = await res.json();
+        if (res.status != 200) {
+            console.log("Delete location error: ", message);
+        } else {
+            console.log("Delete location success: ", message);
+        }
+    };
     return (
         <div className="bg-re-black flex">
             <div className="flex items-start justify-center w-full flex-col">
                 <div className="flex w-full justify-center items-center gap-6">
-                    <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." owned={true} />
-                    <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." owned={false} />
+                    <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." owned={true} handleDelete={handleDeleteLocation} />
+                    <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." owned={false} handleDelete={null} />
                 </div>
                 <div className="w-full flex gap-8">
                     <div className="flex-col w-1/2 flex items-start justify-start">

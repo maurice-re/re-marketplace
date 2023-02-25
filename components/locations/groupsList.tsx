@@ -19,8 +19,8 @@ export default function GroupsList({ user, groups }: { user: User; groups: Group
 
     return user && (
         <div className="justify-center items-center flex w-full flex-col">
-            <h1 className="pt-3 text-xl pb-4">Groups</h1>
-            <h2 className="text-lg pb-4">Groups you are a member of.</h2>
+            <h1 className="pt-3 text-xl pb-1">Groups</h1>
+            <h2 className="leading-none text-lg pb-4">Groups you are a member of.</h2>
             <div className="grid gap-2 overflow-x-auto w-full pr-1 items-start grid-flow-col">
                 {groups.map((group, index) => (
                     <div key={index} className="flex flex-col max-w-24 h-20 border-re-dark-green-100 border-2 text-white rounded-lg bg-re-dark-green-200">

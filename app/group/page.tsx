@@ -29,7 +29,6 @@ export default async function Page({
                 <h1 className="text-2xl font-theinhardt text-white text-center py-10">
                     Group Details
                 </h1>
-                {/* TODO(Suhana): Add/remove locations */}
                 <div className="flex w-full flex-col items-center justify-center space-y-4">
                     <LocationsList locations={locations} title="Group Locations" caption="You're an owner of x locations and viewer of y locations out of these z locations." owned={true} />
                 </div>
