@@ -54,7 +54,7 @@ export default function GroupsList({ user, createdGroups, memberGroups }: { user
                                 },
                             }}>
                             <button
-                                className={"pb-8 hover:text-re-green-500"}
+                                className={"hover:text-re-green-500"}
                             >
                                 {group.name}
                             </button>

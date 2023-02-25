@@ -55,7 +55,15 @@ async function handler(req: Request, res: Response) {
 
       if (owner) {
         // Disconnect owners
-        if (ownerOrViewerIds.length === 1) {
+        const location = await prisma.location.findUnique({
+          where: {
+            id: locationId,
+          },
+          include: {
+            owners: true,
+          }
+        });
+        if ((location.owners).length === 1) {
           res.status(400).send({ message: "Failed to disconnect owner from location with ID " + locationId + ", because every location must have at least one owner." });
           return;
         }

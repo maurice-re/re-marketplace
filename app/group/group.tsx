@@ -6,17 +6,17 @@ function Group({
     groupId,
     groupLocations,
     createdGroups,
+    user
 }: {
     groupId: string;
     groupLocations: Location[];
     createdGroups: Group[];
+    user: User;
 }) {
     const createdGroup: boolean = createdGroups.some(g => g.id === groupId);
 
-    // Ensure that when members are added, they are added as viewers to the locations in the group
-
     const disconnectLocationFromGroup = async (location: Location) => {
-        const res = await fetch(`/api/groups/group?groupId=${groupId}`, {
+        const res = await fetch(`/api/groups/group?groupId=${groupId}&userId=${user.id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

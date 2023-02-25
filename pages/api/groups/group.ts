@@ -11,7 +11,6 @@ async function handler(req: Request, res: Response) {
         name: string;
         locations: Location[];
         memberEmails: string[];
-        locationIds:
     } =
         req.body;
     const { userId, groupId } = req.query;
@@ -133,12 +132,34 @@ async function handler(req: Request, res: Response) {
             return;
         }
 
-        const now = new Date();
-
         const locationIds: any[] = [];
-        locations.forEach(async (location) => {
+
+        // The creator of the group should be an owner of all the locations specified
+        locations.forEach(async (location: Location) => {
+            // Construct location ID object array
             locationIds.push({ id: location.id });
+
+            const locationWithOwners = await prisma.location.findUnique({
+                where: {
+                    id: location.id,
+                },
+                include: {
+                    owners: true,
+                }
+            });
+
+            console.log("Location owners: ");
+            console.log(locationWithOwners?.owners);
+
+            // Validate location
+            if (!((locationWithOwners?.owners).some(o => o.id === userId))) {
+                // Found a location of which the user trying to make the group is not an owner
+                res.status(400).send({ message: "The group creator, user with ID " + userId + " does not own every location specified." });
+                return;
+            }
         });
+
+        const now = new Date();
 
         // Get all user emails
         const users = await prisma.user.findMany();
@@ -149,8 +170,8 @@ async function handler(req: Request, res: Response) {
         let foundMembers: User[] | null;
         let found = false;
 
-        // Convert member emails to member objects
         new Promise<void>((resolve, reject) => {
+            // Convert member emails to member objects
             if (memberEmails.length === 0) resolve();
             memberEmails.forEach(async (memberEmail: string, index: number) => {
                 // Check if user email is valid
@@ -180,6 +201,37 @@ async function handler(req: Request, res: Response) {
                 return;
             }
 
+            // Make each specified member a viewer of each specified location, unless they are already an owner or viewer
+            memberIds.forEach(async (memberId: any) => {
+                locations.forEach(async (location: Location) => {
+                    const locationWithOwnersAndViewers = await prisma.location.findUnique({
+                        where: {
+                            id: location.id,
+                        },
+                        include: {
+                            owners: true,
+                            viewers: true,
+                        }
+                    });
+
+                    if (!((locationWithOwnersAndViewers?.owners).some(o => o.id === memberId)) && !((locationWithOwnersAndViewers?.viewers).some(v => v.id === memberId))) {
+                        console.log("Making member a viewer of the location");
+                        // Make member a viewer of the location
+                        await prisma.location.update({
+                            where: {
+                                id: location.id
+                            },
+                            data: {
+                                viewers: {
+                                    connect: [memberId],
+                                },
+                            },
+                        });
+                    }
+                });
+            });
+
+            // Create new group
             const newGroup = await prisma.group.create({
                 data: {
                     userId: userId,

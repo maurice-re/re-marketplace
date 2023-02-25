@@ -41,15 +41,15 @@ export default async function Page({
                 <div className="flex w-full gap-4 items-center justify-center space-y-4">
                     <div className='w-1/2 flex flex-col items-center justify-center'>
                         <h1>Owners</h1>
-                        <LocationUsersList locationId={locationId} users={owners} owned={owned ? "owned" : "viewable"} owner={true} />
+                        <LocationUsersList locationId={locationId} users={owners} owned={owned} owner={true} />
                     </div>
                     <div className='w-1/2 flex flex-col items-center justify-center'>
                         <h1>Viewers</h1>
-                        <LocationUsersList locationId={locationId} users={viewers} owned={owned ? "owned" : "viewable"} owner={false} />
+                        <LocationUsersList locationId={locationId} users={viewers} owned={owned} owner={false} />
                     </div>
                 </div>
                 {/* Only let them update the location if they are an owner of the location. */}
-                {owned === "owner" && (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
+                {owned && (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
                     <h1>Update Location</h1>
                     <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
                 </div>)}
