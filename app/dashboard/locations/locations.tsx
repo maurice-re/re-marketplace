@@ -10,13 +10,15 @@ function Locations({
     company,
     ownedLocations,
     viewableLocations,
-    groups,
+    createdGroups,
+    memberGroups
 }: {
     user: User;
     company: Company;
     ownedLocations: Location[];
     viewableLocations: Location[];
-    groups: Group[];
+    createdGroups: Group[];
+    memberGroups: Group[];
 }) {
     const handleDeleteLocation = async (locationId: string) => {
         const res = await fetch(`/api/locations/location?locationId=${locationId}`, {
@@ -47,8 +49,8 @@ function Locations({
                         <AddGroupForm user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} />
                     </div>
                 </div>
-                <div className="w-full flex gap-8">
-                    <GroupsList user={user} groups={groups} />
+                <div className="flex w-full justify-center items-center gap-6">
+                    <GroupsList user={user} createdGroups={createdGroups} memberGroups={memberGroups} />
                 </div>
             </div>
         </div>

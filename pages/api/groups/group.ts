@@ -38,6 +38,9 @@ async function handler(req: Request, res: Response) {
             where: {
                 id: groupId ?? "",
             },
+            include: {
+                members: true
+            }
         });
 
         if (!group) {
@@ -46,11 +49,16 @@ async function handler(req: Request, res: Response) {
         }
 
         // Disconnect all locations from the group
-        const locations = await prisma.location.findMany();
-
         const locationIds: any[] = [];
+        const locations = await prisma.location.findMany();
         locations.forEach(async (location) => {
             locationIds.push({ id: location.id });
+        });
+
+        // Disconnect all members from the group
+        const memberIds: any[] = [];
+        (group.members).forEach(async (member: User) => {
+            memberIds.push({ id: member.id });
         });
 
         // Disconnect locations and members
@@ -63,7 +71,7 @@ async function handler(req: Request, res: Response) {
                     disconnect: locationIds,
                 },
                 members: {
-                    disconnect: [{ id: userId }],
+                    disconnect: memberIds,
                 },
             },
         });

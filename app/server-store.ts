@@ -26,7 +26,7 @@ interface ServerStore {
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
-  getGroups: () => Promise<Group[]>;
+  getGroups: (created: boolean) => Promise<Group[]>;
   getGroupLocations: (groupId: string) => Promise<Location[]>;
 }
 
@@ -177,17 +177,28 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     if (!group) return [];
     return group.locations;
   },
-  getGroups: async () => {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: get()._user?.id, // .. with an ID that matches one of the following.
-
-      },
-      include: {
-        memberGroups: true,
-      }
-    });
-    if (!user || !user.memberGroups) return [];
-    return user.memberGroups;
+  getGroups: async (created: boolean) => {
+    if (created) {
+      // Groups that were created by the user
+      const createdGroups = await prisma.group.findMany({
+        where: {
+          userId: get()._user?.id, // .. with an ID that matches one of the following.
+        },
+      });
+      if (!createdGroups) return [];
+      return createdGroups;
+    } else {
+      // Groups of which the user is a member
+      const user = await prisma.user.findUnique({
+        where: {
+          id: get()._user?.id, // .. with an ID that matches one of the following.
+        },
+        include: {
+          memberGroups: true,
+        }
+      });
+      if (!user || !user.memberGroups) return [];
+      return user.memberGroups;
+    }
   },
 }));

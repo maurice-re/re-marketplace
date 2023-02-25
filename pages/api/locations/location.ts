@@ -48,85 +48,80 @@ async function handler(req: Request, res: Response) {
   if (req.method == "DELETE") {
     if ((locationId && typeof locationId == "string") && userIds) {
       // Disconnect provided users from specified location
-      userIds.forEach(async userId => {
-        if (owner) {
-          // Disconnect owners
-          await prisma.location.update({
-            where: {
-              id: locationId,
-            },
-            data: {
-              owners: {
-                disconnect: [
-                  {
-                    id: userId,
-                  }
-                ],
-              },
-            },
-          });
-
-          res.status(200).send({ message: "Disconnected owner(s) from location with ID " + locationId + "." });
-        } else {
-          // Disconnect viewers
-          await prisma.location.update({
-            where: {
-              id: locationId as string,
-            },
-            data: {
-              viewers: {
-                disconnect: [
-                  {
-                    id: userId,
-                  }
-                ],
-              },
-            },
-          });
-          res.status(200).send({ message: "Disconnected viewer(s) from location with ID " + locationId + "." });
-        }
+      const ownerOrViewerIds: any[] = [];
+      userIds.forEach(async (userId: string) => {
+        ownerOrViewerIds.push({ id: userId });
       });
+
+      if (owner) {
+        // Disconnect owners
+        if (ownerOrViewerIds.length === 1) {
+          res.status(400).send({ message: "Failed to disconnect owner from location with ID " + locationId + ", because every location must have at least one owner." });
+          return;
+        }
+        await prisma.location.update({
+          where: {
+            id: locationId,
+          },
+          data: {
+            owners: {
+              disconnect: ownerOrViewerIds,
+            },
+          },
+        });
+        res.status(200).send({ message: "Disconnected owner(s) from location with ID " + locationId + "." });
+        return;
+      } else {
+        // Disconnect viewers
+        await prisma.location.update({
+          where: {
+            id: locationId,
+          },
+          data: {
+            viewers: {
+              disconnect: ownerOrViewerIds,
+            },
+          },
+        });
+        res.status(200).send({ message: "Disconnected viewer(s) from location with ID " + locationId + "." });
+        return;
+      }
     } else if ((userId && typeof userId == "string") && locationIds) {
       // Disconnect provided locations from specified user
-      locationIds.forEach(async locationId => {
-        if (owned) {
-          // Disconnect owners
-          await prisma.user.update({
-            where: {
-              id: userId,
-            },
-            data: {
-              ownedLocations: {
-                disconnect: [
-                  {
-                    id: locationId,
-                  }
-                ],
-              },
-            },
-          });
-
-          res.status(200).send({ message: "Disconnected location(s) from owner with ID " + userId + "." });
-        } else {
-          // Disconnect viewers
-          await prisma.user.update({
-            where: {
-              id: userId,
-            },
-            data: {
-              viewableLocations: {
-                disconnect: [
-                  {
-                    id: locationId,
-                  }
-                ],
-              },
-            },
-          });
-        }
-
-        res.status(200).send({ message: "Disconnected location(s) from viewer with ID " + userId + "." });
+      const ownedOrViewableLocationIds: any[] = [];
+      locationIds.forEach(async (locationId: string) => {
+        ownedOrViewableLocationIds.push({ id: locationId });
       });
+
+      if (owned) {
+        // Disconnect owned locations
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            ownedLocations: {
+              disconnect: ownedOrViewableLocations,
+            },
+          },
+        });
+        res.status(200).send({ message: "Disconnected location(s) from owner with ID " + userId + "." });
+        return;
+      } else {
+        // Disconnect viewable locations
+        await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            viewableLocations: {
+              disconnect: ownedOrViewableLocations,
+            },
+          },
+        });
+        res.status(200).send({ message: "Disconnected location(s) from viewer with ID " + userId + "." });
+        return;
+      }
     } else if (locationId && typeof locationId == "string") {
       const location = await prisma.location.findUnique({
         where: {

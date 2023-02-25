@@ -93,7 +93,7 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
             ...prev,
             [name]: value,
         }));
-        console.log("Set ", name, " to ", value);
+        // console.log("Set ", name, " to ", value);
         setCanSubmit(checkCanSubmit());
     };
 
