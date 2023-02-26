@@ -2,7 +2,7 @@ import { useServerStore } from "../server-store";
 import HardwareForm from "./hardwareForm";
 
 export default async function Page() {
-  const user = await useServerStore.getState().getUser();
+  await useServerStore.getState().getUser();
   const locations = await useServerStore.getState().getLocations();
 
   if (!locations) {

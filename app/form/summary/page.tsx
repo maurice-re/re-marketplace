@@ -1,6 +1,5 @@
 "use client";
 
-import { loadStripe } from "@stripe/stripe-js";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -10,20 +9,18 @@ import ReLogo from "../../../components/form/re-logo";
 import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-);
-
 export default function Page() {
   const [eol, checkEol] = useState<boolean>(false);
-  const { calculateTotal, cart, skipToCheckout } = useFormStore((state: FormStore) => ({
-    calculateTotal: state.calculateTotal,
-    cart: state.cart,
-    skipToCheckout: state.skipToCheckout,
-  }));
+  const { calculateTotal, cart, skipToCheckout } = useFormStore(
+    (state: FormStore) => ({
+      calculateTotal: state.calculateTotal,
+      cart: state.cart,
+      skipToCheckout: state.skipToCheckout,
+    })
+  );
   const searchParams = useSearchParams();
 
-  const checkout = searchParams.get("checkout");
+  const checkout = searchParams ? searchParams.get("checkout") : "";
 
   useEffect(() => {
     if (typeof checkout == "string") {
@@ -36,7 +33,7 @@ export default function Page() {
     ? " border-re-green-500 group-hover:border-re-green-700"
     : " border-white group-hover:border-re-green-500";
 
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
   allLocations(cart).forEach((city) => {
     let first = 1;
     const topBorder = items.length == 0 ? "" : " border-t-4";
@@ -143,7 +140,7 @@ export default function Page() {
             role="link"
             disabled={!eol}
           >
-            {`Checkout: \$${(calculateTotal() * 1.07).toFixed(2)}`}
+            {`Checkout: $${(calculateTotal() * 1.07).toFixed(2)}`}
           </button>
         </Link>
       </main>

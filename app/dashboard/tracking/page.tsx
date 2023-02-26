@@ -16,7 +16,6 @@ export type UserSettings =
 
 export default async function Page() {
   const user = await useServerStore.getState().getUser();
-  const skus = await useServerStore.getState().getSkus();
 
   const events: Event[] = await prisma.event.findMany({
     where: { companyId: user.companyId },
@@ -41,7 +40,6 @@ export default async function Page() {
       </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Tracking
-          skus={skus}
           demo={false}
           events={JSON.parse(JSON.stringify(events))}
           location={location ?? ({} as LocationSettings)}

@@ -72,7 +72,7 @@ export default async function Page({
   // TODO(Suhana): Pass this down instead of re-fetching
   const skus = await prisma.sku.findMany({});
 
-  let items: POItem[] = [];
+  const items: POItem[] = [];
 
   const orderItems: {
     amount: number;

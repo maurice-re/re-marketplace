@@ -11,10 +11,10 @@ export default function UserForm({
   setUser: Dispatch<SetStateAction<UserCompany>>;
 }) {
   // TODO(Suhana): Allow submitting of form when any of the options are selected - create everything for admin first, and then add changes for user - add check for admin
-  const [initialUser, setInitialUser] = useState<User>(user);
+  const [, setInitialUser] = useState<User>(user);
   const [newUser, setNewUser] = useState<User>(user);
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

@@ -1,4 +1,3 @@
-import { User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { prisma } from "../../constants/prisma";
@@ -12,7 +11,6 @@ export default async function Page() {
 
   console.log("session", session);
   if (session) {
-    const user = session.user as User;
     const orders = await useServerStore.getState().getOrders();
 
     if (orders.length === 0) {

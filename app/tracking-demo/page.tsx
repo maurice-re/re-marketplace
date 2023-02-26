@@ -90,7 +90,6 @@ export default async function Page() {
           </Link>
         </div>
         <Tracking
-          skus={skus}
           demo={true}
           events={events}
           location={location ?? ({} as LocationSettings)}

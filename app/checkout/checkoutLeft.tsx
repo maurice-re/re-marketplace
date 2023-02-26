@@ -54,9 +54,7 @@ export default function CheckoutLeft({
   const [clientSecret, setClientSecret] = useState("");
   const [paymentIntentId, setPaymentIntentId] = useState("");
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [customerId, setCustomerId] = useState(
-    company ? company.customerId : ""
-  );
+  const [customerId] = useState(company ? company.customerId : "");
   const [eol, setEol] = useState(false);
 
   useEffect(() => {

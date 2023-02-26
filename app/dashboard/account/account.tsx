@@ -7,8 +7,9 @@ import UserForm from "./userForm";
 function Account({ user }: { user: UserCompany }) {
   // TODO(Suhana): Use either user or dynamicUser
 
-  const [editing, setEditing] = useState(false);
-  const [dynamicUser, setDynamicUser] = useState<UserCompany>(user);
+  const [editing] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [, setDynamicUser] = useState<UserCompany>(user);
 
   return (
     <main className="w-full h-full flex bg-re-dark-green-500 overflow-auto justify-center items-center gap-6">

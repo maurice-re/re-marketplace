@@ -1,5 +1,5 @@
 "use client";
-import { Action, Event, Settings, Sku } from "@prisma/client";
+import { Action, Event, Settings } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -18,8 +18,6 @@ import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
   getDaysInMonth,
-  getEventsBySku,
-  getItemIds,
   getItemsByDay,
   getItemsByMonth,
   getItemsInUse,
@@ -52,12 +50,10 @@ type Statistic = {
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
-  skus,
   demo,
   events,
   location,
 }: {
-  skus: Sku[];
   demo: boolean;
   events: Event[];
   location: LocationSettings;
@@ -306,11 +302,11 @@ function Tracking({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-  const eventsBySku = getEventsBySku(events, skus[1]);
-  const itemsInUseBySku = getItemsInUse(eventsBySku);
-  const numItemIds = getItemIds(events).length;
-  const reuseRateBySku = getReuseRate(eventsBySku);
-  const returnRateBySku = getReturnRate(eventsBySku);
+  // const eventsBySku = getEventsBySku(events, skus[1]);
+  // const itemsInUseBySku = getItemsInUse(eventsBySku);
+  // const numItemIds = getItemIds(events).length;
+  // const reuseRateBySku = getReuseRate(eventsBySku);
+  // const returnRateBySku = getReturnRate(eventsBySku);
 
   const allMonthYears = getMonthYearsForDailyDropdown(events);
   const allYears = getYearsForMonthlyDropdown(events);

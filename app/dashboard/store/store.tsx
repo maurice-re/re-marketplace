@@ -1,13 +1,13 @@
 "use client";
 
 import {
-  User,
   Location,
   LocationType,
   Penalty,
   Product,
   Sku,
   TrackingType,
+  User,
 } from "@prisma/client";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
@@ -62,6 +62,7 @@ export default function StorePage({
   const [skuId, setSkuId] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState<string>("");
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addToCart = useCartStore((state: any) => state.addToCart);
 
   function changeSize(newSize: string) {
@@ -108,6 +109,7 @@ export default function StorePage({
 
   const handleAddLocation = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
     setIsLoading(true);
 
@@ -191,8 +193,9 @@ export default function StorePage({
         key={"location" + info.step}
       >
         <div
-          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-            } mb-2 w-full`}
+          className={`h-0.5 ${
+            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+          } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -236,8 +239,9 @@ export default function StorePage({
                   Close
                 </button>
                 <button
-                  className={`btn btn-outline btn-accent ${loading ? "loading" : ""
-                    }`}
+                  className={`btn btn-outline btn-accent ${
+                    loading ? "loading" : ""
+                  }`}
                   type="submit"
                 >
                   Add
@@ -368,8 +372,9 @@ export default function StorePage({
         key={"sku" + info.step}
       >
         <div
-          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-            } mb-2 w-full`}
+          className={`h-0.5 ${
+            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+          } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -425,8 +430,9 @@ export default function StorePage({
   }
 
   if (locationId != undefined && productId != undefined) {
-    const product = products.find((product) => product.id === productId)!;
-    const sku = skus.find((sku) => sku.id === skuId)!;
+    const product =
+      products.find((product) => product.id === productId) ?? ({} as Product);
+    const sku = skus.find((sku) => sku.id === skuId) ?? ({} as Sku);
     const sizes = product.sizes.split(", ");
     const materials = product.materials.split(", ");
     const colors = product.colors.split(", ");
@@ -441,8 +447,9 @@ export default function StorePage({
         key={"product" + info.step}
       >
         <div
-          className={`h-0.5 ${info.passed ? "bg-re-green-500" : "bg-re-gray-300"
-            } mb-2 w-full`}
+          className={`h-0.5 ${
+            info.passed ? "bg-re-green-500" : "bg-re-gray-300"
+          } mb-2 w-full`}
         />
         <div className="w-full flex items-center justify-start mt-1">
           <h2 className="font-theinhardt-300 text-re-green-500 mr-1">
@@ -535,10 +542,11 @@ export default function StorePage({
                         {sizes.map((size) => (
                           <button
                             key={size}
-                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${sku.size == size
-                              ? "border-re-green-500"
-                              : "border-re-gray-300"
-                              }`}
+                            className={`border-1/2 h-20 rounded-md bg-re-dark-green-300 ${
+                              sku.size == size
+                                ? "border-re-green-500"
+                                : "border-re-gray-300"
+                            }`}
                             onClick={() => changeSize(size)}
                           >
                             {size}
@@ -550,13 +558,15 @@ export default function StorePage({
                         {colors.map((color) => (
                           <button
                             key={color}
-                            className={`rounded-full w-8 h-8 border-1/2 mr-2 ${color === "green"
-                              ? "bg-re-product-green"
-                              : "bg-re-product-gray"
-                              } ${sku.color == color
+                            className={`rounded-full w-8 h-8 border-1/2 mr-2 ${
+                              color === "green"
+                                ? "bg-re-product-green"
+                                : "bg-re-product-gray"
+                            } ${
+                              sku.color == color
                                 ? "border-white"
                                 : "border-none"
-                              }`}
+                            }`}
                             onClick={() => changeColor(color)}
                           ></button>
                         ))}
@@ -566,10 +576,11 @@ export default function StorePage({
                         {materials.map((material) => (
                           <button
                             key={material}
-                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${sku.material == material
-                              ? "border-re-green-500"
-                              : "border-re-gray-300"
-                              }`}
+                            className={`border-1/2 h-12 rounded-md bg-re-dark-green-300 ${
+                              sku.material == material
+                                ? "border-re-green-500"
+                                : "border-re-gray-300"
+                            }`}
                           >
                             {material}
                           </button>

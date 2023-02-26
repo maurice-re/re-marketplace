@@ -10,25 +10,30 @@ import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 
 export default function Page() {
-  const { cart, locations, prettyString } = useFormStore((state: FormStore) => ({
-    cart: state.cart,
-    locations: state.locations,
-    prettyString: state.prettyString,
-  }));
+  const { cart, locations, prettyString } = useFormStore(
+    (state: FormStore) => ({
+      cart: state.cart,
+      locations: state.locations,
+      prettyString: state.prettyString,
+    })
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    let shippingInfo: string[] = [];
+    const shippingInfo: string[] = [];
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
     }
     setIsLoading(true);
-    const message = `New quote requested through product matching tool! \n Name: ${shippingInfo[0]
-      } \n Email: ${shippingInfo[1]} \n Company Name: ${shippingInfo[2]
-      } \n Cart: ${prettyString()}`;
+    const message = `New quote requested through product matching tool! \n Name: ${
+      shippingInfo[0]
+    } \n Email: ${shippingInfo[1]} \n Company Name: ${
+      shippingInfo[2]
+    } \n Cart: ${prettyString()}`;
 
     await fetch("/api/mail/send-quote", {
       method: "POST",
@@ -42,9 +47,8 @@ export default function Page() {
     setSubmitted(true);
   };
 
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
   allLocations(cart).forEach((city) => {
-    let first = 1;
     const topBorder = items.length == 0 ? "" : " border-t-2 my-4";
     items.push(
       <div
@@ -59,7 +63,6 @@ export default function Page() {
             if (order.location != city) {
               return;
             }
-            first -= 1;
             return (
               <div key={city + order.sku.id} className=" w-2/5 py-2">
                 <div className="flex justify-evenly">

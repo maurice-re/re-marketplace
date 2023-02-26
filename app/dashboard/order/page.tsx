@@ -1,10 +1,9 @@
-import { Company, Location, OrderItem, User } from "@prisma/client";
+import { Company, Location, OrderItem } from "@prisma/client";
 import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
 import { OrderWithItems, useServerStore } from "../../server-store";
 import TableRow from "./tableRow";
 
 export default async function Page() {
-  const user: User = await useServerStore.getState().getUser();
   const orders: OrderWithItems[] = await useServerStore.getState().getOrders();
   const locations: Location[] = await useServerStore.getState().getLocations();
   const skus: SkuProduct[] = await useServerStore.getState().getSkus();

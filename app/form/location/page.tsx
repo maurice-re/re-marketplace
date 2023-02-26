@@ -29,7 +29,8 @@ export default function Page() {
   }));
   const [query, setQuery] = useState<string>("");
   const [drawerOpen, toggleDrawer] = useState<boolean>();
-  const checkout = useSearchParams().get("checkout");
+  const searchParams = useSearchParams();
+  const checkout = searchParams ? searchParams.get("checkout") : "";
 
   useEffect(() => {
     const fetchCatalog = async () => {

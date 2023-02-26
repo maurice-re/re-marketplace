@@ -11,7 +11,7 @@ import {
 } from "../../utils/prisma/dbUtils";
 import { SampleOrderWithSkuID } from "../../utils/sample/sampleUtils";
 
-function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
+function SampleOrder({ skus }: { skus: SkuProduct[] }) {
   const [selected, setSelected] = useState<SkuProduct[]>([]);
   const [amount, setAmount] = useState<number>(0);
 
@@ -62,8 +62,9 @@ function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
       <div className="h-px bg-white mb-6 w-full" />
       <div className="flex justify-between w-full gap-4">
         <div
-          className={`flex flex-wrap h-full w-full pr-1 items-start space-x-8 ${selected.length == 0 ? "w-full" : "w-5/6"
-            }`}
+          className={`flex flex-wrap h-full w-full pr-1 items-start space-x-8 ${
+            selected.length == 0 ? "w-full" : "w-5/6"
+          }`}
         >
           {skus.map((sku) => (
             <div
@@ -71,10 +72,11 @@ function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
               className="flex flex-col items-center mx-1 mb-2 group"
             >
               <button
-                className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selected.includes(sku)
-                  ? "border-re-green-600 border-3"
-                  : "border"
-                  }`}
+                className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
+                  selected.includes(sku)
+                    ? "border-re-green-600 border-3"
+                    : "border"
+                }`}
                 onClick={() => handleItemPress(sku)}
               >
                 <Image
@@ -108,13 +110,13 @@ function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
                   </div>
                 </div>
                 <div className="text-sm font-theinhardt text-center">
-                  {`\$${getPriceFromTable(sku.priceTable, 1)}`}
+                  {`$${getPriceFromTable(sku.priceTable, 1)}`}
                 </div>
               </div>
             ))}
             <div className="flex justify-between mb-2">
               <div>Total:</div>
-              <div>{`\$${(amount / 1.07).toFixed(2)}`}</div>
+              <div>{`$${(amount / 1.07).toFixed(2)}`}</div>
             </div>
             <div className="h-px mb-4 bg-white bg-opacity-70" />
             <Link
@@ -122,7 +124,7 @@ function SampleOrder({ skus }: { skus: SkuProduct[]; }) {
                 pathname: "/sample/checkout",
                 query: { transaction: handleBuyNow() },
               }}
-            // as={`/sample/checkout/${new Date().getTime()}`}
+              // as={`/sample/checkout/${new Date().getTime()}`}
             >
               <button
                 className="px-3 py-2 bg-re-gray-400 rounded-10 hover:bg-re-green-600 hover:text-black"
