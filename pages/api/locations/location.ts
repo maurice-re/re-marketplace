@@ -2,6 +2,78 @@ import { Penalty, TrackingType, LocationType, Location, User } from "@prisma/cli
 import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 
+async function disconnectLocationGroups(location: Location) {
+  let groupIds: any[] = [];
+
+  (location.groups).forEach(group => {
+    groupIds.push({ id: group.id });
+  });
+
+  // Disconnect groups from location
+  await prisma.location.update({
+    where: {
+      id: location.id,
+    },
+    data: {
+      groups: {
+        disconnect: groupIds,
+      },
+    },
+  });
+
+}
+async function disconnectLocationViewers(location: Location) {
+  let viewerIds: any[] = [];
+
+  (location.viewers).forEach(viewer => {
+    viewerIds.push({ id: viewer.id });
+  });
+
+  // Disconnect all viewers from location
+  await prisma.location.update({
+    where: {
+      id: location.id,
+    },
+    data: {
+      viewers: {
+        disconnect: viewerIds,
+      },
+    },
+  });
+}
+
+async function disconnectLocationOwners(location: Location) {
+  let ownerIds: any[] = [];
+  (location.owners).forEach(owner => {
+    ownerIds.push({ id: owner.id });
+  });
+  // Disconnect all ownersfrom location
+  await prisma.location.update({
+    where: {
+      id: location.id,
+    },
+    data: {
+      owners: {
+        disconnect: ownerIds,
+      },
+    },
+  });
+}
+
+async function getLocationById(locationId: string): Promise<Location> {
+  const location = await prisma.location.findUnique({
+    where: {
+      id: locationId ?? "",
+    },
+    include: {
+      owners: true,
+      viewers: true,
+      groups: true
+    }
+  });
+  return location as Location;
+}
+
 async function handler(req: Request, res: Response) {
   const {
     city,
@@ -55,14 +127,7 @@ async function handler(req: Request, res: Response) {
 
       if (owner) {
         // Disconnect owners
-        const location = await prisma.location.findUnique({
-          where: {
-            id: locationId,
-          },
-          include: {
-            owners: true,
-          }
-        });
+        const location = getLocationById(locationId);
         if ((location.owners).length === 1) {
           res.status(400).send({ message: "Failed to disconnect owner from location with ID " + locationId + ", because every location must have at least one owner." });
           return;
@@ -131,48 +196,11 @@ async function handler(req: Request, res: Response) {
         return;
       }
     } else if (locationId && typeof locationId == "string") {
-      const location = await prisma.location.findUnique({
-        where: {
-          id: locationId ?? "",
-        },
-        include: {
-          owners: true,
-          viewers: true,
-          groups: true
-        }
-      });
-      let ownerIds: any[] = [];
-      let viewerIds: any[] = [];
-      let groupIds: any[] = [];
+      const location = await getLocationById(locationId);
 
-      (location.owners).forEach(owner => {
-        ownerIds.push({ id: owner.id });
-      });
-      (location.viewers).forEach(viewer => {
-        viewerIds.push({ id: viewer.id });
-      });
-      (location.groups).forEach(group => {
-        groupIds.push({ id: group.id });
-      });
-
-      // Disconnect all owners and viewers from location
-      // Disconnect groups from location
-      await prisma.location.update({
-        where: {
-          id: locationId ?? "",
-        },
-        data: {
-          owners: {
-            disconnect: ownerIds,
-          },
-          viewers: {
-            disconnect: viewerIds,
-          },
-          groups: {
-            disconnect: groupIds,
-          },
-        },
-      });
+      await disconnectLocationOwners(location);
+      await disconnectLocationViewers(location);
+      await disconnectLocationGroups(location);
 
       // Delete location
       await prisma.location.delete({
@@ -294,6 +322,13 @@ async function handler(req: Request, res: Response) {
       }).then(async () => {
         if (locationId && typeof locationId == "string") {
           // Update
+
+          // Disconnect all current connections from the location before applying the specified changes
+          const location = await getLocationById(locationId);
+          await disconnectLocationOwners(location);
+          await disconnectLocationViewers(location);
+          await disconnectLocationGroups(location);
+
           await prisma.location.update({
             where: {
               id: locationId ?? ""
