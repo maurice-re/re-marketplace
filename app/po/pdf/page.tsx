@@ -1,5 +1,6 @@
 import "tailwindcss/tailwind.css";
 import ReLogo from "../../../components/form/re-logo";
+import POViewer from "../../../components/po/poViewer";
 import { prisma } from "../../../constants/prisma";
 import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";
 
@@ -132,7 +133,7 @@ export default async function Page({
           Thank you for your purchase
         </h1>
         <div className="mx-auto">
-          {/* <POViewer
+          <POViewer
             items={items}
             totals={totals}
             sellerCompany="The Reusability Company"
@@ -161,7 +162,7 @@ export default async function Page({
             terms={terms}
             sellerEmail={"maddie@re.company"}
             buyerEmail={buyerEmail}
-          /> */}
+          />
         </div>
       </main>
     </div>
