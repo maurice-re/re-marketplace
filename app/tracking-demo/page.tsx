@@ -7,11 +7,6 @@ import {
 } from "../../utils/dashboard/dashboardUtils";
 import Tracking from "../dashboard/tracking/tracking";
 
-async function getSkus() {
-  const skus = await prisma.sku.findMany();
-  return JSON.parse(JSON.stringify(skus));
-}
-
 async function getUser() {
   const user = await prisma.user.findUnique({
     where: {
@@ -27,7 +22,6 @@ async function getUser() {
 export default async function Page() {
   const user: UserCompany = await getUser();
   if (!user) return <div>Not found</div>;
-  const skus = await getSkus();
 
   // TODO(Suhana): URGENT - Implement location selection after switch to location-based, and get location/events from that
   const events: Event[] = await prisma.event.findMany({
