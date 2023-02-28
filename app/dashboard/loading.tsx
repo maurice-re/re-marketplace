@@ -1,4 +1,4 @@
-export default function Stuff() {
+export default function Loading() {
   return (
     <div className="flex flex-col items-center justify-center w-full h-full bg-re-dark-green-500">
       <div className="flex animate-pulse gap-2 w-2/3 h-1/3 mb-2">

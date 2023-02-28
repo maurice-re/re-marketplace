@@ -45,7 +45,6 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         return session.user as User;
       }
     }
-    return {} as User;
     redirect(redirectUrl ?? "/signin");
   },
   getCompany: async () => {
