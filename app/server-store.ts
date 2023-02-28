@@ -1,5 +1,5 @@
 import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
 import { prisma } from "../constants/prisma";
@@ -28,7 +28,7 @@ interface ServerStore {
 export const useServerStore = create<ServerStore>((set, get) => ({
   _user: null,
   _company: null,
-  sessionLastUpdated: new Date(1 - 1 - 1970),
+  sessionLastUpdated: new Date(1,1,1970),
   getUser: async (refresh?: boolean, redirectUrl?: string) => {
     const user = get()._user;
     if (user) {
@@ -45,6 +45,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         return session.user as User;
       }
     }
+    return {} as User;
     redirect(redirectUrl ?? "/signin");
   },
   getCompany: async () => {
