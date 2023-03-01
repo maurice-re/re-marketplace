@@ -61,7 +61,7 @@ function Tracking({
   locations: FullLocation[];
 }) {
   const [location, setLocation] = useState<FullLocation>(locations[0]);
-  const [showTracking, setShowTracking] = useState<boolean>(true);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     console.log("Looking for ID ", value);
@@ -69,17 +69,6 @@ function Tracking({
     if (selectedLocation) {
       setLocation(selectedLocation);
     }
-
-    console.log("The location is now ");
-    console.log(location);
-    console.log(!location);
-    console.log(!location?.events);
-    console.log(location?.events.length == 0);
-    const newShowTracking = !location || !location?.events || location?.events.length == 0;
-    console.log(newShowTracking);
-    setShowTracking(newShowTracking);
-    console.log("Now, showtracking is ", showTracking);
-
   };
 
   // if we select a location, and then just always
@@ -197,16 +186,6 @@ function Tracking({
       setData(selectedData);
     }
   }, [location?.events, latestMonth, latestYear]);
-
-  // if (!showTracking) {
-  //   return (
-  //     <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-  //       <div className="text-white font-theinhardt text-28">
-  //         Integrate with our API to track
-  //       </div>
-  //     </main>
-  //   );
-  // }
 
   const handleTimePeriodChange = (newTimePeriod: string) => {
     setGraphTimePeriod(newTimePeriod);
@@ -356,6 +335,7 @@ function Tracking({
   return location ? (
     // TODO(Suhana): Create more sub-components here
     <div>
+      <h1>Select a location:</h1>
       <div className="p-0 my-0">
         <select
           name="location"

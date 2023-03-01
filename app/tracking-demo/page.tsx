@@ -18,15 +18,7 @@ export default async function Page() {
   if (!user) return <div>Not found</div>;
   const skus = await getSkus();
 
-  const location: FullLocation | null = await prisma.location.findUnique({
-    where: {
-      id: "219",
-    },
-    include: {
-      settings: true,
-      events: true,
-    },
-  });
+  const locations = await useServerStore.getState().getLocations(true);
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
@@ -75,10 +67,11 @@ export default async function Page() {
             </button>
           </Link>
         </div>
+        {/* TODO(Suhana): Pass specific location for demo */}
         <Tracking
           skus={skus}
           demo={true}
-          location={location ?? ({} as FullLocation)}
+          locations={locations}
         />
       </main>
     </div>
