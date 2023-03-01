@@ -40,7 +40,7 @@ export default async function Page() {
         <Tracking
           skus={skus}
           demo={false}
-          location={locations[0]}
+          locations={locations}
         />
       </main>
     </div>

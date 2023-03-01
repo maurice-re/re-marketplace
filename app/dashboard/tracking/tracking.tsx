@@ -13,7 +13,6 @@ import {
 import { ChangeEvent, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import SettingsForm from "../../../components/tracking/settingsForm";
-import { FullLocation } from "../../../utils/dashboard/dashboardUtils";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -31,6 +30,7 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
 } from "../../../utils/tracking/trackingUtils";
+import { FullLocation } from "../../server-store";
 
 ChartJS.register(
   CategoryScale,
@@ -54,12 +54,36 @@ const monthsInYear = getMonthsInYear();
 function Tracking({
   skus,
   demo,
-  location,
+  locations,
 }: {
   skus: Sku[];
   demo: boolean;
-  location: FullLocation;
+  locations: FullLocation[];
 }) {
+  const [location, setLocation] = useState<FullLocation>(locations[0]);
+  const [showTracking, setShowTracking] = useState<boolean>(true);
+  const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    console.log("Looking for ID ", value);
+    const selectedLocation = locations.find((location) => location.id === value);
+    if (selectedLocation) {
+      setLocation(selectedLocation);
+    }
+
+    console.log("The location is now ");
+    console.log(location);
+    console.log(!location);
+    console.log(!location?.events);
+    console.log(location?.events.length == 0);
+    const newShowTracking = !location || !location?.events || location?.events.length == 0;
+    console.log(newShowTracking);
+    setShowTracking(newShowTracking);
+    console.log("Now, showtracking is ", showTracking);
+
+  };
+
+  // if we select a location, and then just always
+
   // "Dummy" data that is updated on changes
   const baseData = {
     labels: monthsInYear,
@@ -82,7 +106,7 @@ function Tracking({
   };
 
   const [settings, setSettings] = useState<Settings>(
-    location.settings ?? ({} as Settings)
+    location?.settings
   );
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
@@ -99,13 +123,14 @@ function Tracking({
   const [defaultItemsReturnedDaily, setDefaultItemsReturnedDaily] = useState([
     0,
   ]);
+
   const [defaultDaysInMonth, setDefaultDaysInMonth] = useState([0]);
 
   const [data, setData] = useState(baseData);
 
   useEffect(() => {
-    if (location.events && location.events.length > 0) {
-      const sortedEvents = sortByDate(location.events);
+    if (location?.events && location?.events.length > 0) {
+      const sortedEvents = sortByDate(location?.events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
       setMonthYearForDaily(latestMonthYear.map(String).join(","));
       setYearForMonthly(latestMonthYear[1].toString());
@@ -114,12 +139,12 @@ function Tracking({
 
       const borrowedMonthly = getItemsByMonth(
         latestYear,
-        location.events,
+        location?.events,
         Action.BORROW
       );
       const returnedMonthly = getItemsByMonth(
         latestYear,
-        location.events,
+        location?.events,
         Action.RETURN
       );
 
@@ -155,14 +180,14 @@ function Tracking({
         latestMonth,
         latestYear,
         daysInMonth,
-        location.events,
+        location?.events,
         Action.BORROW
       );
       const returnedDaily = getItemsByDay(
         latestMonth,
         latestYear,
         daysInMonth,
-        location.events,
+        location?.events,
         Action.RETURN
       );
 
@@ -171,17 +196,17 @@ function Tracking({
 
       setData(selectedData);
     }
-  }, [location.events, latestMonth, latestYear]);
+  }, [location?.events, latestMonth, latestYear]);
 
-  if (!location || !location.events || location.events.length == 0) {
-    return (
-      <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-        <div className="text-white font-theinhardt text-28">
-          Integrate with our API to track
-        </div>
-      </main>
-    );
-  }
+  // if (!showTracking) {
+  //   return (
+  //     <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+  //       <div className="text-white font-theinhardt text-28">
+  //         Integrate with our API to track
+  //       </div>
+  //     </main>
+  //   );
+  // }
 
   const handleTimePeriodChange = (newTimePeriod: string) => {
     setGraphTimePeriod(newTimePeriod);
@@ -218,14 +243,14 @@ function Tracking({
       month,
       year,
       daysInMonth,
-      location.events,
+      location?.events,
       Action.BORROW
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
-      location.events,
+      location?.events,
       Action.RETURN
     );
     baseData.labels = daysInMonth.map(String);
@@ -243,8 +268,8 @@ function Tracking({
 
     const year = parseInt(newYearForMonthly);
 
-    const itemsBorrowedMonthly = getItemsByMonth(year, location.events, Action.BORROW);
-    const itemsReturnedMonthly = getItemsByMonth(year, location.events, Action.RETURN);
+    const itemsBorrowedMonthly = getItemsByMonth(year, location?.events, Action.BORROW);
+    const itemsReturnedMonthly = getItemsByMonth(year, location?.events, Action.RETURN);
 
     baseData.datasets[0].data = itemsBorrowedMonthly;
     baseData.datasets[1].data = itemsReturnedMonthly;
@@ -265,32 +290,32 @@ function Tracking({
   const stats: Statistic[] = [];
   stats.push({
     title: "Items In Use",
-    value: getItemsInUse(location.events),
+    value: getItemsInUse(location?.events),
     info: "currently borrowed",
     isPercent: false,
   });
   stats.push({
     title: "Used",
-    value: getLifetimeUses(location.events),
+    value: getLifetimeUses(location?.events),
     info: "lifetime borrows",
     isPercent: false,
   });
   stats.push({
     title: "Reuse Rate",
-    value: getReuseRate(location.events),
+    value: getReuseRate(location?.events),
     info: "(items used more than once) ÷ (items used)",
     isPercent: true,
   });
   stats.push({
     title: "Return Rate",
-    value: getReturnRate(location.events),
+    value: getReturnRate(location?.events),
     info: "(items returned) ÷ (items borrowed)",
     isPercent: true,
   });
   stats.push({
     title: "Avg. Days Borrowed",
     value: getAvgDaysBetweenBorrowAndReturn(
-      location.events,
+      location?.events,
       settings?.borrowReturnBuffer ?? undefined
     ),
     info: "days between borrow and return",
@@ -304,14 +329,14 @@ function Tracking({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-  const eventsBySku = getEventsBySku(location.events, skus[1]);
+  const eventsBySku = getEventsBySku(location?.events, skus[1]);
   const itemsInUseBySku = getItemsInUse(eventsBySku);
-  const numItemIds = getItemIds(location.events).length;
+  const numItemIds = getItemIds(location?.events).length;
   const reuseRateBySku = getReuseRate(eventsBySku);
   const returnRateBySku = getReturnRate(eventsBySku);
 
-  const allMonthYears = getMonthYearsForDailyDropdown(location.events);
-  const allYears = getYearsForMonthlyDropdown(location.events);
+  const allMonthYears = getMonthYearsForDailyDropdown(location?.events);
+  const allYears = getYearsForMonthlyDropdown(location?.events);
 
   const options = {
     responsive: true,
@@ -328,9 +353,25 @@ function Tracking({
     },
   };
 
-  return location.events && location.events.length > 0 ? (
+  return location ? (
     // TODO(Suhana): Create more sub-components here
     <div>
+      <div className="p-0 my-0">
+        <select
+          name="location"
+          className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+          onChange={handleChange}
+          required
+          placeholder="Location"
+          value={location.id}
+        >
+          {locations.map((val) => (
+            <option key={val.id} value={val.id}>
+              {val.id}
+            </option>
+          ))}
+        </select>
+      </div>
       {/* <h1 className="ml-1 mb-8 font-theinhardt text-3xl">Tracking</h1> */}
       <div className="flex items-center justify-between mt-4 mb-10 w-full">
         {stats.map((stat) => (
@@ -364,7 +405,7 @@ function Tracking({
               </tr>
             </thead>
             <tbody className="text-left">
-              {location.events.map((event) => (
+              {location?.events.map((event) => (
                 <tr
                   key={event.id}
                   className="even:bg-re-table-even odd:bg-re-table-odd hover:bg-re-table-hover"
@@ -457,9 +498,11 @@ function Tracking({
       <div className="py-6"></div>
     </div>
   ) : (
-    <div className="text-white font-theinhardt text-28">
-      You will see tracking data here once products are in circulation
-    </div>
+    <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+      <div className="text-white font-theinhardt text-28">
+        Integrate with our API to track
+      </div>
+    </main>
   );
 }
 

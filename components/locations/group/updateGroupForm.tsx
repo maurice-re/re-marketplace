@@ -15,7 +15,7 @@ type UpdateGroupFormInputs = {
 export default function UpdateGroupForm({ group, user, initialMemberEmails, ownedLocations }: { group: Group; user: User; initialMemberEmails: string[]; ownedLocations: Location[]; }) {
     const initialGroupValues: UpdateGroupFormInputs = {
         name: group.name ?? "",
-        locations: group.locations ?? [] as Location[],
+        locations: group.locations ?? [] as Location[], // TODO(Suhana): Make and implement FullGroup
         memberEmail: "",
         memberEmails: initialMemberEmails, // The creator of the location must be an owner
     };
