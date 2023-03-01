@@ -1,13 +1,13 @@
 "use client";
 
-import { Location } from "@prisma/client";
 import { FormEvent, useState } from "react";
+import { FullLocation } from "../server-store";
 
 export default function HardwareForm({
   locations,
   deviceId,
 }: {
-  locations: Location[];
+  locations: FullLocation[];
   deviceId?: string;
 }) {
   const [loading, setLoading] = useState(false);
@@ -119,9 +119,8 @@ export default function HardwareForm({
           ></input>
         </label>
         <button
-          className={`w-full bg-re-purple-500 text-white text-lg rounded py-1 mt-5 hover:bg-re-purple-600 active:bg-re-purple-500 btn ${
-            loading ? "loading" : ""
-          }`}
+          className={`w-full bg-re-purple-500 text-white text-lg rounded py-1 mt-5 hover:bg-re-purple-600 active:bg-re-purple-500 btn ${loading ? "loading" : ""
+            }`}
         >
           Register
         </button>
@@ -129,9 +128,8 @@ export default function HardwareForm({
       {message && (
         <div className="flex flex-col items-center justify-center">
           <p
-            className={`text-lg mb-2 ${
-              message.startsWith("An") ? "text-red-400" : "text-re-green-500"
-            }`}
+            className={`text-lg mb-2 ${message.startsWith("An") ? "text-red-400" : "text-re-green-500"
+              }`}
           >
             {message}
           </p>

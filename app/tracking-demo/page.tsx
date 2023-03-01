@@ -2,43 +2,29 @@ import { Event } from "@prisma/client";
 import Link from "next/link";
 import prisma from "../../constants/prisma";
 import {
-  LocationSettings,
+  FullLocation,
   UserCompany,
 } from "../../utils/dashboard/dashboardUtils";
 import Tracking from "../dashboard/tracking/tracking";
+import { useServerStore } from "../server-store";
 
 async function getSkus() {
   const skus = await prisma.sku.findMany();
   return JSON.parse(JSON.stringify(skus));
 }
 
-async function getUser() {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: "lewis@example.com", // Complete
-    },
-    include: {
-      company: true,
-    },
-  });
-  return JSON.parse(JSON.stringify(user));
-}
-
 export default async function Page() {
-  const user: UserCompany = await getUser();
+  const user = await useServerStore.getState().getUser();
   if (!user) return <div>Not found</div>;
   const skus = await getSkus();
 
-  // TODO(Suhana): URGENT - Implement location selection after switch to location-based, and get location/events from that
-  const events: Event[] = await prisma.event.findMany({
-    where: { companyId: user.companyId },
-  });
-  const location: LocationSettings | null = await prisma.location.findUnique({
+  const location: FullLocation | null = await prisma.location.findUnique({
     where: {
       id: "219",
     },
     include: {
       settings: true,
+      events: true,
     },
   });
 
@@ -92,8 +78,7 @@ export default async function Page() {
         <Tracking
           skus={skus}
           demo={true}
-          events={events}
-          location={location ?? ({} as LocationSettings)}
+          location={location ?? ({} as FullLocation)}
         />
       </main>
     </div>

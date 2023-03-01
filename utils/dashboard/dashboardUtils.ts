@@ -45,10 +45,6 @@ export type UserCompany = User & {
   company: Company;
 };
 
-export type LocationSettings = Location & {
-  settings: Settings | null;
-};
-
 export type LocationWithOneItem = Location & {
   orderItems: OrderItem[];
 };

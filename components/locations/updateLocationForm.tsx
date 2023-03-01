@@ -6,6 +6,7 @@ import DoubleInputField from "../form/double-input-field";
 import DropdownField from "../form/dropdown-field";
 import { BsArrowRight } from "react-icons/bs";
 import { BiX } from "react-icons/bi";
+import { FullLocation } from "../../app/server-store";
 
 type UpdateLocationFormInputs = {
     city: string;
@@ -27,7 +28,7 @@ type UpdateLocationFormInputs = {
 
 // TODO(Suhana): Make sure they can edit settings from tracking
 
-export default function UpdateLocationForm({ location, user, initialOwnerEmails, initialViewerEmails }: { location: Location; user: User; initialOwnerEmails: string[], initialViewerEmails: string[]; }) {
+export default function UpdateLocationForm({ location, user, initialOwnerEmails, initialViewerEmails }: { location: FullLocation; user: User; initialOwnerEmails: string[], initialViewerEmails: string[]; }) {
     const initialLocationValues: UpdateLocationFormInputs = {
         city: location.city ?? "",
         country: location.country ?? "",

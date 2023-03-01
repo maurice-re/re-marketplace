@@ -1,4 +1,4 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User, Group } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Sku, User, Group, Settings, Event } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
@@ -13,13 +13,19 @@ export type SkuWithProduct = Sku & {
   product: Product;
 };
 
+/* Location with optional fields. */
+export type FullLocation = Location & {
+  settings: Settings | null;
+  events: Event[];
+};
+
 interface ServerStore {
   sessionLastUpdated: Date;
   _user: User | null;
   _company: Company | null;
   getUser: (refresh?: boolean, redirectUrl?: string) => Promise<User>;
   getCompany: () => Promise<Company>;
-  getLocations: (owned: boolean) => Promise<Location[]>;
+  getLocations: (owned: boolean) => Promise<FullLocation[]>;
   getLocationUsers: (locationId: string, owned: boolean) => Promise<User[]>;
   getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
   getGroupMemberEmails: (groupId: string) => Promise<string[]>;
@@ -93,8 +99,18 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         id: get()._user?.id
       },
       include: {
-        ownedLocations: true,
-        viewableLocations: true,
+        ownedLocations: {
+          include: {
+            settings: true,
+            events: true,
+          }
+        },
+        viewableLocations: {
+          include: {
+            settings: true,
+            events: true,
+          }
+        },
       }
     });
     if (!user) return [];

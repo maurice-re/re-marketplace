@@ -13,7 +13,7 @@ import {
 import { ChangeEvent, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import SettingsForm from "../../../components/tracking/settingsForm";
-import { LocationSettings } from "../../../utils/dashboard/dashboardUtils";
+import { FullLocation } from "../../../utils/dashboard/dashboardUtils";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -54,13 +54,11 @@ const monthsInYear = getMonthsInYear();
 function Tracking({
   skus,
   demo,
-  events,
   location,
 }: {
   skus: Sku[];
   demo: boolean;
-  events: Event[];
-  location: LocationSettings;
+  location: FullLocation;
 }) {
   // "Dummy" data that is updated on changes
   const baseData = {
@@ -106,8 +104,8 @@ function Tracking({
   const [data, setData] = useState(baseData);
 
   useEffect(() => {
-    if (events && events.length > 0) {
-      const sortedEvents = sortByDate(events);
+    if (location.events && location.events.length > 0) {
+      const sortedEvents = sortByDate(location.events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
       setMonthYearForDaily(latestMonthYear.map(String).join(","));
       setYearForMonthly(latestMonthYear[1].toString());
@@ -116,12 +114,12 @@ function Tracking({
 
       const borrowedMonthly = getItemsByMonth(
         latestYear,
-        events,
+        location.events,
         Action.BORROW
       );
       const returnedMonthly = getItemsByMonth(
         latestYear,
-        events,
+        location.events,
         Action.RETURN
       );
 
@@ -157,14 +155,14 @@ function Tracking({
         latestMonth,
         latestYear,
         daysInMonth,
-        events,
+        location.events,
         Action.BORROW
       );
       const returnedDaily = getItemsByDay(
         latestMonth,
         latestYear,
         daysInMonth,
-        events,
+        location.events,
         Action.RETURN
       );
 
@@ -173,9 +171,9 @@ function Tracking({
 
       setData(selectedData);
     }
-  }, [events, latestMonth, latestYear]);
+  }, [location.events, latestMonth, latestYear]);
 
-  if (!events || events.length == 0) {
+  if (!location || !location.events || location.events.length == 0) {
     return (
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
         <div className="text-white font-theinhardt text-28">
@@ -220,14 +218,14 @@ function Tracking({
       month,
       year,
       daysInMonth,
-      events,
+      location.events,
       Action.BORROW
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
-      events,
+      location.events,
       Action.RETURN
     );
     baseData.labels = daysInMonth.map(String);
@@ -245,8 +243,8 @@ function Tracking({
 
     const year = parseInt(newYearForMonthly);
 
-    const itemsBorrowedMonthly = getItemsByMonth(year, events, Action.BORROW);
-    const itemsReturnedMonthly = getItemsByMonth(year, events, Action.RETURN);
+    const itemsBorrowedMonthly = getItemsByMonth(year, location.events, Action.BORROW);
+    const itemsReturnedMonthly = getItemsByMonth(year, location.events, Action.RETURN);
 
     baseData.datasets[0].data = itemsBorrowedMonthly;
     baseData.datasets[1].data = itemsReturnedMonthly;
@@ -267,32 +265,32 @@ function Tracking({
   const stats: Statistic[] = [];
   stats.push({
     title: "Items In Use",
-    value: getItemsInUse(events),
+    value: getItemsInUse(location.events),
     info: "currently borrowed",
     isPercent: false,
   });
   stats.push({
     title: "Used",
-    value: getLifetimeUses(events),
+    value: getLifetimeUses(location.events),
     info: "lifetime borrows",
     isPercent: false,
   });
   stats.push({
     title: "Reuse Rate",
-    value: getReuseRate(events),
+    value: getReuseRate(location.events),
     info: "(items used more than once) ÷ (items used)",
     isPercent: true,
   });
   stats.push({
     title: "Return Rate",
-    value: getReturnRate(events),
+    value: getReturnRate(location.events),
     info: "(items returned) ÷ (items borrowed)",
     isPercent: true,
   });
   stats.push({
     title: "Avg. Days Borrowed",
     value: getAvgDaysBetweenBorrowAndReturn(
-      events,
+      location.events,
       settings?.borrowReturnBuffer ?? undefined
     ),
     info: "days between borrow and return",
@@ -306,14 +304,14 @@ function Tracking({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-  const eventsBySku = getEventsBySku(events, skus[1]);
+  const eventsBySku = getEventsBySku(location.events, skus[1]);
   const itemsInUseBySku = getItemsInUse(eventsBySku);
-  const numItemIds = getItemIds(events).length;
+  const numItemIds = getItemIds(location.events).length;
   const reuseRateBySku = getReuseRate(eventsBySku);
   const returnRateBySku = getReturnRate(eventsBySku);
 
-  const allMonthYears = getMonthYearsForDailyDropdown(events);
-  const allYears = getYearsForMonthlyDropdown(events);
+  const allMonthYears = getMonthYearsForDailyDropdown(location.events);
+  const allYears = getYearsForMonthlyDropdown(location.events);
 
   const options = {
     responsive: true,
@@ -330,7 +328,7 @@ function Tracking({
     },
   };
 
-  return events && events.length > 0 ? (
+  return location.events && location.events.length > 0 ? (
     // TODO(Suhana): Create more sub-components here
     <div>
       {/* <h1 className="ml-1 mb-8 font-theinhardt text-3xl">Tracking</h1> */}
@@ -346,9 +344,8 @@ function Tracking({
                 {stat.title}
               </div>
               <div className="font-theinhardt text-4xl mt-2">
-                {`${Math.round(stat.value * 10) / 10}${
-                  stat.isPercent ? `%` : ``
-                }`}
+                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                  }`}
               </div>
             </div>
           </div>
@@ -367,7 +364,7 @@ function Tracking({
               </tr>
             </thead>
             <tbody className="text-left">
-              {events.map((event) => (
+              {location.events.map((event) => (
                 <tr
                   key={event.id}
                   className="even:bg-re-table-even odd:bg-re-table-odd hover:bg-re-table-hover"
@@ -388,21 +385,19 @@ function Tracking({
           <div className="flex items-center h-min pb-4">
             <h2 className="text-lg mr-4">Borrows and Returns</h2>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${
-                graphTimePeriod === "monthly"
-                  ? "bg-re-gray-active"
-                  : "bg-re-gray-button"
-              }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "monthly"
+                ? "bg-re-gray-active"
+                : "bg-re-gray-button"
+                }`}
               onClick={() => handleTimePeriodChange("monthly")}
             >
               Monthly
             </button>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${
-                graphTimePeriod === "daily"
-                  ? "bg-re-gray-active"
-                  : "bg-re-gray-button"
-              }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "daily"
+                ? "bg-re-gray-active"
+                : "bg-re-gray-button"
+                }`}
               onClick={() => handleTimePeriodChange("daily")}
             >
               Daily

@@ -16,11 +16,12 @@ import DoubleAddressField from "../../../components/form/double-address-field";
 import { useCartStore } from "../../../stores/cartStore";
 import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
+import { FullLocation } from "../../server-store";
 import Cart from "./cart";
 
 type StoreProps = {
   user: User;
-  initialLocations: Location[];
+  initialLocations: FullLocation[];
   products: Product[];
   skus: Sku[];
 };
@@ -90,12 +91,12 @@ export default function StorePage({
     setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
   }
 
-  function getLocationById(locationId: string): Location | undefined {
+  function getLocationById(locationId: string): FullLocation | undefined {
     return locations.find((location) => location.id === locationId);
   }
 
   function getLocationName(locationId: string): string {
-    const location: Location | undefined = getLocationById(locationId);
+    const location: FullLocation | undefined = getLocationById(locationId);
     return location?.displayName ?? location?.city ?? "Your Location";
   }
 

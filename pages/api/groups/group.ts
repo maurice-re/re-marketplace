@@ -4,10 +4,10 @@ import type { Request, Response } from "express";
 import e from "express";
 import prisma from "../../../constants/prisma";
 
-async function disconnectGroupLocations(group: Group) {
+async function disconnectGroupLocations(group: Group, locations: Location[]) {
     // Disconnect all locations from the group
     const locationIds: any[] = [];
-    (group.locations).forEach(async (location: Location) => {
+    (locations).forEach(async (location: Location) => {
         locationIds.push({ id: location.id });
     });
 
@@ -98,13 +98,13 @@ async function handler(req: Request, res: Response) {
 
         if ((groupId && typeof groupId == "string") && locations) {
             // Disconnect given locations from the group
-            await disconnectGroupLocations(group);
+            await disconnectGroupLocations(group, locations);
 
             res.status(200).send({ message: "Disconnected provided location(s) from group with ID " + groupId + "." });
             return;
         } else if (groupId && typeof groupId == "string") {
             // Disconnect locations and members, then delete group
-            await disconnectGroupLocations(group);
+            await disconnectGroupLocations(group, group.locations);
             await disconnectGroupMembers(group);
 
             await prisma.group.delete({
@@ -156,8 +156,13 @@ async function handler(req: Request, res: Response) {
                 }
             });
 
+            if (!locationWithOwners) {
+                res.status(400).send({ message: "Invalid location specified." });
+                return;
+            }
+
             // Validate location
-            if (!((locationWithOwners?.owners).some(o => o.id === userId))) {
+            if (!((locationWithOwners.owners).some(o => o.id === userId))) {
                 // Found a location of which the user trying to make the group is not an owner
                 res.status(400).send({ message: "The group creator, user with ID " + userId + " does not own every location specified." });
                 return;
@@ -189,8 +194,7 @@ async function handler(req: Request, res: Response) {
                     res.status(400).send({ message: "Invalid member email " + memberEmail + "." });
                     return;
                 }
-                console.log("Got memberEmail ", memberEmail);
-                if (memberEmail == user.email) {
+                if (memberEmail === user.email) {
                     found = true;
                 }
                 if (index === memberEmails.length - 1) resolve();
@@ -202,7 +206,7 @@ async function handler(req: Request, res: Response) {
             }
 
             // The creator of the group should be a member
-            if (!found) {
+            if (found === false) {
                 res.status(400).send({ message: "The creator of the group must be provided in the members list." });
                 return;
             }
@@ -242,7 +246,7 @@ async function handler(req: Request, res: Response) {
                 const group = await getGroupById(groupId);
 
                 // Disconnect all group locations and members
-                await disconnectGroupLocations(group);
+                await disconnectGroupLocations(group, group.locations);
                 await disconnectGroupMembers(group);
 
                 await prisma.group.update({

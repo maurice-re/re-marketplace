@@ -4,6 +4,7 @@ import AddGroupForm from "../../../components/locations/addGroupForm";
 import AddLocationForm from "../../../components/locations/addLocationForm";
 import GroupsList from "../../../components/locations/groupsList";
 import LocationsList from "../../../components/locations/locationsList";
+import { FullLocation } from "../../server-store";
 
 function Locations({
     user,
@@ -15,12 +16,12 @@ function Locations({
 }: {
     user: User;
     company: Company;
-    ownedLocations: Location[];
-    viewableLocations: Location[];
+    ownedLocations: FullLocation[];
+    viewableLocations: FullLocation[];
     createdGroups: Group[];
     memberGroups: Group[];
 }) {
-    const deleteLocation = async (location: Location) => {
+    const deleteLocation = async (location: FullLocation) => {
         const res = await fetch(`/api/locations/location?locationId=${location.id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },

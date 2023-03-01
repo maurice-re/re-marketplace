@@ -1,9 +1,9 @@
 "use client";
-import { User, Location } from "@prisma/client";
 import Link from "next/link";
 import { BiX } from "react-icons/bi";
+import { FullLocation } from "../../app/server-store";
 
-export default function LocationsList({ locations, title, caption, handleDelete, deleteDescription }: { locations: Location[]; title: string, caption: string; handleDelete: ((location: Location) => Promise<void>) | null; deleteDescription: string; }) {
+export default function LocationsList({ locations, title, caption, handleDelete, deleteDescription }: { locations: FullLocation[]; title: string, caption: string; handleDelete: ((location: FullLocation) => Promise<void>) | null; deleteDescription: string; }) {
     return (
         <div className="justify-center items-center flex w-1/2 flex-col">
             <h1 className="pt-3 text-xl pb-1">{title}</h1>

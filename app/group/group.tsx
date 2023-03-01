@@ -2,6 +2,7 @@
 import { User, Company, Location, Group } from "@prisma/client";
 import UpdateGroupForm from "../../components/locations/group/updateGroupForm";
 import LocationsList from "../../components/locations/locationsList";
+import { FullLocation } from "../server-store";
 
 function Group({
     group,
@@ -12,15 +13,15 @@ function Group({
     ownedLocations
 }: {
     group: Group;
-    groupLocations: Location[];
+    groupLocations: FullLocation[];
     createdGroups: Group[];
     user: User;
-    ownedLocations: Location[];
+    ownedLocations: FullLocation[];
     memberEmails: string[];
 }) {
     const createdGroup: boolean = createdGroups.some(g => g.id === group.id);
 
-    const disconnectLocationFromGroup = async (location: Location) => {
+    const disconnectLocationFromGroup = async (location: FullLocation) => {
         const res = await fetch(`/api/groups/group?groupId=${group.id}&userId=${user.id}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
