@@ -1,5 +1,5 @@
 "use client";
-import { User, Company, Location, Group } from "@prisma/client";
+import { User, Group } from "@prisma/client";
 import UpdateGroupForm from "../../components/locations/group/updateGroupForm";
 import LocationsList from "../../components/locations/locationsList";
 import { FullGroup, FullLocation } from "../server-store";

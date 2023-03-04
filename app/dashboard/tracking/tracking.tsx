@@ -1,5 +1,5 @@
 "use client";
-import { Action, Event, Settings } from "@prisma/client";
+import { Action, Settings } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -62,7 +62,7 @@ function Tracking({
   console.log(location);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     console.log("Looking for ID ", value);
     const selectedLocation = locations.find((location) => location.id === value);
     if (selectedLocation) {

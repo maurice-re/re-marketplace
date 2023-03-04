@@ -175,8 +175,8 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     if (!location) return [];
-    let ownerEmails: string[] = [];
-    let viewerEmails: string[] = [];
+    const ownerEmails: string[] = [];
+    const viewerEmails: string[] = [];
     (location.owners).forEach(owner => {
       ownerEmails.push(owner.email);
     });
@@ -195,7 +195,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     if (!group) return [];
-    let groupMemberEmails: string[] = [];
+    const groupMemberEmails: string[] = [];
     (group.members).forEach(member => {
       groupMemberEmails.push(member.email);
     });

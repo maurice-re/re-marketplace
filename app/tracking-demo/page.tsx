@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { prisma } from "../../constants/prisma";
 import Tracking from "../dashboard/tracking/tracking";
 import { useServerStore } from "../server-store";
 

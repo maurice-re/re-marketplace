@@ -1,5 +1,5 @@
 "use client";
-import { User, Company, Location, Group } from "@prisma/client";
+import { User, Group } from "@prisma/client";
 import AddGroupForm from "../../../components/locations/addGroupForm";
 import AddLocationForm from "../../../components/locations/addLocationForm";
 import GroupsList from "../../../components/locations/groupsList";
@@ -8,14 +8,12 @@ import { FullLocation } from "../../server-store";
 
 function Locations({
     user,
-    company,
     ownedLocations,
     viewableLocations,
     createdGroups,
     memberGroups
 }: {
     user: User;
-    company: Company;
     ownedLocations: FullLocation[];
     viewableLocations: FullLocation[];
     createdGroups: Group[];

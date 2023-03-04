@@ -1,7 +1,7 @@
 import { signOut } from "next-auth/react";
 import { addDays, skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
 
-import { Company, Location, OrderItem, Status, User } from "@prisma/client";
+import { Company, OrderItem, Status, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";

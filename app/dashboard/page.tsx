@@ -1,4 +1,4 @@
-import { Company, Location, Status, User } from "@prisma/client";
+import { Company, Status, User } from "@prisma/client";
 import { FullLocation, OrderWithItems, useServerStore } from "../server-store";
 import Home from "./home";
 
