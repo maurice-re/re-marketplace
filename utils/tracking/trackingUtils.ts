@@ -125,7 +125,6 @@ export function getItemsInUse(events: Event[]): number {
 
     const totals = getTotals(events);
 
-
     const totalBorrowed = totals.borrow;
     const totalLost = totals.lost;
     const totalEol = totals.eol;

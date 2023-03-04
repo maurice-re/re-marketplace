@@ -62,6 +62,9 @@ function Tracking({
 }) {
   const [location, setLocation] = useState<FullLocation>(locations[0]);
 
+  console.log("Have location ");
+  console.log(location);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     console.log("Looking for ID ", value);

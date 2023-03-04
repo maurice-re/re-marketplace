@@ -32,16 +32,14 @@ export default function Totals({
         key="initiation"
       >
         <div className="">
-          <div className="mb-0.5">{`${
-            productDevelopment.split * 100
-          }% due on initiation`}</div>
+          <div className="mb-0.5">{`${productDevelopment.split * 100
+            }% due on initiation`}</div>
         </div>
         <div className="">
-          <div className="mb-0.5">{`$${
-            (productDevelopment.developmentFee +
+          <div className="mb-0.5">{`$${(productDevelopment.developmentFee +
               productDevelopment.researchFee) *
             productDevelopment.split
-          }`}</div>
+            }`}</div>
         </div>
       </div>
     );
@@ -51,16 +49,14 @@ export default function Totals({
         key="completion"
       >
         <div className="">
-          <div className="text-xs mb-0.5">{`${
-            completionSplit * 100
-          }% due on completion`}</div>
+          <div className="text-xs mb-0.5">{`${completionSplit * 100
+            }% due on completion`}</div>
         </div>
         <div className="">
-          <div className="text-xs mb-0.5">{`$${
-            (productDevelopment.developmentFee +
+          <div className="text-xs mb-0.5">{`$${(productDevelopment.developmentFee +
               productDevelopment.researchFee) *
             completionSplit
-          }`}</div>
+            }`}</div>
         </div>
       </div>
     );
@@ -73,9 +69,8 @@ export default function Totals({
           <div className="font-semibold mb-0.5">Subtotal</div>
         </div>
         <div className="">
-          <div className="font-semibold mb-0.5">{`$${
-            productDevelopment.developmentFee + productDevelopment.researchFee
-          }`}</div>
+          <div className="font-semibold mb-0.5">{`$${productDevelopment.developmentFee + productDevelopment.researchFee
+            }`}</div>
         </div>
       </div>
     );
@@ -116,7 +111,7 @@ export default function Totals({
       </div>
     );
     items.push(
-      <div className="px-10 flex justify-between text-lg" key="tax">
+      <div className="px-10 flex justify-between text-lg" key="total">
         <div>Total Payment</div>
         <div>
           {`$${getCheckoutTotal(

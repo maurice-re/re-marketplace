@@ -89,7 +89,17 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         id: groupId
       },
       include: {
-        locations: true,
+        locations: {
+          include: {
+            orders: {
+              include: {
+                items: true
+              }
+            },
+            settings: true,
+            events: true,
+          },
+        },
         members: true,
       }
     });
@@ -114,8 +124,28 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         id: get()._user?.id
       },
       include: {
-        ownedLocations: true,
-        viewableLocations: true,
+        ownedLocations: {
+          include: {
+            orders: {
+              include: {
+                items: true
+              }
+            },
+            settings: true,
+            events: true,
+          },
+        },
+        viewableLocations: {
+          include: {
+            orders: {
+              include: {
+                items: true
+              }
+            },
+            settings: true,
+            events: true,
+          },
+        },
       }
     });
     if (!user) return [];
@@ -190,8 +220,10 @@ export const useServerStore = create<ServerStore>((set, get) => ({
               include: {
                 items: true
               }
-            }
-          }
+            },
+            settings: true,
+            events: true,
+          },
         },
         viewableLocations: {
           include: {
@@ -199,7 +231,9 @@ export const useServerStore = create<ServerStore>((set, get) => ({
               include: {
                 items: true
               }
-            }
+            },
+            settings: true,
+            events: true,
           }
         }
       }
@@ -222,7 +256,17 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         id: groupId,
       },
       include: {
-        locations: true,
+        locations: {
+          include: {
+            orders: {
+              include: {
+                items: true
+              }
+            },
+            settings: true,
+            events: true,
+          },
+        },
       }
     });
     if (!group) return [];
