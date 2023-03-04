@@ -2,19 +2,9 @@
 import { FormEvent, useState } from "react";
 import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
 
-type NewUser = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  companyId: string;
-  newCompanyName: string;
-  newCompanyCustomerId: string;
-};
-
-export default function AddUserForm({ user }: { user: UserCompany; }) {
-  const [form, setForm] = useState<Record<string, string>>({
-  });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+export default function AddUserForm({ user }: { user: UserCompany }) {
+  const [form, setForm] = useState<Record<string, string>>({});
+  const [, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

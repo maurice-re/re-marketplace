@@ -1,6 +1,6 @@
 import "tailwindcss/tailwind.css";
 import POSummary from "../../components/po/poSummary";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import { CheckoutType } from "../../utils/checkoutUtils";
 import { useServerStore } from "../server-store";
 
@@ -15,7 +15,7 @@ export default async function Page({
 
   const { orderString } = searchParams;
 
-  const user = await useServerStore.getState().getUser();
+  await useServerStore.getState().getUser();
   const company = await useServerStore.getState().getCompany();
   const locations = await useServerStore.getState().getLocations(true);
   const products = await prisma.product.findMany({});

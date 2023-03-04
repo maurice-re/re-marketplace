@@ -1,6 +1,6 @@
 import { LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";
 
 async function create(req: Request, res: Response) {

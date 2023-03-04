@@ -1,4 +1,4 @@
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { useServerStore } from "../../server-store";
 import StorePage from "./store";
 

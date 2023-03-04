@@ -1,6 +1,6 @@
 import { Order, OrderItem, Product, Sku, Status } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import { orderNanoid } from "../../utils/apiUtils";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";

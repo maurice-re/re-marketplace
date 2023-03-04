@@ -1,15 +1,18 @@
 import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import prisma from "../../../../constants/prisma";
+import { prisma } from "../../../../constants/prisma";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
-import { OrderItemSku, OrderLocation } from "../../../../utils/dashboard/dashboardUtils";
+import {
+  OrderItemSku,
+  OrderLocation,
+} from "../../../../utils/dashboard/dashboardUtils";
 import { getOrderString } from "../../../../utils/dashboard/orderStringUtils";
 
 export default async function Page({
   params,
 }: {
-  params: { orderItemId: string; };
+  params: { orderItemId: string };
 }) {
   const session = await unstable_getServerSession(authOptions);
   if (session == null) {
@@ -42,7 +45,6 @@ export default async function Page({
       location: true,
     },
   });
-
 
   if (orderItem == null || order == null) {
     return (
@@ -101,8 +103,7 @@ export default async function Page({
                     <div className="flex justify-between">
                       <div className="text-re-gray-text">Location</div>
                       <div>
-                        {order.location.displayName ??
-                          order.location.city}
+                        {order.location.displayName ?? order.location.city}
                       </div>
                     </div>
                     <div className="flex justify-between">

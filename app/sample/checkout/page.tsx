@@ -1,6 +1,6 @@
 import { unstable_getServerSession } from "next-auth";
 import ReLogo from "../../../components/form/re-logo";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
 import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";

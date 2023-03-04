@@ -28,8 +28,10 @@ export default function LifecycleChart({
   options,
   type,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
   id: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   options?: any;
   type: string;
 }) {

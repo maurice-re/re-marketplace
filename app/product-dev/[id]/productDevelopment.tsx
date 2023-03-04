@@ -1,7 +1,6 @@
 "use client";
 
 import { ProductDevelopment } from "@prisma/client";
-import { loadStripe } from "@stripe/stripe-js";
 import { signIn } from "next-auth/react";
 import { FormEvent, useState } from "react";
 
@@ -10,16 +9,11 @@ type ProductDevProps = {
   productDev: ProductDevelopment | null;
 };
 
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ?? ""
-);
-
 export default function ProductDevelopmentPage({
-  loggedIn,
   productDev,
 }: ProductDevProps) {
   const [loading, setLoading] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [errorText] = useState("");
 
   if (productDev == null) {
     return (
@@ -60,6 +54,7 @@ export default function ProductDevelopmentPage({
 
   async function logIn(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
     const email = formElements[0].value;
     setLoading(true);

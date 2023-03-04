@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
 
 async function getUser(req: Request, res: Response) {

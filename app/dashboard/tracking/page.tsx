@@ -1,5 +1,5 @@
 import { Company, Event, Settings, User } from "@prisma/client";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { useServerStore } from "../../server-store";
 import Tracking from "./tracking";
 
@@ -15,7 +15,6 @@ export type UserSettings =
 
 export default async function Page() {
   const user = await useServerStore.getState().getUser();
-  const skus = await useServerStore.getState().getSkus();
 
   const ownedLocations = await useServerStore.getState().getLocations(true);
   const viewableLocations = await useServerStore.getState().getLocations(false);
@@ -37,7 +36,6 @@ export default async function Page() {
       </head> */}
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Tracking
-          skus={skus}
           demo={false}
           locations={locations}
         />

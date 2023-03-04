@@ -1,5 +1,5 @@
 import { Session, unstable_getServerSession } from "next-auth";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
 import Account from "./account";

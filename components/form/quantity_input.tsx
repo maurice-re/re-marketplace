@@ -1,4 +1,4 @@
-import { Sku, Product } from "@prisma/client";
+import { Product, Sku } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FormStore, useFormStore } from "../../stores/formStore";
@@ -22,7 +22,7 @@ function SkuQuantityField({
     })
   );
   const searchParams = useSearchParams();
-  const city = searchParams.get("city");
+  const city = searchParams ? searchParams.get("city") : "";
 
   const product = productCatalog.filter((p: Product) => p.id == productId)[0];
   const sku = skuCatalog.filter(

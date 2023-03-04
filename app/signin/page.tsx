@@ -1,16 +1,16 @@
-import { User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import { useServerStore } from "../server-store";
 import SignInForm from "./signinForm";
 
 export default async function Page() {
+  console.log("signin page");
   const session = await unstable_getServerSession(authOptions);
 
+  console.log("session", session);
   if (session) {
-    const user = session.user as User;
     const orders = await useServerStore.getState().getOrders();
 
     if (orders.length === 0) {

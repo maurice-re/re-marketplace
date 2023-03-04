@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Stripe from "stripe";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires -- Stripe
 const stripe: Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);

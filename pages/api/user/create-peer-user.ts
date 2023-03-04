@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 
 
 async function createPeerUser(req: Request, res: Response) {

@@ -1,5 +1,5 @@
 import ReLogo from "../../components/form/re-logo";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
 import SampleOrder from "./sampleOrder";
 

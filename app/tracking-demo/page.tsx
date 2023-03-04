@@ -1,17 +1,37 @@
 import Link from "next/link";
+<<<<<<< HEAD
 import prisma from "../../constants/prisma";
+=======
+import { prisma } from "../../constants/prisma";
+import {
+  LocationSettings,
+  UserCompany,
+} from "../../utils/dashboard/dashboardUtils";
+>>>>>>> dev
 import Tracking from "../dashboard/tracking/tracking";
 import { useServerStore } from "../server-store";
 
+<<<<<<< HEAD
 async function getSkus() {
   const skus = await prisma.sku.findMany();
   return JSON.parse(JSON.stringify(skus));
+=======
+async function getUser() {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: "lewis@example.com", // Complete
+    },
+    include: {
+      company: true,
+    },
+  });
+  return JSON.parse(JSON.stringify(user));
+>>>>>>> dev
 }
 
 export default async function Page() {
   const user = await useServerStore.getState().getUser();
   if (!user) return <div>Not found</div>;
-  const skus = await getSkus();
 
   const locations = await useServerStore.getState().getLocations(true);
 
@@ -64,7 +84,6 @@ export default async function Page() {
         </div>
         {/* TODO(Suhana): Pass specific location for demo */}
         <Tracking
-          skus={skus}
           demo={true}
           locations={locations}
         />

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 import SignUpForm from "./signupForm";
 
 export default async function Page({

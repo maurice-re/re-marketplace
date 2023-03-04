@@ -6,7 +6,7 @@ import {
 import React, { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
 import DoubleAddressField from "../../../components/form/double-address-field";
-import { useFormStore } from "../../../stores/formStore";
+import { FormStore, useFormStore } from "../../../stores/formStore";
 import { saveToLocalStorage } from "../../../utils/form/localStorage";
 
 export default function CheckoutForm() {
@@ -16,7 +16,7 @@ export default function CheckoutForm() {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   // TODO: Type
-  const { cart, locations, customerId } = useFormStore((state: any) => ({
+  const { cart, locations, customerId } = useFormStore((state: FormStore) => ({
     cart: state.cart,
     locations: state.locations,
     customerId: state.customerId,
@@ -57,8 +57,9 @@ export default function CheckoutForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    let shippingInfo: string[] = [];
+    const shippingInfo: string[] = [];
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
     }

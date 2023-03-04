@@ -40,8 +40,8 @@ export default function Page() {
     setChosenMaterial([]);
   }, [path]);
 
-  const id = searchParams.get("id");
-  const city = searchParams.get("city");
+  const id = searchParams ? searchParams.get("id") : "";
+  const city = searchParams ? searchParams.get("city") : "";
 
   useEffect(() => {
     if (productCatalog) {
@@ -55,6 +55,7 @@ export default function Page() {
   function handleOptionClick(
     optionLabel: string,
     selected: string[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setSelected: any,
     multipleChoice: boolean
   ) {
@@ -117,7 +118,9 @@ export default function Page() {
         <meta name="product" content="Info on product from the Re catalog" />
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <ProgressBar pageName={path?.slice(1) + "?" + searchParams.toString()} />
+      <ProgressBar
+        pageName={path?.slice(1) + "?" + (searchParams ?? "").toString()}
+      />
       <ReLogo />
       <main className="flex flex-col container mx-auto my-4 justify-evenly">
         <div className=" text-white text-5xl text-center font-theinhardt">
@@ -162,7 +165,7 @@ export default function Page() {
           </div>
         </div>
         <FormNextButton
-          pageName={path?.slice(1) + "?" + searchParams.toString()}
+          pageName={path?.slice(1) + "?" + (searchParams ?? "").toString()}
           disabled={false}
           green
         />

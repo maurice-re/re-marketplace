@@ -55,7 +55,7 @@ export default function Page() {
     appearance,
   };
 
-  let items: (JSX.Element | JSX.Element[])[] = [];
+  const items: (JSX.Element | JSX.Element[])[] = [];
   allLocations(cart).forEach((city) => {
     if (locations.length > 1) {
       items.push(
@@ -101,7 +101,7 @@ export default function Page() {
                 order.sku.id,
                 order.quantity
               )}`}</div>
-              <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+              <div className="text-xs text-gray-300">{`$${getPriceFromTable(
                 order.sku.priceTable,
                 order.quantity
               )} each`}</div>

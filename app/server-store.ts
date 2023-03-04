@@ -1,8 +1,8 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User, Group, Settings, Event } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
+import { Company, Location, Order, OrderItem, Product, Sku, User } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
-import prisma from "../constants/prisma";
+import { prisma } from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
 export type OrderWithItems = Order & {
@@ -51,7 +51,7 @@ interface ServerStore {
 export const useServerStore = create<ServerStore>((set, get) => ({
   _user: null,
   _company: null,
-  sessionLastUpdated: new Date(1 - 1 - 1970),
+  sessionLastUpdated: new Date(1, 1, 1970),
   getUser: async (refresh?: boolean, redirectUrl?: string) => {
     const user = get()._user;
     if (user) {
@@ -62,7 +62,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       new Date().getTime() - 1000 * 60 * 60 * 24
     ) {
       // If the session is older than 24 hours, refresh it
-      const session = await unstable_getServerSession(authOptions);
+      const session = await getServerSession(authOptions);
       if (session) {
         set({ _user: session.user as User, sessionLastUpdated: new Date() });
         return session.user as User;
@@ -209,9 +209,11 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     });
   },
   getOrders: async () => {
-    const user = await prisma.user.findUnique({
+    const user = await get().getUser();
+    if (!user) return [];
+    const orders = await prisma.user.findUnique({
       where: {
-        id: get()._user?.id ?? "616"
+        id: user.id
       },
       include: {
         ownedLocations: {
@@ -238,9 +240,9 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         }
       }
     });
-    if (!user) return [];
-    const ownedOrders = user.ownedLocations.flatMap(location => location.orders);
-    const viewableOrders = user.viewableLocations.flatMap(location => location.orders);
+    if (!orders) return [];
+    const ownedOrders = orders.ownedLocations.flatMap(location => location.orders);
+    const viewableOrders = orders.viewableLocations.flatMap(location => location.orders);
     return [...ownedOrders, ...viewableOrders];
   },
   getOrderItems: async (orderId: string) => {
