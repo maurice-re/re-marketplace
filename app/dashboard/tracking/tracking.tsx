@@ -307,19 +307,11 @@ function Tracking({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-<<<<<<< HEAD
-  const eventsBySku = getEventsBySku(location?.events, skus[1]);
-  const itemsInUseBySku = getItemsInUse(eventsBySku);
-  const numItemIds = getItemIds(location?.events).length;
-  const reuseRateBySku = getReuseRate(eventsBySku);
-  const returnRateBySku = getReturnRate(eventsBySku);
-=======
-  // const eventsBySku = getEventsBySku(events, skus[1]);
+  // const eventsBySku = getEventsBySku(location?.events, skus[1]);
   // const itemsInUseBySku = getItemsInUse(eventsBySku);
-  // const numItemIds = getItemIds(events).length;
+  // const numItemIds = getItemIds(location?.events).length;
   // const reuseRateBySku = getReuseRate(eventsBySku);
   // const returnRateBySku = getReturnRate(eventsBySku);
->>>>>>> dev
 
   const allMonthYears = getMonthYearsForDailyDropdown(location?.events);
   const allYears = getYearsForMonthlyDropdown(location?.events);
