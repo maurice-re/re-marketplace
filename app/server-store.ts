@@ -15,9 +15,12 @@ export type SkuWithProduct = Sku & {
 
 /* Location with all required additional fields. */
 export type FullLocation = Location & {
-  settings?: Settings;
+  settings: Settings | null;
   events: Event[];
   orders: OrderWithItems[];
+  groups: FullGroup[];
+  viewers: User[];
+  owners: User[];
 };
 
 /* Location with all required additional fields. */

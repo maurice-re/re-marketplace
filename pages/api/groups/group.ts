@@ -1,10 +1,9 @@
 import { Location, User, Group } from "@prisma/client";
-import { group } from "console";
 import type { Request, Response } from "express";
-import e from "express";
+import { FullGroup } from "../../../app/server-store";
 import prisma from "../../../constants/prisma";
 
-async function disconnectGroupLocations(group: Group, locations: Location[]) {
+async function disconnectGroupLocations(group: FullGroup, locations: Location[]) {
     // Disconnect all locations from the group
     const locationIds: any[] = [];
     (locations).forEach(async (location: Location) => {
@@ -24,7 +23,7 @@ async function disconnectGroupLocations(group: Group, locations: Location[]) {
     });
 }
 
-async function getGroupById(groupId: string): Promise<Group> {
+async function getGroupById(groupId: string): Promise<FullGroup> {
     const group = await prisma.group.findUnique({
         where: {
             id: groupId,
@@ -34,10 +33,10 @@ async function getGroupById(groupId: string): Promise<Group> {
             locations: true
         }
     });
-    return group as Group;
+    return group as FullGroup;
 }
 
-async function disconnectGroupMembers(group: Group) {
+async function disconnectGroupMembers(group: FullGroup) {
     // Disconnect all members from the group
     const memberIds: any[] = [];
     (group.members).forEach(async (member: User) => {
@@ -72,9 +71,14 @@ async function handler(req: Request, res: Response) {
 
     /* Validate user.  */
 
+    if (!userId || typeof userId != "string") {
+        res.status(400).send({ message: "Invalid user ID indicated " + userId + "." });
+        return;
+    }
+
     const user = await prisma.user.findUnique({
         where: {
-            id: userId ?? "",
+            id: userId,
         },
         include: {
             memberGroups: true,

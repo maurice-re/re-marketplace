@@ -1,8 +1,9 @@
-import { Penalty, TrackingType, LocationType, Location, User } from "@prisma/client";
+import { Penalty, TrackingType, LocationType, Location, User, Settings, OrderItem, Order } from "@prisma/client";
 import type { Request, Response } from "express";
+import { FullLocation } from "../../../app/server-store";
 import prisma from "../../../constants/prisma";
 
-async function disconnectLocationGroups(location: Location) {
+async function disconnectLocationGroups(location: FullLocation) {
   const groupIds: any[] = [];
 
   (location.groups).forEach(group => {
@@ -22,7 +23,7 @@ async function disconnectLocationGroups(location: Location) {
   });
 
 }
-async function disconnectLocationViewers(location: Location) {
+async function disconnectLocationViewers(location: FullLocation) {
   const viewerIds: any[] = [];
 
   (location.viewers).forEach(viewer => {
@@ -42,7 +43,7 @@ async function disconnectLocationViewers(location: Location) {
   });
 }
 
-async function disconnectLocationOwners(location: Location) {
+async function disconnectLocationOwners(location: FullLocation) {
   const ownerIds: any[] = [];
   (location.owners).forEach(owner => {
     ownerIds.push({ id: owner.id });
@@ -60,7 +61,7 @@ async function disconnectLocationOwners(location: Location) {
   });
 }
 
-async function getLocationById(locationId: string): Promise<Location> {
+async function getLocationById(locationId: string): Promise<FullLocation> {
   const location = await prisma.location.findUnique({
     where: {
       id: locationId ?? "",
@@ -71,7 +72,7 @@ async function getLocationById(locationId: string): Promise<Location> {
       groups: true
     }
   });
-  return location as Location;
+  return location as FullLocation;
 }
 
 async function handler(req: Request, res: Response) {
@@ -127,7 +128,7 @@ async function handler(req: Request, res: Response) {
 
       if (owner) {
         // Disconnect owners
-        const location = getLocationById(locationId);
+        const location = await getLocationById(locationId);
         if ((location.owners).length === 1) {
           res.status(400).send({ message: "Failed to disconnect owner from location with ID " + locationId + ", because every location must have at least one owner." });
           return;
@@ -174,7 +175,7 @@ async function handler(req: Request, res: Response) {
           },
           data: {
             ownedLocations: {
-              disconnect: ownedOrViewableLocations,
+              disconnect: ownedOrViewableLocationIds,
             },
           },
         });
@@ -188,7 +189,7 @@ async function handler(req: Request, res: Response) {
           },
           data: {
             viewableLocations: {
-              disconnect: ownedOrViewableLocations,
+              disconnect: ownedOrViewableLocationIds,
             },
           },
         });
@@ -214,9 +215,14 @@ async function handler(req: Request, res: Response) {
 
   /* Validate user. */
 
+  if (!userId || typeof userId != "string") {
+    res.status(400).send({ message: "Invalid user ID specified " + userId + "." });
+    return;
+  }
+
   const userWithItems = await prisma.user.findUnique({
     where: {
-      id: userId ?? "",
+      id: userId,
     },
     include: {
       ownedLocations: {
