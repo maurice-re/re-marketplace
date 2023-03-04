@@ -1,10 +1,5 @@
-import { Event } from "@prisma/client";
 import Link from "next/link";
 import prisma from "../../constants/prisma";
-import {
-  FullLocation,
-  UserCompany,
-} from "../../utils/dashboard/dashboardUtils";
 import Tracking from "../dashboard/tracking/tracking";
 import { useServerStore } from "../server-store";
 

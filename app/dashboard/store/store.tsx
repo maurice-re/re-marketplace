@@ -14,7 +14,6 @@ import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
 import DoubleAddressField from "../../../components/form/double-address-field";
 import { useCartStore } from "../../../stores/cartStore";
-import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import { FullLocation } from "../../server-store";
 import Cart from "./cart";
@@ -152,7 +151,7 @@ export default function StorePage({
         headers: { "Content-Type": "application/json" },
       }
     ).then(async (res) => await res.json());
-    setLocations(results.locations as LocationWithOneItem[]);
+    setLocations(results.locations as FullLocation[]);
     setIsLoading(false);
     document.getElementById("newLocation-modal")?.click();
   };

@@ -3,7 +3,7 @@ import type { Request, Response } from "express";
 import prisma from "../../../constants/prisma";
 
 async function disconnectLocationGroups(location: Location) {
-  let groupIds: any[] = [];
+  const groupIds: any[] = [];
 
   (location.groups).forEach(group => {
     groupIds.push({ id: group.id });
@@ -23,7 +23,7 @@ async function disconnectLocationGroups(location: Location) {
 
 }
 async function disconnectLocationViewers(location: Location) {
-  let viewerIds: any[] = [];
+  const viewerIds: any[] = [];
 
   (location.viewers).forEach(viewer => {
     viewerIds.push({ id: viewer.id });
@@ -43,7 +43,7 @@ async function disconnectLocationViewers(location: Location) {
 }
 
 async function disconnectLocationOwners(location: Location) {
-  let ownerIds: any[] = [];
+  const ownerIds: any[] = [];
   (location.owners).forEach(owner => {
     ownerIds.push({ id: owner.id });
   });
@@ -264,8 +264,8 @@ async function handler(req: Request, res: Response) {
     const users = await prisma.user.findMany();
     const allUserEmails = users.map(user => user.email);
 
-    let ownerIds: any[] = [];
-    let viewerIds: any[] = [];
+    const ownerIds: any[] = [];
+    const viewerIds: any[] = [];
     let foundUser: User | null;
     let foundUsers: User[] | null;
     let found = false;

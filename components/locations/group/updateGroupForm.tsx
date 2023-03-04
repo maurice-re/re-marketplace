@@ -4,6 +4,7 @@ import { User, Group, LocationType, Penalty, TrackingType, Location } from "@pri
 import { BsArrowRight, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { BiX } from "react-icons/bi";
 import InputField from "../../form/input-field";
+import { FullGroup, FullLocation } from "../../../app/server-store";
 
 type UpdateGroupFormInputs = {
     name: string;
@@ -12,10 +13,10 @@ type UpdateGroupFormInputs = {
     memberEmail: string;
 };
 
-export default function UpdateGroupForm({ group, user, initialMemberEmails, ownedLocations }: { group: Group; user: User; initialMemberEmails: string[]; ownedLocations: Location[]; }) {
+export default function UpdateGroupForm({ group, user, initialMemberEmails, ownedLocations }: { group: FullGroup; user: User; initialMemberEmails: string[]; ownedLocations: Location[]; }) {
     const initialGroupValues: UpdateGroupFormInputs = {
         name: group.name ?? "",
-        locations: group.locations ?? [] as Location[], // TODO(Suhana): Make and implement FullGroup
+        locations: group.locations ?? [] as FullLocation[],
         memberEmail: "",
         memberEmails: initialMemberEmails, // The creator of the location must be an owner
     };

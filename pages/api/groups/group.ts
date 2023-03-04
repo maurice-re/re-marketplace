@@ -24,10 +24,10 @@ async function disconnectGroupLocations(group: Group, locations: Location[]) {
     });
 }
 
-async function getGroupById(groupId: Group): Promise<Group> {
+async function getGroupById(groupId: string): Promise<Group> {
     const group = await prisma.group.findUnique({
         where: {
-            id: groupId ?? "",
+            id: groupId,
         },
         include: {
             members: true,
@@ -88,7 +88,7 @@ async function handler(req: Request, res: Response) {
 
     /* Handle DELETE behaviour. */
 
-    if (req.method == "DELETE") {
+    if (req.method == "DELETE" && groupId && typeof groupId == "string") {
         const group = await getGroupById(groupId);
 
         if (!group) {
@@ -96,13 +96,13 @@ async function handler(req: Request, res: Response) {
             return;
         }
 
-        if ((groupId && typeof groupId == "string") && locations) {
+        if (locations) {
             // Disconnect given locations from the group
             await disconnectGroupLocations(group, locations);
 
             res.status(200).send({ message: "Disconnected provided location(s) from group with ID " + groupId + "." });
             return;
-        } else if (groupId && typeof groupId == "string") {
+        } else {
             // Disconnect locations and members, then delete group
             await disconnectGroupLocations(group, group.locations);
             await disconnectGroupMembers(group);
@@ -175,7 +175,7 @@ async function handler(req: Request, res: Response) {
         const users = await prisma.user.findMany();
         const userEmails = users.map(user => user.email);
 
-        let memberIds: any[] = [];
+        const memberIds: any[] = [];
         let foundMember: User | null;
         let foundMembers: User[] | null;
         let found = false;
@@ -224,7 +224,12 @@ async function handler(req: Request, res: Response) {
                         }
                     });
 
-                    if (!((locationWithOwnersAndViewers?.owners).some(o => o.id === memberId)) && !((locationWithOwnersAndViewers?.viewers).some(v => v.id === memberId))) {
+                    if (!locationWithOwnersAndViewers) {
+                        res.status(200).send({ message: "Invalid location specified with ID " + location.id + "." });
+                        return;
+                    }
+
+                    if (!((locationWithOwnersAndViewers.owners).some(o => o.id === memberId)) && !((locationWithOwnersAndViewers.viewers).some(v => v.id === memberId))) {
                         console.log("Making member a viewer of the location");
                         // Make member a viewer of the location
                         await prisma.location.update({

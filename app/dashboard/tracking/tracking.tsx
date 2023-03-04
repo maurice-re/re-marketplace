@@ -94,8 +94,8 @@ function Tracking({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings>(
-    location?.settings
+  const [settings, setSettings] = useState<Settings | null>(
+    location.settings
   );
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");

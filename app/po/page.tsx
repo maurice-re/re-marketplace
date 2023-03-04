@@ -25,7 +25,7 @@ export default async function Page({
     <div className="w-full h-screen bg-re-black flex">
       <POSummary
         company={JSON.parse(JSON.stringify(company))}
-        locations={JSON.parse(JSON.stringify(locations))}
+        locations={locations}
         orderString={orderString}
         products={products}
         skus={skus}

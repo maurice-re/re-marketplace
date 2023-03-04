@@ -45,10 +45,6 @@ export type UserCompany = User & {
   company: Company;
 };
 
-export type LocationWithOneItem = Location & {
-  orderItems: OrderItem[];
-};
-
 export type OrderItemLocationName = Order & {
   items: OrderItem & {
     location: {

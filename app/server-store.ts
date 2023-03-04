@@ -13,10 +13,17 @@ export type SkuWithProduct = Sku & {
   product: Product;
 };
 
-/* Location with optional fields. */
+/* Location with all required additional fields. */
 export type FullLocation = Location & {
-  settings: Settings | null;
+  settings?: Settings;
   events: Event[];
+  orders: OrderWithItems[];
+};
+
+/* Location with all required additional fields. */
+export type FullGroup = Group & {
+  locations: FullLocation[];
+  members: User[];
 };
 
 interface ServerStore {
@@ -29,13 +36,13 @@ interface ServerStore {
   getLocationUsers: (locationId: string, owned: boolean) => Promise<User[]>;
   getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
   getGroupMemberEmails: (groupId: string) => Promise<string[]>;
-  getLocationById: (locationId: string) => Promise<Location>;
+  getLocationById: (locationId: string) => Promise<FullLocation>;
   getOrders: () => Promise<OrderWithItems[]>;
   getSkus: () => Promise<SkuWithProduct[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
   getGroups: (created: boolean) => Promise<Group[]>;
-  getGroupLocations: (groupId: string) => Promise<Location[]>;
-  getGroupById: (groupId: string) => Promise<Group>;
+  getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
+  getGroupById: (groupId: string) => Promise<FullGroup>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -65,8 +72,13 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       where: {
         id: locationId
       },
+      include: {
+        settings: true,
+        events: true,
+        orders: true
+      }
     });
-    return location as Location;
+    return location as FullLocation;
   },
   getGroupById: async (groupId: string) => {
     const group = await prisma.group.findUnique({
@@ -78,7 +90,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         members: true,
       }
     });
-    return group as Group;
+    return group as FullGroup;
   },
   getCompany: async () => {
     const company = get()._company;
@@ -99,22 +111,12 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         id: get()._user?.id
       },
       include: {
-        ownedLocations: {
-          include: {
-            settings: true,
-            events: true,
-          }
-        },
-        viewableLocations: {
-          include: {
-            settings: true,
-            events: true,
-          }
-        },
+        ownedLocations: true,
+        viewableLocations: true,
       }
     });
     if (!user) return [];
-    return owned ? [...user.ownedLocations] : [...user.viewableLocations];
+    return owned ? [...user.ownedLocations as FullLocation[]] : [...user.viewableLocations as FullLocation[]];
   },
   getLocationUsers: async (locationdId: string, owned: boolean) => {
     const location = await prisma.location.findUnique({
@@ -221,7 +223,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     if (!group) return [];
-    return group.locations;
+    return group.locations as FullLocation[];
   },
   getGroups: async (created: boolean) => {
     if (created) {

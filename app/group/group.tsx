@@ -2,7 +2,7 @@
 import { User, Company, Location, Group } from "@prisma/client";
 import UpdateGroupForm from "../../components/locations/group/updateGroupForm";
 import LocationsList from "../../components/locations/locationsList";
-import { FullLocation } from "../server-store";
+import { FullGroup, FullLocation } from "../server-store";
 
 function Group({
     group,
@@ -12,7 +12,7 @@ function Group({
     memberEmails,
     ownedLocations
 }: {
-    group: Group;
+    group: FullGroup;
     groupLocations: FullLocation[];
     createdGroups: Group[];
     user: User;
