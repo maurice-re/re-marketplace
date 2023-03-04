@@ -1,7 +1,7 @@
 import { Penalty, TrackingType, LocationType, Location, User, Settings, OrderItem, Order } from "@prisma/client";
 import type { Request, Response } from "express";
 import { FullLocation } from "../../../app/server-store";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 
 async function disconnectLocationGroups(location: FullLocation) {
   const groupIds: any[] = [];

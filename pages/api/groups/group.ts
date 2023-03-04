@@ -1,7 +1,7 @@
 import { Location, User, Group } from "@prisma/client";
 import type { Request, Response } from "express";
 import { FullGroup } from "../../../app/server-store";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 
 async function disconnectGroupLocations(group: FullGroup, locations: Location[]) {
     // Disconnect all locations from the group
