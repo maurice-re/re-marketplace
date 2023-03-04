@@ -1,6 +1,6 @@
 "use client";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { User, Company, LocationType, Penalty, TrackingType, Location } from "@prisma/client";
+import { User, LocationType, Penalty, TrackingType } from "@prisma/client";
 import InputField from "../form/input-field";
 import DoubleInputField from "../form/double-input-field";
 import DropdownField from "../form/dropdown-field";

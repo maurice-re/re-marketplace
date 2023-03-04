@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { User, Company, LocationType, Penalty, TrackingType } from "@prisma/client";
+import { User, LocationType, Penalty, TrackingType } from "@prisma/client";
 import InputField from "../form/input-field";
 import DoubleInputField from "../form/double-input-field";
 import DropdownField from "../form/dropdown-field";
@@ -26,7 +26,7 @@ type AddLocationFormInputs = {
 
 // TODO(Suhana): Make sure they can edit settings from tracking
 
-export default function AddLocationForm({ user, company }: { user: User; company: Company; }) {
+export default function AddLocationForm({ user }: { user: User; }) {
     const [inputValues, setInputValues] = useState<AddLocationFormInputs>({
         city: "",
         country: "",

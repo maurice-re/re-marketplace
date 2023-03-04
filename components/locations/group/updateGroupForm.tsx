@@ -1,6 +1,6 @@
 "use client";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { User, Group, LocationType, Penalty, TrackingType, Location } from "@prisma/client";
+import { User, Location } from "@prisma/client";
 import { BsArrowRight, BsChevronDown, BsChevronUp } from "react-icons/bs";
 import { BiX } from "react-icons/bi";
 import InputField from "../../form/input-field";

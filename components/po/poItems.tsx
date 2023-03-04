@@ -1,6 +1,6 @@
 "use client";
 
-import { Location, Product, ProductDevelopment, Sku } from "@prisma/client";
+import { Product, ProductDevelopment, Sku } from "@prisma/client";
 import { FullLocation } from "../../app/server-store";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import LineItems from "../checkout/lineItems";

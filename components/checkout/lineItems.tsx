@@ -1,4 +1,4 @@
-import { Location, Product, ProductDevelopment, Sku } from ".prisma/client";
+import { Product, ProductDevelopment, Sku } from ".prisma/client";
 import Image from "next/image";
 import { FullLocation } from "../../app/server-store";
 import { CheckoutType } from "../../utils/checkoutUtils";
@@ -179,8 +179,8 @@ export default function LineItems({
                 <div className="h-px bg-re-gray-300 w-full"></div>
                 <div
                   className={`px-6 py-2 ${location.line2 && location.line2.length > 1
-                      ? "text-white"
-                      : "text-re-gray-text"
+                    ? "text-white"
+                    : "text-re-gray-text"
                     }`}
                 >
                   {location.line2 ? location.line2 : "Line 2"}

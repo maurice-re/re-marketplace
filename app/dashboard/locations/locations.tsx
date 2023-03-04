@@ -43,11 +43,11 @@ function Locations({
                 <div className="w-full flex gap-8">
                     <div className="flex-col w-1/2 flex items-start justify-start">
                         <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
-                        <AddLocationForm user={user} company={company} />
+                        <AddLocationForm user={user} />
                     </div>
                     <div className="flex-col w-1/2 flex items-start justify-start">
                         <h1 className="w-full text-xl text-left pb-2 pt-8">Add Group</h1>
-                        <AddGroupForm user={user} company={company} ownedLocations={ownedLocations} viewableLocations={viewableLocations} />
+                        <AddGroupForm user={user} ownedLocations={ownedLocations} />
                     </div>
                 </div>
                 <div className="flex w-full justify-center items-center gap-6">

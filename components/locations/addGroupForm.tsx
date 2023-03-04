@@ -1,8 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { User, Company, Location } from "@prisma/client";
+import { User, Location } from "@prisma/client";
 import InputField from "../form/input-field";
 import { BsChevronUp, BsChevronDown, BsArrowRight } from "react-icons/bs";
-import AddUserForm from "../account/addUserForm";
 import { BiX } from "react-icons/bi";
 
 type AddGroupFormInputs = {
@@ -12,7 +11,7 @@ type AddGroupFormInputs = {
     memberEmail: string;
 };
 
-export default function AddGroupForm({ user, company, ownedLocations, viewableLocations }: { user: User; company: Company; ownedLocations: Location[]; viewableLocations: Location[]; }) {
+export default function AddGroupForm({ user, ownedLocations }: { user: User; ownedLocations: Location[]; }) {
     const [inputValues, setInputValues] = useState<AddGroupFormInputs>({
         name: "",
         locations: [] as Location[],
@@ -52,9 +51,6 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
         }));
     };
 
-    // All locations available to add/remove
-    const addableLocations = ownedLocations; // TODO(Suhana): If viewable locations can definitely not be added here, stop passing in
-
     const handleMultiselectDropdownChange = (location: Location) => {
         let newLocations = locations;
         if (newLocations.includes(location)) {
@@ -62,7 +58,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
             newLocations = newLocations.filter(loc => loc != location);
         } else {
             // It's not in, so add
-            newLocations.push(addableLocations.filter(loc => loc == location)[0]);
+            newLocations.push(ownedLocations.filter(loc => loc == location)[0]);
         }
         setInputValues((prev) => ({
             ...prev,
@@ -133,7 +129,7 @@ export default function AddGroupForm({ user, company, ownedLocations, viewableLo
                         {dropdownOpen ? (<div className="flex items-center justify-center">< BsChevronUp size={20} /></div>
                         ) : (<div className="flex items-center justify-center"><BsChevronDown size={20} /></div>)}                    </div>
                     <ul className={`${dropdownOpen ? "block" : "hidden"} hover:block absolute left-0 w-full bg-re-dark-green-200 rounded-lg`}>
-                        {addableLocations.map((location, index) => {
+                        {ownedLocations.map((location, index) => {
                             const isSelected = locations.some(l => l.id === location.id);
                             return (
                                 <li key={index} className="flex items-center px-2 py-4 cursor-pointer hover:bg-re-gray-500 rounded" onClick={() => handleMultiselectDropdownChange(location)}>

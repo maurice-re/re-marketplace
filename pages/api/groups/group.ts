@@ -1,11 +1,12 @@
-import { Location, User, Group } from "@prisma/client";
+import { Location, User } from "@prisma/client";
 import type { Request, Response } from "express";
 import { FullGroup } from "../../../app/server-store";
 import { prisma } from "../../../constants/prisma";
+import { ModelId } from "../locations/location";
 
 async function disconnectGroupLocations(group: FullGroup, locations: Location[]) {
     // Disconnect all locations from the group
-    const locationIds: any[] = [];
+    const locationIds: ModelId[] = [];
     (locations).forEach(async (location: Location) => {
         locationIds.push({ id: location.id });
     });
@@ -38,7 +39,7 @@ async function getGroupById(groupId: string): Promise<FullGroup> {
 
 async function disconnectGroupMembers(group: FullGroup) {
     // Disconnect all members from the group
-    const memberIds: any[] = [];
+    const memberIds: ModelId[] = [];
     (group.members).forEach(async (member: User) => {
         memberIds.push({ id: member.id });
     });
@@ -144,7 +145,7 @@ async function handler(req: Request, res: Response) {
             return;
         }
 
-        const locationIds: any[] = [];
+        const locationIds: ModelId[] = [];
 
         // The creator of the group should be an owner of all the locations specified
         locations.forEach(async (location: Location) => {
@@ -179,12 +180,12 @@ async function handler(req: Request, res: Response) {
         const users = await prisma.user.findMany();
         const userEmails = users.map(user => user.email);
 
-        const memberIds: any[] = [];
+        const memberIds: ModelId[] = [];
         let foundMember: User | null;
         let foundMembers: User[] | null;
         let found = false;
 
-        new Promise<void>((resolve, reject) => {
+        new Promise<void>((resolve) => {
             // Convert member emails to member objects
             if (memberEmails.length === 0) resolve();
             memberEmails.forEach(async (memberEmail: string, index: number) => {
@@ -216,7 +217,7 @@ async function handler(req: Request, res: Response) {
             }
 
             // Make each specified member a viewer of each specified location, unless they are already an owner or viewer
-            memberIds.forEach(async (memberId: any) => {
+            memberIds.forEach(async (memberId: ModelId) => {
                 locations.forEach(async (location: Location) => {
                     const locationWithOwnersAndViewers = await prisma.location.findUnique({
                         where: {
@@ -233,7 +234,7 @@ async function handler(req: Request, res: Response) {
                         return;
                     }
 
-                    if (!((locationWithOwnersAndViewers.owners).some(o => o.id === memberId)) && !((locationWithOwnersAndViewers.viewers).some(v => v.id === memberId))) {
+                    if (!((locationWithOwnersAndViewers.owners).some(o => o.id === memberId.id)) && !((locationWithOwnersAndViewers.viewers).some(v => v.id === memberId.id))) {
                         console.log("Making member a viewer of the location");
                         // Make member a viewer of the location
                         await prisma.location.update({

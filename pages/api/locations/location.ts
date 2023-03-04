@@ -1,10 +1,14 @@
-import { Penalty, TrackingType, LocationType, Location, User, Settings, OrderItem, Order } from "@prisma/client";
+import { Penalty, TrackingType, LocationType, User } from "@prisma/client";
 import type { Request, Response } from "express";
 import { FullLocation } from "../../../app/server-store";
 import { prisma } from "../../../constants/prisma";
 
+export type ModelId = {
+  id: string;
+};
+
 async function disconnectLocationGroups(location: FullLocation) {
-  const groupIds: any[] = [];
+  const groupIds: ModelId[] = [];
 
   (location.groups).forEach(group => {
     groupIds.push({ id: group.id });
@@ -24,7 +28,7 @@ async function disconnectLocationGroups(location: FullLocation) {
 
 }
 async function disconnectLocationViewers(location: FullLocation) {
-  const viewerIds: any[] = [];
+  const viewerIds: ModelId[] = [];
 
   (location.viewers).forEach(viewer => {
     viewerIds.push({ id: viewer.id });
@@ -44,7 +48,7 @@ async function disconnectLocationViewers(location: FullLocation) {
 }
 
 async function disconnectLocationOwners(location: FullLocation) {
-  const ownerIds: any[] = [];
+  const ownerIds: ModelId[] = [];
   (location.owners).forEach(owner => {
     ownerIds.push({ id: owner.id });
   });
@@ -121,7 +125,7 @@ async function handler(req: Request, res: Response) {
   if (req.method == "DELETE") {
     if ((locationId && typeof locationId == "string") && userIds) {
       // Disconnect provided users from specified location
-      const ownerOrViewerIds: any[] = [];
+      const ownerOrViewerIds: ModelId[] = [];
       userIds.forEach(async (userId: string) => {
         ownerOrViewerIds.push({ id: userId });
       });
@@ -162,7 +166,7 @@ async function handler(req: Request, res: Response) {
       }
     } else if ((userId && typeof userId == "string") && locationIds) {
       // Disconnect provided locations from specified user
-      const ownedOrViewableLocationIds: any[] = [];
+      const ownedOrViewableLocationIds: ModelId[] = [];
       locationIds.forEach(async (locationId: string) => {
         ownedOrViewableLocationIds.push({ id: locationId });
       });
@@ -270,14 +274,14 @@ async function handler(req: Request, res: Response) {
     const users = await prisma.user.findMany();
     const allUserEmails = users.map(user => user.email);
 
-    const ownerIds: any[] = [];
-    const viewerIds: any[] = [];
+    const ownerIds: ModelId[] = [];
+    const viewerIds: ModelId[] = [];
     let foundUser: User | null;
     let foundUsers: User[] | null;
     let found = false;
 
     // Convert owner emails to owner objects
-    new Promise<void>((resolve, reject) => {
+    new Promise<void>((resolve) => {
       if (ownerEmails.length === 0) resolve();
       ownerEmails.forEach(async (ownerEmail: string, index: number) => {
         // Check if user email is valid
@@ -310,7 +314,7 @@ async function handler(req: Request, res: Response) {
       }
 
       // Convert owner emails to viewer objects
-      new Promise<void>((resolve, reject) => {
+      new Promise<void>((resolve) => {
         if (viewerEmails.length === 0) resolve();
         viewerEmails.forEach(async (viewerEmail: string, index: number) => {
           // Check if user email is valid
