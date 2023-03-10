@@ -1,5 +1,5 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User, Group, Settings, Event } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
+import { Company, Event, Group, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
 import { prisma } from "../constants/prisma";
@@ -62,10 +62,10 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       new Date().getTime() - 1000 * 60 * 60 * 24
     ) {
       // If the session is older than 24 hours, refresh it
-      const session = await unstable_getServerSession(authOptions);
+      const session = await getServerSession(authOptions);
       if (session) {
-        set({ _user: session.user as User, sessionLastUpdated: new Date() });
-        return session.user as User;
+        set({ _user: JSON.parse(JSON.stringify(session.user)) as User, sessionLastUpdated: new Date() });
+        return JSON.parse(JSON.stringify(session.user)) as User;
       }
     }
     redirect(redirectUrl ?? "/signin");
@@ -112,16 +112,18 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     }
     const _company = await prisma.company.findUnique({
       where: {
-        id: get()._user?.companyId
+        id: (await get().getUser()).companyId,
       },
     });
     set({ _company: _company });
     return _company ?? {} as Company;
   },
   getLocations: async (owned: boolean) => {
+    const userId = (await get().getUser()).id;
+    if (!userId) return [];
     const user = await prisma.user.findUnique({
       where: {
-        id: get()._user?.id
+        id: userId
       },
       include: {
         ownedLocations: {
@@ -149,7 +151,9 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     if (!user) return [];
-    return owned ? [...user.ownedLocations as FullLocation[]] : [...user.viewableLocations as FullLocation[]];
+    return JSON.parse(JSON.stringify(
+      owned ? [...user.ownedLocations as FullLocation[]] : [...user.viewableLocations as FullLocation[]]
+    ));
   },
   getLocationUsers: async (locationdId: string, owned: boolean) => {
     const location = await prisma.location.findUnique({
@@ -162,7 +166,9 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     if (!location) return [];
-    return owned ? [...location.owners] : [...location.viewers];
+    return JSON.parse(JSON.stringify(
+      owned ? [...location.owners] : [...location.viewers]
+    ));
   },
   getLocationUserEmails: async (locationdId: string, owned: boolean) => {
     const location = await prisma.location.findUnique({
@@ -243,7 +249,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     if (!orders) return [];
     const ownedOrders = orders.ownedLocations.flatMap(location => location.orders);
     const viewableOrders = orders.viewableLocations.flatMap(location => location.orders);
-    return [...ownedOrders, ...viewableOrders];
+    return JSON.parse(JSON.stringify([...ownedOrders, ...viewableOrders]));
   },
   getOrderItems: async (orderId: string) => {
     return await prisma.orderItem.findMany({
@@ -275,27 +281,28 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     return group.locations as FullLocation[];
   },
   getGroups: async (created: boolean) => {
+    const userId = (await get().getUser()).id;
     if (created) {
       // Groups that were created by the user
       const createdGroups = await prisma.group.findMany({
         where: {
-          userId: get()._user?.id, // .. with an ID that matches one of the following.
+          userId: userId, // .. with an ID that matches one of the following.
         },
       });
       if (!createdGroups) return [];
-      return createdGroups;
+      return JSON.parse(JSON.stringify(createdGroups));
     } else {
       // Groups of which the user is a member
       const user = await prisma.user.findUnique({
         where: {
-          id: get()._user?.id, // .. with an ID that matches one of the following.
+          id: userId, // .. with an ID that matches one of the following.
         },
         include: {
           memberGroups: true,
         }
       });
       if (!user || !user.memberGroups) return [];
-      return user.memberGroups;
+      return JSON.parse(JSON.stringify(user.memberGroups));
     }
   },
 }));

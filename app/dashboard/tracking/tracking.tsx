@@ -58,13 +58,14 @@ function Tracking({
 }) {
   const [location, setLocation] = useState<FullLocation>(locations[0]);
 
-  console.log("Have location ");
-  console.log(location);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  ) => {
     const { value } = e.target;
     console.log("Looking for ID ", value);
-    const selectedLocation = locations.find((location) => location.id === value);
+    const selectedLocation = locations.find(
+      (location) => location.id === value
+    );
     if (selectedLocation) {
       setLocation(selectedLocation);
     }
@@ -93,9 +94,7 @@ function Tracking({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings | null>(
-    location.settings
-  );
+  const [settings, setSettings] = useState<Settings | null>(location?.settings);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
   const [yearForMonthly, setYearForMonthly] = useState<string>("");
@@ -246,8 +245,16 @@ function Tracking({
 
     const year = parseInt(newYearForMonthly);
 
-    const itemsBorrowedMonthly = getItemsByMonth(year, location?.events, Action.BORROW);
-    const itemsReturnedMonthly = getItemsByMonth(year, location?.events, Action.RETURN);
+    const itemsBorrowedMonthly = getItemsByMonth(
+      year,
+      location?.events,
+      Action.BORROW
+    );
+    const itemsReturnedMonthly = getItemsByMonth(
+      year,
+      location?.events,
+      Action.RETURN
+    );
 
     baseData.datasets[0].data = itemsBorrowedMonthly;
     baseData.datasets[1].data = itemsReturnedMonthly;
@@ -364,8 +371,9 @@ function Tracking({
                 {stat.title}
               </div>
               <div className="font-theinhardt text-4xl mt-2">
-                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
-                  }`}
+                {`${Math.round(stat.value * 10) / 10}${
+                  stat.isPercent ? `%` : ``
+                }`}
               </div>
             </div>
           </div>
@@ -405,19 +413,21 @@ function Tracking({
           <div className="flex items-center h-min pb-4">
             <h2 className="text-lg mr-4">Borrows and Returns</h2>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "monthly"
-                ? "bg-re-gray-active"
-                : "bg-re-gray-button"
-                }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${
+                graphTimePeriod === "monthly"
+                  ? "bg-re-gray-active"
+                  : "bg-re-gray-button"
+              }`}
               onClick={() => handleTimePeriodChange("monthly")}
             >
               Monthly
             </button>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "daily"
-                ? "bg-re-gray-active"
-                : "bg-re-gray-button"
-                }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${
+                graphTimePeriod === "daily"
+                  ? "bg-re-gray-active"
+                  : "bg-re-gray-button"
+              }`}
               onClick={() => handleTimePeriodChange("daily")}
             >
               Daily
