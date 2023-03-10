@@ -68,6 +68,7 @@ function sum(arr: number[]): number {
 
 export function sortByDate(events: Event[]): Event[] {
     if (events.length == 0) return [];
+
     let aDate;
     let bDate;
     const sortedEvents = events.sort(
@@ -123,7 +124,6 @@ export function getItemsInUse(events: Event[]): number {
     // console.log("In getItemsInUse");
 
     const totals = getTotals(events);
-
 
     const totalBorrowed = totals.borrow;
     const totalLost = totals.lost;
@@ -351,8 +351,12 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: nu
 }
 
 export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
-    // console.log("In getMonthYearsForDailyDropdown")
+    if (events.length == 0) return [];
+
     let monthYears: string[] = [];
+
+    console.log("Got events ");
+    console.log(events);
 
     const sortedEvents = sortByDate(events);
 
@@ -375,6 +379,10 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
 
     let currTimestamp;
     let found;
+    console.log("Have currMonth ", currMonth);
+    console.log("Have currYear ", currYear);
+    console.log("Have latestYear ", latestYear);
+    console.log("Have latestMonth ", latestMonth);
     while (!((currYear == latestYear) && (currMonth == latestMonth))) {
         monthYear = currMonth.toString() + ',' + currYear.toString();
         if (!monthYears.includes(monthYear)) {
@@ -411,7 +419,8 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
 }
 
 export function getYearsForMonthlyDropdown(events: Event[]): string[] {
-    // console.log("In getYearsForMonthlyDropdown")
+    if (events.length == 0) return [];
+
     let years: string[] = [];
 
     const sortedEvents = sortByDate(events);

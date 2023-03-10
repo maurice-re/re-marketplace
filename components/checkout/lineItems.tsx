@@ -1,5 +1,6 @@
-import { Location, Product, ProductDevelopment, Sku } from ".prisma/client";
+import { Product, ProductDevelopment, Sku } from ".prisma/client";
 import Image from "next/image";
+import { FullLocation } from "../../app/server-store";
 import { CheckoutType } from "../../utils/checkoutUtils";
 import {
   calculatePriceFromCatalog,
@@ -15,7 +16,7 @@ export default function LineItems({
   showLocation,
   type,
 }: {
-  locations: Location[] | null;
+  locations: FullLocation[] | null;
   orderString: string;
   productDevelopment: ProductDevelopment | null;
   products: Product[] | null;
@@ -102,13 +103,11 @@ export default function LineItems({
       items.push(
         <div className="flex w-5/6 gap-3 mb-4" key={locationId}>
           <div
-            className={`px-5 py-4 bg-re-dark-green-300 border border-re-gray-300 rounded-md ${
-              showLocation ? "w-3/5" : "w-full"
-            }`}
+            className={`px-5 py-4 bg-re-dark-green-300 border border-re-gray-300 rounded-md ${showLocation ? "w-3/5" : "w-full"
+              }`}
           >
-            <div className="mb-5 text-lg">{`${
-              location.displayName ?? location.city
-            } orders`}</div>
+            <div className="mb-5 text-lg">{`${location.displayName ?? location.city
+              } orders`}</div>
             {lineItems.map((lineItem) => {
               const [skuId, quantity] = lineItem.split("~");
               const sku: Sku = skus.find((s) => s.id == skuId) as Sku;
@@ -164,14 +163,12 @@ export default function LineItems({
           {showLocation && (
             <div className=" w-2/5 flex flex-col justify-center">
               <div className="bg-re-dark-green-500 border border-re-gray-300 rounded-md flex flex-col">
-                <div className="p-4">{`${
-                  location.displayName ?? location.city
-                } shipping address`}</div>
+                <div className="p-4">{`${location.displayName ?? location.city
+                  } shipping address`}</div>
                 <div className="h-px bg-re-gray-300 w-full"></div>
                 <div
-                  className={`px-6 py-2 ${
-                    location.displayName ? "text-white" : "text-re-gray-text"
-                  }`}
+                  className={`px-6 py-2 ${location.displayName ? "text-white" : "text-re-gray-text"
+                    }`}
                 >
                   {location.displayName ? location.displayName : "Display Name"}
                 </div>
@@ -181,11 +178,10 @@ export default function LineItems({
                 <div className="px-6 py-2">{location.line1}</div>
                 <div className="h-px bg-re-gray-300 w-full"></div>
                 <div
-                  className={`px-6 py-2 ${
-                    location.line2 && location.line2.length > 1
-                      ? "text-white"
-                      : "text-re-gray-text"
-                  }`}
+                  className={`px-6 py-2 ${location.line2 && location.line2.length > 1
+                    ? "text-white"
+                    : "text-re-gray-text"
+                    }`}
                 >
                   {location.line2 ? location.line2 : "Line 2"}
                 </div>

@@ -12,5 +12,6 @@ export default async function Page() {
   }
 
   redirect("/dashboard");
-  return <div>Redirecting...</div>;
+
+  return <div>Redirecting...</div>; // This needs to be here for compilation
 }

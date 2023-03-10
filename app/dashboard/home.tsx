@@ -1,11 +1,11 @@
 import { signOut } from "next-auth/react";
 import { addDays, skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
 
-import { Company, Location, OrderItem, Status, User } from "@prisma/client";
+import { Company, OrderItem, Status, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
-import { OrderWithItems } from "../server-store";
+import { FullLocation, OrderWithItems } from "../server-store";
 import QuickOrder from "./quickOrder";
 
 function Home({
@@ -18,7 +18,7 @@ function Home({
   hasIncompleteOrder,
 }: {
   company: Company;
-  locations: Location[];
+  locations: FullLocation[];
   orders: OrderWithItems[];
   user: User;
   skus: SkuProduct[];
@@ -146,7 +146,7 @@ function Home({
                                 {getEstimation(item)}
                               </div>
                             </div>
-                            <div className="flex items-center mx-6">
+                            <div className="flex items-center ml-14">
                               <Link
                                 href={{
                                   pathname: "/checkout",
@@ -317,7 +317,7 @@ function Home({
                                   {getEstimation(item)}
                                 </div>
                               </div>
-                              <div className="flex items-center mx-6">
+                              <div className="flex items-center ml-14">
                                 <Link
                                   href={{
                                     pathname: "/checkout",

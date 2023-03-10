@@ -7,7 +7,7 @@ import { useServerStore } from "../server-store";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string };
+  searchParams?: { orderString: string; };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -17,7 +17,7 @@ export default async function Page({
 
   await useServerStore.getState().getUser();
   const company = await useServerStore.getState().getCompany();
-  const locations = await useServerStore.getState().getLocations();
+  const locations = await useServerStore.getState().getLocations(true);
   const products = await prisma.product.findMany({});
   const skus = await prisma.sku.findMany({});
 
@@ -25,7 +25,7 @@ export default async function Page({
     <div className="w-full h-screen bg-re-black flex">
       <POSummary
         company={JSON.parse(JSON.stringify(company))}
-        locations={JSON.parse(JSON.stringify(locations))}
+        locations={locations}
         orderString={orderString}
         products={products}
         skus={skus}

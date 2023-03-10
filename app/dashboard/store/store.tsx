@@ -14,13 +14,13 @@ import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
 import DoubleAddressField from "../../../components/form/double-address-field";
 import { useCartStore } from "../../../stores/cartStore";
-import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
+import { FullLocation } from "../../server-store";
 import Cart from "./cart";
 
 type StoreProps = {
   user: User;
-  initialLocations: Location[];
+  initialLocations: FullLocation[];
   products: Product[];
   skus: Sku[];
 };
@@ -91,12 +91,12 @@ export default function StorePage({
     setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
   }
 
-  function getLocationById(locationId: string): Location | undefined {
+  function getLocationById(locationId: string): FullLocation | undefined {
     return locations.find((location) => location.id === locationId);
   }
 
   function getLocationName(locationId: string): string {
-    const location: Location | undefined = getLocationById(locationId);
+    const location: FullLocation | undefined = getLocationById(locationId);
     return location?.displayName ?? location?.city ?? "Your Location";
   }
 
@@ -128,20 +128,32 @@ export default function StorePage({
       zip: formElements[5].value,
     };
 
-    await fetch("/api/location", {
+    await fetch(`/api/locations/location?userId=${user.id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ location: newLocation }),
+      body: JSON.stringify({
+        city: newLocation.city,
+        country: newLocation.country,
+        displayName: newLocation.displayName,
+        line1: newLocation.line1,
+        line2: newLocation.line2,
+        penalty: newLocation.penalty,
+        shippingName: newLocation.shippingName,
+        state: newLocation.state,
+        trackingType: newLocation.trackingType,
+        type: newLocation.type,
+        zip: newLocation.zip,
+      }),
     }).then(async (res) => await res.json());
 
     const results = await fetch(
-      `/api/location?userId=${user.id}&withItems=true`,
+      `/api/locations/location?userId=${user.id}&withItems=true`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
     ).then(async (res) => await res.json());
-    setLocations(results.locations as LocationWithOneItem[]);
+    setLocations(results.locations as FullLocation[]);
     setIsLoading(false);
     document.getElementById("newLocation-modal")?.click();
   };

@@ -5,8 +5,8 @@ export default function SettingsForm({
   settings,
   setSettings,
 }: {
-  settings: Settings;
-  setSettings: Dispatch<SetStateAction<Settings>>;
+  settings: Settings | null;
+  setSettings: Dispatch<SetStateAction<Settings | null>>;
 }) {
   const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] =
     useState<number>(settings?.borrowReturnBuffer ?? 0);

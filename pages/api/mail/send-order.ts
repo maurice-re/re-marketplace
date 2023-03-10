@@ -11,7 +11,7 @@ export default async function handler(req: Request, res: Response) {
     },
   });
   const email = {
-    from: "Re Plaform",
+    from: "Re Platform",
     to: "maurice@re.company, maddie@re.company, matt@re.company, avantika@re.company, suhana@re.company",
     subject: "A new order was placed!",
     text: "Check retool for more details https://recompany.retool.com/apps/2f02a446-5301-11ed-8842-374317c263f0/Orders",

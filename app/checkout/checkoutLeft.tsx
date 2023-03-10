@@ -2,7 +2,6 @@
 
 import {
   Company,
-  Location,
   Product,
   ProductDevelopment,
   Sku,
@@ -16,6 +15,7 @@ import Totals from "../../components/checkout/totals";
 import ReLogo from "../../components/form/re-logo";
 import { eolPolicy } from "../../constants/policy";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
+import { FullLocation } from "../server-store";
 import CheckoutRight from "./checkoutRight";
 
 const stripePromise = loadStripe(
@@ -31,7 +31,7 @@ const appearance: Appearance = {
 
 type CheckoutProps = {
   company?: Company;
-  locations?: Location[];
+  locations?: FullLocation[];
   loggedIn?: boolean;
   orderString: string;
   productDevelopment?: ProductDevelopment;
