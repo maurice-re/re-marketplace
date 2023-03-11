@@ -1,6 +1,16 @@
 import Head from "next/head";
-import { useServerStore } from "../../server-store";
+import { FullLocation, useServerStore } from "../../server-store";
 import TrackingWithFilter from "./trackingWithFilter";
+
+function getUniqueLocations(locations: FullLocation[]) {
+  const uniqueLocations: FullLocation[] = [];
+  locations.forEach((location: FullLocation) => {
+    if (!uniqueLocations.some(l => l.id === location.id)) {
+      uniqueLocations.push(location);
+    }
+  });
+  return uniqueLocations;
+}
 
 export default async function Page() {
   const ownedLocations = await useServerStore.getState().getLocations(true);
@@ -9,7 +19,7 @@ export default async function Page() {
   const skus = await useServerStore.getState().getSkus();
   const orders = await useServerStore.getState().getOrders();
 
-  const locations = [...ownedLocations, ...viewableLocations];
+  const locations = getUniqueLocations([...ownedLocations, ...viewableLocations]);
 
   return (
     <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">

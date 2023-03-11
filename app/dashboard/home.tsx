@@ -5,7 +5,7 @@ import { Company, OrderItem, Status, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
-import { FullLocation, OrderWithItems } from "../server-store";
+import { FullLocation, FullOrder } from "../server-store";
 import QuickOrder from "./quickOrder";
 
 function Home({
@@ -19,13 +19,13 @@ function Home({
 }: {
   company: Company;
   locations: FullLocation[];
-  orders: OrderWithItems[];
+  orders: FullOrder[];
   user: User;
   skus: SkuProduct[];
   hasCompleteOrder: boolean;
   hasIncompleteOrder: boolean;
 }) {
-  const incompleteOrders: OrderWithItems[] = orders.filter(
+  const incompleteOrders: FullOrder[] = orders.filter(
     (order) => order.status != Status.COMPLETED
   );
 
@@ -49,7 +49,7 @@ function Home({
     }
   }
 
-  function orderSubmittedRecently(order: OrderWithItems): boolean {
+  function orderSubmittedRecently(order: FullOrder): boolean {
     // Only show order submitted flag if order was submitted in the last 2 days
     return (
       new Date().getTime() - new Date(order.createdAt).getTime() <
@@ -87,7 +87,7 @@ function Home({
                       pathname: "/checkout",
                       query: {
                         orderString: getOrderString(
-                          orders[0] as unknown as OrderWithItems
+                          orders[0] as unknown as FullOrder
                         ),
                       },
                     }}
@@ -244,7 +244,7 @@ function Home({
                         pathname: "/checkout",
                         query: {
                           orderString: getOrderString(
-                            orders[0] as unknown as OrderWithItems
+                            orders[0] as unknown as FullOrder
                           ),
                         },
                       }}

@@ -8,7 +8,7 @@ import {
   calculatePriceFromCatalog,
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
-import { SkuWithProduct } from "../server-store";
+import { FullSku } from "../server-store";
 
 function QuickOrder({
   companyId,
@@ -19,17 +19,17 @@ function QuickOrder({
   customerId: string;
   locations: Location[];
   userId: string;
-  skus: SkuWithProduct[];
+  skus: FullSku[];
 }) {
-  const [selected, setSelected] = useState<SkuWithProduct[]>([]);
+  const [selected, setSelected] = useState<FullSku[]>([]);
   const [skuIdQuantity, setSkuIdQuantity] = useState<
-    [SkuWithProduct, string][]
+    [FullSku, string][]
   >([]);
   const [location, setLocation] = useState<string>(
     locations.length > 1 ? locations[0].id : "new"
   );
 
-  function handleItemPress(skuSelected: SkuWithProduct) {
+  function handleItemPress(skuSelected: FullSku) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
     if (isSelected) {
       setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
@@ -48,7 +48,7 @@ function QuickOrder({
     return "1";
   }
 
-  function handleQuantityChange(val: string, skuSelected: SkuWithProduct) {
+  function handleQuantityChange(val: string, skuSelected: FullSku) {
     setSkuIdQuantity((prev) => {
       return prev.map((tup) => {
         if (tup[0].id == skuSelected.id) {

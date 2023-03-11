@@ -5,11 +5,11 @@ import { create } from "zustand";
 import { prisma } from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
-export type OrderWithItems = Order & {
+export type FullOrder = Order & {
   items: OrderItem[];
 };
 
-export type SkuWithProduct = Sku & {
+export type FullSku = Sku & {
   product: Product;
 };
 
@@ -17,7 +17,7 @@ export type SkuWithProduct = Sku & {
 export type FullLocation = Location & {
   settings: Settings | null;
   events: Event[];
-  orders: OrderWithItems[];
+  orders: FullOrder[];
   groups: FullGroup[];
   viewers: User[];
   owners: User[];
@@ -40,8 +40,8 @@ interface ServerStore {
   getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
   getGroupMemberEmails: (groupId: string) => Promise<string[]>;
   getLocationById: (locationId: string) => Promise<FullLocation>;
-  getOrders: () => Promise<OrderWithItems[]>;
-  getSkus: () => Promise<SkuWithProduct[]>;
+  getOrders: () => Promise<FullOrder[]>;
+  getSkus: () => Promise<FullSku[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
   getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;

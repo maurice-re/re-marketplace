@@ -470,7 +470,7 @@ function Tracking({
       <div className="py-6"></div>
     </div>
   ) : (
-    <div className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+    <div className="flex flex-col container mx-auto h-full items-center">
       <div className="text-white font-theinhardt text-28">
         Integrate with our API to track
       </div>
