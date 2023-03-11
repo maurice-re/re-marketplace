@@ -24,25 +24,26 @@ export function getTotals(events: Event[]): Totals {
     let totalReturned = 0;
     let totalEol = 0;
 
-    events.forEach(event => {
-        switch (event.action) {
-            case Action.BORROW:
-                totalBorrowed += 1;
-                break;
-            case Action.RETURN:
-                totalReturned += 1;
-                break;
-            case Action.EOL:
-                totalEol += 1;
-                break;
-            case Action.LOST:
-                totalLost += 1;
-                break;
-            default:
-                break;
-        }
-    });
-
+    if (events) {
+        events.forEach(event => {
+            switch (event.action) {
+                case Action.BORROW:
+                    totalBorrowed += 1;
+                    break;
+                case Action.RETURN:
+                    totalReturned += 1;
+                    break;
+                case Action.EOL:
+                    totalEol += 1;
+                    break;
+                case Action.LOST:
+                    totalLost += 1;
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
     const totals: Totals = {
         borrow: totalBorrowed,
         return: totalReturned,

@@ -1,7 +1,9 @@
 "use client";
 import { Action, Event, Order, Settings, Sku } from "@prisma/client";
+import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
+import { skuName } from "../../../utils/dashboard/dashboardUtils";
 import { FullGroup, FullLocation, FullOrder, FullSku } from "../../server-store";
 import Tracking from "./tracking";
 
@@ -19,14 +21,29 @@ function TrackingWithFilter({
   const filterTypes: string[] = ["Location", "All Locations", "Group", "Sku", "Order"];
   const [filterType, setFilterType] = useState<string>(filterTypes[0]);
   const [location, setLocation] = useState<FullLocation>(locations[0]);
+  const [sku, setSku] = useState<FullSku>(skus[0]);
   const [filter, setFilter] = useState<FullLocation | FullLocation[] | FullSku | FullOrder | FullGroup>(locations[0]);
 
   const getEventsByFilter = () => {
     if (filterType == "Location") {
-      const location = filter as FullLocation;
-      console.log("Returning events for location ", location.displayName);
-      console.log(location.events);
-      return location.events;
+      const locationFilter = filter as FullLocation;
+      return locationFilter.events;
+    }
+    if (filterType == "Sku") {
+      // From all the locations, get all events of this sku
+      // TODO(Suhana): Add ability to have sku within a particular location
+      const skuFilter = filter as Sku;
+      const events: Event[] = [];
+      locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          if (event.skuId == skuFilter.id) {
+            events.push(event);
+          }
+        });
+      });
+      console.log("Constructing events for this sku ", skuFilter.id);
+      console.log(events);
+      return events;
     }
 
     return locations[0].events; // Default
@@ -50,9 +67,15 @@ function TrackingWithFilter({
       setFilter(selectedLocation);
     }
   };
+
+  function handleSkuChange(selectedSku: FullSku) {
+    setSku(selectedSku);
+    setFilter(selectedSku);
+  }
+
   return (
     <div>
-      <div className="flex w-full items-center justify-center border-b-[0.5px] border-white pb-6 mb-6 gap-3">
+      <div className="flex w-full items-start justify-center border-b-[0.5px] border-white pb-6 mb-6 gap-3">
         <div className="flex flex-col w-1/2">
           <h1>Filter Type</h1>
           <DropdownField top bottom options={filterTypes} placeholder={"Filter Type"} value={filterType} name={"filterType"} onChange={handleFilterTypeChange} />
@@ -75,6 +98,39 @@ function TrackingWithFilter({
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+        )}
+        {filterType === "Sku" && (
+          <div className="flex flex-col w-1/2">
+            <h1>Sku</h1>
+            <div
+              className="grid grid-flow-col gap-2  overflow-y-auto w-full pr-1 items-start"
+            >
+              {skus
+                .filter((s) => s.product.active)
+                .map((selectedSku) => (
+                  <div
+                    key={selectedSku.id}
+                    className="flex flex-col items-center mx-1 group"
+                  >
+                    <button
+                      className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selectedSku.id == sku.id
+                        ? "border-re-green-600 border-3"
+                        : "border"
+                        }`}
+                      onClick={() => handleSkuChange(selectedSku)}
+                    >
+                      <Image
+                        src={selectedSku.mainImage}
+                        height={120}
+                        width={120}
+                        alt={skuName(selectedSku)}
+                      />
+                    </button>
+                    <h1 className="text-xs text-center mt-2 leading-tight">{skuName(selectedSku)}</h1>
+                  </div>
+                ))}
             </div>
           </div>
         )}
