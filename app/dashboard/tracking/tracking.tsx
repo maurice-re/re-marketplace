@@ -28,7 +28,7 @@ import {
   getYearsForMonthlyDropdown,
   sortByDate,
 } from "../../../utils/tracking/trackingUtils";
-import { FullLocation } from "../../server-store";
+import { AiOutlineDisconnect } from "react-icons/ai";
 
 ChartJS.register(
   CategoryScale,
@@ -386,7 +386,7 @@ function Tracking({
                   <td>
                     {event.action[0] + event.action.slice(1).toLowerCase()}
                   </td>
-                  <td>{event.locationId ?? "Singapore"}</td>
+                  <td>{(event.locationId.length > 10 ? event.locationId.substring(0, 9) + "..." : event.locationId) ?? "Singapore"}</td>
                   <td>Salad Stop!</td>
                 </tr>
               ))}
@@ -470,7 +470,10 @@ function Tracking({
       <div className="py-6"></div>
     </div>
   ) : (
-    <div className="flex flex-col container mx-auto h-full items-center">
+    <div className="flex gap-3 mx-auto h-full items-start justify-start">
+      <AiOutlineDisconnect
+        className="text-re-green-500"
+        size={40} />
       <div className="text-white font-theinhardt text-28">
         Integrate with our API to track
       </div>
