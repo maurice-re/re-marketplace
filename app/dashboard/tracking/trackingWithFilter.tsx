@@ -20,26 +20,27 @@ function TrackingWithFilter({
 }) {
   const filterTypes: string[] = ["Location", "All Locations", "Group", "Sku", "Location Sku", "Order"];
   const [filterType, setFilterType] = useState<string>("Location");
+  const [group, setGroup] = useState<FullGroup>(groups[0]);
   const [location, setLocation] = useState<FullLocation>(locations[0]);
   const [sku, setSku] = useState<FullSku>(skus[0]);
-  const [filter, setFilter] = useState<FullLocation | FullLocation[] | FullSku | FullOrder | FullGroup>(locations[0]);
-
-  // TODO(Suhana): Don't really need the filter, setFilter, as long as we have filterType
 
   const getEventsByFilter = () => {
-    if (filterType == "Location") {
-      const locationFilter = filter as FullLocation;
-      return locationFilter.events;
-    }
     const events: Event[] = [];
-
+    if (filterType == "Group") {
+      group.locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          events.push(event);
+        });
+      });
+      return events;
+    }
+    if (filterType == "Location") {
+      return location.events;
+    }
     if (filterType == "Sku") {
-      // From all the locations, get all events of this sku
-      // TODO(Suhana): Add ability to have sku within a particular location
-      const skuFilter = filter as Sku;
       locations.forEach((location: FullLocation) => {
         location.events.forEach((event: Event) => {
-          if (event.skuId == skuFilter.id) {
+          if (event.skuId == sku.id) {
             events.push(event);
           }
         });
@@ -65,21 +66,30 @@ function TrackingWithFilter({
     setFilterType(value);
   };
 
+  const handleGroupChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedGroup = groups.find(
+      (group) => (group.name === e.target.value || group.id === e.target.value)
+    );
+    if (selectedGroup) {
+      setGroup(selectedGroup);
+    }
+  };
+
   const handleLocationChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
     const selectedLocation = locations.find(
-      (location) => location.displayName === e.target.value
+      (location) => (location.displayName === e.target.value || location.id === e.target.value)
     );
     if (selectedLocation) {
       setLocation(selectedLocation);
-      setFilter(selectedLocation);
     }
   };
 
   function handleSkuChange(selectedSku: FullSku) {
     setSku(selectedSku);
-    setFilter(selectedSku);
   }
 
   return (
@@ -89,6 +99,27 @@ function TrackingWithFilter({
           <h1>Filter Type</h1>
           <DropdownField top bottom options={filterTypes} placeholder={"Filter Type"} value={filterType} name={"filterType"} onChange={handleFilterTypeChange} />
         </div>
+        {filterType === "Group" && (
+          <div className="flex flex-col w-1/2">
+            <h1>Group</h1>
+            <div className="p-0 my-0">
+              <select
+                name="group"
+                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                onChange={handleGroupChange}
+                required
+                placeholder="Location"
+                value={group.name}
+              >
+                {groups.map((val) => (
+                  <option key={val.name} value={val.name ?? val.id}>
+                    {val.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
         {(filterType === "Location" || filterType === "Location Sku") && (
           <div className="flex flex-col w-1/2">
             <h1>Location</h1>

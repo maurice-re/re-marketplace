@@ -356,9 +356,6 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
 
     let monthYears: string[] = [];
 
-    console.log("Got events ");
-    console.log(events);
-
     const sortedEvents = sortByDate(events);
 
     const earliestMonthYear = getBoundingMonthYear(sortedEvents, true);

@@ -288,6 +288,19 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         where: {
           userId: userId, // .. with an ID that matches one of the following.
         },
+        include: {
+          locations: {
+            include: {
+              orders: {
+                include: {
+                  items: true
+                }
+              },
+              settings: true,
+              events: true,
+            },
+          },
+        }
       });
       if (!createdGroups) return [];
       return JSON.parse(JSON.stringify(createdGroups));
@@ -298,7 +311,21 @@ export const useServerStore = create<ServerStore>((set, get) => ({
           id: userId, // .. with an ID that matches one of the following.
         },
         include: {
-          memberGroups: true,
+          memberGroups: {
+            include: {
+              locations: {
+                include: {
+                  orders: {
+                    include: {
+                      items: true
+                    }
+                  },
+                  settings: true,
+                  events: true,
+                },
+              },
+            },
+          },
         }
       });
       if (!user || !user.memberGroups) return [];
