@@ -1,5 +1,6 @@
-import { Company, Event, Group, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import { Company, Location, Order, OrderItem, Product, Sku, User, Group, Settings, Event } from "@prisma/client";
+import { FilterType } from "aws-sdk/clients/pinpoint";
+import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
 import { prisma } from "../constants/prisma";
@@ -29,12 +30,29 @@ export type FullGroup = Group & {
   members: User[];
 };
 
+type FilterType = {
+  location: boolean;
+  locations: boolean;
+  group: boolean;
+  groups: boolean;
+  user: boolean;
+  company: boolean;
+  sku: boolean;
+  order: boolean;
+};
+
+export type Filter = FullLocation | FullLocation[] | FullGroup | FullGroup[] | User | Company | Sku | Order;
+
 interface ServerStore {
   sessionLastUpdated: Date;
   _user: User | null;
   _company: Company | null;
+  _filter: Filter | null;
+  _filterType: FilterType;
   getUser: (refresh?: boolean, redirectUrl?: string) => Promise<User>;
   getCompany: () => Promise<Company>;
+  getFilter: (location?: boolean, locations?: boolean, group?: boolean, groups?: boolean, user?: boolean, company?: boolean, sku?: boolean, order?: boolean) => Promise<Filter | null>;
+  setFilter: (filter: Filter) => Promise<Filter | null>;
   getLocations: (owned: boolean) => Promise<FullLocation[]>;
   getLocationUsers: (locationId: string, owned: boolean) => Promise<User[]>;
   getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
@@ -51,6 +69,8 @@ interface ServerStore {
 export const useServerStore = create<ServerStore>((set, get) => ({
   _user: null,
   _company: null,
+  _filter: null,
+  _filterType: { location: false, locations: false, group: false, groups: false, user: false, company: false, sku: false, order: false },
   sessionLastUpdated: new Date(1, 1, 1970),
   getUser: async (refresh?: boolean, redirectUrl?: string) => {
     const user = get()._user;
@@ -62,7 +82,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       new Date().getTime() - 1000 * 60 * 60 * 24
     ) {
       // If the session is older than 24 hours, refresh it
-      const session = await getServerSession(authOptions);
+      const session = await unstable_getServerSession(authOptions);
       if (session) {
         set({ _user: JSON.parse(JSON.stringify(session.user)) as User, sessionLastUpdated: new Date() });
         return JSON.parse(JSON.stringify(session.user)) as User;
@@ -117,6 +137,27 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     });
     set({ _company: _company });
     return _company ?? {} as Company;
+  },
+  getFilter: async (location?: boolean, locations?: boolean, group?: boolean, groups?: boolean, user?: boolean, company?: boolean, sku?: boolean, order?: boolean) => {
+    // Specify what type of filter you're looking for, and if the currently selected filter is of that type, it will be returned. Otherwise, null will be returned (meaning the current filter is of a type other than what you specified).
+    const filter: Filter | null = get()._filter;
+    const filterType: FilterType = get()._filterType;
+
+    // The filter should have some tag that tells us what its type is
+    if ((location && filterType.location) || (locations && filterType.locations) || (group && filterType.group) || (groups && filterType.groups) || (sku && filterType.sku) || (user && filterType.user) || (order && filterType.order)) {
+      return filter;
+    }
+
+    return null;
+  },
+  setFilter: async (filter: Filter, location?: boolean, locations?: boolean, group?: boolean, groups?: boolean, user?: boolean, company?: boolean, sku?: boolean, order?: boolean) => {
+    set({ _filter: filter });
+
+    if (location) {
+      set({ _filterType: { location: true, locations: false, group: false, groups: false, user: false, company: false, sku: false, order: false } });
+    }
+
+    return get()._filter; // Send confirmation that filter was successfully set
   },
   getLocations: async (owned: boolean) => {
     const userId = (await get().getUser()).id;

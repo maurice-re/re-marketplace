@@ -1,7 +1,8 @@
 import { Order, Status } from "@prisma/client";
 import Image from "next/image";
-import { useServerStore } from "../server-store";
+import { Filter, useServerStore } from "../server-store";
 import Header from "./header";
+import SelectFilter from "./selectFilter";
 import SidebarIcon from "./sidebarIcon";
 
 export type Route = {
@@ -17,6 +18,12 @@ export default async function Layout({
 }) {
   const user = await useServerStore.getState().getUser();
   const orders: Order[] = await useServerStore.getState().getOrders();
+  const ownedLocations = await useServerStore.getState().getLocations(true);
+  const viewableLocations = await useServerStore.getState().getLocations(false);
+  const selectedLocation: Filter | null = await useServerStore.getState().getFilter(true);
+
+  // Get it working, and then fix how the various filters are handled in the background - perhaps have Filter: {location:Location | null, etc.} so that getFilter()
+
   const completedOrders = orders.filter(
     (order) => order.status === Status.COMPLETED
   );
@@ -29,6 +36,8 @@ export default async function Layout({
     completedOrders.length > 0 || user.companyId === "616";
 
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
+
+  const locations = [...ownedLocations, ...viewableLocations];
 
   // All users see the following
   const routes: Route[] = [
@@ -293,6 +302,7 @@ export default async function Layout({
       </div>
       <div id="children" className="flex flex-col w-full h-screen">
         <Header routes={routes} />
+        <SelectFilter locations={locations} selectedFilter={selectedLocation} />
         {children}
       </div>
     </div>

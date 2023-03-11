@@ -17,7 +17,9 @@ export default async function Page() {
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <Tracking
           demo={false}
-          locations={locations}
+          // TODO(Suhana): These fields should be fetched based on the filter
+          initialSettings={locations[0].settings}
+          events={locations[0].events}
         />
       </main>
     </div>

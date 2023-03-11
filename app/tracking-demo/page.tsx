@@ -58,7 +58,9 @@ export default async function Page() {
         {/* TODO(Suhana): Pass specific location for demo */}
         <Tracking
           demo={true}
-          locations={locations}
+          // TODO(Suhana): These fields should be fetched based on the filter
+          initialSettings={locations[0].settings}
+          events={locations[0].events}
         />
       </main>
     </div>

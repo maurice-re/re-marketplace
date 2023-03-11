@@ -1,5 +1,5 @@
 "use client";
-import { Action, Settings } from "@prisma/client";
+import { Action, Event, Settings } from "@prisma/client";
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -51,25 +51,27 @@ const monthsInYear = getMonthsInYear();
 
 function Tracking({
   demo,
-  locations,
+  initialSettings,
+  events,
 }: {
   demo: boolean;
-  locations: FullLocation[];
+  initialSettings: Settings | null;
+  events: Event[];
 }) {
-  const [location, setLocation] = useState<FullLocation>(locations[0]);
+  // const [location, setLocation] = useState<FullLocation>(locations[0]);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { value } = e.target;
-    console.log("Looking for ID ", value);
-    const selectedLocation = locations.find(
-      (location) => location.id === value
-    );
-    if (selectedLocation) {
-      setLocation(selectedLocation);
-    }
-  };
+  // const handleChange = (
+  //   e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  // ) => {
+  //   const { value } = e.target;
+  //   console.log("Looking for ID ", value);
+  //   const selectedLocation = locations.find(
+  //     (location) => location.id === value
+  //   );
+  //   if (selectedLocation) {
+  //     setLocation(selectedLocation);
+  //   }
+  // };
 
   // if we select a location, and then just always
 
@@ -94,7 +96,7 @@ function Tracking({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings | null>(location?.settings);
+  const [settings, setSettings] = useState<Settings | null>(initialSettings);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
   const [yearForMonthly, setYearForMonthly] = useState<string>("");
@@ -116,8 +118,8 @@ function Tracking({
   const [data, setData] = useState(baseData);
 
   useEffect(() => {
-    if (location?.events && location?.events.length > 0) {
-      const sortedEvents = sortByDate(location?.events);
+    if (events && events.length > 0) {
+      const sortedEvents = sortByDate(events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
       setMonthYearForDaily(latestMonthYear.map(String).join(","));
       setYearForMonthly(latestMonthYear[1].toString());
@@ -126,12 +128,12 @@ function Tracking({
 
       const borrowedMonthly = getItemsByMonth(
         latestYear,
-        location?.events,
+        events,
         Action.BORROW
       );
       const returnedMonthly = getItemsByMonth(
         latestYear,
-        location?.events,
+        events,
         Action.RETURN
       );
 
@@ -167,14 +169,14 @@ function Tracking({
         latestMonth,
         latestYear,
         daysInMonth,
-        location?.events,
+        events,
         Action.BORROW
       );
       const returnedDaily = getItemsByDay(
         latestMonth,
         latestYear,
         daysInMonth,
-        location?.events,
+        events,
         Action.RETURN
       );
 
@@ -183,7 +185,7 @@ function Tracking({
 
       setData(selectedData);
     }
-  }, [location?.events, latestMonth, latestYear]);
+  }, [events, latestMonth, latestYear]);
 
   const handleTimePeriodChange = (newTimePeriod: string) => {
     setGraphTimePeriod(newTimePeriod);
@@ -220,14 +222,14 @@ function Tracking({
       month,
       year,
       daysInMonth,
-      location?.events,
+      events,
       Action.BORROW
     );
     const itemsReturnedDaily = getItemsByDay(
       month,
       year,
       daysInMonth,
-      location?.events,
+      events,
       Action.RETURN
     );
     baseData.labels = daysInMonth.map(String);
@@ -247,12 +249,12 @@ function Tracking({
 
     const itemsBorrowedMonthly = getItemsByMonth(
       year,
-      location?.events,
+      events,
       Action.BORROW
     );
     const itemsReturnedMonthly = getItemsByMonth(
       year,
-      location?.events,
+      events,
       Action.RETURN
     );
 
@@ -275,32 +277,32 @@ function Tracking({
   const stats: Statistic[] = [];
   stats.push({
     title: "Items In Use",
-    value: getItemsInUse(location?.events),
+    value: getItemsInUse(events),
     info: "currently borrowed",
     isPercent: false,
   });
   stats.push({
     title: "Used",
-    value: getLifetimeUses(location?.events),
+    value: getLifetimeUses(events),
     info: "lifetime borrows",
     isPercent: false,
   });
   stats.push({
     title: "Reuse Rate",
-    value: getReuseRate(location?.events),
+    value: getReuseRate(events),
     info: "(items used more than once) ÷ (items used)",
     isPercent: true,
   });
   stats.push({
     title: "Return Rate",
-    value: getReturnRate(location?.events),
+    value: getReturnRate(events),
     info: "(items returned) ÷ (items borrowed)",
     isPercent: true,
   });
   stats.push({
     title: "Avg. Days Borrowed",
     value: getAvgDaysBetweenBorrowAndReturn(
-      location?.events,
+      events,
       settings?.borrowReturnBuffer ?? undefined
     ),
     info: "days between borrow and return",
@@ -314,14 +316,14 @@ function Tracking({
   });
 
   // TODO(Suhana): Create interface for toggling by sku and location
-  // const eventsBySku = getEventsBySku(location?.events, skus[1]);
+  // const eventsBySku = getEventsBySku(events, skus[1]);
   // const itemsInUseBySku = getItemsInUse(eventsBySku);
-  // const numItemIds = getItemIds(location?.events).length;
+  // const numItemIds = getItemIds(events).length;
   // const reuseRateBySku = getReuseRate(eventsBySku);
   // const returnRateBySku = getReturnRate(eventsBySku);
 
-  const allMonthYears = getMonthYearsForDailyDropdown(location?.events);
-  const allYears = getYearsForMonthlyDropdown(location?.events);
+  const allMonthYears = getMonthYearsForDailyDropdown(events);
+  const allYears = getYearsForMonthlyDropdown(events);
 
   const options = {
     responsive: true,
@@ -338,27 +340,9 @@ function Tracking({
     },
   };
 
-  return location ? (
+  return events && events.length != 0 ? (
     // TODO(Suhana): Create more sub-components here
     <div>
-      <h1>Select a location:</h1>
-      <div className="p-0 my-0">
-        <select
-          name="location"
-          className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-          onChange={handleChange}
-          required
-          placeholder="Location"
-          value={location.id}
-        >
-          {locations.map((val) => (
-            <option key={val.id} value={val.id}>
-              {val.id}
-            </option>
-          ))}
-        </select>
-      </div>
-      {/* <h1 className="ml-1 mb-8 font-theinhardt text-3xl">Tracking</h1> */}
       <div className="flex items-center justify-between mt-4 mb-10 w-full">
         {stats.map((stat) => (
           <div
@@ -371,9 +355,8 @@ function Tracking({
                 {stat.title}
               </div>
               <div className="font-theinhardt text-4xl mt-2">
-                {`${Math.round(stat.value * 10) / 10}${
-                  stat.isPercent ? `%` : ``
-                }`}
+                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                  }`}
               </div>
             </div>
           </div>
@@ -392,7 +375,7 @@ function Tracking({
               </tr>
             </thead>
             <tbody className="text-left">
-              {location?.events.map((event) => (
+              {events.map((event) => (
                 <tr
                   key={event.id}
                   className="even:bg-re-table-even odd:bg-re-table-odd hover:bg-re-table-hover"
@@ -413,21 +396,19 @@ function Tracking({
           <div className="flex items-center h-min pb-4">
             <h2 className="text-lg mr-4">Borrows and Returns</h2>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${
-                graphTimePeriod === "monthly"
-                  ? "bg-re-gray-active"
-                  : "bg-re-gray-button"
-              }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "monthly"
+                ? "bg-re-gray-active"
+                : "bg-re-gray-button"
+                }`}
               onClick={() => handleTimePeriodChange("monthly")}
             >
               Monthly
             </button>
             <button
-              className={`mr-2 text-sm py-1 px-2 rounded ${
-                graphTimePeriod === "daily"
-                  ? "bg-re-gray-active"
-                  : "bg-re-gray-button"
-              }`}
+              className={`mr-2 text-sm py-1 px-2 rounded ${graphTimePeriod === "daily"
+                ? "bg-re-gray-active"
+                : "bg-re-gray-button"
+                }`}
               onClick={() => handleTimePeriodChange("daily")}
             >
               Daily
