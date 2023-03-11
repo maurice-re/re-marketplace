@@ -18,22 +18,25 @@ function TrackingWithFilter({
   skus: FullSku[];
   orders: FullOrder[];
 }) {
-  const filterTypes: string[] = ["Location", "All Locations", "Group", "Sku", "Order"];
-  const [filterType, setFilterType] = useState<string>(filterTypes[0]);
+  const filterTypes: string[] = ["Location", "All Locations", "Group", "Sku", "Location Sku", "Order"];
+  const [filterType, setFilterType] = useState<string>("Location");
   const [location, setLocation] = useState<FullLocation>(locations[0]);
   const [sku, setSku] = useState<FullSku>(skus[0]);
   const [filter, setFilter] = useState<FullLocation | FullLocation[] | FullSku | FullOrder | FullGroup>(locations[0]);
+
+  // TODO(Suhana): Don't really need the filter, setFilter, as long as we have filterType
 
   const getEventsByFilter = () => {
     if (filterType == "Location") {
       const locationFilter = filter as FullLocation;
       return locationFilter.events;
     }
+    const events: Event[] = [];
+
     if (filterType == "Sku") {
       // From all the locations, get all events of this sku
       // TODO(Suhana): Add ability to have sku within a particular location
       const skuFilter = filter as Sku;
-      const events: Event[] = [];
       locations.forEach((location: FullLocation) => {
         location.events.forEach((event: Event) => {
           if (event.skuId == skuFilter.id) {
@@ -41,8 +44,14 @@ function TrackingWithFilter({
           }
         });
       });
-      console.log("Constructing events for this sku ", skuFilter.id);
-      console.log(events);
+      return events;
+    }
+    if (filterType == "Location Sku") {
+      location.events.forEach((event: Event) => {
+        if (event.skuId == sku.id) {
+          events.push(event);
+        }
+      });
       return events;
     }
 
@@ -80,7 +89,7 @@ function TrackingWithFilter({
           <h1>Filter Type</h1>
           <DropdownField top bottom options={filterTypes} placeholder={"Filter Type"} value={filterType} name={"filterType"} onChange={handleFilterTypeChange} />
         </div>
-        {filterType === "Location" && (
+        {(filterType === "Location" || filterType === "Location Sku") && (
           <div className="flex flex-col w-1/2">
             <h1>Location</h1>
             <div className="p-0 my-0">
@@ -101,7 +110,7 @@ function TrackingWithFilter({
             </div>
           </div>
         )}
-        {filterType === "Sku" && (
+        {(filterType === "Sku" || filterType === "Location Sku") && (
           <div className="flex flex-col w-1/2">
             <h1>Sku</h1>
             <div
