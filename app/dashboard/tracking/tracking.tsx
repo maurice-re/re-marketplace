@@ -47,6 +47,8 @@ type Statistic = {
   isPercent: boolean;
 };
 
+// We can have one client component dedicated to selecting the filter, and the one inside it is just passed events
+
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
@@ -468,11 +470,11 @@ function Tracking({
       <div className="py-6"></div>
     </div>
   ) : (
-    <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
+    <div className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
       <div className="text-white font-theinhardt text-28">
         Integrate with our API to track
       </div>
-    </main>
+    </div>
   );
 }
 
