@@ -214,12 +214,11 @@ function TrackingWithFilter({
             </div>
           </div>
         )}
-        {/* If they select Order, we show them all orders. */}
-        {/* If they select Location Order, we show them all orders associated with the selected location. */}
-        {((filter === "Order") || (filter === "Location / Order") || (filter === "Location / Order / Order Item") || (filter == "Order / Order Item")) &&
+        {/* If they select Order or Order / Order Item, we show them all orders. */}
+        {((filter === "Order") || (filter == "Order / Order Item")) &&
           (<div className="flex flex-col w-1/2">
             <h1>Order</h1>
-            <div className="p-0 my-0">
+            {(orders.length > 0) ? (<div className="p-0 my-0">
               <select
                 name="order"
                 className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
@@ -228,27 +227,53 @@ function TrackingWithFilter({
                 placeholder="Order"
                 value={order.id}
               >
-                {((filter === "Order") || (filter === "Order / Order Item")) ? orders.map((val) => (
+                {orders.map((val) => (
                   <option key={val.id} value={val.id}>
                     {val.id}
                   </option>
-                )) : (
-                  orders.filter(order => order.locationId == location.id).map((val) => (
-                    <option key={val.id} value={val.id}>
-                      {val.id}
-                    </option>
-                  )
-                  ))
+                ))
                 }
               </select>
-            </div>
+            </div>) : (
+              <div
+                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+              >
+                No Orders
+              </div>)}
+          </div>)
+        }
+        {/* If they select Location / Order or Location / Order / Order Item, we show them all orders associated with the selected location. */}
+        {((filter === "Location / Order") || (filter === "Location / Order / Order Item")) &&
+          (<div className="flex flex-col w-1/2">
+            <h1>Order</h1>
+            {(orders.filter(order => order.locationId == location.id).length > 0) ? (<div className="p-0 my-0">
+              <select
+                name="order"
+                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                onChange={handleOrderChange}
+                required
+                placeholder="Order"
+                value={order.id}
+              >
+                {orders.filter(order => order.locationId == location.id).map((val) => (
+                  <option key={val.id} value={val.id}>
+                    {val.id}
+                  </option>
+                ))}
+              </select>
+            </div>) : ((
+              <div
+                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+              >
+                No Orders
+              </div>))}
           </div>)
         }
         {/* If they select Order Item, we show them all order items associated with the selected order. */}
         {((filter === "Location / Order / Order Item") || (filter == "Order / Order Item")) &&
           (<div className="flex flex-col w-1/2">
             <h1>Order Item</h1>
-            <div className="p-0 my-0">
+            {(order.items.length > 0) ? (<div className="p-0 my-0">
               <select
                 name="orderItem"
                 className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
@@ -264,7 +289,11 @@ function TrackingWithFilter({
                 ))
                 }
               </select>
-            </div>
+            </div>) : (<div
+              className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+            >
+              No Order Items
+            </div>)}
           </div>)
         }
         {/* If they select Sku or Location Sku, we show them all available skus. */}
