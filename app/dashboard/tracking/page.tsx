@@ -19,7 +19,7 @@ export default async function Page() {
   const skus = await useServerStore.getState().getSkus();
   const orders = await useServerStore.getState().getOrders();
 
-  const locations = getUniqueLocations([...ownedLocations, ...viewableLocations]);
+  const locations = getUniqueLocations([...ownedLocations, ...viewableLocations]); // Show both owned and viewable locations on tracking page
 
   return (
     <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
