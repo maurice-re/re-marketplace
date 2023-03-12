@@ -1,5 +1,5 @@
 "use client";
-import { Action, Event, Order, Settings, Sku } from "@prisma/client";
+import { Action, Event, Order, OrderItem, Settings, Sku } from "@prisma/client";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
@@ -18,11 +18,12 @@ function TrackingWithFilter({
   skus: FullSku[];
   orders: FullOrder[];
 }) {
-  const filterTypes: string[] = ["Location", "All Locations", "Group", "Sku", "Location Sku", "Order"];
+  const filterTypes: string[] = ["Location", "All Locations", "Group", "Sku", "Location Sku", "Order", "Location Order"];
   const [filterType, setFilterType] = useState<string>("Location");
   const [group, setGroup] = useState<FullGroup>(groups[0]);
   const [location, setLocation] = useState<FullLocation>(locations[0]);
   const [sku, setSku] = useState<FullSku>(skus[0]);
+  const [order, setOrder] = useState<FullOrder>(orders[0]);
 
   const getEventsByFilter = () => {
     const events: Event[] = [];
@@ -55,7 +56,38 @@ function TrackingWithFilter({
       });
       return events;
     }
+    if (filterType == "All Locations") {
+      location.events.forEach((event: Event) => {
+        events.push(event);
+      });
+      return events;
+    }
+    if (filterType == "Location Order") {
+      // TODO(Suhana): Ensure that Event model's itemId is the same as the orderItem ID
 
+      // All events associated with the items in the order (container-specific)
+      order.items.forEach((orderItem: OrderItem) => {
+        location.events.forEach((event: Event) => { // Check selected location
+          if (event.itemId === orderItem.id) {
+            events.push(event);
+          }
+        });
+      });
+      return events;
+    }
+    if (filterType == "Order") {
+      // All events associated with the items in the order (container-specific)
+      order.items.forEach((orderItem: OrderItem) => {
+        locations.forEach((location: FullLocation) => { // Check all locations
+          location.events.forEach((event: Event) => {
+            if (event.itemId === orderItem.id) {
+              events.push(event);
+            }
+          });
+        });
+      });
+      return events;
+    }
     return locations[0].events; // Default
   };
 
@@ -85,6 +117,17 @@ function TrackingWithFilter({
     );
     if (selectedLocation) {
       setLocation(selectedLocation);
+    }
+  };
+
+  const handleOrderChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedOrder = orders.find(
+      (order) => (order.id === e.target.value)
+    );
+    if (selectedOrder) {
+      setOrder(selectedOrder);
     }
   };
 
@@ -120,7 +163,7 @@ function TrackingWithFilter({
             </div>
           </div>
         )}
-        {(filterType === "Location" || filterType === "Location Sku") && (
+        {(filterType === "Location" || filterType === "Location Sku" || filterType === "Location Order") && (
           <div className="flex flex-col w-1/2">
             <h1>Location</h1>
             <div className="p-0 my-0">
@@ -141,6 +184,38 @@ function TrackingWithFilter({
             </div>
           </div>
         )}
+        {/* If they select Order, we show them all orders. */}
+        {/* If they select Location Order, we show them all orders associated with the selected location. */}
+        {((filterType === "Order") || (filterType === "Location Order")) &&
+          (
+            <div className="flex flex-col w-1/2">
+              <h1>Order</h1>
+              <div className="p-0 my-0">
+                <select
+                  name="order"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                  onChange={handleOrderChange}
+                  required
+                  placeholder="Location"
+                  value={order.id}
+                >
+                  {(filterType === "Order") ? orders.map((val) => (
+                    <option key={val.id} value={val.id}>
+                      {val.id}
+                    </option>
+                  )) : (
+                    orders.filter(order => order.locationId == location.id).map((val) => (
+                      <option key={val.id} value={val.id}>
+                        {val.id}
+                      </option>
+                    )
+                    ))
+                  }
+                </select>
+              </div>
+            </div>)
+        }
+        {/* If they select Sku or Location Sku, we show them all available skus. */}
         {(filterType === "Sku" || filterType === "Location Sku") && (
           <div className="flex flex-col w-1/2">
             <h1>Sku</h1>

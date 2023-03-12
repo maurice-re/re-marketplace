@@ -243,12 +243,12 @@ export const useServerStore = create<ServerStore>((set, get) => ({
             settings: true,
             events: true,
           }
-        }
+        },
       }
     });
     if (!orders) return [];
-    const ownedOrders = orders.ownedLocations.flatMap(location => location.orders);
-    const viewableOrders = orders.viewableLocations.flatMap(location => location.orders);
+    const ownedOrders: FullOrder[] = orders.ownedLocations.flatMap(location => location.orders);
+    const viewableOrders: FullOrder[] = orders.viewableLocations.flatMap(location => location.orders);
     return JSON.parse(JSON.stringify([...ownedOrders, ...viewableOrders]));
   },
   getOrderItems: async (orderId: string) => {
