@@ -583,7 +583,7 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
                 monthYears.push(monthYear);
             }
         }
-        console.log(monthYear);
+        // console.log(monthYear);
         if (currMonth == 12) {
             currMonth = 1;
             currYear++;
@@ -613,8 +613,8 @@ export function getYearsForMonthlyDropdown(events: Event[]): string[] {
     const earliestYear = getBoundingMonthYear(sortedEvents, true)[1];
     const latestYear = getBoundingMonthYear(sortedEvents, false)[1];
 
-    console.log(earliestYear);
-    console.log(latestYear);
+    // console.log(earliestYear);
+    // console.log(latestYear);
 
     let currYear = earliestYear;
     let year: string;

@@ -12,7 +12,6 @@ import {
 } from "chart.js";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import SettingsForm from "../../../components/tracking/settingsForm";
 import {
   getAvgDaysBetweenBorrowAndReturn,
   getBoundingMonthYear,
@@ -52,12 +51,10 @@ type Statistic = {
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
-  demo,
-  initialSettings,
+  settings,
   events,
 }: {
-  demo: boolean;
-  initialSettings: Settings | null;
+  settings: Settings | null;
   events: Event[];
 }) {
   // "Dummy" data that is updated on changes
@@ -81,7 +78,6 @@ function Tracking({
     ],
   };
 
-  const [settings, setSettings] = useState<Settings | null>(initialSettings);
   const [graphTimePeriod, setGraphTimePeriod] = useState<string>("monthly");
   const [monthYearForDaily, setMonthYearForDaily] = useState<string>("");
   const [yearForMonthly, setYearForMonthly] = useState<string>("");
@@ -433,16 +429,6 @@ function Tracking({
           </div>
         </div>
       </div>
-      {!demo && (
-        <>
-          <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
-            Configure Settings
-          </h1>
-          <div className="flex w-full gap-8">
-            <SettingsForm settings={settings} setSettings={setSettings} />
-          </div>
-        </>
-      )}
       <div className="py-6"></div>
     </div>
   ) : (
