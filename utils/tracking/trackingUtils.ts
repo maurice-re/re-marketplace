@@ -116,6 +116,25 @@ export function getItemIds(events: Event[]): (string | null)[] {
     return itemIds;
 }
 
+export function getConsumerIds(events: Event[]): (string | null)[] {
+    /* Filters given events to return an array of the distinct consumerIds among the events. */
+
+    // Uncomment to get an array of uniqueItemId events instead
+    // const consumerIds: string[] = events.filter(
+    //     (event1, i, arr) => arr.findIndex(eventB => eventB.consumerId === event1.consumerId) === i
+    // );
+
+    let consumerIds: (string | null)[] = [];
+
+    // May not have an consumerId
+    if (events[0]?.consumerId) {
+        consumerIds = events.map(event => event.consumerId)
+            .filter((value, index, self) => self.indexOf(value) === index);
+    }
+
+    return consumerIds;
+}
+
 export function getItemsInUse(events: Event[]): number {
     /* Returns the total number of products borrowed that haven't currently been lost, 
     returned, or EOL'ed. */
@@ -143,25 +162,56 @@ export function getItemsInUse(events: Event[]): number {
     return itemsInUse;
 }
 
-export function getLifetimeUses(events: Event[]): number {
+export function getItemsInUseByConsumerId(consumerId: string, events: Event[]): number {
+    /* Returns items in use for a specific customer. */
+    const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+    return getItemsInUse(eventsByConsumerId);
+}
+
+export function getLifetimeBorrows(events: Event[]): number {
     /* Returns the total number of times a BORROW event occurred. */
 
-    // console.log("In getLifetimeUses");
+    // console.log("In getLifetimeBorrows");
 
     const totals = getTotals(events);
 
-    const lifetimeUses = totals.borrow;
+    const lifetimeBorrows = totals.borrow;
 
-    // console.log("lifetimeUses: ", lifetimeUses);
+    // console.log("lifetimeBorrows: ", lifetimeBorrows);
+
+    return lifetimeBorrows;
+}
+
+export function getLifetimeUses(events: Event[]): number {
+    /* Returns the total number of times a BORROW-RETURN event pair occurred, or the number of single-use containers saved. */
+
+    const totals = getTotals(events);
+
+    const lifetimeUses = Math.min(totals.borrow - totals.return); // Yields the number of borrow/return pairs
 
     return lifetimeUses;
 }
 
+export function getLifetimeUsesByConsumerId(consumerId: string, events: Event[]): number {
+    /* Returns the number of single-use containers saved by the given user. */
+
+    const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+
+    const lifetimeUsesByConsumerId = getLifetimeUses(eventsByConsumerId);
+
+    return lifetimeUsesByConsumerId;
+}
 
 export function getLifetimeUsesByItemId(itemId: string, events: Event[]): number {
     /* Get number of uses for container. */
     const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
     return getLifetimeUses(eventsByItemId);
+}
+
+export function getLifetimeUsesByUserId(consumerId: string, events: Event[]): number {
+    /* Get number of uses for user. */
+    const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+    return getLifetimeUses(eventsByConsumerId);
 }
 
 export function getHighestLifetimeUsesByItemId(events: Event[]): number {
@@ -180,6 +230,22 @@ export function getHighestLifetimeUsesByItemId(events: Event[]): number {
     return highestLifetimeUsesByItemId;
 }
 
+export function getHighestLifetimeUsesByConsumerId(events: Event[]): number {
+    /* Get number of uses for consumer with most uses. */
+    const consumerIds: (string | null)[] = getConsumerIds(events);
+    let highestLifetimeUsesByConsumerId: number = 0;
+    consumerIds.forEach((consumerId) => {
+        if (consumerId) {
+            const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+            const lifetimeUsesByConsumerId = getLifetimeUsesByConsumerId(consumerId, eventsByConsumerId);
+            if (lifetimeUsesByConsumerId > highestLifetimeUsesByConsumerId) {
+                highestLifetimeUsesByConsumerId = lifetimeUsesByConsumerId;
+            }
+        }
+    });
+    return highestLifetimeUsesByConsumerId;
+}
+
 export function getAvgLifetimeUsesByItemId(events: Event[]): number {
     /* Get average number of container uses. */
     let numItemIds: number = 0;
@@ -194,6 +260,27 @@ export function getAvgLifetimeUsesByItemId(events: Event[]): number {
     });
     const avgLifetimeUsesByItemId = totalLifetimeUsesByItemId / numItemIds;
     return avgLifetimeUsesByItemId;
+}
+
+export function getAvgLifetimeUsesByConsumerId(events: Event[]): number {
+    /* Get average number of item uses. */
+    let numConsumerIds: number = 0;
+    const consumerIds: (string | null)[] = getConsumerIds(events);
+    let totalLifetimeUsesByConsumerId: number = 0;
+    consumerIds.forEach((consumerId) => {
+        if (consumerId) {
+            const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+            totalLifetimeUsesByConsumerId += getLifetimeUsesByConsumerId(consumerId, eventsByConsumerId);
+            numConsumerIds++;
+        }
+    });
+    const avgLifetimeUsesByConsumerId = totalLifetimeUsesByConsumerId / numConsumerIds;
+    return avgLifetimeUsesByConsumerId;
+}
+
+export function getEventsByConsumerId(consumerId: string, events: Event[]): Event[] {
+    const eventsByItemId: Event[] = events.filter(event => event.consumerId == consumerId);
+    return eventsByItemId;
 }
 
 export function getEventsByItemId(itemId: string, events: Event[]): Event[] {
@@ -211,6 +298,18 @@ export function getNumItemIds(events: Event[]): number {
         }
     });
     return numItemIds;
+}
+
+export function getNumConsumerIds(events: Event[]): number {
+    /* Get number of unique users. */
+    let numConsumerIds = 0;
+    const consumerIds: (string | null)[] = getConsumerIds(events);
+    consumerIds.forEach((consumerId) => {
+        if (consumerId) {
+            numConsumerIds++;
+        }
+    });
+    return numConsumerIds;
 }
 
 export function getReuseRateByItemId(itemId: string, events: Event[]): number {
@@ -268,6 +367,12 @@ export function getReturnRate(events: Event[]): number {
     // console.log("returnRate: ", returnRate);
 
     return returnRate;
+}
+
+export function getReturnRateByConsumerId(consumerId: string, events: Event[]): number {
+    /* Get return rate by customer. */
+    const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+    return getReturnRate(eventsByConsumerId);
 }
 
 export function getItemsByDay(month: number, year: number, daysInMonth: number[], events: Event[], action: Action): number[] {
@@ -353,6 +458,38 @@ export function getAvgDaysBetweenBorrowAndReturnByItemId(itemId: string, events:
     /* Returns the average days between borrow and return for the specified item. */
     const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
     return getAvgDaysBetweenBorrowAndReturn(eventsByItemId);
+}
+
+export function getAvgDaysBetweenBorrowAndReturnByConsumerId(consumerId: string, events: Event[], setBuffer?: number): number {
+    /* Returns the average days between borrow and return for the specified user. */
+    const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
+    return getAvgDaysBetweenBorrowAndReturn(eventsByConsumerId);
+}
+
+export function getRepeatRate(events: Event[]) {
+    /* Calculates the number of users who used a container more than once. */
+    const consumerIds: (string | null)[] = getConsumerIds(events);
+    let numCustomerIds = 0;
+    let numRepeatConsumerIds = 0;
+
+    // Get the lifetime uses by each user
+    consumerIds.forEach((consumerId: (string | null)) => {
+        if (consumerId) {
+            if (getLifetimeUsesByConsumerId(consumerId, events) > 1) {
+                // Increment if user used more than once
+                numRepeatConsumerIds++;
+            }
+            numCustomerIds++;
+        }
+    });
+
+    if (numCustomerIds == 0) {
+        return 0;
+    }
+
+    // Get % of users who had more than one lifetime use
+    const repeatRate = (numRepeatConsumerIds / numCustomerIds) * 100;
+    return repeatRate;
 }
 
 export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: number): number {

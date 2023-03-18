@@ -20,7 +20,7 @@ import {
   getItemsByDay,
   getItemsByMonth,
   getItemsInUse,
-  getLifetimeUses,
+  getLifetimeBorrows,
   getMonthsInYear,
   getMonthYearsForDailyDropdown,
   getReturnRate,
@@ -267,8 +267,8 @@ function Tracking({
     isPercent: false,
   });
   stats.push({
-    title: "Used",
-    value: getLifetimeUses(events),
+    title: "Borrowed",
+    value: getLifetimeBorrows(events),
     info: "lifetime borrows",
     isPercent: false,
   });
