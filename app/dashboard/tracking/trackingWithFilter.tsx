@@ -192,7 +192,7 @@ function TrackingWithFilter({
 
   return (
     <div>
-      <div className="flex w-full items-start justify-center border-b-[0.5px] border-white pb-6 mb-6 gap-3">
+      <div className="flex w-full items-start justify-center border-b-[0.5px] border-white pb-6 mb-10 gap-3">
         <div className="flex flex-col w-1/2">
           <h1>Filter</h1>
           <DropdownField top bottom options={filters} placeholder={"Filter"} value={filter} name={"filter"} onChange={handleFilterTypeChange} />

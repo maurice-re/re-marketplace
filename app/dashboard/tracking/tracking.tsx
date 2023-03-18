@@ -60,23 +60,6 @@ function Tracking({
   initialSettings: Settings | null;
   events: Event[];
 }) {
-  // const [location, setLocation] = useState<FullLocation>(locations[0]);
-
-  // const handleChange = (
-  //   e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
-  // ) => {
-  //   const { value } = e.target;
-  //   console.log("Looking for ID ", value);
-  //   const selectedLocation = locations.find(
-  //     (location) => location.id === value
-  //   );
-  //   if (selectedLocation) {
-  //     setLocation(selectedLocation);
-  //   }
-  // };
-
-  // if we select a location, and then just always
-
   // "Dummy" data that is updated on changes
   const baseData = {
     labels: monthsInYear,

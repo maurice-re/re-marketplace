@@ -157,6 +157,68 @@ export function getLifetimeUses(events: Event[]): number {
     return lifetimeUses;
 }
 
+
+export function getLifetimeUsesByItemId(itemId: string, events: Event[]): number {
+    /* Get number of uses for container. */
+    const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
+    return getLifetimeUses(eventsByItemId);
+}
+
+export function getHighestLifetimeUsesByItemId(events: Event[]): number {
+    /* Get number of uses for container with most uses. */
+    const itemIds: (string | null)[] = getItemIds(events);
+    let highestLifetimeUsesByItemId: number = 0;
+    itemIds.forEach((itemId) => {
+        if (itemId) {
+            const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
+            const lifetimeUsesByItemId = getLifetimeUsesByItemId(itemId, eventsByItemId);
+            if (lifetimeUsesByItemId > highestLifetimeUsesByItemId) {
+                highestLifetimeUsesByItemId = lifetimeUsesByItemId;
+            }
+        }
+    });
+    return highestLifetimeUsesByItemId;
+}
+
+export function getAvgLifetimeUsesByItemId(events: Event[]): number {
+    /* Get average number of container uses. */
+    let numItemIds: number = 0;
+    const itemIds: (string | null)[] = getItemIds(events);
+    let totalLifetimeUsesByItemId: number = 0;
+    itemIds.forEach((itemId) => {
+        if (itemId) {
+            const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
+            totalLifetimeUsesByItemId += getLifetimeUsesByItemId(itemId, eventsByItemId);
+            numItemIds++;
+        }
+    });
+    const avgLifetimeUsesByItemId = totalLifetimeUsesByItemId / numItemIds;
+    return avgLifetimeUsesByItemId;
+}
+
+export function getEventsByItemId(itemId: string, events: Event[]): Event[] {
+    const eventsByItemId: Event[] = events.filter(event => event.itemId == itemId);
+    return eventsByItemId;
+}
+
+export function getNumItemIds(events: Event[]): number {
+    /* Get number of unique containers used. */
+    let numItemIds = 0;
+    const itemIds: (string | null)[] = getItemIds(events);
+    itemIds.forEach((itemId) => {
+        if (itemId) {
+            numItemIds++;
+        }
+    });
+    return numItemIds;
+}
+
+export function getReuseRateByItemId(itemId: string, events: Event[]): number {
+    /* Get reuse rate for item. */
+    const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
+    return getReuseRate(eventsByItemId);
+}
+
 export function getReuseRate(events: Event[]): number {
     /* Returns an average (approximation) of cumulative reuse rate (%), by dividing 
     items reused at least once by the total items used. Assumes that totalItems is greater
@@ -287,6 +349,12 @@ export function getMonthsInYear(): string[] {
     return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 }
 
+export function getAvgDaysBetweenBorrowAndReturnByItemId(itemId: string, events: Event[], setBuffer?: number): number {
+    /* Returns the average days between borrow and return for the specified item. */
+    const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
+    return getAvgDaysBetweenBorrowAndReturn(eventsByItemId);
+}
+
 export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: number): number {
     /* Returns the average number of days between when an item is borrowed and returned. */
 
@@ -377,10 +445,7 @@ export function getMonthYearsForDailyDropdown(events: Event[]): string[] {
 
     let currTimestamp;
     let found;
-    console.log("Have currMonth ", currMonth);
-    console.log("Have currYear ", currYear);
-    console.log("Have latestYear ", latestYear);
-    console.log("Have latestMonth ", latestMonth);
+
     while (!((currYear == latestYear) && (currMonth == latestMonth))) {
         monthYear = currMonth.toString() + ',' + currYear.toString();
         if (!monthYears.includes(monthYear)) {
@@ -457,7 +522,7 @@ export function getYearsForMonthlyDropdown(events: Event[]): string[] {
 }
 
 export function getTotalUsed(events: Event[]): number {
-    /* Returns the total number of items used (borrowed and returned) over the given time period. */
+    /* Returns the total number of items used (borrowed and returned), or the # of single use containers saved, over the given time period. */
     const set = new Set<string>();
     events.forEach(event => {
         if (event.itemId) {
