@@ -6,7 +6,7 @@ export default async function Page() {
   const user = await useServerStore.getState().getUser();
   if (!user) return <div>Not found</div>;
 
-  const locations = await useServerStore.getState().getLocations(true);
+  const demoLocation = await useServerStore.getState().getLocationById("219");
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
@@ -55,12 +55,10 @@ export default async function Page() {
             </button>
           </Link>
         </div>
-        {/* TODO(Suhana): Pass specific location for demo */}
         <Tracking
           demo={true}
-          // TODO(Suhana): These fields should be fetched based on the filter
-          initialSettings={locations[0].settings}
-          events={locations[0].events}
+          initialSettings={demoLocation.settings}
+          events={demoLocation.events}
         />
       </main>
     </div>

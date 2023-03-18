@@ -30,6 +30,7 @@ export default async function Page() {
       </Head>
       <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
         <TrackingWithFilter
+          demo={false}
           locations={locations}
           groups={groups}
           skus={skus}

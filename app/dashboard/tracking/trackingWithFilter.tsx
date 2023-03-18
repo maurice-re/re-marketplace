@@ -12,11 +12,13 @@ function TrackingWithFilter({
   groups,
   skus,
   orders,
+  demo
 }: {
   locations: FullLocation[];
   groups: FullGroup[];
   skus: FullSku[];
   orders: FullOrder[];
+  demo: boolean;
 }) {
   const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Location / Sku", "Order", "Location / Order", "Location / Order / Order Item", "Order / Order Item"];
   const [filter, setFilter] = useState<string>("All Locations");
@@ -355,7 +357,7 @@ function TrackingWithFilter({
         )}
       </div>
       <Tracking
-        demo={false}
+        demo={demo}
         initialSettings={getSettingsByFilter()}
         events={getEventsByFilter()}
       />
