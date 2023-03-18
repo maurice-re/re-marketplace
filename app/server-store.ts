@@ -7,6 +7,7 @@ import { authOptions } from "../pages/api/auth/[...nextauth]";
 
 export type FullOrder = Order & {
   items: OrderItem[];
+  location: FullLocation;
 };
 
 export type FullSku = Sku & {

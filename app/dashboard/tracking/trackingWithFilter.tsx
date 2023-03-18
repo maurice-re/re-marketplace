@@ -1,7 +1,7 @@
 "use client";
-import { Action, Event, Order, OrderItem, Settings, Sku } from "@prisma/client";
+import { Event, OrderItem, Settings } from "@prisma/client";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
 import { skuName } from "../../../utils/dashboard/dashboardUtils";
 import { FullGroup, FullLocation, FullOrder, FullSku } from "../../server-store";
@@ -26,8 +26,34 @@ function TrackingWithFilter({
   const [order, setOrder] = useState<FullOrder>(orders[0]);
   const [orderItem, setOrderItem] = useState<OrderItem>(orders[0].items[0]);
 
+  const getSettingsByFilter = () => {
+    if (filter == "Location" || filter == "Location / Sku" || filter == "Location / Order" || filter == "Location / Order / Order Item") {
+      return location.settings;
+    }
+    if (filter == "All Locations") {
+      // If All Locations is selected, use the settings associated with the first location
+      return location.settings;
+    }
+    if (filter == "Group") {
+      // If Group is selected, use the settings associated with the first location in the group
+      return group.locations[0].settings;
+    }
+    if (filter == "Sku") {
+      // If Sku is selected, no custom settings are applicable
+      return null;
+    }
+    if (filter == "Order" || filter == "Order / Order Item") {
+      // If Order or Order / Order Item is selected, use the settings associated with the location the order is for
+      return order.location.settings;
+    }
+    return null; // Default - should not get here
+  };
+
   const getEventsByFilter = () => {
     const events: Event[] = [];
+    if (filter == "Location") {
+      return location.events;
+    }
     if (filter == "Group") {
       group.locations.forEach((location: FullLocation) => {
         location.events.forEach((event: Event) => {
@@ -35,9 +61,6 @@ function TrackingWithFilter({
         });
       });
       return events;
-    }
-    if (filter == "Location") {
-      return location.events;
     }
     if (filter == "Sku") {
       locations.forEach((location: FullLocation) => {
@@ -66,7 +89,7 @@ function TrackingWithFilter({
     if (filter == "Location / Order") {
       // TODO(Suhana): Ensure that Event model's itemId is the same as the orderItem ID
 
-      // All events associated with the items in the order (container-specific)
+      // All events associated with the items in the selected order (container-specific)
       order.items.forEach((orderItem: OrderItem) => {
         location.events.forEach((event: Event) => { // Check selected location
           if (event.itemId === orderItem.id) {
@@ -107,7 +130,7 @@ function TrackingWithFilter({
       });
       return events;
     }
-    return locations[0].events; // Default
+    return locations[0].events; // Default - should not get here
   };
 
   const handleFilterTypeChange = (
@@ -333,8 +356,7 @@ function TrackingWithFilter({
       </div>
       <Tracking
         demo={false}
-        // TODO(Suhana): These fields should be fetched based on the filter
-        initialSettings={locations[0].settings}
+        initialSettings={getSettingsByFilter()}
         events={getEventsByFilter()}
       />
     </div>
