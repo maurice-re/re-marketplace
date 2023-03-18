@@ -192,23 +192,13 @@ export function getLifetimeUses(events: Event[]): number {
     return lifetimeUses;
 }
 
-export function getLifetimeUsesByConsumerId(consumerId: string, events: Event[]): number {
-    /* Returns the number of single-use containers saved by the given user. */
-
-    const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
-
-    const lifetimeUsesByConsumerId = getLifetimeUses(eventsByConsumerId);
-
-    return lifetimeUsesByConsumerId;
-}
-
 export function getLifetimeUsesByItemId(itemId: string, events: Event[]): number {
     /* Get number of uses for container. */
     const eventsByItemId: Event[] = getEventsByItemId(itemId, events);
     return getLifetimeUses(eventsByItemId);
 }
 
-export function getLifetimeUsesByUserId(consumerId: string, events: Event[]): number {
+export function getLifetimeUsesByConsumerId(consumerId: string, events: Event[]): number {
     /* Get number of uses for user. */
     const eventsByConsumerId: Event[] = getEventsByConsumerId(consumerId, events);
     return getLifetimeUses(eventsByConsumerId);
@@ -500,12 +490,7 @@ export function getAvgDaysBetweenBorrowAndReturn(events: Event[], setBuffer?: nu
     const daysBetweenBorrowAndReturn: number[] = [];
     let avgDaysBetweenBorrowAndReturn = 0;
 
-    console.log("Got ", setBuffer);
-
     const buffer = (setBuffer && setBuffer !== 0) ? setBuffer : 10; // by default, only consider dayDiffs > 10
-
-    console.log("buffer:");
-    console.log(buffer);
 
     // Consider all borrow-return pairs (included those for the same item)
 

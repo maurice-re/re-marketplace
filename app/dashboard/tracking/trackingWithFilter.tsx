@@ -1,5 +1,5 @@
 "use client";
-import { Event, OrderItem, Settings } from "@prisma/client";
+import { Event, OrderItem } from "@prisma/client";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
@@ -20,13 +20,37 @@ function TrackingWithFilter({
   orders: FullOrder[];
   demo: boolean;
 }) {
-  const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Location / Sku", "Order", "Location / Order", "Location / Order / Order Item", "Order / Order Item"];
+  const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Location / Sku", "Order", "Location / Order", "Location / Order / Order Item", "Order / Order Item", "Consumer", "Location / Consumer"];
   const [filter, setFilter] = useState<string>("All Locations");
   const [group, setGroup] = useState<FullGroup>(groups[0]);
   const [location, setLocation] = useState<FullLocation>(locations[0]);
   const [sku, setSku] = useState<FullSku>(skus[0]);
   const [order, setOrder] = useState<FullOrder>(orders[0]);
   const [orderItem, setOrderItem] = useState<OrderItem>(orders[0].items[0]);
+  const [consumerId, setConsumerId] = useState<string>("");
+
+  function getConsumerIds(byLocation: boolean): string[] {
+    const consumerIds: string[] = [];
+
+    if (byLocation) {
+      location.events.forEach((event: Event) => {
+        if (event.consumerId && !consumerIds.includes(event.consumerId)) {
+          consumerIds.push(event.consumerId);
+        }
+      });
+    } else {
+      // Get consumer IDs across all locations
+      locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          if (event.consumerId && !consumerIds.includes(event.consumerId)) {
+            consumerIds.push(event.consumerId);
+          }
+        });
+      });
+    }
+
+    return consumerIds;
+  }
 
   const getSettingsByFilter = () => {
     if (filter == "Location" || filter == "Location / Sku" || filter == "Location / Order" || filter == "Location / Order / Order Item") {
@@ -132,6 +156,24 @@ function TrackingWithFilter({
       });
       return events;
     }
+    if (filter == "Consumer") {
+      locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          if (event.consumerId == consumerId) {
+            events.push(event);
+          }
+        });
+      });
+      return events;
+    }
+    if (filter == "Location / Consumer") {
+      location.events.forEach((event: Event) => {
+        if (event.consumerId == consumerId) {
+          events.push(event);
+        }
+      });
+      return events;
+    }
     return locations[0].events; // Default - should not get here
   };
 
@@ -151,6 +193,13 @@ function TrackingWithFilter({
     if (selectedGroup) {
       setGroup(selectedGroup);
     }
+  };
+
+  const handleConsumerChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { value } = e.target;
+    setConsumerId(value);
   };
 
   const handleLocationChange = (
@@ -218,7 +267,28 @@ function TrackingWithFilter({
             </div>
           </div>
         )}
-        {((filter === "Location" || filter === "Location / Sku" || filter === "Location / Order") || (filter === "Location / Order / Order Item")) && (
+        {filter === "Consumer" && (
+          <div className="flex flex-col w-1/2">
+            <h1>Consumer</h1>
+            <div className="p-0 my-0">
+              <select
+                name="consumer"
+                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                onChange={handleConsumerChange}
+                required
+                placeholder="Location"
+                value={consumerId}
+              >
+                {getConsumerIds(false).map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+        {((filter === "Location" || filter === "Location / Sku" || filter === "Location / Order") || (filter === "Location / Order / Order Item") || (filter === "Location / Consumer")) && (
           <div className="flex flex-col w-1/2">
             <h1>Location</h1>
             <div className="p-0 my-0">
@@ -237,6 +307,32 @@ function TrackingWithFilter({
                 ))}
               </select>
             </div>
+          </div>
+        )}
+        {filter === "Location / Consumer" && (
+          <div className="flex flex-col w-1/2">
+            <h1>Consumer</h1>
+            {(getConsumerIds(true).length > 0) ? (<div className="p-0 my-0">
+              <select
+                name="consumer"
+                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                onChange={handleConsumerChange}
+                required
+                placeholder="Location"
+                value={consumerId}
+              >
+                {getConsumerIds(true).map((val) => (
+                  <option key={val} value={val}>
+                    {val}
+                  </option>
+                ))}
+              </select>
+            </div>) : (
+              <div
+                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+              >
+                No Consumers
+              </div>)}
           </div>
         )}
         {/* If they select Order or Order / Order Item, we show them all orders. */}
