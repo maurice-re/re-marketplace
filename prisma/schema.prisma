@@ -284,6 +284,7 @@ enum TrackingType {
 }
 
 model UntrackedInventory {
+  companyId  String
   location   Location @relation(fields: [locationId], references: [id])
   locationId String
   sku        Sku      @relation(fields: [skuId], references: [id])
@@ -291,6 +292,7 @@ model UntrackedInventory {
   quantity   Int
 
   @@unique([locationId, skuId])
+  @@unique([companyId, skuId])
   @@index([skuId])
 }
 
