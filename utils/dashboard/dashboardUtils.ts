@@ -1,21 +1,5 @@
-import { Company, Location, Order, OrderItem, Product, Sku, Status, User } from "@prisma/client";
+import { Company, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
-
-export type UserOrderItems = User & {
-  company: {
-    name: string;
-    customerId: string;
-  };
-  orders: (Order & {
-    items: (OrderItem & {
-      sku: SkuProduct;
-      location: {
-        displayName: string | null;
-        city: string;
-      };
-    })[];
-  })[];
-};
 
 export type ItemSkuProduct = OrderItem & {
   sku: Sku & {
@@ -27,23 +11,6 @@ export type ItemSkuProduct = OrderItem & {
   };
 };
 
-export type SkuProduct = Sku & {
-  product: Product;
-};
-
-export type OrderCustomerOrderItems = Order & {
-  company: {
-    name?: string;
-    customerId: string;
-  };
-  orderItems: (OrderItem & {
-    location: Location;
-    sku: Sku & {
-      product: Product;
-    };
-  })[];
-};
-
 export type OrderWithItemsLocationSku = Order & {
   items: ItemLocationSku[];
 };
@@ -53,11 +20,14 @@ export type ItemLocationSku = OrderItem & {
   sku: Sku;
 };
 
-export type OrderItemLocation = OrderItem & {
-  location: Location;
+export type OrderItemSku = OrderItem & {
   sku: Sku & {
     product: Product;
   };
+};
+
+export type OrderLocation = Order & {
+  location: Location;
 };
 
 export type ItemLocationSkuProduct = OrderItem & {
@@ -67,16 +37,12 @@ export type ItemLocationSkuProduct = OrderItem & {
   };
 };
 
-export type OrderWithItems = Order & {
-  items: OrderItem[];
+export type SkuProduct = Sku & {
+  product: Product;
 };
 
 export type UserCompany = User & {
   company: Company;
-};
-
-export type LocationWithOneItem = Location & {
-  orderItems: OrderItem[];
 };
 
 export type OrderItemLocationName = Order & {
@@ -114,64 +80,21 @@ export function numItemsBySkuId(orders: ItemSkuProduct[], id: string): number {
   }, 0);
 }
 
-export function getLocationNames(orders: ItemSkuProduct[]): string[] {
-  const ids: string[] = [];
-  return orders.reduce((prev, curr) => {
-    if (ids.includes(curr.locationId)) {
-      return prev;
-    } else {
-      ids.push(curr.locationId);
-      return [...prev, curr.location.displayName ?? curr.location.city!];
-    }
-  }, [] as string[]);
-}
-
 export function addDays(date: Date, numDays: number) {
   const d = new Date(date);
   d.setDate(d.getDate() + numDays);
   return d;
 }
 
-export function skuName(sku: SkuProduct): string {
-  return sku.size + " " + sku.materialShort + " " + sku.product.name;
+export function skuName(sku: SkuProduct | undefined): string {
+  return sku ? sku.size + " " + sku.materialShort + " " + sku.product.name : "";
 }
-
-function getLocationIds(orders: OrderItem[]): string[] {
-  return orders.reduce((prev, curr) => {
-    if (prev.includes(curr.locationId)) {
-      return prev;
-    } else {
-      return [...prev, curr.locationId];
-    }
-  }, [] as string[]);
-}
-
-export function separateByLocationId(orders: OrderItem[]): OrderItem[][] {
-  const locationIds = getLocationIds(orders);
-  const output: OrderItem[][] = [];
-  locationIds.forEach(loc => {
-    const or = orders.filter(o => o.locationId == loc);
-    output.push(or);
-  });
-  return output;
-}
-
 
 export function totalFromOrders(orderItems: ItemLocationSkuProduct[], onlyOrders?: OrderItem[], skus?: Sku[], products?: Product[]): number {
   if (onlyOrders) {
     return onlyOrders.reduce((prev, item) => prev + calculatePriceFromCatalog(skus ?? [], item.skuId, item.quantity), 0);
   }
   return orderItems.reduce((prev, item) => prev + calculatePriceFromCatalog(item.sku, item.skuId, item.quantity), 0);
-}
-
-export function getLocationsFromOrders(orderItems: ItemLocationSkuProduct[]): Location[] {
-  return orderItems.reduce((prev, curr) => {
-    if (prev.find(l => l.id == curr.locationId)) {
-      return prev;
-    } else {
-      return [...prev, curr.location];
-    }
-  }, [] as Location[]);
 }
 
 export function dayMonthYear(d: Date): string {

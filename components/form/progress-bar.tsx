@@ -1,9 +1,9 @@
-import { useFormStore } from "../../stores/formStore";
+import { FormRoute, FormStore, useFormStore } from "../../stores/formStore";
 
-function ProgressBar({ pageName }: { pageName: string }) {
-  const routes = useFormStore((state) => state.routes);
+function ProgressBar({ pageName }: { pageName: string; }) {
+  const routes = useFormStore((state: FormStore) => state.routes);
   const currentRouteIndex = routes.findIndex(
-    (route) => route.name == pageName.replace("+", " ")
+    (route: FormRoute) => route.name == pageName.replace("+", " ")
   );
   return (
     <div

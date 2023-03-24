@@ -50,7 +50,7 @@ export default function Page() {
     });
   }
 
-  let items: (JSX.Element | JSX.Element[])[] = [];
+  const items: (JSX.Element | JSX.Element[])[] = [];
   allLocations(cart).forEach((city) => {
     items.push(
       <div>

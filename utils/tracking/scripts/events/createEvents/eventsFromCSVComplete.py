@@ -2,6 +2,8 @@ import requests
 import json
 import csv
 
+# TODO(Suhana): Add companyId here, remove trackingLocation
+
 # Usage
 # npm run dev
 # Use API key for the desired company in "Bearer ..." (create new API Key using createAPIKey.py if needed)
@@ -16,7 +18,7 @@ apiUrl = "http://localhost:3000/api/tracking/create-event"
 
 events = []
 
-fileName = "sheets/EventsDataNoReturn.csv"
+fileName = "../../sheets/EventsDataNoReturn.csv"
 with open(fileName, 'r') as csvFile:
     dataReader = csv.reader(csvFile)
     next(dataReader)

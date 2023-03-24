@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useFormStore } from "../../stores/formStore";
+import { FormRoute, FormStore, useFormStore } from "../../stores/formStore";
 
 function FormNextButton({
   onClick,
@@ -12,12 +12,12 @@ function FormNextButton({
   disabled: boolean;
   green?: boolean;
 }) {
-  const { nextRoute, routes } = useFormStore((state) => ({
+  const { nextRoute, routes } = useFormStore((state: FormStore) => ({
     nextRoute: state.nextRoute,
     routes: state.routes,
   }));
   const currentRouteIndex = routes.findIndex(
-    (route) => route.name == pageName.replace("+", " ")
+    (route: FormRoute) => route.name == pageName.replace("+", " ")
   );
 
   const nextPage = nextRoute(currentRouteIndex);

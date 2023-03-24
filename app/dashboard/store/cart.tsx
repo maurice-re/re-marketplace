@@ -1,22 +1,13 @@
-import { Sku } from "@prisma/client";
+import { Location, Sku } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore } from "../../../stores/cartStore";
-import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
+import { CartStore, useCartStore } from "../../../stores/cartStore";
 import { getOrderStringTotal } from "../../../utils/dashboard/orderStringUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 
-function Cart({
-  companyId,
-  locations,
-  skus,
-}: {
-  companyId: string;
-  locations: LocationWithOneItem[];
-  skus: Sku[];
-}) {
-  const orderString = useCartStore((state) => state.orderString);
-  const clearCart = useCartStore((state) => state.clearCart);
+function Cart({ locations, skus }: { locations: Location[]; skus: Sku[] }) {
+  const orderString = useCartStore((state: CartStore) => state.orderString);
+  const clearCart = useCartStore((state: CartStore) => state.clearCart);
   return (
     <div className="w-70 lg:w-80 2xl:w-96 flex flex-col text-white justify-between border-l border-l-re-gray-500 flex-grow-0">
       <h1 className="font-theinhardt text-lg py-4 pl-6 border-b-1/2 border-re-gray-300">
@@ -24,7 +15,7 @@ function Cart({
       </h1>
       {orderString != "" && (
         <div className="flex flex-col gap-4 h-96 text-white overflow-y-auto ">
-          {orderString.split("*").map((orderForLocation, index) => {
+          {orderString.split("*").map((orderForLocation: string) => {
             const orderForLocationSplit = orderForLocation.split("_");
             const locationId = orderForLocationSplit[0];
             const location = locations.find(
@@ -42,7 +33,8 @@ function Cart({
                 </div>
                 {orderForLocationSplit.slice(1).map((skuQuantity) => {
                   const [skuId, quantity] = skuQuantity.split("~");
-                  const sku = skus.find((sku) => sku.id == skuId)!;
+                  const sku =
+                    skus.find((sku) => sku.id == skuId) ?? ({} as Sku);
                   return (
                     <div
                       className="flex items-center justify-between my-2"

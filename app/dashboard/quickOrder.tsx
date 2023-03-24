@@ -2,37 +2,34 @@
 import { Location } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
+import { skuName } from "../../utils/dashboard/dashboardUtils";
 import {
   calculatePriceFromCatalog,
   getPriceFromTable,
 } from "../../utils/prisma/dbUtils";
+import { SkuWithProduct } from "../server-store";
 
 function QuickOrder({
   companyId,
-  customerId,
   locations,
-  userId,
   skus,
 }: {
   companyId: string;
   customerId: string;
   locations: Location[];
   userId: string;
-  skus: SkuProduct[];
+  skus: SkuWithProduct[];
 }) {
-  const [selected, setSelected] = useState<SkuProduct[]>([]);
-  const [skuIdQuantity, setSkuIdQuantity] = useState<[SkuProduct, string][]>(
-    []
-  );
+  const [selected, setSelected] = useState<SkuWithProduct[]>([]);
+  const [skuIdQuantity, setSkuIdQuantity] = useState<
+    [SkuWithProduct, string][]
+  >([]);
   const [location, setLocation] = useState<string>(
     locations.length > 1 ? locations[0].id : "new"
   );
-  const router = useRouter();
 
-  function handleItemPress(skuSelected: SkuProduct) {
+  function handleItemPress(skuSelected: SkuWithProduct) {
     const isSelected = selected.find((s) => s.id == skuSelected.id);
     if (isSelected) {
       setSelected((prev) => prev.filter((s) => s.id != skuSelected.id));
@@ -51,7 +48,7 @@ function QuickOrder({
     return "1";
   }
 
-  function handleQuantityChange(val: string, skuSelected: SkuProduct) {
+  function handleQuantityChange(val: string, skuSelected: SkuWithProduct) {
     setSkuIdQuantity((prev) => {
       return prev.map((tup) => {
         if (tup[0].id == skuSelected.id) {
@@ -76,11 +73,10 @@ function QuickOrder({
       <div className="h-px bg-re-gray-300 mb-4 w-full" />
       <div className="flex justify-between w-full gap-4 p-4">
         <div
-          className={`grid gap-2 h-96 overflow-y-auto w-full pr-1 items-start ${
-            selected.length == 0
-              ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
-              : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
-          }`}
+          className={`grid gap-2 h-96 overflow-y-auto w-full pr-1 items-start ${selected.length == 0
+            ? "2xl:grid-cols-7 xl:grid-cols-6 lg:grid-cols-5 grid-cols-4"
+            : "2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 grid-cols-2"
+            }`}
         >
           {skus
             .filter((s) => s.product.active)
@@ -90,11 +86,10 @@ function QuickOrder({
                 className="flex flex-col items-center mx-1 mb-2 group"
               >
                 <button
-                  className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${
-                    selected.includes(sku)
-                      ? "border-re-green-600 border-3"
-                      : "border"
-                  }`}
+                  className={`rounded w-24 h-24 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selected.includes(sku)
+                    ? "border-re-green-600 border-3"
+                    : "border"
+                    }`}
                   onClick={() => handleItemPress(sku)}
                 >
                   <Image
@@ -134,9 +129,7 @@ function QuickOrder({
                   )}`}
                 </div>
                 <input
-                  value={
-                    skuIdQuantity.find(([s, _]) => s.id == sku.id)?.[1] ?? ""
-                  }
+                  value={skuIdQuantity.find(([s]) => s.id == sku.id)?.[1] ?? ""}
                   onChange={(e) => handleQuantityChange(e.target.value, sku)}
                   className="bg-re-black rounded py-1 bg-opacity-40 px-2 w-11 text-xs text-center flex min-w-[3.5rem]"
                 />
@@ -181,7 +174,7 @@ function QuickOrder({
                   companyId: companyId,
                 },
               }}
-              // as={`/checkout/${new Date().getTime()}`}
+            // as={`/checkout/${new Date().getTime()}`}
             >
               <button className="px-3 py-2 bg-re-purple-500 rounded hover:bg-re-purple-600 w-full">
                 Buy now

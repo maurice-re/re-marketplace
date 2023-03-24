@@ -1,26 +1,26 @@
 "use client";
 
 import {
-  Company,
   Location,
   LocationType,
   Penalty,
   Product,
   Sku,
   TrackingType,
+  User,
 } from "@prisma/client";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
 import DoubleAddressField from "../../../components/form/double-address-field";
 import { useCartStore } from "../../../stores/cartStore";
-import { LocationWithOneItem } from "../../../utils/dashboard/dashboardUtils";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
+import { FullLocation } from "../../server-store";
 import Cart from "./cart";
 
 type StoreProps = {
-  company: Company;
-  initialLocations: LocationWithOneItem[];
+  user: User;
+  initialLocations: FullLocation[];
   products: Product[];
   skus: Sku[];
 };
@@ -50,7 +50,7 @@ const breadcrumbsInfo: BreadcrumbsInfo[] = [
 ];
 
 export default function StorePage({
-  company,
+  user,
   initialLocations,
   products,
   skus,
@@ -62,7 +62,8 @@ export default function StorePage({
   const [skuId, setSkuId] = useState<string | undefined>(undefined);
   const [quantity, setQuantity] = useState<string>("");
 
-  const addToCart = useCartStore((state) => state.addToCart);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const addToCart = useCartStore((state: any) => state.addToCart);
 
   function changeSize(newSize: string) {
     if (skuId == undefined) {
@@ -90,15 +91,12 @@ export default function StorePage({
     setSkuId(pId + "-" + size + "-" + mShort + "-" + newColor.toUpperCase());
   }
 
-  function getLocationById(
-    locationId: string
-  ): LocationWithOneItem | undefined {
+  function getLocationById(locationId: string): FullLocation | undefined {
     return locations.find((location) => location.id === locationId);
   }
 
   function getLocationName(locationId: string): string {
-    const location: LocationWithOneItem | undefined =
-      getLocationById(locationId);
+    const location: FullLocation | undefined = getLocationById(locationId);
     return location?.displayName ?? location?.city ?? "Your Location";
   }
 
@@ -111,6 +109,7 @@ export default function StorePage({
 
   const handleAddLocation = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
     setIsLoading(true);
 
@@ -118,34 +117,43 @@ export default function StorePage({
       id: "",
       city: formElements[4].value,
       country: formElements[1].value,
-      companyId: company.id,
       displayName: null,
       line1: formElements[2].value,
       line2: formElements[3].value,
       penalty: Penalty.NONE,
-      trackingLocation: "",
       shippingName: formElements[0].value,
       state: formElements[6].value,
       trackingType: TrackingType.NONE,
       type: LocationType.SHIPPING,
       zip: formElements[5].value,
-      tagId: "",
     };
 
-    await fetch("/api/location", {
+    await fetch(`/api/locations/location?userId=${user.id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ location: newLocation }),
+      body: JSON.stringify({
+        city: newLocation.city,
+        country: newLocation.country,
+        displayName: newLocation.displayName,
+        line1: newLocation.line1,
+        line2: newLocation.line2,
+        penalty: newLocation.penalty,
+        shippingName: newLocation.shippingName,
+        state: newLocation.state,
+        trackingType: newLocation.trackingType,
+        type: newLocation.type,
+        zip: newLocation.zip,
+      }),
     }).then(async (res) => await res.json());
 
     const results = await fetch(
-      `/api/location?companyId=${company.id}&withItems=true`,
+      `/api/locations/location?userId=${user.id}&withItems=true`,
       {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       }
     ).then(async (res) => await res.json());
-    setLocations(results.locations as LocationWithOneItem[]);
+    setLocations(results.locations as FullLocation[]);
     setIsLoading(false);
     document.getElementById("newLocation-modal")?.click();
   };
@@ -162,7 +170,7 @@ export default function StorePage({
             <h2 className="text-left text-lg leading-none text-white">
               {location.displayName ?? location.city}
             </h2>
-            {location.orderItems.length != 0 && (
+            {/* {location.orderItems.length != 0 && (
               <div className="rounded-2xl px-2 bg-re-product-green border-re-product-green">
                 <div className="flex items-center text-sm font-theinhardt-300 w-full gap-1">
                   <div className="text-gray-200">
@@ -176,7 +184,7 @@ export default function StorePage({
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
           <div className="flex flex-col w-full font-theinhardt-300 text-sm mt-1">
             <h2>{location.line1}</h2>
@@ -300,7 +308,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -426,7 +434,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -434,8 +442,9 @@ export default function StorePage({
   }
 
   if (locationId != undefined && productId != undefined) {
-    const product = products.find((product) => product.id === productId)!;
-    const sku = skus.find((sku) => sku.id === skuId)!;
+    const product =
+      products.find((product) => product.id === productId) ?? ({} as Product);
+    const sku = skus.find((sku) => sku.id === skuId) ?? ({} as Sku);
     const sizes = product.sizes.split(", ");
     const materials = product.materials.split(", ");
     const colors = product.colors.split(", ");
@@ -466,9 +475,6 @@ export default function StorePage({
     return (
       <div className="h-screen bg-re-black flex">
         <main className="flex flex-col w-full h-full overflow-y-auto font-theinhardt">
-          {/* <div className="flex mt-4 py-4 pl-6 text-white border-y-1/2 border-re-gray-300">
-            <h1 className="font-theinhardt text-lg">Shop</h1>
-          </div> */}
           <div className="flex h-full justify-between overflow-hidden">
             <div className="flex flex-col w-full">
               <div className="w-full flex gap-6 items-center py-4 px-6 ">
@@ -677,7 +683,7 @@ export default function StorePage({
                 </div>
               </div>
             </div>
-            <Cart companyId={company.id} locations={locations} skus={skus} />
+            <Cart locations={locations} skus={skus} />
           </div>
         </main>
       </div>
@@ -694,7 +700,7 @@ export default function StorePage({
       <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
         <div className="text-white font-theinhardt text-28">Coming Soon</div>
       </main>
-      <Cart companyId={company.id} locations={locations} skus={skus} />
+      <Cart locations={locations} skus={skus} />
     </div>
   );
 }

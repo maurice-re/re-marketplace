@@ -12,15 +12,15 @@ import {
   food_types,
   FormButtonModel,
 } from "../../../constants/form";
-import { useFormStore } from "../../../stores/formStore";
+import { FormStore, useFormStore } from "../../../stores/formStore";
 
 export default function Page() {
   const [selected, setSelected] = useState<FormButtonModel[]>([]);
   const searchParams = useSearchParams();
   const path = usePathname();
 
-  const id = searchParams.get("id");
-  const city = searchParams.get("city");
+  const id = searchParams ? searchParams.get("id") : "";
+  const city = searchParams ? searchParams.get("city") : "";
 
   function getTypes(): FormButtonModel[] {
     if (id == "business") {
@@ -41,7 +41,7 @@ export default function Page() {
   }
 
   const { activateRoute, deactivateRoute, locations } = useFormStore(
-    (state) => ({
+    (state: FormStore) => ({
       activateRoute: state.activateRoute,
       deactivateRoute: state.deactivateRoute,
       locations: state.locations,
@@ -63,14 +63,11 @@ export default function Page() {
   function handleClick(item: FormButtonModel) {
     if (selected.includes(item)) {
       if (shouldRemove(item)) {
-        deactivateRoute(
-          item.route,
-          searchParams.get("city")!.replace("+", " ")
-        );
+        deactivateRoute(item.route, (city ?? "").replace("+", " "));
       }
       setSelected(selected.filter((val) => val != item));
     } else {
-      activateRoute(item.route, searchParams.get("city")!.replace("+", " "));
+      activateRoute(item.route, (city ?? "").replace("+", " "));
       setSelected([...selected, item]);
     }
   }
@@ -91,7 +88,9 @@ export default function Page() {
 
   return (
     <div className="w-screen h-screen bg-re-black flex">
-      <ProgressBar pageName={path?.slice(1) + "?" + searchParams.toString()} />
+      <ProgressBar
+        pageName={path?.slice(1) + "?" + (searchParams ?? "").toString()}
+      />
       <ReLogo />
       <main className="flex flex-col container mx-auto items-center justify-evenly my-4">
         <div>
@@ -113,7 +112,7 @@ export default function Page() {
         </div>
         <div className={"self-center" + numColumns}>{listItems}</div>
         <FormNextButton
-          pageName={path?.slice(1) + "?" + searchParams.toString()}
+          pageName={path?.slice(1) + "?" + (searchParams ?? "").toString()}
           disabled={selected.length < 1}
         />
       </main>

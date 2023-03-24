@@ -85,6 +85,7 @@ export default function CheckoutForm({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
     let hasError = false;
     setIsLoading(true);
@@ -99,7 +100,7 @@ export default function CheckoutForm({
       const redirectPathName = CheckoutType.ORDER
         ? "/dashboard"
         : "/product-dev/success";
-      const { paymentIntent, error } = await stripe.confirmPayment({
+      const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
           // Make sure to change this to your payment completion page
@@ -170,12 +171,11 @@ export default function CheckoutForm({
           setMessage("An unexpected error occurred.");
         }
         return;
-      } else if (type == CheckoutType.ORDER && company && user) {
+      } else if (type == CheckoutType.ORDER && user) {
         await fetch("/api/order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            companyId: company.id,
             orderString: orderString,
             products: products,
             skus: skus,

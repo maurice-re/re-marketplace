@@ -2,20 +2,20 @@
 
 import {
   Company,
-  Location,
   Product,
   ProductDevelopment,
   Sku,
   User,
 } from "@prisma/client";
+import { FullLocation } from "../../app/server-store";
 import { CheckoutType } from "../../utils/checkoutUtils";
 import ReLogo from "../form/re-logo";
 import POForm from "./poForm";
 import POItems from "./poItems";
 
 type POSummaryProps = {
-  company?: Company & { locations: Location[] };
-  locations?: Location[];
+  company?: Company & { locations: FullLocation[]; };
+  locations?: FullLocation[];
   loggedIn?: boolean;
   orderString: string;
   productDevelopment?: ProductDevelopment;
@@ -26,20 +26,17 @@ type POSummaryProps = {
 };
 
 export default function POSummary({
-  company,
   locations,
   orderString,
   products,
   skus,
-  type,
-  user,
 }: POSummaryProps) {
   return (
-    <main className="w-full h-full text-white overflow-auto">
-      <div className="py-6 flex flex-col items-center w-full justify-center">
-        <ReLogo />
+    <div className="w-full h-screen bg-black flex items-start justify-center text-white">
+      <ReLogo />
+      <div className="w-full flex mt-20">
         <POItems
-          locations={JSON.parse(JSON.stringify(company?.locations))}
+          locations={locations}
           orderString={orderString}
           products={products}
           skus={skus}
@@ -47,6 +44,6 @@ export default function POSummary({
         />
         <POForm orderString={orderString} />
       </div>
-    </main>
+    </div>
   );
 }

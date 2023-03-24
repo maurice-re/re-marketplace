@@ -2,21 +2,20 @@ import { Product, Sku } from "@prisma/client";
 import { create } from "zustand";
 import { calculatePriceFromCatalog } from "../utils/prisma/dbUtils";
 
-
-type FormRoute = {
+export type FormRoute = {
     active: boolean;
     city: string;
     name: string;
-  };
-  
-  export type CartOrder = {
+};
+
+export type CartOrder = {
     location: string;
     product: Product;
     quantity: number;
     sku: Sku;
-  };
+};
 
-interface FormStore {
+export interface FormStore {
     locations: string[];
     canCheckout: boolean;
     cart: CartOrder[];
@@ -29,9 +28,9 @@ interface FormStore {
     addSummary: () => void;
     addToCart: (skuId: string, quantity: string, city: string) => void;
     calculatePrice: (
-      id: string,
-      _quantity: number | string,
-      tax?: number
+        id: string,
+        _quantity: number | string,
+        tax?: number
     ) => number;
     calculateTotal: () => number;
     deactivateRoute: (route: string, city: string) => void;
@@ -43,24 +42,24 @@ interface FormStore {
     removeLocation: (location: string) => void;
     setCustomerId: (id: string) => void;
     skipToCheckout: (checkout: string) => void;
-  }
+}
 
-  export const useFormStore = create<FormStore>((set, get) => ({
+export const useFormStore = create<FormStore>((set, get) => ({
     locations: [],
     canCheckout: true,
     cart: [],
     customerId: "",
     productCatalog: [],
     routes: [
-        {active: true, city: "", name: "form/location"}
+        { active: true, city: "", name: "form/location" }
     ],
     skuCatalog: [],
     activateRoute: (route: string, city: string) =>
-        set((state) => {
+        set((state: FormStore) => {
 
             const index = state.routes.findIndex(
                 (r) => r.name.startsWith("form/" + route) && r.active == false && r.city == city
-                );
+            );
             if (index > -1) {
                 const newRoutes = state.routes.map((r, i) => {
                     if (i == index) {
@@ -79,45 +78,45 @@ interface FormStore {
                 active: true,
                 city: location,
                 name: `form/types?id=business&city=${location}`,
-              },
-              { active: false, city: location, name: `form/types?id=food&city=${location}` },
-              {
+            },
+            { active: false, city: location, name: `form/types?id=food&city=${location}` },
+            {
                 active: false,
                 city: location,
                 name: `form/types?id=drinks&city=${location}`,
-              },
-              {
+            },
+            {
                 active: false,
                 city: location,
                 name: `form/product?id=swapbox&city=${location}`,
-              },
-              {
+            },
+            {
                 active: false,
                 city: location,
                 name: `form/product?id=swapcup&city=${location}`,
-              },];
+            },];
             return { locations: newLocations, routes: newRoutes };
         }),
     addSummary: () =>
         set((state) => {
             if (state.canCheckout) {
-                const newRoutes = [...state.routes,{
+                const newRoutes = [...state.routes, {
                     active: true,
                     city: "",
                     name: "form/summary",
-                  },
-                  {
+                },
+                {
                     active: true,
                     city: "",
                     name: "form/checkout",
-                  }];
+                }];
                 return { routes: newRoutes };
             } else {
-                const newRoutes = [...state.routes,{
+                const newRoutes = [...state.routes, {
                     active: true,
                     city: "",
                     name: "form/quote",
-                  }];
+                }];
                 return { routes: newRoutes };
             }
         }),
@@ -141,8 +140,8 @@ interface FormStore {
                 });
                 return { cart: newCart };
             } else {
-            const newCart = [...state.cart, { location: city, product, quantity: parseInt(quantity), sku }];
-            return { cart: newCart };
+                const newCart = [...state.cart, { location: city, product, quantity: parseInt(quantity), sku }];
+                return { cart: newCart };
             }
         }),
     calculatePrice: (id: string, _quantity: number | string, tax?: number) => {
@@ -169,7 +168,7 @@ interface FormStore {
             }
             return { routes: state.routes };
         }),
-    disableCheckout: () => 
+    disableCheckout: () =>
         set((state) => {
             return { canCheckout: false };
         }),
@@ -215,22 +214,22 @@ interface FormStore {
             separated.forEach((itemOrder) => {
                 const [location, quantity, size] = itemOrder.split("^");
                 if (!newLocations.includes(location)) {
-                  newLocations.push(location);
+                    newLocations.push(location);
                 }
-          
+
                 const sku = state.skuCatalog.filter(
-                  (s) => s.material == "Recycled Polypropylene" && s.size == size
+                    (s) => s.material == "Recycled Polypropylene" && s.size == size
                 )[0];
                 const product = state.productCatalog.filter((p) => p.id == sku.productId)[0];
                 if (sku) {
-                  newCart.push({
-                    location: location,
-                    product: product,
-                    quantity: parseInt(quantity),
-                    sku: sku,
-                  });
+                    newCart.push({
+                        location: location,
+                        product: product,
+                        quantity: parseInt(quantity),
+                        sku: sku,
+                    });
                 }
-              });
-                return { cart: newCart, locations: newLocations };
+            });
+            return { cart: newCart, locations: newLocations };
         }),
-  }));
+}));

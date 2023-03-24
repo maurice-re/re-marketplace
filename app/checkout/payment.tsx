@@ -2,7 +2,6 @@
 
 import {
   Company,
-  Location,
   Product,
   ProductDevelopment,
   Sku,
@@ -31,7 +30,6 @@ type CheckoutProps = {
   clientSecret: string;
   company?: Company;
   customerId: string;
-  locations?: Location[];
   loggedIn?: boolean;
   orderString: string;
   paymentIntentId: string;
@@ -47,7 +45,6 @@ export default function Payment({
   clientSecret,
   company,
   customerId,
-  locations,
   orderString,
   paymentIntentId,
   paymentMethods,
@@ -125,7 +122,6 @@ export default function Payment({
               company={JSON.parse(JSON.stringify(company ?? null))}
               customerId={customerId}
               eol={eol}
-              locations={JSON.parse(JSON.stringify(locations ?? []))}
               orderString={orderString}
               paymentMethods={paymentMethods}
               paymentIntentId={paymentIntentId}

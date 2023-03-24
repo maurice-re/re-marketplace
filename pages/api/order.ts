@@ -1,43 +1,53 @@
-import { Product, Sku } from "@prisma/client";
+import { Order, OrderItem, Product, Sku, Status } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
+import { orderNanoid } from "../../utils/apiUtils";
 import { getOrderStringTotal } from "../../utils/dashboard/orderStringUtils";
 import { calculatePriceFromCatalog } from "../../utils/prisma/dbUtils";
 
-
 async function handler(req: Request, res: Response) {
-    const { orderString, companyId, products, skus, userId, paymentId }: { orderString: string, companyId: string, products: Product[], skus: Sku[], userId: string, paymentId: string; } = req.body;
+    const { orderString, products, skus, userId, paymentId }: { orderString: string, products: Product[], skus: Sku[], userId: string, paymentId: string; } = req.body;
     const now = new Date();
     if (req.method == "POST") {
-        const newOrder = await prisma.order.create({
-            data: {
-                amount: getOrderStringTotal(orderString, products, skus, 1.07),
-                companyId: companyId,
-                createdAt: now,
-                userId: userId,
-                paymentId: paymentId,
-            }
-        });
-        const orderItems: { amount: number; createdAt: Date; locationId: string; orderId: string, quantity: number; skuId: string; }[] = [];
+        const orderItems: OrderItem[] = [];
+        const orders: Order[] = [];
         orderString.split("*").forEach(ordersByLocation => {
-            const locationId = ordersByLocation.split("_")[0];
-            const ordersForLocation = ordersByLocation.split("_").slice(1);
-            ordersForLocation.forEach(order => {
-                const [skuId, quantity] = order.split("~");
+            const orderId = orderNanoid();
+            orders.push({
+                id: orderId,
+                amount: getOrderStringTotal(orderString, products, skus, 1.07),
+                createdAt: now,
+                locationId: ordersByLocation.split("_")[0],
+                paymentId,
+                status: Status.SUBMITTED,
+                userId
+            });
+            ordersByLocation.split("_").slice(1).forEach((orderItem, index) => {
+                const [skuId, quantity] = orderItem.split("~");
                 orderItems.push({
+                    id: `${orderId}-${index}`,
                     amount: calculatePriceFromCatalog(skus, skuId, quantity, 1.07),
-                    createdAt: now,
-                    locationId: locationId,
-                    orderId: newOrder.id,
+                    orderId,
                     quantity: parseInt(quantity),
-                    skuId: skuId
-                });
+                    skuId,
+                    comments: null,
+                    createdAt: now,
+                    qrCode: false,
+                    receivedAt: null,
+                    shippedAt: null,
+                    status: Status.SUBMITTED
+                })
             });
         });
 
-        await prisma.orderItem.createMany({
-            data: orderItems
-        });
+        await prisma.$transaction([
+            prisma.order.createMany({
+                data: orders
+            }),
+            prisma.orderItem.createMany({
+                data: orderItems
+            })
+        ])
         res.status(200).send({});
     }
 }

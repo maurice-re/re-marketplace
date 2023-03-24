@@ -1,7 +1,6 @@
-import { Role } from "@prisma/client";
 import { Request, Response } from "express";
 import Stripe from "stripe";
-import prisma from "../../constants/prisma";
+import { prisma } from "../../constants/prisma";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires -- Stripe
 const stripe: Stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -30,8 +29,8 @@ async function user(req: Request, res: Response) {
     where: {
       email: email
     }
-  })
-  if(doesUserExist != undefined) {
+  });
+  if (doesUserExist != undefined) {
     res.status(409).send();
     return;
   }
@@ -53,33 +52,31 @@ async function user(req: Request, res: Response) {
           email: email,
           firstName: firstName,
           lastName: lastName,
-          role: Role.USER,
         },
-      })
+      });
     }
   } else {
-  const now = new Date();
-  const customer = await stripe.customers.create();
+    const now = new Date();
+    const customer = await stripe.customers.create();
 
-  const _company = await prisma.company.create({
-    data: {
+    const _company = await prisma.company.create({
+      data: {
         createdAt: now,
         customerId: customer.id,
         name: company,
-    }
-  })
+      }
+    });
 
-  await prisma.user.create({
-    data: {
+    await prisma.user.create({
+      data: {
         companyId: _company.id,
         createdAt: now,
         email: email,
         firstName: firstName,
         lastName: lastName,
-        role: Role.ADMIN
-    }
-  })
-}
+      }
+    });
+  }
   res.status(200).send("Check your email to login");
 }
 export default user;

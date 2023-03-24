@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import ProductDevelopmentPage from "./productDevelopment";
 

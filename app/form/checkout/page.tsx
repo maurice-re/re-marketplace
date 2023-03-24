@@ -5,7 +5,7 @@ import { Appearance, loadStripe } from "@stripe/stripe-js";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 import { getPriceFromTable } from "../../../utils/prisma/dbUtils";
 import CheckoutForm from "./formCheckout";
@@ -19,7 +19,7 @@ export default function Page() {
   // TODO(Suhana): If form checkout continues, add payment intent ID to this
   // const [paymentIntentId, setPaymentIntentId] = useState("");
   const { calculatePrice, calculateTotal, cart, locations, setCustomerId } =
-    useFormStore((state) => ({
+    useFormStore((state: FormStore) => ({
       calculatePrice: state.calculatePrice,
       calculateTotal: state.calculateTotal,
       cart: state.cart,
@@ -55,7 +55,7 @@ export default function Page() {
     appearance,
   };
 
-  let items: (JSX.Element | JSX.Element[])[] = [];
+  const items: (JSX.Element | JSX.Element[])[] = [];
   allLocations(cart).forEach((city) => {
     if (locations.length > 1) {
       items.push(
@@ -65,7 +65,7 @@ export default function Page() {
       );
     }
     items.push(
-      cart.map((order) => {
+      cart.map((order: CartOrder) => {
         if (order.location != city) {
           return (
             <div key={order.location + order.sku.id + "hidden"} hidden></div>
@@ -101,7 +101,7 @@ export default function Page() {
                 order.sku.id,
                 order.quantity
               )}`}</div>
-              <div className="text-xs text-gray-300">{`\$${getPriceFromTable(
+              <div className="text-xs text-gray-300">{`$${getPriceFromTable(
                 order.sku.priceTable,
                 order.quantity
               )} each`}</div>

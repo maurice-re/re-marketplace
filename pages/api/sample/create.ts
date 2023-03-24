@@ -1,6 +1,6 @@
-import { LocationType, Role } from "@prisma/client";
+import { LocationType } from "@prisma/client";
 import type { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 import { SampleOrderWithSkuID } from "../../../utils/sample/sampleUtils";
 
 async function create(req: Request, res: Response) {
@@ -8,12 +8,12 @@ async function create(req: Request, res: Response) {
     transaction,
     form,
     customerId
-    } : {
-      transaction: SampleOrderWithSkuID,
-      form: string[],
-      customerId: string
-    } = req.body;
-  
+  }: {
+    transaction: SampleOrderWithSkuID,
+    form: string[],
+    customerId: string;
+  } = req.body;
+
   if (!transaction || !form) {
     res.status(400).send("Empty body");
   }
@@ -36,7 +36,6 @@ async function create(req: Request, res: Response) {
       email: form[2],
       firstName: form[0],
       lastName: form[1],
-      role: Role.USER
     },
   });
   const location = await prisma.location.create({
@@ -44,7 +43,6 @@ async function create(req: Request, res: Response) {
       type: LocationType.SAMPLE,
       city: shippingInfo[11],
       country: shippingInfo[8],
-      companyId: company.id,
       line1: shippingInfo[9],
       line2: shippingInfo[10],
       shippingName: shippingInfo[7],
@@ -58,7 +56,6 @@ async function create(req: Request, res: Response) {
       quantity: transaction.quantity,
       amount: transaction.amount,
       locationId: location.id,
-      companyId: company.id,
       skuIds: transaction.skuIds,
       createdAt: now,
     },

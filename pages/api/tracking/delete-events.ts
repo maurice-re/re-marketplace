@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import prisma from "../../../constants/prisma";
+import { prisma } from "../../../constants/prisma";
 
 async function deleteEvent(req: Request, res: Response) {
     if (req.method != "POST") {
@@ -7,7 +7,7 @@ async function deleteEvent(req: Request, res: Response) {
         return;
     }
 
-    const result = await prisma.event.deleteMany({
+    await prisma.event.deleteMany({
         where: {
             AND: [
                 {

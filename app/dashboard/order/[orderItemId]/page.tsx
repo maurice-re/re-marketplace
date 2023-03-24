@@ -1,9 +1,12 @@
 import { unstable_getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
-import prisma from "../../../../constants/prisma";
+import { prisma } from "../../../../constants/prisma";
 import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
-import { OrderItemLocation } from "../../../../utils/dashboard/dashboardUtils";
+import {
+  OrderItemSku,
+  OrderLocation,
+} from "../../../../utils/dashboard/dashboardUtils";
 import { getOrderString } from "../../../../utils/dashboard/orderStringUtils";
 
 export default async function Page({
@@ -19,7 +22,7 @@ export default async function Page({
 
   const { orderItemId } = params;
 
-  const orderItem: OrderItemLocation | null = await prisma.orderItem.findFirst({
+  const orderItem: OrderItemSku | null = await prisma.orderItem.findFirst({
     where: {
       id: orderItemId,
     },
@@ -29,11 +32,21 @@ export default async function Page({
           product: true,
         },
       },
+    },
+  });
+
+  const orderId = orderItem?.orderId;
+
+  const order: OrderLocation | null = await prisma.order.findUnique({
+    where: {
+      id: orderId,
+    },
+    include: {
       location: true,
     },
   });
 
-  if (orderItem == null) {
+  if (orderItem == null || order == null) {
     return (
       <div className="w-full h-screen bg-re-black flex overflow-hidden">
         <main className="text-xl text-white flex items-center">
@@ -90,8 +103,7 @@ export default async function Page({
                     <div className="flex justify-between">
                       <div className="text-re-gray-text">Location</div>
                       <div>
-                        {orderItem.location.displayName ??
-                          orderItem.location.city}
+                        {order.location.displayName ?? order.location.city}
                       </div>
                     </div>
                     <div className="flex justify-between">

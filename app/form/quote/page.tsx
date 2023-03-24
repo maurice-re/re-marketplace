@@ -6,22 +6,25 @@ import { FormEvent, useState } from "react";
 import AddressField from "../../../components/form/address-field";
 import ProgressBar from "../../../components/form/progress-bar";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { CartOrder, FormStore, useFormStore } from "../../../stores/formStore";
 import { allLocations } from "../../../utils/form/cart";
 
 export default function Page() {
-  const { cart, locations, prettyString } = useFormStore((state) => ({
-    cart: state.cart,
-    locations: state.locations,
-    prettyString: state.prettyString,
-  }));
+  const { cart, locations, prettyString } = useFormStore(
+    (state: FormStore) => ({
+      cart: state.cart,
+      locations: state.locations,
+      prettyString: state.prettyString,
+    })
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formElements = (e.target as any).elements as HTMLInputElement[];
-    let shippingInfo: string[] = [];
+    const shippingInfo: string[] = [];
     for (let i = 0; i < formElements.length - 1; i++) {
       shippingInfo.push(formElements[i].value);
     }
@@ -44,9 +47,8 @@ export default function Page() {
     setSubmitted(true);
   };
 
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
   allLocations(cart).forEach((city) => {
-    let first = 1;
     const topBorder = items.length == 0 ? "" : " border-t-2 my-4";
     items.push(
       <div
@@ -57,11 +59,10 @@ export default function Page() {
           <div className=" text-white text-28 pl-8 pt-4 mb-2">{city}</div>
         )}
         <div className="flex flex-wrap justify-evenly" key={city + "items"}>
-          {cart.map((order) => {
+          {cart.map((order: CartOrder) => {
             if (order.location != city) {
               return;
             }
-            first -= 1;
             return (
               <div key={city + order.sku.id} className=" w-2/5 py-2">
                 <div className="flex justify-evenly">

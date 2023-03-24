@@ -1,44 +1,12 @@
-import { Company, Event, Settings, User } from "@prisma/client";
 import Link from "next/link";
-import prisma from "../../constants/prisma";
 import Tracking from "../dashboard/tracking/tracking";
-
-export type UserSettings =
-  | (User & {
-      company: Company & {
-        settings: Settings | null;
-      };
-    })
-  | null;
-
-async function getSkus() {
-  const skus = await prisma.sku.findMany();
-  return JSON.parse(JSON.stringify(skus));
-}
-
-async function getUser() {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: "lewis@example.com", // Complete
-    },
-    include: {
-      company: {
-        include: {
-          settings: true,
-        },
-      },
-    },
-  });
-  return JSON.parse(JSON.stringify(user));
-}
+import { useServerStore } from "../server-store";
 
 export default async function Page() {
-  const user: UserSettings = await getUser();
+  const user = await useServerStore.getState().getUser();
   if (!user) return <div>Not found</div>;
-  const skus = await getSkus();
-  const events: Event[] = await prisma.event.findMany({
-    where: { companyId: user.companyId },
-  });
+
+  const locations = await useServerStore.getState().getLocations(true);
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
@@ -87,7 +55,11 @@ export default async function Page() {
             </button>
           </Link>
         </div>
-        <Tracking user={user} skus={skus} demo={true} events={events} />
+        {/* TODO(Suhana): Pass specific location for demo */}
+        <Tracking
+          demo={true}
+          locations={locations}
+        />
       </main>
     </div>
   );

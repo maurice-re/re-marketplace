@@ -8,7 +8,7 @@ import FormNextButton from "../../../components/form/next-button";
 import ProgressBar from "../../../components/form/progress-bar";
 import SkuQuantityField from "../../../components/form/quantity_input";
 import ReLogo from "../../../components/form/re-logo";
-import { useFormStore } from "../../../stores/formStore";
+import { FormStore, useFormStore } from "../../../stores/formStore";
 import FormOptionButton from "../option-button";
 
 const emptyProduct = {
@@ -26,7 +26,7 @@ const emptyProduct = {
 export default function Page() {
   const path = usePathname();
   const searchParams = useSearchParams();
-  const { locations, productCatalog } = useFormStore((state) => ({
+  const { locations, productCatalog } = useFormStore((state: FormStore) => ({
     locations: state.locations,
     productCatalog: state.productCatalog,
   }));
@@ -40,14 +40,14 @@ export default function Page() {
     setChosenMaterial([]);
   }, [path]);
 
-  const id = searchParams.get("id");
-  const city = searchParams.get("city");
+  const id = searchParams ? searchParams.get("id") : "";
+  const city = searchParams ? searchParams.get("city") : "";
 
   useEffect(() => {
     if (productCatalog) {
       const productId = id == "swapcup" ? "SC1" : "SB1";
       const _product =
-        productCatalog.find((p) => productId == p.id) ?? emptyProduct;
+        productCatalog.find((p: Product) => productId == p.id) ?? emptyProduct;
       setProduct(_product);
     }
   }, [id, productCatalog]);
@@ -55,6 +55,7 @@ export default function Page() {
   function handleOptionClick(
     optionLabel: string,
     selected: string[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setSelected: any,
     multipleChoice: boolean
   ) {
@@ -75,7 +76,7 @@ export default function Page() {
 
   const sizes = product.sizes
     .split(", ")
-    .map((size) => (
+    .map((size: string) => (
       <FormOptionButton
         handleClick={() =>
           handleOptionClick(size, chosenSizes, setChosenSizes, true)
@@ -88,7 +89,7 @@ export default function Page() {
 
   const materials = product.materials
     .split(", ")
-    .map((material) => (
+    .map((material: string) => (
       <FormOptionButton
         handleClick={() =>
           handleOptionClick(material, chosenMaterial, setChosenMaterial, false)
@@ -117,7 +118,9 @@ export default function Page() {
         <meta name="product" content="Info on product from the Re catalog" />
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <ProgressBar pageName={path?.slice(1) + "?" + searchParams.toString()} />
+      <ProgressBar
+        pageName={path?.slice(1) + "?" + (searchParams ?? "").toString()}
+      />
       <ReLogo />
       <main className="flex flex-col container mx-auto my-4 justify-evenly">
         <div className=" text-white text-5xl text-center font-theinhardt">
@@ -162,7 +165,7 @@ export default function Page() {
           </div>
         </div>
         <FormNextButton
-          pageName={path?.slice(1) + "?" + searchParams.toString()}
+          pageName={path?.slice(1) + "?" + (searchParams ?? "").toString()}
           disabled={false}
           green
         />

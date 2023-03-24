@@ -1,7 +1,9 @@
 import { customAlphabet } from "nanoid";
 
 const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const orderAlphabet = '0123456789';
 export const nanoid = customAlphabet(alphabet, 12);
+export const orderNanoid = customAlphabet(orderAlphabet, 6);
 
 
 export async function logApi(route: string, success?: boolean, message? : string) {

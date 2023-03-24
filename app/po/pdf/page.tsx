@@ -1,7 +1,7 @@
 import "tailwindcss/tailwind.css";
 import ReLogo from "../../../components/form/re-logo";
-import POFile from "../../../components/po/poFile";
-import prisma from "../../../constants/prisma";
+import POViewer from "../../../components/po/poViewer";
+import { prisma } from "../../../constants/prisma";
 import { calculatePriceFromCatalog } from "../../../utils/prisma/dbUtils";
 
 export type POItem = {
@@ -21,11 +21,14 @@ export default async function Page({
 }: {
   searchParams?: {
     orderString: string;
-    buyerName: string;
-    buyerBillingAddressLine: string;
-    buyerShippingAddressLine: string;
+    buyerCompany: string;
+    buyerAddressLine: string;
+    buyerCity: string;
+    buyerState: string;
+    buyerZip: string;
+    buyerCountry: string;
     buyerPhone: string;
-    buyerTaxId: number;
+    buyerEmail: string;
     requestioner: string;
     shippedVia: string;
     fobPoint: string;
@@ -36,27 +39,30 @@ export default async function Page({
     !(
       searchParams &&
       searchParams.orderString &&
-      searchParams.buyerName &&
-      searchParams.buyerBillingAddressLine &&
-      searchParams.buyerShippingAddressLine &&
+      searchParams.buyerCompany &&
+      searchParams.buyerAddressLine &&
+      searchParams.buyerCity &&
+      searchParams.buyerState &&
+      searchParams.buyerZip &&
+      searchParams.buyerCountry &&
       searchParams.buyerPhone &&
-      searchParams.buyerTaxId &&
-      searchParams.requestioner &&
-      searchParams.shippedVia &&
-      searchParams.fobPoint &&
-      searchParams.terms
+      searchParams.buyerEmail
     )
   ) {
+    console.log(searchParams);
     return <div>An error occurred</div>;
   }
 
   const {
     orderString,
-    buyerName,
-    buyerBillingAddressLine,
-    buyerShippingAddressLine,
+    buyerCompany,
+    buyerAddressLine,
+    buyerCity,
+    buyerState,
+    buyerZip,
+    buyerCountry,
     buyerPhone,
-    buyerTaxId,
+    buyerEmail,
     requestioner,
     shippedVia,
     fobPoint,
@@ -120,15 +126,14 @@ export default async function Page({
   ];
 
   return (
-    <div className="w-full h-screen bg-re-black flex items-center justify-center text-white">
+    <div className="w-full h-screen bg-black flex items-center justify-center text-white">
       <ReLogo />
       <main className="flex flex-col items-center justify-center w-full py-6 text-white font-theinhardt px-4">
         <h1 className="text-5xl font-theinhardt text-white text-center py-10">
           Thank you for your purchase
         </h1>
         <div className="mx-auto">
-          {/* TODO(Suhana): Pass actual total here */}
-          <POFile
+          <POViewer
             items={items}
             totals={totals}
             sellerCompany="The Reusability Company"
@@ -137,21 +142,26 @@ export default async function Page({
             sellerState="Delaware"
             sellerZip="19804"
             sellerCountry="USA"
-            sellerWebsite="wwww.re.company"
+            sellerWebsite="www.re.company"
             sellerPhone="+1 9295054562"
             sellerTaxId="87-2179396"
-            sellerPONumber={57}
-            // TODO(Suhana): Add city, state, zip, and country for both billing and shipping
-            buyerBillingAddressLine={buyerBillingAddressLine}
-            buyerShippingAddressLine={buyerShippingAddressLine}
-            // TODO(Suhana): Add first and last name fields
-            buyerName={buyerName}
+            sellerBankName="Chase Bank"
+            sellerRoutingNumber={815505463}
+            sellerAccountNumber={325070760}
+            poNumber={57}
+            buyerAddressLine={buyerAddressLine}
+            buyerCity={buyerCity}
+            buyerState={buyerState}
+            buyerZip={buyerZip}
+            buyerCountry={buyerCountry}
+            buyerCompany={buyerCompany}
             buyerPhone={buyerPhone}
-            buyerTaxId={buyerTaxId}
             requestioner={requestioner}
             shippedVia={shippedVia}
             fobPoint={fobPoint}
             terms={terms}
+            sellerEmail={"maddie@re.company"}
+            buyerEmail={buyerEmail}
           />
         </div>
       </main>

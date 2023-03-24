@@ -1,188 +1,108 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import DoubleInputField from "../form/double-input-field";
+import InputField from "../form/input-field";
 
 type POFormProps = {
-  orderString: string;
+    orderString: string;
 };
 
-export default function POForm({ orderString }: POFormProps) {
-  const router = useRouter();
-  const [buyerName, setBuyerName] = useState<string>("");
-  const [buyerBillingAddressLine, setBuyerBillingAddressLine] =
-    useState<string>("");
-  const [buyerShippingAddressLine, setBuyerShippingAddressLine] =
-    useState<string>("");
-  const [buyerPhone, setBuyerPhone] = useState<string>("");
-  const [buyerTaxId, setBuyerTaxId] = useState<string>("");
-  const [requestioner, setRequestioner] = useState<string>("");
-  const [shippedVia, setShippedVia] = useState<string>("");
-  const [fobPoint, setFobPoint] = useState<string>("");
-  const [terms, setTerms] = useState<string>("");
+type POFormInputs = {
+    buyerPhone: string;
+    buyerCity: string;
+    buyerState: string;
+    buyerZip: string;
+    buyerCountry: string;
+    buyerAddressLine: string;
+    buyerCompany: string;
+    requestioner: string;
+    shippedVia: string;
+    fobPoint: string;
+    terms: string;
+    buyerEmail: string;
+};
 
-  return (
-    <form className="w-1/4 my-4 flex-col">
-      <div>
-        <div className="py-4">
-          <div className="text-lg font-semibold">Your Info</div>
-          <div className="p-0 my-0">
-            <input
-              name={"Contact Name"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-100 border-t mt-2 rounded-t-md"
-              }
-              type="text"
-              value={buyerName}
-              placeholder={"Contact Name"}
-              onChange={(e) => setBuyerName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"Billing Address Line"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-200"
-              }
-              type="text"
-              value={buyerBillingAddressLine}
-              placeholder={"Billing Address Line"}
-              onChange={(e) => setBuyerBillingAddressLine(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"Shipping Address Line"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300"
-              }
-              type="text"
-              value={buyerShippingAddressLine}
-              placeholder={"Shipping Address Line"}
-              onChange={(e) => setBuyerShippingAddressLine(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"Buyer Phone"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300"
-              }
-              type="text"
-              value={buyerPhone}
-              placeholder={"Buyer Phone"}
-              onChange={(e) => setBuyerPhone(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"Buyer Tax ID"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300 border-b mb-2 rounded-b"
-              }
-              type="text"
-              value={buyerTaxId}
-              placeholder={"Buyer Tax ID"}
-              onChange={(e) => setBuyerTaxId(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      </div>
-      <div>
-        <div className="py-4">
-          <div className="text-lg font-semibold">Other Info</div>
-          <div className="p-0 my-0">
-            <input
-              name={"Requestioner"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300 border-t mt-2 rounded-t"
-              }
-              type="text"
-              value={requestioner}
-              placeholder={"Requestioner"}
-              onChange={(e) => setRequestioner(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"Shipped Via"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300"
-              }
-              type="text"
-              value={shippedVia}
-              placeholder={"Shipped Via"}
-              onChange={(e) => setShippedVia(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"FOB Point"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300"
-              }
-              type="text"
-              value={fobPoint}
-              placeholder={"FOB Point"}
-              onChange={(e) => setFobPoint(e.target.value)}
-              required
-            />
-          </div>
-          <div className="p-0 my-0">
-            <input
-              name={"Terms"}
-              className={
-                "p-1 border-x border-y text-lg w-full bg-re-dark-green-500 border-re-gray-300 outline-re-gray-300 border-b mb-2 rounded-b-md"
-              }
-              type="text"
-              value={terms}
-              placeholder={"Terms"}
-              onChange={(e) => setTerms(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      </div>
-      <Link
-        className={`flex flex-col my-1 w-1/2 mx-auto ${
-          orderString == "" && "pointer-events-none"
-        }`}
-        href={{
-          pathname: "/po/pdf",
-          query: {
-            orderString: orderString,
-            buyerName: buyerName,
-            buyerBillingAddressLine: buyerBillingAddressLine,
-            buyerShippingAddressLine: buyerShippingAddressLine,
-            buyerPhone: buyerPhone,
-            buyerTaxId: buyerTaxId,
-            requestioner: requestioner,
-            shippedVia: shippedVia,
-            fobPoint: fobPoint,
-            terms: terms,
-          },
-        }}
-      >
-        <button
-          id="submit"
-          className={`${
-            orderString === ""
-              ? "text-re-gray-text border-1/2 border-re-gray-300"
-              : "bg-re-blue-500"
-          }  rounded py-1 font-theinhardt-300 text-white text-lg w-full`}
-          onClick={() => router.push("/po/pdf")}
+export default function POForm({
+    orderString,
+}: POFormProps) {
+    const [inputValues, setInputValues] = useState<POFormInputs>({ buyerPhone: "", buyerCity: "", buyerState: "", buyerZip: "", buyerCountry: "", buyerAddressLine: "", buyerCompany: "", requestioner: "", shippedVia: "", fobPoint: "", terms: "", buyerEmail: "" });
+    const { terms, buyerPhone, buyerCity, buyerState, buyerZip, buyerCountry, buyerAddressLine, buyerCompany, requestioner, shippedVia, fobPoint, buyerEmail } = inputValues;
+
+    const canSubmit = () => {
+        // Check for required fields
+        if (orderString !== "" && buyerPhone !== "" && buyerCity !== "" && buyerState !== "" && buyerZip !== "" && buyerCompany !== "" && buyerAddressLine !== "" && buyerCompany !== "" && buyerEmail !== "") {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setInputValues((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    return (
+        <form
+            className="w-1/2 my-4 flex-col"
         >
-          Go to PDF
-        </button>
-      </Link>
-    </form>
-  );
+            <div>
+                <div className="py-4">
+                    <div className="text-lg font-semibold">Contact Info</div>
+                    <InputField top required placeholder={"Name"} value={buyerCompany} name={"buyerCompany"} onChange={handleChange} />
+                    <InputField required placeholder={"Address Line"} value={buyerAddressLine} name={"buyerAddressLine"} onChange={handleChange} />
+                    <DoubleInputField required leftPlaceholder={"City"} leftValue={buyerCity} leftName={"buyerCity"} rightPlaceholder={"State"} rightValue={buyerState} rightName={"buyerState"} onChange={handleChange} />
+                    <DoubleInputField required leftPlaceholder={"Zip"} leftValue={buyerZip} leftName={"buyerZip"} rightPlaceholder={"Country"} rightValue={buyerCountry} rightName={"buyerCountry"} onChange={handleChange} />
+                    <InputField required placeholder={"Phone Number"} value={buyerPhone} name={"buyerPhone"} onChange={handleChange} />
+                    <InputField required placeholder={"Email"} value={buyerEmail} name={"buyerEmail"} onChange={handleChange} />
+                </div>
+            </div>
+            <div>
+                <div className="py-4">
+                    <div className="text-lg font-semibold">Order Info</div>
+                    <InputField top placeholder={"Requestioner"} value={requestioner} name={"requestioner"} onChange={handleChange} />
+                    <InputField placeholder={"Shipped Via"} value={shippedVia} name={"shippedVia"} onChange={handleChange} />
+                    <InputField placeholder={"FOB Point"} value={fobPoint} name={"fobPoint"} onChange={handleChange} />
+                    <InputField bottom placeholder={"Terms"} value={terms} name={"terms"} onChange={handleChange} />
+                </div>
+            </div>
+            <Link
+                className={`flex flex-col my-1 w-1/2 mx-auto${orderString == "" && "pointer-events-none"}`}
+                href={{
+                    pathname: "/po/pdf",
+                    query: {
+                        orderString: orderString,
+                        buyerCompany: buyerCompany,
+                        buyerAddressLine: buyerAddressLine,
+                        buyerCity: buyerCity,
+                        buyerState: buyerState,
+                        buyerZip: buyerZip,
+                        buyerCountry: buyerCountry,
+                        buyerPhone: buyerPhone,
+                        buyerEmail: buyerEmail,
+                        requestioner: requestioner,
+                        shippedVia: shippedVia,
+                        fobPoint: fobPoint,
+                        terms: terms,
+                    },
+                }}>
+                <button
+                    className={`${!canSubmit()
+                        ? "text-re-gray-300 border-1/2 border-re-gray-300"
+                        : "bg-re-blue"
+                        } self-center rounded-md py-1 font-theinhardt-300 text-white text-lg w-full`}
+                    disabled={!canSubmit()}
+                >
+                    Go to PDF
+                </button>
+
+            </Link>
+        </form>
+
+    );
 }

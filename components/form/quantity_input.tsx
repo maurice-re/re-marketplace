@@ -1,6 +1,7 @@
+import { Product, Sku } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useFormStore } from "../../stores/formStore";
+import { FormStore, useFormStore } from "../../stores/formStore";
 import { getPriceFromTable } from "../../utils/prisma/dbUtils";
 
 function SkuQuantityField({
@@ -13,7 +14,7 @@ function SkuQuantityField({
   size: string;
 }) {
   const { addToCart, canCheckout, skuCatalog, productCatalog } = useFormStore(
-    (state) => ({
+    (state: FormStore) => ({
       addToCart: state.addToCart,
       canCheckout: state.canCheckout,
       skuCatalog: state.skuCatalog,
@@ -21,11 +22,11 @@ function SkuQuantityField({
     })
   );
   const searchParams = useSearchParams();
-  const city = searchParams.get("city");
+  const city = searchParams ? searchParams.get("city") : "";
 
-  const product = productCatalog.filter((p) => p.id == productId)[0];
+  const product = productCatalog.filter((p: Product) => p.id == productId)[0];
   const sku = skuCatalog.filter(
-    (sku) => sku.material == material && sku.size == size
+    (sku: Sku) => sku.material == material && sku.size == size
   )[0];
 
   const [quantity, setQuantity] = useState<number>(0);
