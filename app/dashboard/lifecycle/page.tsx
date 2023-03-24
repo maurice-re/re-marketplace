@@ -20,17 +20,16 @@ import LifecycleChart from "./lifecycleChart";
 export default async function Page() {
   const events = await prisma.event.findMany({});
 
-  if (!events) {
+  if (!events || events.length === 0) {
     return (
-      <div className="h-screen bg-re-black flex">
-        <main className="flex flex-col  mx-auto h-full justify-evenly py-3 items-center">
-          <div className="text-white font-theinhardt text-28">
-            Sign up for tracking to see this information
-          </div>
+      <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
+        <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
+          <div>Integrate with our API and see your emission savings</div>
         </main>
       </div>
     );
   }
+
   const totalUsed = getTotalUsed(events);
   const singleUseSaved = getEventsByAction(events, Action.BORROW).length;
   const percentSaved = calculatePercent(events);
