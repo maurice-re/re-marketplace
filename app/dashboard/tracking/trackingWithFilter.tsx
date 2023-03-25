@@ -32,6 +32,128 @@ function TrackingWithFilter({
   const [settings, setSettings] = useState<Settings | null>(null);
   const [events, setEvents] = useState<Event[]>(locations[0].events);
 
+  // Update events and settings on changes
+  useEffect(() => {
+    /* Update events. */
+    let newEvents: Event[] = [];
+    if (filter == "Location") {
+      newEvents = location.events;
+    }
+    if (filter == "Group") {
+      group.locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          newEvents.push(event);
+        });
+      });
+    }
+    if (filter == "Sku") {
+      locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          if (event.skuId == sku.id) {
+            newEvents.push(event);
+          }
+        });
+      });
+    }
+    if (filter == "Location / Sku") {
+      location.events.forEach((event: Event) => {
+        if (event.skuId == sku.id) {
+          newEvents.push(event);
+        }
+      });
+    }
+    if (filter == "All Locations") {
+      location.events.forEach((event: Event) => {
+        newEvents.push(event);
+      });
+    }
+    if (filter == "Location / Order") {
+      // TODO(Suhana): Ensure that Event model's itemId is the same as the orderItem ID
+      // All events associated with the items in the selected order (container-specific)
+      order.items.forEach((orderItem: OrderItem) => {
+        location.events.forEach((event: Event) => { // Check selected location
+          if (event.itemId === orderItem.id) {
+            newEvents.push(event);
+          }
+        });
+      });
+    }
+    if (filter == "Order") {
+      // All events associated with the items in the order (container-specific)
+      order.items.forEach((orderItem: OrderItem) => {
+        locations.forEach((location: FullLocation) => { // Check all locations
+          location.events.forEach((event: Event) => {
+            if (event.itemId === orderItem.id) {
+              newEvents.push(event);
+            }
+          });
+        });
+      });
+    }
+    if (filter == "Location / Order / Order Item") {
+      location.events.forEach((event: Event) => { // Check selected location
+        if (event.itemId === orderItem.id) {
+          newEvents.push(event);
+        }
+      });
+    }
+    if (filter == "Order / Order Item") {
+      locations.forEach((location: FullLocation) => { // Check all locations
+        location.events.forEach((event: Event) => {
+          if (event.itemId === orderItem.id) {
+            newEvents.push(event);
+          }
+        });
+      });
+    }
+    if (filter == "Consumer") {
+      locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          if (event.consumerId == consumerId) {
+            newEvents.push(event);
+          }
+        });
+      });
+    }
+    if (filter == "Location / Consumer") {
+      location.events.forEach((event: Event) => {
+        if (event.consumerId == consumerId) {
+          newEvents.push(event);
+        }
+      });
+    }
+    setEvents(newEvents);
+
+    /* Update settings. */
+    let newSettings: Settings | null = null;
+    if (filter == "Location" || filter == "Location / Sku" || filter == "Location / Order" || filter == "Location / Order / Order Item" || filter === "Location / Consumer") {
+      newSettings = location.settings;
+    }
+    if (filter == "All Locations") {
+      // If All Locations is selected, use the settings associated with the first location
+      newSettings = location.settings;
+    }
+    if (filter == "Group") {
+      // If Group is selected, use the settings associated with the first location in the group
+      newSettings = group.locations[0].settings;
+    }
+    if (filter == "Sku") {
+      // If Sku is selected, no custom settings are applicable
+      newSettings = null;
+    }
+    if (filter == "Order" || filter == "Order / Order Item") {
+      // If Order or Order / Order Item is selected, use the settings associated with the location the order is for
+      locations.forEach((location: FullLocation) => {
+        location.orders.forEach((currOrder: FullOrder) => {
+          if (currOrder.id == order.id) {
+            newSettings = location.settings;
+          }
+        });
+      });
+    }
+    setSettings(newSettings);
+  }, [filter, group, location, sku, order, orderItem, consumerId]);
+
   // If it goes into these functions and any of these fields change, it'll call the function again
   function getConsumerIds(byLocation: boolean): string[] {
     const consumerIds: string[] = [];
@@ -55,133 +177,6 @@ function TrackingWithFilter({
 
     return consumerIds;
   }
-
-  const getSettingsByFilter = () => {
-    if (filter == "Location" || filter == "Location / Sku" || filter == "Location / Order" || filter == "Location / Order / Order Item" || filter === "Location / Consumer") {
-      return location.settings;
-    }
-    if (filter == "All Locations") {
-      // If All Locations is selected, use the settings associated with the first location
-      return location.settings;
-    }
-    if (filter == "Group") {
-      // If Group is selected, use the settings associated with the first location in the group
-      return group.locations[0].settings;
-    }
-    if (filter == "Sku") {
-      // If Sku is selected, no custom settings are applicable
-      return null;
-    }
-    if (filter == "Order" || filter == "Order / Order Item") {
-      // If Order or Order / Order Item is selected, use the settings associated with the location the order is for
-      locations.forEach((location: FullLocation) => {
-        location.orders.forEach((currOrder: FullOrder) => {
-          if (currOrder.id == order.id) {
-            return location.settings;
-          }
-        });
-      });
-    }
-    return null; // Default - should not get here
-  };
-
-  const getEventsByFilter = (newFilter: string) => {
-    let newEvents: Event[] = [];
-    if (newFilter == "Location") {
-      newEvents = location.events;
-    }
-    if (newFilter == "Group") {
-      group.locations.forEach((location: FullLocation) => {
-        location.events.forEach((event: Event) => {
-          newEvents.push(event);
-        });
-      });
-    }
-    if (newFilter == "Sku") {
-      locations.forEach((location: FullLocation) => {
-        location.events.forEach((event: Event) => {
-          if (event.skuId == sku.id) {
-            newEvents.push(event);
-          }
-        });
-      });
-    }
-    if (newFilter == "Location / Sku") {
-      location.events.forEach((event: Event) => {
-        if (event.skuId == sku.id) {
-          newEvents.push(event);
-        }
-      });
-    }
-    if (newFilter == "All Locations") {
-      location.events.forEach((event: Event) => {
-        newEvents.push(event);
-      });
-    }
-    if (newFilter == "Location / Order") {
-      // TODO(Suhana): Ensure that Event model's itemId is the same as the orderItem ID
-      // All events associated with the items in the selected order (container-specific)
-      order.items.forEach((orderItem: OrderItem) => {
-        location.events.forEach((event: Event) => { // Check selected location
-          if (event.itemId === orderItem.id) {
-            newEvents.push(event);
-          }
-        });
-      });
-    }
-    if (newFilter == "Order") {
-      // All events associated with the items in the order (container-specific)
-      order.items.forEach((orderItem: OrderItem) => {
-        locations.forEach((location: FullLocation) => { // Check all locations
-          location.events.forEach((event: Event) => {
-            if (event.itemId === orderItem.id) {
-              newEvents.push(event);
-            }
-          });
-        });
-      });
-    }
-    if (newFilter == "Location / Order / Order Item") {
-      location.events.forEach((event: Event) => { // Check selected location
-        if (event.itemId === orderItem.id) {
-          newEvents.push(event);
-        }
-      });
-    }
-    if (newFilter == "Order / Order Item") {
-      locations.forEach((location: FullLocation) => { // Check all locations
-        location.events.forEach((event: Event) => {
-          if (event.itemId === orderItem.id) {
-            newEvents.push(event);
-          }
-        });
-      });
-    }
-    if (newFilter == "Consumer") {
-      locations.forEach((location: FullLocation) => {
-        location.events.forEach((event: Event) => {
-          if (event.consumerId == consumerId) {
-            newEvents.push(event);
-          }
-        });
-      });
-    }
-    if (newFilter == "Location / Consumer") {
-      location.events.forEach((event: Event) => {
-        if (event.consumerId == consumerId) {
-          newEvents.push(event);
-        }
-      });
-    }
-    return newEvents; // Default - should not get here
-  };
-
-  // Update events and settings on changes
-  useEffect(() => {
-    const newEvents: Event[] = getEventsByFilter(filter);
-    setEvents(newEvents);
-    setSettings(getSettingsByFilter());
-  }, [filter, group, location, sku, order, orderItem, consumerId, getEventsByFilter, getSettingsByFilter]);
 
   const handleFilterTypeChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
