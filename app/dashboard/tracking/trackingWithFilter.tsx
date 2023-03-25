@@ -152,7 +152,7 @@ function TrackingWithFilter({
       });
     }
     setSettings(newSettings);
-  }, [filter, group, location, sku, order, orderItem, consumerId]);
+  }, [filter, group, location, sku, order, orderItem, consumerId, locations]);
 
   // If it goes into these functions and any of these fields change, it'll call the function again
   function getConsumerIds(byLocation: boolean): string[] {
