@@ -7,7 +7,7 @@ import { authOptions } from "../pages/api/auth/[...nextauth]";
 
 export type FullOrder = Order & {
   items: OrderItem[];
-  location: FullLocation;
+  location: Location; // To avoid circular dependency with FullLocation, don't use FullLocation here
 };
 
 export type FullSku = Sku & {
@@ -227,7 +227,8 @@ export const useServerStore = create<ServerStore>((set, get) => ({
           include: {
             orders: {
               include: {
-                items: true
+                items: true,
+                location: true
               }
             },
             settings: true,
@@ -238,7 +239,8 @@ export const useServerStore = create<ServerStore>((set, get) => ({
           include: {
             orders: {
               include: {
-                items: true
+                items: true,
+                location: true
               }
             },
             settings: true,

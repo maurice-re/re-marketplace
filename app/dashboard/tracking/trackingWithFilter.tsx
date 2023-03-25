@@ -81,7 +81,13 @@ function TrackingWithFilter({
     }
     if (filter == "Order" || filter == "Order / Order Item") {
       // If Order or Order / Order Item is selected, use the settings associated with the location the order is for
-      return order.location?.settings;
+      locations.forEach((location: FullLocation) => {
+        location.orders.forEach((currOrder: FullOrder) => {
+          if (currOrder.id == order.id) {
+            return location.settings;
+          }
+        });
+      });
     }
     return null; // Default - should not get here
   };

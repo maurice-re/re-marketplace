@@ -35,7 +35,7 @@ export default async function Page() {
             Unlock tracking insights like these and more metric customization
             options by integrating with our tracking API.
           </h3>
-          <Link href={"/trackingDemo"}>
+          <Link href={"/dashboard/tracking"}>
             <button className="w-1/8 mb-8 flex items-center justify-start gap-2">
               <h2 className="active:opacity-80 decoration-re-green-300 decoration-1 underline underline-offset-2 text-white font-theinhardt-300 text-xl">
                 Set up tracking
@@ -56,8 +56,7 @@ export default async function Page() {
           </Link>
         </div>
         <Tracking
-          demo={true}
-          initialSettings={demoLocation.settings}
+          settings={demoLocation.settings}
           events={demoLocation.events}
         />
       </main>
