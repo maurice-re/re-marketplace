@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { User } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import { unstable_getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import LineItems from "../../components/checkout/lineItems";
 import ReLogo from "../../components/form/re-logo";
@@ -15,7 +15,7 @@ import Payment from "./payment";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string };
+  searchParams?: { orderString: string; };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -44,7 +44,7 @@ export default async function Page({
         />
       );
     } else {
-      const session = await getServerSession(authOptions);
+      const session = await unstable_getServerSession(authOptions);
       const company = await prisma.company.findUnique({
         where: { id: productDev.companyId },
       });

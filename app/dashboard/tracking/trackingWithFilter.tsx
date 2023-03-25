@@ -32,13 +32,6 @@ function TrackingWithFilter({
   const [settings, setSettings] = useState<Settings | null>(null);
   const [events, setEvents] = useState<Event[]>(locations[0].events);
 
-  // Update events and settings on changes
-  useEffect(() => {
-    let newEvents: Event[] = getEventsByFilter(filter);
-    setEvents(newEvents);
-    setSettings(getSettingsByFilter());
-  }, [filter, group, location, sku, order, orderItem, consumerId]);
-
   // If it goes into these functions and any of these fields change, it'll call the function again
   function getConsumerIds(byLocation: boolean): string[] {
     const consumerIds: string[] = [];
@@ -182,6 +175,13 @@ function TrackingWithFilter({
     }
     return newEvents; // Default - should not get here
   };
+
+  // Update events and settings on changes
+  useEffect(() => {
+    const newEvents: Event[] = getEventsByFilter(filter);
+    setEvents(newEvents);
+    setSettings(getSettingsByFilter());
+  }, [filter, group, location, sku, order, orderItem, consumerId, getEventsByFilter, getSettingsByFilter]);
 
   const handleFilterTypeChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>

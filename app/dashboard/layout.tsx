@@ -35,7 +35,7 @@ export default async function Layout({
 
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
 
-  const locations = [...ownedLocations, ...viewableLocations];
+  // const locations = [...ownedLocations, ...viewableLocations];
 
   // All users see the following
   const routes: Route[] = [
