@@ -17,8 +17,8 @@ export default async function Layout({
 }) {
   const user = await useServerStore.getState().getUser();
   const orders: Order[] = await useServerStore.getState().getOrders();
-  const ownedLocations = await useServerStore.getState().getLocations(true);
-  const viewableLocations = await useServerStore.getState().getLocations(false);
+  // const ownedLocations = await useServerStore.getState().getLocations(true);
+  // const viewableLocations = await useServerStore.getState().getLocations(false);
 
   // Get it working, and then fix how the various filters are handled in the background - perhaps have Filter: {location:Location | null, etc.} so that getFilter()
 
