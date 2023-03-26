@@ -2,6 +2,7 @@
 import { Company, OrderItem } from "@prisma/client";
 import { FullLocation, FullOrder, FullSku } from "../../server-store";
 import TableRow from "./tableRow";
+import { TbFaceIdError } from "react-icons/tb";
 
 function Order({
     orderItems,
@@ -16,17 +17,13 @@ function Order({
 }) {
     if (!orderItems || orderItems.length == 0 || !company) {
         return (
-            <div className="w-screen h-screen bg-re-black flex">
-                <head>
-                    <title>Locations</title>
-                    <meta name="locations" content="Manage locations" />
-                    <link rel="icon" href="/favicon.ico" />
-                </head>
-                <main className="flex flex-col container mx-auto h-full justify-evenly py-3 items-center">
-                    <div className="text-white font-theinhardt text-28">
-                        No Orders Placed
-                    </div>
-                </main>
+            <div className="pl-6 flex gap-3 mx-auto items-center justify-start">
+                <TbFaceIdError
+                    className="text-re-green-500"
+                    size={40} />
+                <div className="text-white font-theinhardt text-28">
+                    No orders found.
+                </div>
             </div>
         );
     }
