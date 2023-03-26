@@ -29,11 +29,33 @@ function OrderWithFilter({
         /* Update orders. */
         let newOrderItems: OrderItem[] = [];
         // Allows you to filter by location 
-        if (filter == "Location" || filter == "Location / Sku") {
-            // TODO(Suhana): Push all order items whose location matches the selected location
+        if (filter == "Location") {
+            // Push all order items whose location matches the selected location
+            location.orders.forEach((order: FullOrder) => {
+                order.items.forEach((orderItem: OrderItem) => {
+                    newOrderItems.push(orderItem);
+                });
+            });
         }
-        if (filter == "Sku" || filter == "Location / Sku") {
-            // TODO(Suhana): Push all order items that match the selected sku
+        if (filter == "Sku") {
+            // Push all order items (from any order) that match the selected sku
+            allOrders.forEach((order: FullOrder) => {
+                order.items.forEach((orderItem: OrderItem) => {
+                    if (orderItem.skuId == sku.id) {
+                        newOrderItems.push(orderItem);
+                    }
+                });
+            });
+        }
+        if (filter == "Location / Sku") {
+            // Push all order items (from the selected location) that match the selected sku
+            location.orders.forEach((order: FullOrder) => {
+                order.items.forEach((orderItem: OrderItem) => {
+                    if (orderItem.skuId == sku.id) {
+                        newOrderItems.push(orderItem);
+                    }
+                });
+            });
         }
         setOrderItems(newOrderItems);
     }, [location, sku]);
