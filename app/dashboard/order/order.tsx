@@ -34,21 +34,6 @@ function Order({
     return (
         <div className="h-screen flex overflow-hidden">
             <main className="flex flex-col w-full text-white font-theinhardt bg-re-black">
-                <div className="flex w-full border-b-1/2 border-re-gray-300 py-2 pl-6 pr-4">
-                    <div className="bg-re-dark-green-400 p-1 border-1/2 rounded border-re-gray-300 text-xs w-32 mr-2">
-                        Sort by Product
-                    </div>
-                    <div className="bg-re-dark-green-400 p-1 border-1/2 rounded border-re-gray-300 text-xs w-32 mr-2">
-                        Date
-                    </div>
-                    <div className="bg-re-dark-green-400 p-1 border-1/2 rounded border-re-gray-300 text-xs w-32 mr-2">
-                        Sort by Status
-                    </div>
-                    <div className="flex-grow" />
-                    <div className="bg-re-dark-green-400 p-1 border-1/2 rounded border-re-gray-300 text-xs w-64 mr-2">
-                        Search for an order by Product/SKU/Location
-                    </div>
-                </div>
                 <div className="flex bg-re-dark-green-500 h-full w-full p-6 overflow-auto">
                     <table className="w-full h-min font-theinhardt-300">
                         <thead>
