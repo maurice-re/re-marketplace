@@ -4,17 +4,17 @@ import { FullLocation, FullOrder, FullSku } from "../../server-store";
 import TableRow from "./tableRow";
 
 function Order({
-    orders,
+    orderItems,
     locations,
     skus,
     company
 }: {
-    orders: FullOrder[];
+    orderItems: OrderItem[];
     locations: FullLocation[];
     skus: FullSku[];
     company: Company;
 }) {
-    if (!orders || orders.length == 0 || !company) {
+    if (!orderItems || orderItems.length == 0 || !company) {
         return (
             <div className="w-screen h-screen bg-re-black flex">
                 <head>
@@ -49,23 +49,30 @@ function Order({
                             </tr>
                         </thead>
                         <tbody className="text-left text-sm">
-                            {orders.map((order: FullOrder) =>
-                                order.items.map((item: OrderItem) => {
-                                    const location = locations.find(
-                                        (location) => location.id == order.locationId
-                                    );
+                            {
+                                orderItems.map((item: OrderItem) => {
+                                    let location: FullLocation = {} as FullLocation;
+                                    locations.forEach((currLocation: FullLocation) => {
+                                        currLocation.orders.forEach((order: FullOrder) => {
+                                            order.items.forEach((currItem: OrderItem) => {
+                                                if (currItem.id === item.id) {
+                                                    location = currLocation;
+                                                }
+                                            });
+                                        });
+                                    });
                                     const sku = skus.find((sku) => sku.id == item.skuId);
                                     return (
                                         <TableRow
                                             key={item.id}
                                             item={item}
                                             location={location}
-                                            orderId={order.id}
+                                            orderId={item.orderId}
                                             sku={sku}
                                         />
                                     );
                                 })
-                            )}
+                            }
                         </tbody>
                     </table>
                 </div>

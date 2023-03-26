@@ -1,5 +1,5 @@
 "use client";
-import { Company } from "@prisma/client";
+import { Company, OrderItem } from "@prisma/client";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
@@ -20,7 +20,7 @@ function OrderWithFilter({
 }) {
     const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Location / Sku", "Order", "Location / Order", "Location / Order / Order Item", "Order / Order Item", "Consumer", "Location / Consumer"];
     const [filter, setFilter] = useState<string>("All Locations");
-    const [orders, setOrders] = useState<FullOrder[]>(allOrders);
+    const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrders[0].items); // TODO(Suhana): Pass in allOrderItems (in place of allOrders?) or get allOrderItems here
     const [location, setLocation] = useState<FullLocation>(locations[0]);
     const [sku, setSku] = useState<FullSku>(skus[0]);
 
@@ -124,7 +124,7 @@ function OrderWithFilter({
                 </div>
             </div>
             <Order
-                orders={orders}// TODO(Suhana): Pass orders in dynamically 
+                orderItems={orderItems}// TODO(Suhana): Pass orders in dynamically 
                 locations={locations}
                 skus={skus}
                 company={company}
