@@ -1,4 +1,5 @@
 import { Action } from "@prisma/client";
+import { AiOutlineDisconnect } from "react-icons/ai";
 
 import { HalfContainer } from "../../../components/dashboard/dashboardContainers";
 import { prisma } from "../../../constants/prisma";
@@ -24,7 +25,12 @@ export default async function Page() {
     return (
       <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          <div>Integrate with our API and see your emission savings</div>
+          <div className="flex gap-3 mx-auto h-full items-start justify-start">
+            <AiOutlineDisconnect className="text-re-green-500" size={40} />
+            <div className="text-white font-theinhardt text-28">
+              Integrate with our API to see emissions savings
+            </div>
+          </div>
         </main>
       </div>
     );
