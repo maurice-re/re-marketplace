@@ -1,5 +1,5 @@
-import { Company, Location, Order, OrderItem, Product, Sku, User, Group, Settings, Event } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
+import { Company, Event, Group, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
 import { prisma } from "../constants/prisma";
@@ -63,7 +63,7 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       new Date().getTime() - 1000 * 60 * 60 * 24
     ) {
       // If the session is older than 24 hours, refresh it
-      const session = await unstable_getServerSession(authOptions);
+      const session = await getServerSession(authOptions);
       if (session) {
         set({ _user: JSON.parse(JSON.stringify(session.user)) as User, sessionLastUpdated: new Date() });
         return JSON.parse(JSON.stringify(session.user)) as User;

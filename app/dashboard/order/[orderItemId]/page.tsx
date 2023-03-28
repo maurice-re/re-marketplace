@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "../../../../constants/prisma";
@@ -14,7 +14,7 @@ export default async function Page({
 }: {
   params: { orderItemId: string };
 }) {
-  const session = await unstable_getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   if (session == null) {
     //TODO: redirect to login
     return <div>Not logged in</div>;

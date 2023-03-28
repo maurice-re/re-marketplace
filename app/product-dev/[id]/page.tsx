@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { prisma } from "../../../constants/prisma";
 import { authOptions } from "../../../pages/api/auth/[...nextauth]";
@@ -22,7 +22,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   // If company exists check if signed in
   if (productDevelopment != null && productDevelopment.companyId != null) {
-    const session = await unstable_getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
 
     if (
       session == null ||
