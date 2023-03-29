@@ -1,11 +1,12 @@
 import Head from "next/head";
+import { AiOutlineDisconnect } from "react-icons/ai";
 import { FullLocation, useServerStore } from "../../server-store";
 import TrackingWithFilter from "./trackingWithFilter";
 
 function getUniqueLocations(locations: FullLocation[]) {
   const uniqueLocations: FullLocation[] = [];
   locations.forEach((location: FullLocation) => {
-    if (!uniqueLocations.some(l => l.id === location.id)) {
+    if (!uniqueLocations.some((l) => l.id === location.id)) {
       uniqueLocations.push(location);
     }
   });
@@ -19,7 +20,10 @@ export default async function Page() {
   const skus = await useServerStore.getState().getSkus();
   const orders = await useServerStore.getState().getOrders();
 
-  const locations = getUniqueLocations([...ownedLocations, ...viewableLocations]); // Show both owned and viewable locations on tracking page
+  const locations = getUniqueLocations([
+    ...ownedLocations,
+    ...viewableLocations,
+  ]); // Show both owned and viewable locations on tracking page
 
   const hasEvents = locations.some((location) => location.events.length > 0);
   if (!hasEvents) {
@@ -31,7 +35,12 @@ export default async function Page() {
           <link rel="icon" href="/favicon.ico" />
         </head> */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          <div>Integrate with our API and see your system KPIs</div>
+          <div className="flex gap-3 mx-auto h-full items-start justify-start">
+            <AiOutlineDisconnect className="text-re-green-500" size={40} />
+            <div className="text-white font-theinhardt text-28">
+              Integrate with our API to track
+            </div>
+          </div>
         </main>
       </div>
     );

@@ -1,4 +1,4 @@
-import { Session, unstable_getServerSession } from "next-auth";
+import { getServerSession, Session } from "next-auth";
 import { prisma } from "../../../constants/prisma";
 import { authOptions } from "../../../pages/api/auth/[...nextauth]";
 import { UserCompany } from "../../../utils/dashboard/dashboardUtils";
@@ -17,7 +17,7 @@ async function getUser(session: Session) {
 }
 
 export default async function Page() {
-  const session = await unstable_getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   if (session == null) {
     //TODO: redirect to login
     return <div>Not logged in</div>;
