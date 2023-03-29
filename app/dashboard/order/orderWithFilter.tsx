@@ -1,5 +1,5 @@
 "use client";
-import { Company, OrderItem } from "@prisma/client";
+import { Company, OrderItem, Status } from "@prisma/client";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
@@ -20,12 +20,15 @@ function OrderWithFilter({
     allOrderItems: OrderItem[];
     company: Company;
 }) {
-    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku", "Order"];
+    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku", "Order", "Status"];
     const [filter, setFilter] = useState<string>("All Orders");
     const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrderItems);
     const [location, setLocation] = useState<FullLocation>(locations[0]);
     const [sku, setSku] = useState<FullSku>(skus[0]);
     const [order, setOrder] = useState<FullOrder>(allOrders[0]);
+    const [status, setStatus] = useState<Status>(Status.PROCESSING);
+
+    const statuses: Status[] = Object.values(Status);
 
     // Update events and settings on changes
     useEffect(() => {
@@ -35,6 +38,14 @@ function OrderWithFilter({
         if (filter == "Order") {
             order.items.forEach((orderItem: OrderItem) => {
                 newOrderItems.push(orderItem);
+            });
+        }
+        if (filter == "Status") {
+            console.log("Entered this case with status ", status);
+            allOrderItems.forEach((orderItem: OrderItem) => {
+                if (orderItem.status == status) {
+                    newOrderItems.push(orderItem);
+                }
             });
         }
         if (filter == "Location") {
@@ -67,7 +78,7 @@ function OrderWithFilter({
             newOrderItems = allOrderItems;
         }
         setOrderItems(newOrderItems);
-    }, [location, sku, order]);
+    }, [location, sku, order, status]);
 
     const handleFilterTypeChange = (
         e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -100,6 +111,16 @@ function OrderWithFilter({
         if (selectedOrder) {
             setOrder(selectedOrder);
         }
+    };
+
+    const handleStatusChange = (
+        e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+    ) => {
+        statuses.forEach((status: Status) => {
+            if (status.toString() == e.target.value) {
+                setStatus(status);
+            }
+        });
     };
 
     return (
@@ -195,7 +216,28 @@ function OrderWithFilter({
                                 </div>)}
                         </div>)
                     }
-
+                    {(filter === "Status") &&
+                        (<div className="flex flex-col w-1/2">
+                            <h1>Status</h1>
+                            <div className="p-0 my-0">
+                                <select
+                                    name="status"
+                                    className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                                    onChange={handleStatusChange}
+                                    required
+                                    placeholder="Status"
+                                    value={status}
+                                >
+                                    {statuses.map((val) => (
+                                        <option key={val} value={val}>
+                                            {val}
+                                        </option>
+                                    ))
+                                    }
+                                </select>
+                            </div>
+                        </div>)
+                    }
                     {(filter === "Date") && (
                         <div className="flex flex-col w-1/2 text-xs">
                             <h1>Date</h1>

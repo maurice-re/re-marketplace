@@ -22,7 +22,7 @@ function Order({
                     className="text-re-green-500"
                     size={40} />
                 <div className="text-white font-theinhardt text-28">
-                    Place an order to see items
+                    No order items found
                 </div>
             </div>
         );
