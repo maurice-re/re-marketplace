@@ -11,25 +11,32 @@ function OrderWithFilter({
     locations,
     skus,
     allOrderItems,
+    allOrders,
     company
 }: {
     locations: FullLocation[];
     skus: FullSku[];
+    allOrders: FullOrder[];
     allOrderItems: OrderItem[];
     company: Company;
 }) {
-    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku"];
+    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku", "Order"];
     const [filter, setFilter] = useState<string>("All Orders");
-    console.log("Got ", allOrderItems.length);
     const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrderItems);
     const [location, setLocation] = useState<FullLocation>(locations[0]);
     const [sku, setSku] = useState<FullSku>(skus[0]);
+    const [order, setOrder] = useState<FullOrder>(allOrders[0]);
 
     // Update events and settings on changes
     useEffect(() => {
         /* Update orders. */
         let newOrderItems: OrderItem[] = [];
-        // Allows you to filter by location 
+        console.log("Filter ", filter);
+        if (filter == "Order") {
+            order.items.forEach((orderItem: OrderItem) => {
+                newOrderItems.push(orderItem);
+            });
+        }
         if (filter == "Location") {
             // Push all order items whose location matches the selected location
             location.orders.forEach((order: FullOrder) => {
@@ -60,7 +67,7 @@ function OrderWithFilter({
             newOrderItems = allOrderItems;
         }
         setOrderItems(newOrderItems);
-    }, [location, sku]);
+    }, [location, sku, order]);
 
     const handleFilterTypeChange = (
         e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
@@ -83,6 +90,17 @@ function OrderWithFilter({
     function handleSkuChange(selectedSku: FullSku) {
         setSku(selectedSku);
     }
+
+    const handleOrderChange = (
+        e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
+    ) => {
+        const selectedOrder = allOrders.find(
+            (order) => (order.id === e.target.value)
+        );
+        if (selectedOrder) {
+            setOrder(selectedOrder);
+        }
+    };
 
     return (
         <div>
@@ -149,6 +167,35 @@ function OrderWithFilter({
                                     ))}
                             </div>
                         </div>)}
+                    {/* If they select Order, we show them all orders. */}
+                    {(filter === "Order") &&
+                        (<div className="flex flex-col w-1/2">
+                            <h1>Order</h1>
+                            {(allOrders.length > 0) ? (<div className="p-0 my-0">
+                                <select
+                                    name="order"
+                                    className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                                    onChange={handleOrderChange}
+                                    required
+                                    placeholder="Order"
+                                    value={order.id}
+                                >
+                                    {allOrders.map((val) => (
+                                        <option key={val.id} value={val.id}>
+                                            {val.id}
+                                        </option>
+                                    ))
+                                    }
+                                </select>
+                            </div>) : (
+                                <div
+                                    className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                                >
+                                    No Orders
+                                </div>)}
+                        </div>)
+                    }
+
                     {(filter === "Date") && (
                         <div className="flex flex-col w-1/2 text-xs">
                             <h1>Date</h1>

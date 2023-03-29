@@ -11,5 +11,5 @@ export default async function Page() {
 
   const company: Company = {} as Company;
 
-  return (<OrderWithFilter company={company} locations={locations} skus={skus} allOrderItems={orderItems} />);
+  return (<OrderWithFilter company={company} locations={locations} skus={skus} allOrders={orders} allOrderItems={orderItems} />);
 }
