@@ -10,17 +10,18 @@ import Order from "./order";
 function OrderWithFilter({
     locations,
     skus,
-    allOrders,
+    allOrderItems,
     company
 }: {
     locations: FullLocation[];
     skus: FullSku[];
-    allOrders: FullOrder[];
+    allOrderItems: OrderItem[];
     company: Company;
 }) {
     const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku"];
     const [filter, setFilter] = useState<string>("All Orders");
-    const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrders[0].items); // TODO(Suhana): Pass in allOrderItems (in place of allOrders?) or get allOrderItems here
+    console.log("Got ", allOrderItems.length);
+    const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrderItems);
     const [location, setLocation] = useState<FullLocation>(locations[0]);
     const [sku, setSku] = useState<FullSku>(skus[0]);
 
@@ -39,12 +40,10 @@ function OrderWithFilter({
         }
         if (filter == "Sku") {
             // Push all order items (from any order) that match the selected sku
-            allOrders.forEach((order: FullOrder) => {
-                order.items.forEach((orderItem: OrderItem) => {
-                    if (orderItem.skuId == sku.id) {
-                        newOrderItems.push(orderItem);
-                    }
-                });
+            allOrderItems.forEach((orderItem: OrderItem) => {
+                if (orderItem.skuId == sku.id) {
+                    newOrderItems.push(orderItem);
+                }
             });
         }
         if (filter == "Location / Sku") {
@@ -56,6 +55,9 @@ function OrderWithFilter({
                     }
                 });
             });
+        }
+        if (filter == "All Orders") {
+            newOrderItems = allOrderItems;
         }
         setOrderItems(newOrderItems);
     }, [location, sku]);
@@ -129,7 +131,7 @@ function OrderWithFilter({
                                             className="flex flex-col items-center mx-1 group"
                                         >
                                             <button
-                                                className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selectedSku.id == sku.id
+                                                className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 ${selectedSku.id == sku.id
                                                     ? "border-re-green-600 border-3"
                                                     : "border"
                                                     }`}

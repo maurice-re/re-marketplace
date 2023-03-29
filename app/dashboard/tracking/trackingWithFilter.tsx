@@ -433,7 +433,7 @@ function TrackingWithFilter({
                     className="flex flex-col items-center mx-1 group"
                   >
                     <button
-                      className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 border-white ${selectedSku.id == sku.id
+                      className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 ${selectedSku.id == sku.id
                         ? "border-re-green-600 border-3"
                         : "border"
                         }`}

@@ -42,8 +42,9 @@ interface ServerStore {
   getGroupMemberEmails: (groupId: string) => Promise<string[]>;
   getLocationById: (locationId: string) => Promise<FullLocation>;
   getOrders: () => Promise<FullOrder[]>;
+  getOrderItems: () => Promise<OrderItem[]>;
   getSkus: () => Promise<FullSku[]>;
-  getOrderItems: (orderId: string) => Promise<OrderItem[]>;
+  getOrderItemsByOrderId: (orderId: string) => Promise<OrderItem[]>;
   getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
   getGroupById: (groupId: string) => Promise<FullGroup>;
@@ -254,7 +255,19 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     const viewableOrders: FullOrder[] = orders.viewableLocations.flatMap(location => location.orders);
     return JSON.parse(JSON.stringify([...ownedOrders, ...viewableOrders]));
   },
-  getOrderItems: async (orderId: string) => {
+  getOrderItems: async () => {
+    const orders: FullOrder[] = (await get().getOrders());
+
+    const orderItems: OrderItem[] = [];
+    orders.forEach((order: FullOrder) => {
+      order.items.forEach((orderItem: OrderItem) => {
+        orderItems.push(orderItem);
+      });
+    });
+
+    return JSON.parse(JSON.stringify(orderItems));
+  },
+  getOrderItemsByOrderId: async (orderId: string) => {
     return await prisma.orderItem.findMany({
       where: {
         orderId: orderId
