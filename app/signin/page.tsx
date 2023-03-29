@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { prisma } from "../../constants/prisma";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
@@ -7,7 +7,7 @@ import SignInForm from "./signinForm";
 
 export default async function Page() {
   console.log("signin page");
-  const session = await unstable_getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
   console.log("session", session);
   if (session) {

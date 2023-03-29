@@ -1,10 +1,10 @@
 import { Company, OrderItem } from "@prisma/client";
 import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
-import { FullLocation, OrderWithItems, useServerStore } from "../../server-store";
+import { FullLocation, FullOrder, useServerStore } from "../../server-store";
 import TableRow from "./tableRow";
 
 export default async function Page() {
-  const orders: OrderWithItems[] = await useServerStore.getState().getOrders();
+  const orders: FullOrder[] = await useServerStore.getState().getOrders();
   const locations: FullLocation[] = await useServerStore.getState().getLocations(true);
   const skus: SkuProduct[] = await useServerStore.getState().getSkus();
 
@@ -60,7 +60,7 @@ export default async function Page() {
               </tr>
             </thead>
             <tbody className="text-left text-sm">
-              {orders.map((order: OrderWithItems) =>
+              {orders.map((order: FullOrder) =>
                 order.items.map((item: OrderItem) => {
                   const location = locations.find(
                     (location) => location.id == order.locationId

@@ -28,7 +28,7 @@ function DropdownField({
     selectClass += " border-b-2 mb-2 rounded-b";
   }
   return (
-    <div className="p-0 my-0">
+    <div className="p-0 my-0 w-full">
       <select
         name={name}
         className={selectClass}
