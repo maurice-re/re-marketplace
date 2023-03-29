@@ -20,7 +20,7 @@ function OrderWithFilter({
     allOrderItems: OrderItem[];
     company: Company;
 }) {
-    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku", "Order", "Status"];
+    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku", "Order", "Status", "Location / Status"];
     const [filter, setFilter] = useState<string>("All Orders");
     const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrderItems);
     const [location, setLocation] = useState<FullLocation>(locations[0]);
@@ -69,6 +69,15 @@ function OrderWithFilter({
             location.orders.forEach((order: FullOrder) => {
                 order.items.forEach((orderItem: OrderItem) => {
                     if (orderItem.skuId == sku.id) {
+                        newOrderItems.push(orderItem);
+                    }
+                });
+            });
+        }
+        if (filter == "Location / Status") {
+            location.orders.forEach((order: FullOrder) => {
+                order.items.forEach((orderItem: OrderItem) => {
+                    if (orderItem.status == status) {
                         newOrderItems.push(orderItem);
                     }
                 });
@@ -135,7 +144,7 @@ function OrderWithFilter({
                     Search for an order by Product/SKU/Location
                 </div> */}
                 <div className="flex w-full border-b-1/2 border-re-gray-300 pb-4 pl-6 pr-4">
-                    {((filter === "Location") || (filter === "Location / Sku")) && (
+                    {((filter === "Location") || (filter === "Location / Sku") || (filter === "Location / Status")) && (
                         <div className="flex flex-col w-1/2 mr-4 text-xs">
                             <h1>By Location</h1>
                             <div className="p-0 my-0">
@@ -190,8 +199,8 @@ function OrderWithFilter({
                         </div>)}
                     {/* If they select Order, we show them all orders. */}
                     {(filter === "Order") &&
-                        (<div className="flex flex-col w-1/2">
-                            <h1>Order</h1>
+                        (<div className="flex flex-col w-1/2 text-xs">
+                            <h1>By Order</h1>
                             {(allOrders.length > 0) ? (<div className="p-0 my-0">
                                 <select
                                     name="order"
@@ -216,9 +225,9 @@ function OrderWithFilter({
                                 </div>)}
                         </div>)
                     }
-                    {(filter === "Status") &&
+                    {((filter === "Status") || (filter === "Location / Status")) &&
                         (<div className="flex flex-col w-1/2">
-                            <h1>Status</h1>
+                            <h1>By Status</h1>
                             <div className="p-0 my-0">
                                 <select
                                     name="status"
