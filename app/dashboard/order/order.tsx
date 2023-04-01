@@ -29,9 +29,9 @@ function Order({
     }
 
     return (
-        <div className="h-screen flex overflow-hidden">
-            <main className="flex flex-col w-full text-white font-theinhardt bg-re-black">
-                <div className="flex bg-re-dark-green-500 h-full w-full p-6 overflow-auto">
+        <div>
+            <div className="flex w-full gap-8">
+                <div className="flex bg-re-dark-green-500 h-min w-full p-6 overflow-scroll">
                     <table className="w-full h-min font-theinhardt-300">
                         <thead>
                             <tr className="bg-re-black text-re-gray-text text-lg text-left">
@@ -73,7 +73,7 @@ function Order({
                         </tbody>
                     </table>
                 </div>
-            </main>
+            </div>
         </div>
     );
 }

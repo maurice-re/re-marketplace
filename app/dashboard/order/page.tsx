@@ -1,4 +1,5 @@
 import { Company, OrderItem } from "@prisma/client";
+import Head from "next/head";
 import { SkuProduct } from "../../../utils/dashboard/dashboardUtils";
 import { FullLocation, FullOrder, useServerStore } from "../../server-store";
 import OrderWithFilter from "./orderWithFilter";
@@ -11,5 +12,16 @@ export default async function Page() {
 
   const company: Company = {} as Company;
 
-  return (<OrderWithFilter company={company} locations={locations} skus={skus} allOrders={orders} allOrderItems={orderItems} />);
+  return (
+    <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
+      <Head>
+        <title>Order</title>
+        <meta name="tracking" content="Order" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
+        <OrderWithFilter company={company} locations={locations} skus={skus} allOrders={orders} allOrderItems={orderItems} />
+      </main>
+    </div>);
+
 }
