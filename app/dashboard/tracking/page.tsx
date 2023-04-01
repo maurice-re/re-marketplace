@@ -28,14 +28,14 @@ export default async function Page() {
   const hasEvents = locations.some((location) => location.events.length > 0);
   if (!hasEvents) {
     return (
-      <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
+      <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto">
         {/* <head>
           <title>Tracking</title>
           <meta name="tracking" content="Tracking" />
           <link rel="icon" href="/favicon.ico" />
         </head> */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
-          <div className="flex gap-3 mx-auto h-full items-start justify-start">
+          <div className="flex gap-3 mx-auto h-full items-start justify-start px-6 pt-6 border-re-gray-300 border-t-1/2">
             <AiOutlineDisconnect className="text-re-green-500" size={40} />
             <div className="text-white font-theinhardt text-28">
               Integrate with our API to track
@@ -47,7 +47,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
+    <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto">
       <Head>
         <title>Tracking</title>
         <meta name="tracking" content="Tracking" />

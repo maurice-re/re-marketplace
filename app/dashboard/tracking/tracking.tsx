@@ -316,8 +316,8 @@ function Tracking({
 
   return events && events.length != 0 ? (
     // TODO(Suhana): Create more sub-components here
-    <div>
-      <div className="flex items-center justify-between mt-4 mb-10 w-full">
+    <div className="border-t-1/2 border-re-gray-300">
+      <div className="flex items-center justify-between mt-6 mb-10 w-full px-6">
         {stats.map((stat) => (
           <div
             key={stat.title}
@@ -336,8 +336,7 @@ function Tracking({
           </div>
         ))}
       </div>
-
-      <div className="flex w-full gap-8">
+      <div className="flex w-full gap-8 px-6">
         <div className="flex w-1/3 h-148 overflow-scroll border border-re-gray-300 rounded-md">
           <table className="w-full h-min font-theinhardt-300">
             <thead>
@@ -432,7 +431,7 @@ function Tracking({
       <div className="py-6"></div>
     </div>
   ) : (
-    <div className="flex gap-3 mx-auto h-full items-start justify-start">
+    <div className="flex gap-3 mx-auto h-full items-start justify-start px-6 pt-6 border-re-gray-300 border-t-1/2">
       <AiOutlineDisconnect
         className="text-re-green-500"
         size={40} />

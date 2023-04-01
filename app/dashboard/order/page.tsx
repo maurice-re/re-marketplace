@@ -13,13 +13,13 @@ export default async function Page() {
   const company: Company = {} as Company;
 
   return (
-    <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6">
+    <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto">
       <Head>
         <title>Order</title>
         <meta name="tracking" content="Order" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
+      <main className="flex w-full flex-col w-full mx-auto py-6 text-white font-theinhardt">
         <OrderWithFilter company={company} locations={locations} skus={skus} allOrders={orders} allOrderItems={orderItems} />
       </main>
     </div>);

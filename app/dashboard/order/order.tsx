@@ -17,7 +17,7 @@ function Order({
 }) {
     if (!orderItems || orderItems.length == 0 || !company) {
         return (
-            <div className="pl-6 flex gap-3 mx-auto items-center justify-start">
+            <div className="flex gap-3 mx-auto h-full items-start justify-start px-6 pt-6 border-re-gray-300 border-t-1/2">
                 <TbFaceIdError
                     className="text-re-green-500"
                     size={40} />
@@ -31,7 +31,7 @@ function Order({
     return (
         <div>
             <div className="flex w-full gap-8">
-                <div className="flex bg-re-dark-green-500 h-min w-full p-6 overflow-scroll">
+                <div className="flex bg-re-dark-green-500 h-min w-full p-6 overflow-scroll border-t-1/2 border-re-gray-300">
                     <table className="w-full h-min font-theinhardt-300">
                         <thead>
                             <tr className="bg-re-black text-re-gray-text text-lg text-left">

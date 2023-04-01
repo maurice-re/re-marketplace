@@ -242,230 +242,232 @@ function TrackingWithFilter({
 
   return (
     <div>
-      <div className="flex w-full items-start justify-center pb-6 gap-3 flex-col border-b-1/2 border-re-gray-300">
-        <div className="flex flex-col w-1/2 pl-6 pt-4 mx-auto">
-          <h1>Filter</h1>
+      <div className="flex w-full items-start justify-center pb-6 flex-col px-6 gap-3">
+        <div className="flex flex-col w-1/2 mx-auto">
+          <h1>By Filter</h1>
           <DropdownField top bottom options={filters} placeholder={"Filter"} value={filter} name={"filter"} onChange={handleFilterTypeChange} />
         </div>
-        {filter === "Group" && (
-          <div className="flex flex-col w-1/2">
-            <h1>Group</h1>
-            <div className="p-0 my-0">
-              <select
-                name="group"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleGroupChange}
-                required
-                placeholder="Location"
-                value={group.name}
-              >
-                {groups.map((val) => (
-                  <option key={val.name} value={val.name ?? val.id}>
-                    {val.name}
-                  </option>
-                ))}
-              </select>
+        <div className="w-full flex gap-3">
+          {filter === "Group" && (
+            <div className="flex flex-col w-1/2 text-xs">
+              <h1>By Group</h1>
+              <div className="p-0 my-0">
+                <select
+                  name="group"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleGroupChange}
+                  required
+                  placeholder="Location"
+                  value={group.name}
+                >
+                  {groups.map((val) => (
+                    <option key={val.name} value={val.name ?? val.id}>
+                      {val.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
-        )}
-        {filter === "Consumer" && (
-          <div className="flex flex-col w-1/2">
-            <h1>Consumer</h1>
-            <div className="p-0 my-0">
-              <select
-                name="consumer"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleConsumerChange}
-                required
-                placeholder="Location"
-                value={consumerId}
-              >
-                {getConsumerIds(false).map((val) => (
-                  <option key={val} value={val}>
-                    {val}
-                  </option>
-                ))}
-              </select>
+          )}
+          {filter === "Consumer" && (
+            <div className="flex flex-col w-1/2 text-xs">
+              <h1>By Consumer</h1>
+              <div className="p-0 my-0">
+                <select
+                  name="consumer"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleConsumerChange}
+                  required
+                  placeholder="Location"
+                  value={consumerId}
+                >
+                  {getConsumerIds(false).map((val) => (
+                    <option key={val} value={val}>
+                      {val}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
-        )}
-        {((filter === "Location" || filter === "Location / Sku" || filter === "Location / Order") || (filter === "Location / Order / Order Item") || (filter === "Location / Consumer")) && (
-          <div className="flex flex-col w-1/2">
-            <h1>Location</h1>
-            <div className="p-0 my-0">
-              <select
-                name="location"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleLocationChange}
-                required
-                placeholder="Location"
-                value={location.displayName ?? location.id}
-              >
-                {locations.map((val) => (
-                  <option key={val.displayName} value={val.displayName ?? val.id}>
-                    {val.displayName}
-                  </option>
-                ))}
-              </select>
+          )}
+          {((filter === "Location" || filter === "Location / Sku" || filter === "Location / Order") || (filter === "Location / Order / Order Item") || (filter === "Location / Consumer")) && (
+            <div className="flex flex-col w-1/2 text-xs">
+              <h1>By Location</h1>
+              <div className="p-0 my-0">
+                <select
+                  name="location"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleLocationChange}
+                  required
+                  placeholder="Location"
+                  value={location.displayName ?? location.id}
+                >
+                  {locations.map((val) => (
+                    <option key={val.displayName} value={val.displayName ?? val.id}>
+                      {val.displayName}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
-        )}
-        {filter === "Location / Consumer" && (
-          <div className="flex flex-col w-1/2">
-            <h1>Consumer</h1>
-            {(getConsumerIds(true).length > 0) ? (<div className="p-0 my-0">
-              <select
-                name="consumer"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleConsumerChange}
-                required
-                placeholder="Location"
-                value={consumerId}
-              >
-                {getConsumerIds(true).map((val) => (
-                  <option key={val} value={val}>
-                    {val}
-                  </option>
-                ))}
-              </select>
-            </div>) : (
-              <div
+          )}
+          {filter === "Location / Consumer" && (
+            <div className="flex flex-col w-1/2 text-xs">
+              <h1>By Consumer</h1>
+              {(getConsumerIds(true).length > 0) ? (<div className="p-0 my-0">
+                <select
+                  name="consumer"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleConsumerChange}
+                  required
+                  placeholder="Location"
+                  value={consumerId}
+                >
+                  {getConsumerIds(true).map((val) => (
+                    <option key={val} value={val}>
+                      {val}
+                    </option>
+                  ))}
+                </select>
+              </div>) : (
+                <div
+                  className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                >
+                  No Consumers
+                </div>)}
+            </div>
+          )}
+          {/* If they select Order or Order / Order Item, we show them all orders. */}
+          {((filter === "Order") || (filter == "Order / Order Item")) &&
+            (<div className="flex flex-col w-1/2 text-xs">
+              <h1>By Order</h1>
+              {(orders.length > 0) ? (<div className="p-0 my-0">
+                <select
+                  name="order"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleOrderChange}
+                  required
+                  placeholder="Order"
+                  value={order.id}
+                >
+                  {orders.map((val) => (
+                    <option key={val.id} value={val.id}>
+                      {val.id}
+                    </option>
+                  ))
+                  }
+                </select>
+              </div>) : (
+                <div
+                  className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                >
+                  No Orders
+                </div>)}
+            </div>)
+          }
+          {/* If they select Location / Order or Location / Order / Order Item, we show them all orders associated with the selected location. */}
+          {((filter === "Location / Order") || (filter === "Location / Order / Order Item")) &&
+            (<div className="flex flex-col w-1/2 text-xs">
+              <h1>By Order</h1>
+              {(orders.filter(order => order.locationId == location.id).length > 0) ? (<div className="p-0 my-0">
+                <select
+                  name="order"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleOrderChange}
+                  required
+                  placeholder="Order"
+                  value={order.id}
+                >
+                  {orders.filter(order => order.locationId == location.id).map((val) => (
+                    <option key={val.id} value={val.id}>
+                      {val.id}
+                    </option>
+                  ))}
+                </select>
+              </div>) : ((
+                <div
+                  className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                >
+                  No Orders
+                </div>))}
+            </div>)
+          }
+          {/* If they select Order Item, we show them all order items associated with the selected order. */}
+          {((filter === "Location / Order / Order Item") || (filter == "Order / Order Item")) &&
+            (<div className="flex flex-col w-1/2 text-xs">
+              <h1>Order Item</h1>
+              {(order.items.length > 0) ? (<div className="p-0 my-0">
+                <select
+                  name="orderItem"
+                  className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                  onChange={handleOrderItemChange}
+                  required
+                  placeholder="Order / Order Item"
+                  value={orderItem.id}
+                >
+                  {order.items.map((val) => (
+                    <option key={val.id} value={val.id}>
+                      {val.id}
+                    </option>
+                  ))
+                  }
+                </select>
+              </div>) : (<div
                 className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
               >
-                No Consumers
+                No Order Items
               </div>)}
-          </div>
-        )}
-        {/* If they select Order or Order / Order Item, we show them all orders. */}
-        {((filter === "Order") || (filter == "Order / Order Item")) &&
-          (<div className="flex flex-col w-1/2">
-            <h1>Order</h1>
-            {(orders.length > 0) ? (<div className="p-0 my-0">
-              <select
-                name="order"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleOrderChange}
-                required
-                placeholder="Order"
-                value={order.id}
-              >
-                {orders.map((val) => (
-                  <option key={val.id} value={val.id}>
-                    {val.id}
-                  </option>
-                ))
-                }
-              </select>
-            </div>) : (
+            </div>)
+          }
+          {/* If they select Sku or Location Sku, we show them all available skus. */}
+          {(filter === "Sku" || filter === "Location / Sku") && (
+            <div className="flex flex-col w-1/2 text-xs">
+              <h1>By Sku</h1>
               <div
-                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                className="mt-2 grid grid-flow-col gap-1 overflow-y-auto w-full items-start"
               >
-                No Orders
-              </div>)}
-          </div>)
-        }
-        {/* If they select Location / Order or Location / Order / Order Item, we show them all orders associated with the selected location. */}
-        {((filter === "Location / Order") || (filter === "Location / Order / Order Item")) &&
-          (<div className="flex flex-col w-1/2">
-            <h1>Order</h1>
-            {(orders.filter(order => order.locationId == location.id).length > 0) ? (<div className="p-0 my-0">
-              <select
-                name="order"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleOrderChange}
-                required
-                placeholder="Order"
-                value={order.id}
-              >
-                {orders.filter(order => order.locationId == location.id).map((val) => (
-                  <option key={val.id} value={val.id}>
-                    {val.id}
-                  </option>
-                ))}
-              </select>
-            </div>) : ((
-              <div
-                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-              >
-                No Orders
-              </div>))}
-          </div>)
-        }
-        {/* If they select Order Item, we show them all order items associated with the selected order. */}
-        {((filter === "Location / Order / Order Item") || (filter == "Order / Order Item")) &&
-          (<div className="flex flex-col w-1/2">
-            <h1>Order Item</h1>
-            {(order.items.length > 0) ? (<div className="p-0 my-0">
-              <select
-                name="orderItem"
-                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                onChange={handleOrderItemChange}
-                required
-                placeholder="Order / Order Item"
-                value={orderItem.id}
-              >
-                {order.items.map((val) => (
-                  <option key={val.id} value={val.id}>
-                    {val.id}
-                  </option>
-                ))
-                }
-              </select>
-            </div>) : (<div
-              className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-            >
-              No Order Items
-            </div>)}
-          </div>)
-        }
-        {/* If they select Sku or Location Sku, we show them all available skus. */}
-        {(filter === "Sku" || filter === "Location / Sku") && (
-          <div className="flex flex-col w-1/2">
-            <h1>Sku</h1>
-            <div
-              className="grid grid-flow-col gap-2  overflow-y-auto w-full pr-1 items-start"
-            >
-              {skus
-                .filter((s) => s.product.active)
-                .map((selectedSku) => (
-                  <div
-                    key={selectedSku.id}
-                    className="flex flex-col items-center mx-1 group"
-                  >
-                    <button
-                      className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 ${selectedSku.id == sku.id
-                        ? "border-re-green-600 border-3"
-                        : "border"
-                        }`}
-                      onClick={() => handleSkuChange(selectedSku)}
+                {skus
+                  .filter((s) => s.product.active)
+                  .map((selectedSku) => (
+                    <div
+                      key={selectedSku.id}
+                      className="flex flex-col items-center mx-1 group"
                     >
-                      <Image
-                        src={selectedSku.mainImage}
-                        height={120}
-                        width={120}
-                        alt={skuName(selectedSku)}
-                      />
-                    </button>
-                    <h1 className="text-xs text-center mt-2 leading-tight">{skuName(selectedSku)}</h1>
-                  </div>
-                ))}
+                      <button
+                        className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 ${selectedSku.id == sku.id
+                          ? "border-re-green-600 border-3"
+                          : "border"
+                          }`}
+                        onClick={() => handleSkuChange(selectedSku)}
+                      >
+                        <Image
+                          src={selectedSku.mainImage}
+                          height={120}
+                          width={120}
+                          alt={skuName(selectedSku)}
+                        />
+                      </button>
+                      <h1 className="text-xs text-center mt-2 leading-tight">{skuName(selectedSku)}</h1>
+                    </div>
+                  ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <Tracking
         settings={settings}
         events={events}
       />
       {(events) && (events.length != 0) && (!demo) && ((filter === "Location" || filter === "Location / Sku" || filter === "Location / Order") || (filter === "Location / Order / Order Item") || (filter === "Location / Consumer")) && (
-        <>
-          <h1 className="pt-8 ml-1 font-theinhardt text-2xl">
+        <div className="w-full px-6">
+          <h1 className="pt-8 font-theinhardt text-2xl">
             Configure Settings
           </h1>
           <div className="flex w-full gap-8">
             <SettingsForm settings={settings} setSettings={setSettings} />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

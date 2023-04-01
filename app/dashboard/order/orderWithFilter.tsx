@@ -134,8 +134,8 @@ function OrderWithFilter({
 
     return (
         <div>
-            <div className="flex w-full items-start justify-center pb-6 gap-3 flex-col border-b-1/2 border-re-gray-300 ">
-                <div className="flex flex-col w-1/2 pl-6 pt-4 mx-auto">
+            <div className="flex w-full items-start justify-center pb-6 flex-col px-6 gap-3">
+                <div className="flex flex-col w-1/2 mx-auto">
                     <h1>Filter</h1>
                     <DropdownField top bottom options={filters} placeholder={"Filter"} value={filter} name={"filter"} onChange={handleFilterTypeChange} />
                 </div>
@@ -143,142 +143,144 @@ function OrderWithFilter({
                 {/* <div className="flex flex-col w-1/2 text-xs">
                     Search for an order by Product/SKU/Location
                 </div> */}
-                {((filter === "Location") || (filter === "Location / Sku") || (filter === "Location / Status") || (filter === "Location / Order")) && (
-                    <div className="flex flex-col w-1/2 mr-4 text-xs">
-                        <h1>By Location</h1>
-                        <div className="p-0 my-0">
-                            <select
-                                name="location"
-                                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                                onChange={handleLocationChange}
-                                required
-                                placeholder="Location"
-                                value={location.displayName ?? location.id}
-                            >
-                                {locations.map((val) => (
-                                    <option key={val.displayName} value={val.displayName ?? val.id}>
-                                        {val.displayName}
-                                    </option>
-                                ))}
-                            </select>
+                <div className="w-full flex gap-3">
+                    {((filter === "Location") || (filter === "Location / Sku") || (filter === "Location / Status") || (filter === "Location / Order")) && (
+                        <div className="flex flex-col w-1/2 text-xs">
+                            <h1>By Location</h1>
+                            <div className="p-0 my-0">
+                                <select
+                                    name="location"
+                                    className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                                    onChange={handleLocationChange}
+                                    required
+                                    placeholder="Location"
+                                    value={location.displayName ?? location.id}
+                                >
+                                    {locations.map((val) => (
+                                        <option key={val.displayName} value={val.displayName ?? val.id}>
+                                            {val.displayName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                )}
-                {(filter === "Sku" || filter === "Location / Sku") && (
-                    <div className="flex flex-col w-1/2 mr-4 text-xs">
-                        <h1>By Sku</h1>
-                        <div
-                            className="mt-2 grid grid-flow-col gap-1 overflow-y-auto w-full items-start"
-                        >
-                            {skus
-                                .filter((s) => s.product.active)
-                                .map((selectedSku) => (
-                                    <div
-                                        key={selectedSku.id}
-                                        className="flex flex-col items-center mx-1 group"
-                                    >
-                                        <button
-                                            className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 ${selectedSku.id == sku.id
-                                                ? "border-re-green-600 border-3"
-                                                : "border"
-                                                }`}
-                                            onClick={() => handleSkuChange(selectedSku)}
+                    )}
+                    {(filter === "Sku" || filter === "Location / Sku") && (
+                        <div className="flex flex-col w-1/2 text-xs">
+                            <h1>By Sku</h1>
+                            <div
+                                className="mt-2 grid grid-flow-col gap-1 overflow-y-auto w-full items-start"
+                            >
+                                {skus
+                                    .filter((s) => s.product.active)
+                                    .map((selectedSku) => (
+                                        <div
+                                            key={selectedSku.id}
+                                            className="flex flex-col items-center mx-1 group"
                                         >
-                                            <Image
-                                                src={selectedSku.mainImage}
-                                                height={120}
-                                                width={120}
-                                                alt={skuName(selectedSku)}
-                                            />
-                                        </button>
-                                        <h1 className="text-xs text-center mt-2 leading-tight">{skuName(selectedSku)}</h1>
-                                    </div>
-                                ))}
+                                            <button
+                                                className={`rounded w-28 h-28 group-hover:border-re-green-500 group-hover:border-2 group-active:border-re-green-700 ${selectedSku.id == sku.id
+                                                    ? "border-re-green-600 border-3"
+                                                    : "border"
+                                                    }`}
+                                                onClick={() => handleSkuChange(selectedSku)}
+                                            >
+                                                <Image
+                                                    src={selectedSku.mainImage}
+                                                    height={120}
+                                                    width={120}
+                                                    alt={skuName(selectedSku)}
+                                                />
+                                            </button>
+                                            <h1 className="text-xs text-center mt-2 leading-tight">{skuName(selectedSku)}</h1>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>)}
+                    {/* If they select Order, we show them all orders. */}
+                    {(filter === "Order") &&
+                        (<div className="flex flex-col w-1/2 text-xs">
+                            <h1>By Order</h1>
+                            {(allOrders.length > 0) ? (<div className="p-0 my-0">
+                                <select
+                                    name="order"
+                                    className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                                    onChange={handleOrderChange}
+                                    required
+                                    placeholder="Order"
+                                    value={order.id}
+                                >
+                                    {allOrders.map((val) => (
+                                        <option key={val.id} value={val.id}>
+                                            {val.id}
+                                        </option>
+                                    ))
+                                    }
+                                </select>
+                            </div>) : (
+                                <div
+                                    className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                                >
+                                    No Orders
+                                </div>)}
+                        </div>)
+                    }
+                    {/* If they select Location / Order, we show them all orders associated with the selected location. */}
+                    {((filter === "Location / Order")) &&
+                        (<div className="flex flex-col w-1/2 text-xs">
+                            <h1>By Order</h1>
+                            {(allOrders.filter(order => order.locationId == location.id).length > 0) ? (<div className="p-0 my-0">
+                                <select
+                                    name="order"
+                                    className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                                    onChange={handleOrderChange}
+                                    required
+                                    placeholder="Order"
+                                    value={order.id}
+                                >
+                                    {allOrders.filter(order => order.locationId == location.id).map((val) => (
+                                        <option key={val.id} value={val.id}>
+                                            {val.id}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>) : ((
+                                <div
+                                    className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
+                                >
+                                    No Orders
+                                </div>))}
+                        </div>)
+                    }
+                    {((filter === "Status") || (filter === "Location / Status")) &&
+                        (<div className="flex flex-col w-1/2 text-xs">
+                            <h1>By Status</h1>
+                            <div className="p-0 my-0">
+                                <select
+                                    name="status"
+                                    className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
+                                    onChange={handleStatusChange}
+                                    required
+                                    placeholder="Status"
+                                    value={status}
+                                >
+                                    {statuses.map((val) => (
+                                        <option key={val} value={val}>
+                                            {val}
+                                        </option>
+                                    ))
+                                    }
+                                </select>
+                            </div>
+                        </div>)
+                    }
+                    {(filter === "Date") && (
+                        <div className="flex flex-col w-1/2 text-xs">
+                            <h1>Date</h1>
+                            {/* TODO(Suhana): Implement date-selection here. */}
                         </div>
-                    </div>)}
-                {/* If they select Order, we show them all orders. */}
-                {(filter === "Order") &&
-                    (<div className="flex flex-col w-1/2 text-xs">
-                        <h1>By Order</h1>
-                        {(allOrders.length > 0) ? (<div className="p-0 my-0">
-                            <select
-                                name="order"
-                                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                                onChange={handleOrderChange}
-                                required
-                                placeholder="Order"
-                                value={order.id}
-                            >
-                                {allOrders.map((val) => (
-                                    <option key={val.id} value={val.id}>
-                                        {val.id}
-                                    </option>
-                                ))
-                                }
-                            </select>
-                        </div>) : (
-                            <div
-                                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                            >
-                                No Orders
-                            </div>)}
-                    </div>)
-                }
-                {/* If they select Location / Order, we show them all orders associated with the selected location. */}
-                {((filter === "Location / Order")) &&
-                    (<div className="flex flex-col w-1/2 text-xs">
-                        <h1>By Order</h1>
-                        {(allOrders.filter(order => order.locationId == location.id).length > 0) ? (<div className="p-0 my-0">
-                            <select
-                                name="order"
-                                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                                onChange={handleOrderChange}
-                                required
-                                placeholder="Order"
-                                value={order.id}
-                            >
-                                {allOrders.filter(order => order.locationId == location.id).map((val) => (
-                                    <option key={val.id} value={val.id}>
-                                        {val.id}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>) : ((
-                            <div
-                                className="px-1 py-1 border-x-2 border-y text-lg w-full bg-red-900 border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                            >
-                                No Orders
-                            </div>))}
-                    </div>)
-                }
-                {((filter === "Status") || (filter === "Location / Status")) &&
-                    (<div className="flex flex-col w-1/2 text-xs">
-                        <h1>By Status</h1>
-                        <div className="p-0 my-0">
-                            <select
-                                name="status"
-                                className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 mb-2 rounded-b"
-                                onChange={handleStatusChange}
-                                required
-                                placeholder="Status"
-                                value={status}
-                            >
-                                {statuses.map((val) => (
-                                    <option key={val} value={val}>
-                                        {val}
-                                    </option>
-                                ))
-                                }
-                            </select>
-                        </div>
-                    </div>)
-                }
-                {(filter === "Date") && (
-                    <div className="flex flex-col w-1/2 text-xs">
-                        <h1>Date</h1>
-                        {/* TODO(Suhana): Implement date-selection here. */}
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
             <Order
                 orderItems={orderItems}// TODO(Suhana): Pass orders in dynamically 
