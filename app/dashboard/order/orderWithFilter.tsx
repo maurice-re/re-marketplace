@@ -20,7 +20,7 @@ function OrderWithFilter({
     allOrderItems: OrderItem[];
     company: Company;
 }) {
-    const filters: string[] = ["All Orders", "Location", "Sku", "Location / Sku", "Order", "Status", "Location / Status", "Location / Order"];
+    const filters: string[] = ["All Orders", "Location", "Sku", "Order", "Status", "Location / Sku", "Location / Status", "Location / Order"];
     const [filter, setFilter] = useState<string>("All Orders");
     const [orderItems, setOrderItems] = useState<OrderItem[]>(allOrderItems);
     const [location, setLocation] = useState<FullLocation>(locations[0]);

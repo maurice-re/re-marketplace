@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
 import SettingsForm from "../../../components/tracking/settingsForm";
-import { skuName } from "../../../utils/dashboard/dashboardUtils";
+import { getConsumerIds, skuName } from "../../../utils/dashboard/dashboardUtils";
 import { FullGroup, FullLocation, FullOrder, FullSku } from "../../server-store";
 import Tracking from "./tracking";
 
@@ -21,7 +21,7 @@ function TrackingWithFilter({
   orders: FullOrder[];
   demo: boolean;
 }) {
-  const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Location / Sku", "Order", "Location / Order", "Location / Order / Order Item", "Order / Order Item", "Consumer", "Location / Consumer"];
+  const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Order", "Location / Sku", "Location / Order", "Location / Order / Order Item", "Order / Order Item", "Consumer", "Location / Consumer"];
   const [filter, setFilter] = useState<string>("All Locations");
   const [group, setGroup] = useState<FullGroup>(groups[0]);
   const [location, setLocation] = useState<FullLocation>(locations[0]);
@@ -154,30 +154,6 @@ function TrackingWithFilter({
     setSettings(newSettings);
   }, [filter, group, location, sku, order, orderItem, consumerId, locations]);
 
-  // If it goes into these functions and any of these fields change, it'll call the function again
-  function getConsumerIds(byLocation: boolean): string[] {
-    const consumerIds: string[] = [];
-
-    if (byLocation) {
-      location.events.forEach((event: Event) => {
-        if (event.consumerId && !consumerIds.includes(event.consumerId)) {
-          consumerIds.push(event.consumerId);
-        }
-      });
-    } else {
-      // Get consumer IDs across all locations
-      locations.forEach((location: FullLocation) => {
-        location.events.forEach((event: Event) => {
-          if (event.consumerId && !consumerIds.includes(event.consumerId)) {
-            consumerIds.push(event.consumerId);
-          }
-        });
-      });
-    }
-
-    return consumerIds;
-  }
-
   const handleFilterTypeChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
   ) => {
@@ -244,7 +220,7 @@ function TrackingWithFilter({
     <div>
       <div className="flex w-full items-start justify-center pb-6 flex-col px-6 gap-3">
         <div className="flex flex-col w-1/2 mx-auto">
-          <h1>By Filter</h1>
+          <h1>Filter</h1>
           <DropdownField top bottom options={filters} placeholder={"Filter"} value={filter} name={"filter"} onChange={handleFilterTypeChange} />
         </div>
         <div className="w-full flex gap-3">
@@ -281,7 +257,7 @@ function TrackingWithFilter({
                   placeholder="Location"
                   value={consumerId}
                 >
-                  {getConsumerIds(false).map((val) => (
+                  {getConsumerIds(false, location, locations).map((val) => (
                     <option key={val} value={val}>
                       {val}
                     </option>
@@ -314,7 +290,7 @@ function TrackingWithFilter({
           {filter === "Location / Consumer" && (
             <div className="flex flex-col w-1/2 text-xs">
               <h1>By Consumer</h1>
-              {(getConsumerIds(true).length > 0) ? (<div className="p-0 my-0">
+              {(getConsumerIds(true, location, locations).length > 0) ? (<div className="p-0 my-0">
                 <select
                   name="consumer"
                   className="px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b"
@@ -323,7 +299,7 @@ function TrackingWithFilter({
                   placeholder="Location"
                   value={consumerId}
                 >
-                  {getConsumerIds(true).map((val) => (
+                  {getConsumerIds(true, location, locations).map((val) => (
                     <option key={val} value={val}>
                       {val}
                     </option>
