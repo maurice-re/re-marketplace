@@ -1,26 +1,21 @@
 import ReLogo from "../../components/form/re-logo";
-import { prisma } from "../../constants/prisma";
-import { SkuProduct } from "../../utils/dashboard/dashboardUtils";
-import SampleOrder from "./sampleOrder";
+import { FullSku, useServerStore } from "../server-store";
+import Sample from "./sampleOrder";
 
 export default async function Page() {
-  const skus: SkuProduct[] = await prisma.sku.findMany({
-    include: {
-      product: true,
-    },
-  });
+  const skus: FullSku[] = await useServerStore.getState().getSkus();
+  // Only use one color per sku
+  const filteredSkus = skus.filter((sku) => sku.color === "gray");
 
   return (
-    <div className="w-screen h-screen bg-re-black flex items-center justify-center text-white">
+    <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6 text-white font-theinhardt">
       <ReLogo />
       <main className="flex flex-col w-full container mx-auto h-full justify-start py-3 items-start pr-5">
-        <div className="ml-1 font-theinhardt text-4xl pt-10 text-left">
-          Order Samples
+        <div className="ml-1 text-4xl pt-10 text-left">Request Samples</div>
+        <div className="ml-1 text-xl py-5 pb-20 text-left">
+          Select as many products as you would like!
         </div>
-        <div className="ml-1 font-theinhardt text-xl py-5 pb-20 text-left">
-          Select one or more products to proceed to checkout and try out Re!
-        </div>
-        <SampleOrder skus={skus} />
+        <Sample skus={filteredSkus} />
       </main>
     </div>
   );

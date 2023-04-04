@@ -44,21 +44,13 @@ function Success() {
 
   return (
     <div className="h-screen bg-re-black flex">
-      {/* <head>
-                <title>Congrats</title>
-                <meta
-                    name="successful purchase"
-                    content="Congrats on making a purchase"
-                />
-                <link rel="icon" href="/favicon.ico" />
-            </head> */}
       <main className="flex flex-col container mx-auto items-center py-4 text-white my-auto">
         <Confetti width={1800} height={1200} />
         <h1 className="text-5xl font-theinhardt text-white text-center">
-          Congrats on your purchase!
+          {"Thanks! We'll be in touch soon"}
         </h1>
         <div className="border-2 border-white px-8 py-4 mt-10 text-center rounded-md">
-          <div>Your sample order is on the way</div>
+          <div>Look forward to an email from us with next steps</div>
         </div>
       </main>
     </div>
