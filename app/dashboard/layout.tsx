@@ -17,6 +17,11 @@ export default async function Layout({
 }) {
   const user = await useServerStore.getState().getUser();
   const orders: Order[] = await useServerStore.getState().getOrders();
+  // const ownedLocations = await useServerStore.getState().getLocations(true);
+  // const viewableLocations = await useServerStore.getState().getLocations(false);
+
+  // Get it working, and then fix how the various filters are handled in the background - perhaps have Filter: {location:Location | null, etc.} so that getFilter()
+
   const completedOrders = orders.filter(
     (order) => order.status === Status.COMPLETED
   );
@@ -29,6 +34,8 @@ export default async function Layout({
     completedOrders.length > 0 || user.companyId === "616";
 
   const hasIncompleteOrder: boolean = incompleteOrders.length > 0;
+
+  // const locations = [...ownedLocations, ...viewableLocations];
 
   // All users see the following
   const routes: Route[] = [

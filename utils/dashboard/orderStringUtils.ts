@@ -1,5 +1,5 @@
 import { OrderItem, Product, Sku } from "@prisma/client";
-import { OrderWithItems } from "../../app/server-store";
+import { FullOrder } from "../../app/server-store";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 // ORDER STRING
@@ -14,18 +14,18 @@ export function getOrderStringTotal(orderString: string, products: Product[], sk
   }, 0);
 }
 
-export function getOrderString(order?: OrderWithItems, orderItem?: OrderItem, locationId?: string, orders?: OrderWithItems[]): string {
+export function getOrderString(order?: FullOrder, orderItem?: OrderItem, locationId?: string, orders?: FullOrder[]): string {
   if (orders) {
     return orders.reduce((orderString, order) => {
-      return orderString + `*${getOrderString(order)}`
+      return orderString + `*${getOrderString(order)}`;
     }, "").slice(1);
   } else
     if (order) {
       return order.items.reduce((orderString, item) => {
-          return orderString + `_${item.skuId}~${item.quantity}`
-      }, order.locationId)
+        return orderString + `_${item.skuId}~${item.quantity}`;
+      }, order.locationId);
     } else if (orderItem && locationId) {
-      return `${locationId}_${orderItem.skuId}~${orderItem.quantity}`
+      return `${locationId}_${orderItem.skuId}~${orderItem.quantity}`;
     }
-    return "";
+  return "";
 }

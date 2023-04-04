@@ -5,11 +5,12 @@ import { create } from "zustand";
 import { prisma } from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
-export type OrderWithItems = Order & {
+export type FullOrder = Order & {
   items: OrderItem[];
+  location: Location; // To avoid circular dependency with FullLocation, don't use FullLocation here
 };
 
-export type SkuWithProduct = Sku & {
+export type FullSku = Sku & {
   product: Product;
 };
 
@@ -17,7 +18,7 @@ export type SkuWithProduct = Sku & {
 export type FullLocation = Location & {
   settings: Settings | null;
   events: Event[];
-  orders: OrderWithItems[];
+  orders: FullOrder[];
   groups: FullGroup[];
   viewers: User[];
   owners: User[];
@@ -40,10 +41,10 @@ interface ServerStore {
   getLocationUserEmails: (locationId: string, owned: boolean) => Promise<string[]>;
   getGroupMemberEmails: (groupId: string) => Promise<string[]>;
   getLocationById: (locationId: string) => Promise<FullLocation>;
-  getOrders: () => Promise<OrderWithItems[]>;
-  getSkus: () => Promise<SkuWithProduct[]>;
+  getOrders: () => Promise<FullOrder[]>;
+  getSkus: () => Promise<FullSku[]>;
   getOrderItems: (orderId: string) => Promise<OrderItem[]>;
-  getGroups: (created: boolean) => Promise<Group[]>;
+  getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
   getGroupById: (groupId: string) => Promise<FullGroup>;
 }
@@ -226,7 +227,8 @@ export const useServerStore = create<ServerStore>((set, get) => ({
           include: {
             orders: {
               include: {
-                items: true
+                items: true,
+                location: true
               }
             },
             settings: true,
@@ -237,18 +239,19 @@ export const useServerStore = create<ServerStore>((set, get) => ({
           include: {
             orders: {
               include: {
-                items: true
+                items: true,
+                location: true
               }
             },
             settings: true,
             events: true,
           }
-        }
+        },
       }
     });
     if (!orders) return [];
-    const ownedOrders = orders.ownedLocations.flatMap(location => location.orders);
-    const viewableOrders = orders.viewableLocations.flatMap(location => location.orders);
+    const ownedOrders: FullOrder[] = orders.ownedLocations.flatMap(location => location.orders);
+    const viewableOrders: FullOrder[] = orders.viewableLocations.flatMap(location => location.orders);
     return JSON.parse(JSON.stringify([...ownedOrders, ...viewableOrders]));
   },
   getOrderItems: async (orderId: string) => {
@@ -288,6 +291,19 @@ export const useServerStore = create<ServerStore>((set, get) => ({
         where: {
           userId: userId, // .. with an ID that matches one of the following.
         },
+        include: {
+          locations: {
+            include: {
+              orders: {
+                include: {
+                  items: true
+                }
+              },
+              settings: true,
+              events: true,
+            },
+          },
+        }
       });
       if (!createdGroups) return [];
       return JSON.parse(JSON.stringify(createdGroups));
@@ -298,7 +314,21 @@ export const useServerStore = create<ServerStore>((set, get) => ({
           id: userId, // .. with an ID that matches one of the following.
         },
         include: {
-          memberGroups: true,
+          memberGroups: {
+            include: {
+              locations: {
+                include: {
+                  orders: {
+                    include: {
+                      items: true
+                    }
+                  },
+                  settings: true,
+                  events: true,
+                },
+              },
+            },
+          },
         }
       });
       if (!user || !user.memberGroups) return [];

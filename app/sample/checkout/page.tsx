@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import ReLogo from "../../../components/form/re-logo";
 import { prisma } from "../../../constants/prisma";
 import { authOptions } from "../../../pages/api/auth/[...nextauth]";
@@ -19,7 +19,7 @@ export default async function Page(props: {
     return <div>An error occurred</div>;
   }
 
-  const session = await unstable_getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   if (session == null) {
     //TODO: redirect to login
     return <div>Not logged in</div>;

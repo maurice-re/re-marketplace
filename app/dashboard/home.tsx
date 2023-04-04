@@ -1,12 +1,15 @@
 import { signOut } from "next-auth/react";
-import { addDays, skuName, SkuProduct } from "../../utils/dashboard/dashboardUtils";
+import {
+  addDays,
+  skuName,
+  SkuProduct,
+} from "../../utils/dashboard/dashboardUtils";
 
 import { Company, OrderItem, Status, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { getOrderString } from "../../utils/dashboard/orderStringUtils";
-import { FullLocation, OrderWithItems } from "../server-store";
-import QuickOrder from "./quickOrder";
+import { FullLocation, FullOrder } from "../server-store";
 
 function Home({
   company,
@@ -19,13 +22,13 @@ function Home({
 }: {
   company: Company;
   locations: FullLocation[];
-  orders: OrderWithItems[];
+  orders: FullOrder[];
   user: User;
   skus: SkuProduct[];
   hasCompleteOrder: boolean;
   hasIncompleteOrder: boolean;
 }) {
-  const incompleteOrders: OrderWithItems[] = orders.filter(
+  const incompleteOrders: FullOrder[] = orders.filter(
     (order) => order.status != Status.COMPLETED
   );
 
@@ -49,7 +52,7 @@ function Home({
     }
   }
 
-  function orderSubmittedRecently(order: OrderWithItems): boolean {
+  function orderSubmittedRecently(order: FullOrder): boolean {
     // Only show order submitted flag if order was submitted in the last 2 days
     return (
       new Date().getTime() - new Date(order.createdAt).getTime() <
@@ -87,7 +90,7 @@ function Home({
                       pathname: "/checkout",
                       query: {
                         orderString: getOrderString(
-                          orders[0] as unknown as OrderWithItems
+                          orders[0] as unknown as FullOrder
                         ),
                       },
                     }}
@@ -103,7 +106,9 @@ function Home({
                     const location = locations.find(
                       (location) => location.id == orders[0].locationId
                     );
-                    const sku: SkuProduct | undefined = skus.find((sku) => sku.id == item.skuId);
+                    const sku: SkuProduct | undefined = skus.find(
+                      (sku) => sku.id == item.skuId
+                    );
                     return (
                       <div key={item.id + "items"}>
                         <div className="flex justify-between mt-1 mb-3">
@@ -111,14 +116,16 @@ function Home({
                             {location?.displayName ?? location?.city}
                           </h2>
                           <h3 className="text-lg font-theinhardt-300">{`$${orders[0].items.reduce(
-                            (prev: number, curr: OrderItem) => prev + curr.amount,
+                            (prev: number, curr: OrderItem) =>
+                              prev + curr.amount,
                             0
                           )}`}</h3>
                         </div>
                         <div className="flex justify-between">
                           <div
-                            className={`flex items-center ${index + 1 != orders[0].items.length ? "mb-3" : ""
-                              }`}
+                            className={`flex items-center ${
+                              index + 1 != orders[0].items.length ? "mb-3" : ""
+                            }`}
                           >
                             <Image
                               src={sku?.mainImage ?? ""}
@@ -153,7 +160,8 @@ function Home({
                                   query: {
                                     orderString: getOrderString(
                                       undefined,
-                                      item
+                                      item,
+                                      location?.id
                                     ),
                                   },
                                 }}
@@ -170,13 +178,6 @@ function Home({
                   })}
                 </div>
               </div>
-              <QuickOrder
-                companyId={user.companyId}
-                customerId={company.customerId}
-                locations={locations}
-                skus={skus}
-                userId={user.id}
-              />
             </div>
           </div>
         </main>
@@ -244,7 +245,7 @@ function Home({
                         pathname: "/checkout",
                         query: {
                           orderString: getOrderString(
-                            orders[0] as unknown as OrderWithItems
+                            orders[0] as unknown as FullOrder
                           ),
                         },
                       }}
@@ -259,86 +260,92 @@ function Home({
                     {statuses.map((status, index) => (
                       <li
                         key={index}
-                        className={`step text-xs leading-tight ${progress.includes(status) ? "step-accent" : ""
-                          }`}
+                        className={`step text-xs leading-tight ${
+                          progress.includes(status) ? "step-accent" : ""
+                        }`}
                       >
                         {status.replace(/_/, " ")}
                       </li>
                     ))}
                   </ul>
                   <div className="flex flex-col w-full p-4">
-                    {incompleteOrders[0].items.map((item: OrderItem, index: number) => {
-                      const location = locations.find(
-                        (location) =>
-                          location.id == incompleteOrders[0].locationId
-                      );
-                      const sku = skus.find((sku) => sku.id == item.skuId);
-                      return (
-                        <div key={item.id + "items"}>
-                          <div className="flex justify-between mt-1 mb-3">
-                            <h2 className="text-xl font-theinhardt">
-                              {location?.displayName ?? location?.city}
-                            </h2>
-                            <h3 className="text-lg font-theinhardt-300">{`$${orders[0].items.reduce(
-                              (prev: number, curr: OrderItem) => prev + curr.amount,
-                              0
-                            )}`}</h3>
-                          </div>
-                          <div className="flex justify-between">
-                            <div
-                              className={`flex items-center ${index + 1 != orders[0].items.length
-                                ? "mb-3"
-                                : ""
+                    {incompleteOrders[0].items.map(
+                      (item: OrderItem, index: number) => {
+                        const location = locations.find(
+                          (location) =>
+                            location.id == incompleteOrders[0].locationId
+                        );
+                        const sku = skus.find((sku) => sku.id == item.skuId);
+                        return (
+                          <div key={item.id + "items"}>
+                            <div className="flex justify-between mt-1 mb-3">
+                              <h2 className="text-xl font-theinhardt">
+                                {location?.displayName ?? location?.city}
+                              </h2>
+                              <h3 className="text-lg font-theinhardt-300">{`$${orders[0].items.reduce(
+                                (prev: number, curr: OrderItem) =>
+                                  prev + curr.amount,
+                                0
+                              )}`}</h3>
+                            </div>
+                            <div className="flex justify-between">
+                              <div
+                                className={`flex items-center ${
+                                  index + 1 != orders[0].items.length
+                                    ? "mb-3"
+                                    : ""
                                 }`}
-                            >
-                              <Image
-                                src={sku?.mainImage ?? ""}
-                                height={96}
-                                width={96}
-                                alt={skuName(sku)}
-                                className="rounded"
-                              />
-                              <div className="flex-col text-start ml-4">
-                                <div className="text-base font-theinhardt">
-                                  {sku?.product.name}
-                                </div>
-                                <div className="text-sm font-theinhardt-300">
-                                  {`${sku?.size} | ${sku?.materialShort}`}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex items-center font-theinhardt-300 text-md">{`x ${item.quantity}`}</div>
-                            <div className="flex mb-3 items-center">
-                              <div className="flex-col justify-center text-center">
-                                <div className="font-theinhardt uppercase tracking-wide text-xs text-re-green-600">
-                                  {item.status}
-                                </div>
-                                <div className=" text-xs font-theinhardt-300">
-                                  {getEstimation(item)}
+                              >
+                                <Image
+                                  src={sku?.mainImage ?? ""}
+                                  height={96}
+                                  width={96}
+                                  alt={skuName(sku)}
+                                  className="rounded"
+                                />
+                                <div className="flex-col text-start ml-4">
+                                  <div className="text-base font-theinhardt">
+                                    {sku?.product.name}
+                                  </div>
+                                  <div className="text-sm font-theinhardt-300">
+                                    {`${sku?.size} | ${sku?.materialShort}`}
+                                  </div>
                                 </div>
                               </div>
-                              <div className="flex items-center ml-14">
-                                <Link
-                                  href={{
-                                    pathname: "/checkout",
-                                    query: {
-                                      orderString: getOrderString(
-                                        undefined,
-                                        item
-                                      ),
-                                    },
-                                  }}
-                                >
-                                  <button className="px-3 py-2 bg-re-purple-500 text-xs hover:bg-re-purple-600 rounded">
-                                    Re-order
-                                  </button>
-                                </Link>
+                              <div className="flex items-center font-theinhardt-300 text-md">{`x ${item.quantity}`}</div>
+                              <div className="flex mb-3 items-center">
+                                <div className="flex-col justify-center text-center">
+                                  <div className="font-theinhardt uppercase tracking-wide text-xs text-re-green-600">
+                                    {item.status}
+                                  </div>
+                                  <div className=" text-xs font-theinhardt-300">
+                                    {getEstimation(item)}
+                                  </div>
+                                </div>
+                                <div className="flex items-center ml-14">
+                                  <Link
+                                    href={{
+                                      pathname: "/checkout",
+                                      query: {
+                                        orderString: getOrderString(
+                                          undefined,
+                                          item,
+                                          location?.id
+                                        ),
+                                      },
+                                    }}
+                                  >
+                                    <button className="px-3 py-2 bg-re-purple-500 text-xs hover:bg-re-purple-600 rounded">
+                                      Re-order
+                                    </button>
+                                  </Link>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      }
+                    )}
                   </div>
                 </div>
               </div>
@@ -350,11 +357,11 @@ function Home({
   } else {
     return (
       <div className="w-full h-screen w-7/8 bg-re-black flex overflow-auto">
-        {/* {head} */}
         <main className="flex flex-col container mx-auto py-6 text-white font-theinhardt">
           <div className="flex justify-between px-1">
-            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${user.companyId == "616" ? "Agent Coulson" : user.firstName
-              }!`}</h1>
+            <h1 className="ml-1 font-theinhardt text-3xl">{`Hi ${
+              user.companyId == "616" ? "Agent Coulson" : user.firstName
+            }!`}</h1>
             <div className="flex items-center">
               <h1 className=" font-theinhardt text-3xl">Dashboard</h1>
               <div className="bg-white w-px h-5/6 mx-2" />
@@ -368,15 +375,7 @@ function Home({
             </div>
           </div>
           <div className="flex mt-4">
-            <div className="flex flex-col w-3/5 justify-between pb-4">
-              <QuickOrder
-                companyId={user.companyId}
-                customerId={company.customerId}
-                locations={locations}
-                skus={skus}
-                userId={user.id}
-              />
-            </div>
+            <div className="flex flex-col w-3/5 justify-between pb-4"></div>
           </div>
         </main>
       </div>

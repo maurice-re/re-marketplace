@@ -11,7 +11,7 @@ export type ItemSkuProduct = OrderItem & {
   };
 };
 
-export type OrderWithItemsLocationSku = Order & {
+export type FullOrderLocationSku = Order & {
   items: ItemLocationSku[];
 };
 
