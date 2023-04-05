@@ -1,3 +1,4 @@
+import json
 import requests
 
 # Usage
@@ -6,8 +7,8 @@ import requests
 
 apiUrl = "http://localhost:3000/api/tracking/borrow"
 
-body = {"consumerId": "test consumerId", "itemId": "test itemId", "hardwareId": "test hardwareId", "skuId": "test skuId", "timestamp": "test timestamp", "locationId": "test locationId"}
+body = {"consumerId": "test consumerId", "itemId": "test itemId", "hardwareId": "1", "skuId": "test skuId", "timestamp": "test timestamp"}
 headers = {"content-type":"application/json", "authorization": "Bearer DSwXumUE5eTQbYM3nI6qSPBWrtF0yp6IhjiXEVYvWMcahTyR0MWdUka1ywkWWaK8"}
-response = requests.post(apiUrl, headers=headers)
+response = requests.post(apiUrl, data=json.dumps(body), headers=headers)
 
-print(response)
+print(response.content)

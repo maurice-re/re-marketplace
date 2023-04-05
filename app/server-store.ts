@@ -1,9 +1,13 @@
-import { Company, Event, Group, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
+import { Company, Event, Group, Hardware, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { create } from "zustand";
 import { prisma } from "../constants/prisma";
 import { authOptions } from "../pages/api/auth/[...nextauth]";
+
+export type FullHardware = Hardware & {
+  location: FullLocation;
+};
 
 export type FullOrder = Order & {
   items: OrderItem[];
@@ -19,7 +23,7 @@ export type FullLocation = Location & {
   settings: Settings | null;
   events: Event[];
   orders: FullOrder[];
-  groups: FullGroup[];
+  groups: Group[];
   viewers: User[];
   owners: User[];
 };
