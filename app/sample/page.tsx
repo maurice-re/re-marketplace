@@ -12,7 +12,7 @@ export default async function Page() {
       <ReLogo />
       <main className="flex flex-col w-full container mx-auto h-full justify-start py-3 items-start pr-5">
         <div className="ml-1 text-4xl pt-10 text-left">Request Samples</div>
-        <div className="ml-1 text-xl py-5 pb-20 text-left">
+        <div className="ml-1 text-xl py-5 pb-10 text-left">
           Select as many products as you would like!
         </div>
         <Sample skus={filteredSkus} />

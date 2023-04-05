@@ -1,21 +1,15 @@
 "use client";
 
-import {
-  Company,
-  Product,
-  ProductDevelopment,
-  Sku,
-  User,
-} from "@prisma/client";
+import { Company, Product, ProductDevelopment, User } from "@prisma/client";
 import { Elements } from "@stripe/react-stripe-js";
-import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
+import { Appearance, PaymentMethod, loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
 import LineItems from "../../components/checkout/lineItems";
 import Totals from "../../components/checkout/totals";
 import ReLogo from "../../components/form/re-logo";
 import { eolPolicy } from "../../constants/policy";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
-import { FullLocation } from "../server-store";
+import { FullLocation, FullSku } from "../server-store";
 import CheckoutRight from "./checkoutRight";
 
 const stripePromise = loadStripe(
@@ -36,7 +30,7 @@ type CheckoutProps = {
   orderString: string;
   productDevelopment?: ProductDevelopment;
   products?: Product[];
-  skus?: Sku[];
+  skus?: FullSku[];
   type: CheckoutType;
   user?: User;
 };

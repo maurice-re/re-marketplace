@@ -39,7 +39,7 @@ export default function OrderTracking({
   const incompleteOrders = orders.filter(
     (order) => order.status != Status.COMPLETED
   );
-  const statuses: Status[] = Object.values(Status);
+  const statuses: Status[] = Object.values(Status).slice(1, -1);
 
   return (
     <>

@@ -33,35 +33,47 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
   }
 
   return (
-    <div className="flex flex-col w-full justify-start items-center h-full gap-8">
-      <div className="flex bg-re-dark-green-300 border border-re-gray-300 rounded-md pt-4 pb-3 gap-8 px-4">
+    <div className="flex flex-col w-full justify-start items-center h-full gap-8 pb-6">
+      <div className="columns-2 gap-8 w-3/5">
         {skus.map((sku) => (
-          <div key={sku.id}>
+          <div
+            className={`flex bg-re-dark-green-300 border-2 rounded-md mb-3 hover:border-re-green-500 active:border-re-green-700 cursor-pointer ${
+              selected.has(sku.id)
+                ? "border-re-green-700"
+                : "border-re-gray-300"
+            }`}
+            key={sku.id}
+            onClick={() => {
+              if (selected.has(sku.id)) {
+                selected.delete(sku.id);
+                setSelected(new Set(selected));
+              } else {
+                selected.add(sku.id);
+                setSelected(new Set(selected));
+              }
+            }}
+          >
             <Image
               src={sku.mainImage}
               alt={"Image of Sku"}
-              height={96}
-              width={96}
-              className={`rounded-md border-4 hover:border-re-green-500 active:border-re-green-700 cursor-pointer ${
-                selected.has(sku.id)
-                  ? "border-re-green-700"
-                  : "border-re-dark-green-300"
-              }`}
-              onClick={() => {
-                if (selected.has(sku.id)) {
-                  selected.delete(sku.id);
-                  setSelected(new Set(selected));
-                } else {
-                  selected.add(sku.id);
-                  setSelected(new Set(selected));
-                }
-              }}
+              height={128}
+              width={128}
+              className={`rounded-md p-1`}
             />
-            <div className="text-re-gray-text pt-1 text-small text-center">
-              {sku.product.name}
-            </div>
-            <div className="text-re-gray-text text-small text-center">
-              {sku.size}
+            <div className="flex flex-col justify-evenly items-start py-1 px-4">
+              <div className="text-white text-base">
+                {sku.size} {sku.product.name}
+              </div>
+              <div>
+                <div className="text-re-gray-text text-sm ">
+                  Material: {sku.material}
+                </div>
+                <div className="text-re-gray-text text-sm ">
+                  Color : {sku.color[0].toUpperCase()}
+                  {sku.color.slice(1)}
+                </div>
+              </div>
+              <div className="text-sm">{sku.product.description}</div>
             </div>
           </div>
         ))}
