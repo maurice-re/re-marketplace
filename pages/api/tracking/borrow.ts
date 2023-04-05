@@ -4,7 +4,7 @@ import { FullHardware } from "../../../app/server-store";
 import { prisma } from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
 
-async function borrow(req: Request, res: Response) {
+async function createBorrowEvent(req: Request, res: Response) {
   // Check Request Method
   if (req.method != "POST") {
     await logApi(`${req.method} event`, false, "HTTP Operation not supported.");
@@ -83,15 +83,15 @@ async function borrow(req: Request, res: Response) {
 
   switch (company.subscriptionType) {
     case (SubscriptionType.FREE):
-      // res.status(202).send("Validated borrow event. Processing...");
+      res.status(202).send("Validated BORROW event. Processing...");
       break;
     case (SubscriptionType.PREMIUM):
-      // res.status(202).send("Validated borrow event. Processing...");
+      res.status(202).send("Validated BORROW event. Processing...");
       // TODO
       break;
     case (SubscriptionType.PREMIUM_PLUS):
       // TODO
-      // res.status(202).send("Validated borrow event. Processing...");
+      res.status(202).send("Validated BORROW event. Processing...");
       break;
     default:
       break;
@@ -117,4 +117,4 @@ async function borrow(req: Request, res: Response) {
   return;
 }
 
-export default borrow;
+export default createBorrowEvent;
