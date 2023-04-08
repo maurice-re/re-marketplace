@@ -9,7 +9,7 @@ import csv
 # Run using VSCode "Run" button in Python terminal, cd'ing into this directory
 # Ensure CSV column order is: customer,location,product,type,productId,date
 
-FILE_NAME = "../../sheets/EventsDataComplete.csv"
+FILE_NAME = "./data/EventsDataComplete.csv"
 LOCATION_ID = "13"
 COMPANY_ID = "14"
 PRODUCT_TO_SKU_ID = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB1-1.5-RPP-GRAY",

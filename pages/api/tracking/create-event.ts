@@ -37,7 +37,7 @@ async function createEvent(req: Request, res: Response) {
     timestamp: string;
   } = req.body;
 
-  const company = prisma.company.findUnique({
+  const company = await prisma.company.findUnique({
     where: {
       id: companyId
     },
