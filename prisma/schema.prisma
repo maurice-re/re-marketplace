@@ -84,13 +84,13 @@ model Group {
 }
 
 model Hardware {
-  id             String    @id @default(cuid())
-  location       Location  @relation(fields: [locationId], references: [id])
+  id             String   @id @default(cuid())
+  containerCount Int      @default(0)
+  lastReplaced   DateTime @default(now())
+  location       Location @relation(fields: [locationId], references: [id])
   locationId     String
   notes          String?
-  return         Boolean   @default(false)
-  containerCount Int?      @default(0)
-  lastReplaced   DateTime? @default(now())
+  return         Boolean  @default(false)
 
   @@index([locationId])
 }
