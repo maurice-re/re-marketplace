@@ -70,6 +70,7 @@ async function createEvent(req: Request, res: Response) {
         action: action,
         companyId: companyId,
         consumerId: consumerId === "" ? null : consumerId,
+        hardwareId: hardwareId === "" ? null : hardwareId,
         itemId: itemId === "" ? null : itemId,
         skuId: skuId === "" ? null : skuId,
         locationId: locationId,
