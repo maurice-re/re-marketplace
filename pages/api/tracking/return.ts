@@ -8,22 +8,22 @@ async function createReturnEvent(req: Request, res: Response) {
   // Check Request Method
   if (req.method != "POST") {
     await logApi(`${req.method} event`, false, "HTTP Operation not supported.");
-    res.status(401).send("Bad Request");
+    res.status(401).send("Bad Request: POST expected.");
   }
   // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Bearer")) {
     await logApi("return", false, `Missing or Invalid API key: ${authorization}.`);
-    res.status(401).send(`Invalid API key format.`);
+    res.status(401).send("Bad Request: Invalid API key format.");
     return;
   }
 
-  // Get request info
+  /* Get request info. */
   const {
-    hardwareId,
-    consumerId,
-    itemId,
-    skuId,
+    hardwareId, // Device ID
+    consumerId, // Customer doing the returning
+    itemId,     // Item being returned
+    skuId,      // Sku ID of the item being returned
     timestamp
   }: {
     hardwareId: string;
@@ -57,12 +57,12 @@ async function createReturnEvent(req: Request, res: Response) {
   });
 
   if (hardware == undefined) {
-    res.status(400).send("Could not find hardware with ID " + hardwareId);
+    res.status(400).send({ error: "Bad Request: Could not find hardware with ID " + hardwareId });
     return;
   }
 
   if (hardware.location == undefined || hardware.location.events == undefined || hardware.location.events.length == 0) {
-    res.status(400).send("Could not find location or events for hardware with ID " + hardware.location.id);
+    res.status(400).send({ error: "Bad Request: Could not find location or events for hardware with ID " + hardware.location.id });
     return;
   }
 
@@ -77,19 +77,19 @@ async function createReturnEvent(req: Request, res: Response) {
 
   if (company == undefined) {
     // await logApi("return", false, "Company invalid/outdated");
-    res.status(400).send("Company invalid/outdated.");
+    res.status(400).send({ error: "Bad Request: Company invalid/outdated." });
     return;
   }
 
   switch (company.subscriptionType) {
     case (SubscriptionType.FREE):
-      // res.status(202).send("Validated RETURN event. Processing...");
+      res.status(202).send();
       break;
     case (SubscriptionType.PREMIUM):
-      // res.status(409).send("Could not process new event with premium subscription type.");
+      res.status(409).send({ error: "Could not process new event with premium subscription type." });
       break;
     case (SubscriptionType.PREMIUM_PLUS):
-      // res.status(409).send("Could not process new event with premium-plus subscription type.");
+      res.status(409).send({ error: "Could not process new event with premium-plus subscription type." });
       break;
     default:
       break;
@@ -112,11 +112,8 @@ async function createReturnEvent(req: Request, res: Response) {
       timestamp: timestamp,
     }),
   }).then((response) => {
-    console.log(`Received response: ${response.status}`);
-    res.status(200).send("Created the event with " + response.status);
+    res.status(response.status).send("Tried to create event.");
   });;
-
-  // res.status(200).send("Successfully created event for location " + hardware.locationId + ".");
 
   return;
 }
