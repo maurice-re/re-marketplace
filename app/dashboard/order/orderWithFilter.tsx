@@ -87,7 +87,7 @@ function OrderWithFilter({
             newOrderItems = allOrderItems;
         }
         setOrderItems(newOrderItems);
-    }, [location, sku, order, status]);
+    }, [location, sku, order, status, allOrderItems, filter]);
 
     const handleFilterTypeChange = (
         e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>

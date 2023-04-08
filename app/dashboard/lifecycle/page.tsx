@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { AiOutlineDisconnect } from "react-icons/ai";
 
-import { prisma } from "../../../constants/prisma";
 import { getUniqueLocations } from "../../../utils/dashboard/dashboardUtils";
 import { useServerStore } from "../../server-store";
 import LifecycleWithFilter from "./lifecycleWithFilter";
@@ -17,10 +16,6 @@ export default async function Page() {
     ...ownedLocations,
     ...viewableLocations,
   ]); // Show both owned and viewable locations on tracking page
-
-  const events = await prisma.event.findMany({});
-
-  // TODO(Suhana): Filters to add here: locations, groups, skus, orders
 
   const hasEvents = locations.some((location) => location.events.length > 0);
   if (!hasEvents) {

@@ -1,6 +1,5 @@
-import { Action, Company, Hardware, SubscriptionType } from "@prisma/client";
+import { Hardware } from "@prisma/client";
 import type { Request, Response } from "express";
-import { FullHardware } from "../../../app/server-store";
 import { prisma } from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
 

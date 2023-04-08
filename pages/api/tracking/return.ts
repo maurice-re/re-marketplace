@@ -113,7 +113,7 @@ async function createReturnEvent(req: Request, res: Response) {
     }),
   }).then((response) => {
     res.status(response.status).send("Tried to create event.");
-  });;
+  });
 
   return;
 }

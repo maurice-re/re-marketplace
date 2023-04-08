@@ -1,5 +1,5 @@
 "use client";
-import { Event, OrderItem, Settings } from "@prisma/client";
+import { Event, OrderItem } from "@prisma/client";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 import DropdownField from "../../../components/form/dropdown-field";
