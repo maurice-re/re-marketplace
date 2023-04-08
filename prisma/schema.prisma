@@ -8,7 +8,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -59,6 +59,7 @@ model Event {
   action     Action
   companyId  String
   consumerId String?
+  hardwareId String?
   itemId     String?
   location   Location @relation(fields: [locationId], references: [id])
   locationId String
@@ -83,11 +84,13 @@ model Group {
 }
 
 model Hardware {
-  id         String   @id @default(cuid())
-  location   Location @relation(fields: [locationId], references: [id])
-  locationId String
-  notes      String?
-  return     Boolean  @default(false)
+  id             String    @id @default(cuid())
+  location       Location  @relation(fields: [locationId], references: [id])
+  locationId     String
+  notes          String?
+  return         Boolean   @default(false)
+  containerCount Int?      @default(0)
+  lastReplaced   DateTime? @default(now())
 
   @@index([locationId])
 }
