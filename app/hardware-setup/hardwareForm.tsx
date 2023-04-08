@@ -15,7 +15,7 @@ export default function HardwareForm({
   const [deviceInfo, setDeviceInfo] = useState<Record<string, string>>({
     deviceId: deviceId ?? "",
     action: "borrow",
-    locationId: locations[0].id,
+    locationId: (locations && locations.length > 0) ? locations[0].id : "",
     notes: "",
   });
 
@@ -53,7 +53,7 @@ export default function HardwareForm({
     setLoading(false);
   }
 
-  return (
+  return (locations && locations.length > 0) ? (
     <div className="flex flex-col bg-re-dark-green-400 border-[0.5px] border-re-gray-500 rounded min-w-56 lg:w-1/4">
       <h1 className="mx-4 my-5 text-xl">Register Device</h1>
       <div className="h-0.5 w-full bg-re-gray-500"></div>
@@ -136,5 +136,7 @@ export default function HardwareForm({
         </div>
       )}
     </div>
+  ) : (
+    <div>Error occurred!</div>
   );
 }
