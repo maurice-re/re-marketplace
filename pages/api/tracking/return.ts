@@ -1,4 +1,4 @@
-import { Action, Company, Hardware, SubscriptionType } from "@prisma/client";
+import { Action, Company, SubscriptionType } from "@prisma/client";
 import type { Request, Response } from "express";
 import { FullHardware } from "../../../app/server-store";
 import { prisma } from "../../../constants/prisma";
@@ -83,15 +83,13 @@ async function createReturnEvent(req: Request, res: Response) {
 
   switch (company.subscriptionType) {
     case (SubscriptionType.FREE):
-      res.status(202).send("Validated RETURN event. Processing...");
+      // res.status(202).send("Validated RETURN event. Processing...");
       break;
     case (SubscriptionType.PREMIUM):
-      res.status(202).send("Validated RETURN event. Processing...");
-      // TODO
+      // res.status(409).send("Could not process new event with premium subscription type.");
       break;
     case (SubscriptionType.PREMIUM_PLUS):
-      // TODO
-      res.status(202).send("Validated RETURN event. Processing...");
+      // res.status(409).send("Could not process new event with premium-plus subscription type.");
       break;
     default:
       break;
@@ -100,7 +98,10 @@ async function createReturnEvent(req: Request, res: Response) {
   /* Create event. */
   await fetch(`${process.env.NEXTAUTH_URL}/api/tracking/create-event`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      'Authorization': authorization,
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       companyId: companyId,
       consumerId: consumerId,
@@ -110,7 +111,10 @@ async function createReturnEvent(req: Request, res: Response) {
       locationId: hardware.locationId,
       timestamp: timestamp,
     }),
-  });
+  }).then((response) => {
+    console.log(`Received response: ${response.status}`);
+    res.status(200).send("Created the event with " + response.status);
+  });;
 
   // res.status(200).send("Successfully created event for location " + hardware.locationId + ".");
 

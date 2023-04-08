@@ -5,12 +5,13 @@ import csv
 # Usage
 # npm run dev
 # Use API key for the desired company in "Bearer ..." (create new API Key using createAPIKey.py if needed)
-# Change FILE_NAME and LOCATION_ID
+# Change FILE_NAME, LOCATION_ID, COMPANY_ID
 # Run using VSCode "Run" button in Python terminal, cd'ing into this directory
 # Ensure CSV column order is: customer,location,product,type,productId,date
 
 FILE_NAME = "../../sheets/EventsDataComplete.csv"
 LOCATION_ID = "13"
+COMPANY_ID = "14"
 PRODUCT_TO_SKU_ID = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB1-1.5-RPP-GRAY",
                     "Silver Cup (M)":"SC1-12-RPP-GRAY", "Food Container (S)": "SB1-1-RPP-GRAY"}
 API_URL = "http://localhost:3000/api/tracking/create-event"
@@ -34,7 +35,7 @@ with open(FILE_NAME, 'r') as csvFile:
         events.append(event)
 
 for event in events:
-    eventBody = {"consumerId": event[0], "itemId": event[1], "locationId": LOCATION_ID, "skuId": event[3], "action": event[4], "timestamp": event[5], "companyId": "14"}
+    eventBody = {"consumerId": event[0], "itemId": event[1], "locationId": LOCATION_ID, "skuId": event[3], "action": event[4], "timestamp": event[5], "companyId": COMPANY_ID}
     
     print(eventBody)
 

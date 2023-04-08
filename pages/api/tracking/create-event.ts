@@ -80,7 +80,7 @@ async function createEvent(req: Request, res: Response) {
   }
 
   await logApi(action.toLowerCase());
-  res.status(200).send({ success: `successfully tracked ${itemId}` });
+  res.status(200).send({ success: `Successfully tracked ${itemId}.` });
   // updateUntracked(itemId, company, sku!.id);
 }
 

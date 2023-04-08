@@ -6,7 +6,7 @@ export default async function Page() {
   const user = await useServerStore.getState().getUser();
   if (!user) return <div>Not found</div>;
 
-  const demoLocation = await useServerStore.getState().getLocationById("219");
+  const demoLocation = await useServerStore.getState().getLocationById("13");
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
