@@ -112,7 +112,7 @@ async function createReturnEvent(req: Request, res: Response) {
     }),
   });
 
-  res.status(200).send("Successfully created event for location " + hardware.locationId + ".");
+  // res.status(200).send("Successfully created event for location " + hardware.locationId + ".");
 
   return;
 }

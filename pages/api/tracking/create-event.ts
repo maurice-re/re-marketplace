@@ -8,15 +8,15 @@ async function createEvent(req: Request, res: Response) {
   if (req.method != "POST") {
     await logApi(`${req.method} event`, false, "HTTP Operation not supported");
     res.status(401).send("Bad Request");
+    return;
   }
   // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Bearer")) {
     await logApi("create-event", false, `Missing or Invalid API key: ${authorization}`);
-    res.status(401).send(`Invalid API key format`);
+    res.status(401).send("Invalid API key format");
     return;
   }
-
 
   // Get request info
   const {
