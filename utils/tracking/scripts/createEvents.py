@@ -5,13 +5,14 @@ import csv
 # Usage
 # npm run dev
 # Use API key for the desired company in "Bearer ..." (create new API Key using createAPIKey.py if needed)
-# Change FILE_NAME, LOCATION_ID, COMPANY_ID
+# Change FILE_NAME, LOCATION_ID, COMPANY_ID, HARDWARE_ID
 # Run using VSCode "Run" button in Python terminal, cd'ing into this directory
 # Ensure CSV column order is: customer,location,product,type,productId,date
 
 FILE_NAME = "./data/EventsDataComplete.csv"
-LOCATION_ID = "13"
-COMPANY_ID = "14"
+LOCATION_ID = "123"
+COMPANY_ID = "cl80okd2w01151c0ou3lcf386"
+HARDWARE_ID = "1"
 PRODUCT_TO_SKU_ID = {"Food Container (M)":"SB1-1.5-RPP-GRAY", "Food Box (M)":"SB1-1.5-RPP-GRAY",
                     "Silver Cup (M)":"SC1-12-RPP-GRAY", "Food Container (S)": "SB1-1-RPP-GRAY"}
 API_URL = "http://localhost:3000/api/tracking/create-event"
@@ -35,7 +36,7 @@ with open(FILE_NAME, 'r') as csvFile:
         events.append(event)
 
 for event in events:
-    eventBody = {"consumerId": event[0], "itemId": event[1], "locationId": LOCATION_ID, "skuId": event[3], "action": event[4], "timestamp": event[5], "companyId": COMPANY_ID}
+    eventBody = {"consumerId": event[0], "itemId": event[1], "locationId": LOCATION_ID, "skuId": event[3], "action": event[4], "timestamp": event[5], "companyId": COMPANY_ID, "hardwareId": HARDWARE_ID}
     
     print(eventBody)
 
