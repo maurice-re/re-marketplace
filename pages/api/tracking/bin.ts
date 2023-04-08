@@ -1,4 +1,4 @@
-import { Action, Company, SubscriptionType } from "@prisma/client";
+import { Action, Company, Hardware, SubscriptionType } from "@prisma/client";
 import type { Request, Response } from "express";
 import { FullHardware } from "../../../app/server-store";
 import { prisma } from "../../../constants/prisma";
@@ -25,30 +25,13 @@ async function bin(req: Request, res: Response) {
         hardwareId: string;
     } = req.body;
 
-    const hardware: FullHardware | null = await prisma.hardware.findUnique({
+    const hardware: Hardware | null = await prisma.hardware.findUnique({
         where: {
             id: hardwareId ?? ""
         },
-        include: {
-            location: {
-                include: {
-                    orders: {
-                        include: {
-                            items: true,
-                            location: true
-                        }
-                    },
-                    settings: true,
-                    events: true,
-                    groups: true,
-                    viewers: true,
-                    owners: true,
-                },
-            }
-        }
     });
 
-    if (hardware == undefined) {
+    if (!hardware) {
         res.status(400).send({ error: "Bad Request: Could not find hardware with ID " + hardwareId });
         return;
     }
@@ -56,13 +39,12 @@ async function bin(req: Request, res: Response) {
     /* Update the date the hardware was last replaced to now. */
     await prisma.hardware.update({
         where: {
-            id: hardwareId ?? "",
+            id: hardware.id,
         },
         data: {
             lastReplaced: new Date(),
         },
     });
-
 
     res.status(200).send("Successfully registered latest replacement date.");
 

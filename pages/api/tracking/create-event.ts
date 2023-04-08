@@ -1,4 +1,4 @@
-import { Action, Sku } from "@prisma/client";
+import { Action, Hardware, Sku } from "@prisma/client";
 import type { Request, Response } from "express";
 import { prisma } from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
@@ -24,6 +24,7 @@ async function createEvent(req: Request, res: Response) {
     consumerId,
     itemId,
     locationId,
+    hardwareId,
     skuId,
     action,
     timestamp
@@ -33,6 +34,7 @@ async function createEvent(req: Request, res: Response) {
     consumerId: string;
     itemId: string;
     locationId: string;
+    hardwareId: string;
     skuId: string;
     timestamp: string;
   } = req.body;
@@ -74,6 +76,32 @@ async function createEvent(req: Request, res: Response) {
         timestamp: timestamp ? new Date(timestamp) : new Date()
       },
     });
+
+    /* If valid device was referenced, update its containerCount. */
+    const hardware: Hardware | null = await prisma.hardware.findUnique({
+      where: {
+        id: hardwareId ?? ""
+      },
+    });
+    if (hardware) {
+      let newContainerCount = 0;
+      if (action == Action.BORROW) {
+        /* One less container remains in the device. */
+        newContainerCount = hardware.containerCount - 1;
+      } else if (action == Action.RETURN) {
+        /* One more container was added to the device. */
+        newContainerCount = hardware.containerCount - 1;
+      }
+      await prisma.hardware.update({
+        where: {
+          id: hardware.id,
+        },
+        data: {
+          containerCount: newContainerCount,
+        },
+      });
+    }
+
   } else {
     await logApi(action, false, "Company invalid/outdated");
     res.status(400).send("Company invalid/outdated");
