@@ -35,7 +35,7 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
   return (
     <div className="flex flex-col w-full justify-start items-center h-full gap-8 pb-6">
       <div className="columns-2 gap-8 w-3/4 xl:w-3/5">
-        {skus.map((sku) => (
+        {skus.map((sku, index) => (
           <div
             className={`flex bg-re-dark-green-300 border-2 rounded-md mb-3 hover:border-re-green-500 active:border-re-green-700 cursor-pointer ${
               selected.has(sku.id)
@@ -58,7 +58,9 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
               alt={"Image of Sku"}
               height={128}
               width={128}
-              className={`rounded-md p-1`}
+              className={`rounded-md p-1 hover:w-1/2 hover:absolute hover:top-10 ${
+                index > 2 ? "hover:left-0" : "hover:right-0"
+              }`}
             />
             <div className="flex flex-col justify-evenly items-start py-1 px-4">
               <div className="text-white text-base">
