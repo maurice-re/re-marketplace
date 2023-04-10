@@ -34,7 +34,7 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
 
   return (
     <div className="flex flex-col w-full justify-start items-center h-full gap-8 pb-6">
-      <div className="columns-2 gap-8 w-3/5">
+      <div className="columns-2 gap-8 w-3/4 xl:w-3/5">
         {skus.map((sku) => (
           <div
             className={`flex bg-re-dark-green-300 border-2 rounded-md mb-3 hover:border-re-green-500 active:border-re-green-700 cursor-pointer ${
@@ -82,7 +82,7 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
         className="flex flex-col w-full gap-8 items-center"
         onSubmit={requestSamples}
       >
-        <div className=" w-2/5 flex flex-col justify-center">
+        <div className=" w-1/2 flex flex-col justify-center">
           <div className="bg-re-dark-green-300 border border-re-gray-300 rounded-md flex flex-col">
             <div className="flex">
               <input
@@ -106,7 +106,6 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
               />
             </div>
             <div className="h-px bg-re-gray-300 w-full"></div>
-
             <div className="flex">
               <input
                 type={"email"}
@@ -128,10 +127,7 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
                 }}
               />
             </div>
-          </div>
-        </div>
-        <div className=" w-2/5 flex flex-col justify-center">
-          <div className="bg-re-dark-green-300 border border-re-gray-300 rounded-md flex flex-col">
+            <div className="h-px bg-re-gray-300 w-full"></div>
             <input
               type={"text"}
               placeholder={"Company"}
@@ -209,7 +205,7 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
         {loading ? (
           <svg
             aria-hidden="true"
-            className="mr-2 w-8 h-8 text-re-purple-600 animate-spin fill-re-dark-green-300"
+            className="mr-2 w-8 h-8 text-re-purple-400 animate-spin fill-re-dark-green-300"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -225,7 +221,7 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
           </svg>
         ) : (
           <button
-            className=" px-4 py-2 bg-re-purple-500 rounded text-white hover:bg-re-purple-600 disabled:bg-re-gray-text cursor-pointer"
+            className=" w-1/5 py-2 bg-re-purple-400 rounded text-white hover:bg-re-purple-600 disabled:bg-re-gray-text cursor-pointer mb-5"
             disabled={selected.size == 0}
             type={"submit"}
           >
