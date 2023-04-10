@@ -3,7 +3,7 @@ import Tracking from "../dashboard/tracking/tracking";
 import { useServerStore } from "../server-store";
 
 export default async function Page() {
-  const demoLocation = await useServerStore.getState().getLocationById("219");
+  const demoLocation = await useServerStore.getState().getLocationById("13");
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
