@@ -56,9 +56,9 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
             <Image
               src={sku.mainImage}
               alt={"Image of Sku"}
-              height={128}
-              width={128}
-              className={`rounded-md p-1 hover:w-1/2 hover:absolute hover:top-10 ${
+              height={880}
+              width={880}
+              className={`rounded-md w-32 p-1 hover:w-1/2 hover:absolute hover:top-10 ${
                 index > 2 ? "hover:left-0" : "hover:right-0"
               }`}
             />
