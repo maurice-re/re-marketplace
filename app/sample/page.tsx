@@ -10,9 +10,9 @@ export default async function Page() {
   return (
     <div className="w-full h-screen bg-re-dark-green-500 flex overflow-auto px-6 text-white font-theinhardt">
       <ReLogo />
-      <main className="flex flex-col w-full container mx-auto h-full justify-start py-3 items-start pr-5">
-        <div className="ml-1 text-4xl pt-10 text-left">Request Samples</div>
-        <div className="ml-1 text-xl py-5 pb-20 text-left">
+      <main className="flex flex-col w-full container mx-auto h-full justify-start py-3 items-center">
+        <div className="ml-1 text-5xl pt-10 text-left">Request Samples</div>
+        <div className="ml-1 text-2xl pt-3 pb-10 text-left font-theinhardt-300">
           Select as many products as you would like!
         </div>
         <Sample skus={filteredSkus} />
