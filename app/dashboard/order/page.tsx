@@ -19,7 +19,7 @@ export default async function Page() {
         <meta name="tracking" content="Order" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex w-full flex-col w-full mx-auto py-6 text-white font-theinhardt">
+      <main className="flex flex-col w-full mx-auto py-6 text-white font-theinhardt">
         <OrderWithFilter company={company} locations={locations} skus={skus} allOrders={orders} allOrderItems={orderItems} />
       </main>
     </div>);
