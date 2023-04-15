@@ -46,7 +46,7 @@ export default async function Page({
                 <h2 className="text-lg font-theinhardt text-white text-center py-6">
                     Owners are able to add/remove other owners and viewers. Viewers are able to view the location and its owners and viewers.
                 </h2>
-                <div className="flex w-full gap-4 items-center justify-center space-y-4">
+                <div className="flex w-full gap-4 items-center justify-center space-y-4 mb-8">
                     <div className='w-1/2 flex flex-col items-center justify-center'>
                         <h1>Owners</h1>
                         <LocationUsersList locationId={locationId} users={owners} owned={owned} owner={true} />
@@ -58,8 +58,13 @@ export default async function Page({
                 </div>
                 {/* Only let them update the location if they are an owner of the location. */}
                 {owned &&
-                    (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
-                        <h1>Update Location</h1>
+                    // (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
+                    //     <h1>Update Location</h1>
+                    //     <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
+                    // </div>)
+                    (<div className="bg-re-dark-green-300 border rounded-md border-re-gray-300 flex flex-col font-theinhardt text-white w-1/2">
+                        <div className="p-4 text-lg">Update Location</div>
+                        <div className="bg-re-gray-300 h-px" />
                         <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
                     </div>)
                 }
