@@ -1,4 +1,5 @@
 import { FullHardware } from "../../app/server-store";
+import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 export default function HardwareStatusTable({ allHardware }: { allHardware: FullHardware[]; }) {
     return allHardware && (
@@ -8,8 +9,9 @@ export default function HardwareStatusTable({ allHardware }: { allHardware: Full
                     <tr className="text-re-gray-text text-lg text-left p-4">
                         <th className="py-2 pl-2 sticky top-0 bg-re-black">Notes</th>
                         <th className="pl-2 sticky top-0 bg-re-black">Type</th>
-                        <th className="pl-2 sticky top-0 bg-re-black">Date Last Replaced</th>
+                        <th className="pl-2 sticky top-0 bg-re-black">Last Replaced</th>
                         <th className="pl-2 sticky top-0 bg-re-black"># of Containers</th>
+                        <th className="pl-2 sticky top-0 bg-re-black">Full</th>
                     </tr>
                 </thead>
                 <tbody className="text-left">
@@ -21,9 +23,10 @@ export default function HardwareStatusTable({ allHardware }: { allHardware: Full
                             <td className="py-3 pl-2">{hardware.notes}</td>
                             <td className="pl-2">{hardware.return ? "Return" : "Borrow"}</td>
                             <td className="pl-2">
-                                {hardware.lastReplaced.toString()}
+                                {hardware.lastReplaced.toUTCString()}
                             </td>
                             <td className="pl-2">{hardware.containerCount}</td>
+                            <td className="pl-2">{hardware.capacity === hardware.containerCount ? <AiOutlineCheck className="text-white" /> : <AiOutlineClose className="text-white" />}</td>
                         </tr>
                     ))}
                 </tbody>

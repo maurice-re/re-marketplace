@@ -85,6 +85,7 @@ model Group {
 
 model Hardware {
   id             String   @id @default(cuid())
+  capacity       Int      @default(0)
   containerCount Int      @default(0)
   lastReplaced   DateTime @default(now())
   location       Location @relation(fields: [locationId], references: [id])
