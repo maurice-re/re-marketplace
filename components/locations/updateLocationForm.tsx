@@ -199,10 +199,10 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
     const locationTypes = [LocationType.SHIPPING, LocationType.SAMPLE, LocationType.TRACKING];
 
     return (
-        <form id="add-location-form" onSubmit={handleSubmit}>
+        <form id="update-location-form" onSubmit={handleSubmit}>
             <div className="form-control w-full p-4">
-                <div className="pt-2 w-full">
-                    <label className="text-re-gray-text">Address</label>
+                <div className="w-full">
+                    <label className="text-lg font-semibold">Address</label>
                     <InputField top placeholder={getPlaceholder(location.displayName, "Display Name")} value={displayName} name={"displayName"} onChange={handleChange} />
                     <InputField placeholder={getPlaceholder(location.shippingName, "Location Name")} value={shippingName} name={"shippingName"} onChange={handleChange} />
                     <InputField placeholder={getPlaceholder(location.line1, "Address Line 1")} value={line1} name={"line1"} onChange={handleChange} />
@@ -211,19 +211,19 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
                     <DoubleInputField bottom leftPlaceholder={getPlaceholder(location.zip, "Zip")} leftValue={zip} leftName={"zip"} rightPlaceholder={getPlaceholder(location.country, "Country")} rightValue={country} rightName={"country"} onChange={handleChange} />
                 </div>
                 <div className="pt-2 w-full">
-                    <label className="text-re-gray-text">Tracking Type</label>
+                    <label className="text-lg font-semibold">Tracking Type</label>
                     <DropdownField top bottom options={trackingTypes} placeholder={"Tracking Type"} value={trackingType} name={"trackingType"} onChange={handleChange} />
                 </div>
                 <div className="pt-2 w-full">
-                    <label className="text-re-gray-text">Shipping Type</label>
+                    <label className="text-lg font-semibold">Shipping Type</label>
                     <DropdownField top bottom options={locationTypes} placeholder={"Location Type"} value={type} name={"type"} onChange={handleChange} />
                 </div>
                 <div className="pt-2 w-full">
-                    <label className="text-re-gray-text">Pricing Penalty</label>
+                    <label className="text-lg font-semibold">Pricing Penalty</label>
                     <DropdownField top bottom options={penalties} placeholder={"Penalty"} value={penalty} name={"penalty"} onChange={handleChange} />
                 </div>
                 <div className="pt-2 w-full">
-                    <label className="text-re-gray-text">Owners</label>
+                    <label className="text-lg font-semibold">Owners</label>
                     <div className='w-full flex'>
                         <div className="w-full">
                             <InputField top bottom placeholder={"Owner Email"} value={ownerEmail} name={"ownerEmail"} onChange={handleChange} />
@@ -242,7 +242,7 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
                     })}
                 </div>
                 <div className="pt-2 w-full">
-                    <label className="text-re-gray-text">Viewers</label>
+                    <label className="text-lg font-semibold">Viewers</label>
                     <div className='w-full flex'>
                         <div className="w-full">
                             <InputField top bottom placeholder={"Viewer Email"} value={viewerEmail} name={"viewerEmail"} onChange={handleChange} />
@@ -264,7 +264,7 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
                     id="submit"
                     disabled={!canSubmit}
                     className={`${(!canSubmit || isLoading)
-                        ? "bg-re-gray-300"
+                        ? "bg-re-dark-green-500"
                         : "bg-re-purple-500"
                         } w-full text-white text-lg rounded-md p-2 mt-4`}
                 >

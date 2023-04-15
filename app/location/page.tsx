@@ -3,8 +3,7 @@ import ReLogo from '../../components/form/re-logo';
 import Inventory from '../../components/locations/inventory';
 import LocationUsersList from '../../components/locations/location/locationUsersList';
 import UpdateLocationForm from '../../components/locations/updateLocationForm';
-import { getItemsInUse, getTotals } from '../../utils/tracking/trackingUtils';
-import { FullHardware, useServerStore } from '../server-store';
+import { useServerStore } from '../server-store';
 
 export default async function Page({
     searchParams,
@@ -58,10 +57,6 @@ export default async function Page({
                 </div>
                 {/* Only let them update the location if they are an owner of the location. */}
                 {owned &&
-                    // (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
-                    //     <h1>Update Location</h1>
-                    //     <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
-                    // </div>)
                     (<div className="bg-re-dark-green-300 border rounded-md border-re-gray-300 flex flex-col font-theinhardt text-white w-1/2">
                         <div className="p-4 text-lg">Update Location</div>
                         <div className="bg-re-gray-300 h-px" />

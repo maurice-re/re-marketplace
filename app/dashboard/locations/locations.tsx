@@ -38,9 +38,14 @@ function Locations({
                     <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." handleDelete={deleteLocation} deleteDescription="delete a location" />
                     <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." handleDelete={null} deleteDescription="delete a location" />
                 </div>
-                <div className="w-full flex gap-8">
-                    <div className="flex-col w-1/2 flex items-start justify-start">
+                <div className="w-full flex gap-8 mt-8">
+                    {/* <div className="flex-col w-1/2 flex items-start justify-start">
                         <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
+                        <AddLocationForm user={user} />
+                    </div> */}
+                    <div className="bg-re-dark-green-300 border rounded-md border-re-gray-300 flex flex-col font-theinhardt text-white w-1/2">
+                        <div className="p-4 text-lg">Add Location</div>
+                        <div className="bg-re-gray-300 h-px" />
                         <AddLocationForm user={user} />
                     </div>
                     <div className="flex-col w-1/2 flex items-start justify-start">
