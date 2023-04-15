@@ -2,7 +2,7 @@ import { FullHardware } from "../../app/server-store";
 import { AiOutlineCheck, AiOutlineClose } from "react-icons/ai";
 
 export default function HardwareStatusTable({ allHardware }: { allHardware: FullHardware[]; }) {
-    return allHardware && (
+    return (allHardware && allHardware.length > 0) ? (
         <div className="flex w-3/4 max-h-148 overflow-scroll border border-re-gray-300 rounded-md">
             <table className="w-full h-min font-theinhardt-300">
                 <thead>
@@ -32,6 +32,7 @@ export default function HardwareStatusTable({ allHardware }: { allHardware: Full
                 </tbody>
             </table>
         </div>
-
-    );
+    ) : (<div>
+        Purchase hardware to see data here.
+    </div>);
 }
