@@ -1,7 +1,7 @@
 "use client";
 
-import { Product, ProductDevelopment, Sku } from "@prisma/client";
-import { FullLocation } from "../../app/server-store";
+import { Product, ProductDevelopment } from "@prisma/client";
+import { FullLocation, FullSku } from "../../app/server-store";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
 import LineItems from "../checkout/lineItems";
 import Totals from "../checkout/totals";
@@ -12,7 +12,7 @@ type POItemsProps = {
   orderString: string;
   productDevelopment?: ProductDevelopment;
   products?: Product[];
-  skus?: Sku[];
+  skus?: FullSku[];
   type: CheckoutType;
 };
 

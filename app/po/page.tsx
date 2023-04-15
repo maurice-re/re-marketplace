@@ -7,7 +7,7 @@ import { useServerStore } from "../server-store";
 export default async function Page({
   searchParams,
 }: {
-  searchParams?: { orderString: string; };
+  searchParams?: { orderString: string };
 }) {
   if (!(searchParams && searchParams.orderString)) {
     return <div>An error occurred</div>;
@@ -19,7 +19,7 @@ export default async function Page({
   const company = await useServerStore.getState().getCompany();
   const locations = await useServerStore.getState().getLocations(true);
   const products = await prisma.product.findMany({});
-  const skus = await prisma.sku.findMany({});
+  const skus = await useServerStore.getState().getSkus();
 
   return (
     <div className="w-full h-screen bg-re-black flex">

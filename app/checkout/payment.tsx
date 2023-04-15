@@ -8,7 +8,7 @@ import {
   User,
 } from "@prisma/client";
 import { Elements } from "@stripe/react-stripe-js";
-import { Appearance, loadStripe, PaymentMethod } from "@stripe/stripe-js";
+import { Appearance, PaymentMethod, loadStripe } from "@stripe/stripe-js";
 import { useState } from "react";
 import { eolPolicy } from "../../constants/policy";
 import { CheckoutType, getCheckoutTotal } from "../../utils/checkoutUtils";
