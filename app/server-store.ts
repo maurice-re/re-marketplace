@@ -52,6 +52,10 @@ interface ServerStore {
   getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
   getGroupById: (groupId: string) => Promise<FullGroup>;
+  getInUseContainerCount: () => Promise<Number>;
+  getLostContainerCount: () => Promise<Number>;
+  getReturnStationCount: () => Promise<Number>;
+  getBorrowStationCount: () => Promise<Number>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -110,6 +114,18 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     return group as FullGroup;
+  },
+  getInUseContainerCount: async () => {
+    return 0;
+  },
+  getLostContainerCount: async () => {
+    return 0;
+  },
+  getReturnStationCount: async () => {
+    return 0;
+  },
+  getBorrowStationCount: async () => {
+    return 0;
   },
   getCompany: async () => {
     const company = get()._company;

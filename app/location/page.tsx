@@ -1,5 +1,6 @@
 import 'tailwindcss/tailwind.css';
 import ReLogo from '../../components/form/re-logo';
+import Inventory from '../../components/locations/inventory';
 import LocationUsersList from '../../components/locations/location/locationUsersList';
 import UpdateLocationForm from '../../components/locations/updateLocationForm';
 import { useServerStore } from '../server-store';
@@ -28,6 +29,12 @@ export default async function Page({
     const ownedLocations = await useServerStore.getState().getLocations(true);
     const owned = ownedLocations.some(l => l.id === locationId);
 
+    /* All inventory statistics. */
+    const inUseContainerCount = await useServerStore.getState().getInUseContainerCount();
+    const lostContainerCount = await useServerStore.getState().getLostContainerCount();
+    const returnStationCount = await useServerStore.getState().getReturnStationCount();
+    const borrowStationCount = await useServerStore.getState().getBorrowStationCount();
+
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
             <ReLogo />
@@ -35,7 +42,14 @@ export default async function Page({
                 <h1 className="text-2xl font-theinhardt text-white text-center pt-10 pb-3">
                     Location Details
                 </h1>
-                <h2 className="text-lg font-theinhardt text-white text-center pb-6">
+                <Inventory
+                    location={location}
+                    inUseContainerCount={inUseContainerCount}
+                    lostContainerCount={lostContainerCount}
+                    returnStationCount={returnStationCount}
+                    borrowStationCount={borrowStationCount}
+                />
+                <h2 className="text-lg font-theinhardt text-white text-center py-6">
                     Owners are able to add/remove other owners and viewers. Viewers are able to view the location and its owners and viewers.
                 </h2>
                 <div className="flex w-full gap-4 items-center justify-center space-y-4">
