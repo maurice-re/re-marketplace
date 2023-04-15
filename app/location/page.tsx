@@ -28,18 +28,9 @@ export default async function Page({
     const ownerEmails = await useServerStore.getState().getLocationUserEmails(locationId, true);
     const viewerEmails = await useServerStore.getState().getLocationUserEmails(locationId, false);
     const ownedLocations = await useServerStore.getState().getLocations(true);
+    const allHardware = await useServerStore.getState().getHardware(locationId);
+
     const owned = ownedLocations.some(l => l.id === locationId);
-
-    /* All inventory statistics. */
-    const hardware = await useServerStore.getState().getHardware(locationId);
-
-    console.log("Got all hardware:");
-    console.log(hardware);
-
-    const returnStations: FullHardware[] = hardware.filter((hardware: FullHardware) => hardware.return);
-    const borrowStations: FullHardware[] = hardware.filter((hardware: FullHardware) => !hardware.return);
-
-    console.log("Hello here...");
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
@@ -50,10 +41,7 @@ export default async function Page({
                 </h1>
                 <Inventory
                     location={location}
-                    inUseContainerCount={getItemsInUse(location.events)}
-                    lostContainerCount={getTotals(location.events).lost}
-                    returnStationCount={returnStations ? returnStations.length : 0}
-                    borrowStationCount={borrowStations ? borrowStations.length : 0}
+                    allHardware={allHardware}
                 />
                 <h2 className="text-lg font-theinhardt text-white text-center py-6">
                     Owners are able to add/remove other owners and viewers. Viewers are able to view the location and its owners and viewers.
