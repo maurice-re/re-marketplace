@@ -3,7 +3,8 @@ import ReLogo from '../../components/form/re-logo';
 import Inventory from '../../components/locations/inventory';
 import LocationUsersList from '../../components/locations/location/locationUsersList';
 import UpdateLocationForm from '../../components/locations/updateLocationForm';
-import { useServerStore } from '../server-store';
+import { getItemsInUse, getTotals } from '../../utils/tracking/trackingUtils';
+import { FullHardware, useServerStore } from '../server-store';
 
 export default async function Page({
     searchParams,
@@ -30,10 +31,15 @@ export default async function Page({
     const owned = ownedLocations.some(l => l.id === locationId);
 
     /* All inventory statistics. */
-    const inUseContainerCount = await useServerStore.getState().getInUseContainerCount();
-    const lostContainerCount = await useServerStore.getState().getLostContainerCount();
-    const returnStationCount = await useServerStore.getState().getReturnStationCount();
-    const borrowStationCount = await useServerStore.getState().getBorrowStationCount();
+    const hardware = await useServerStore.getState().getHardware(locationId);
+
+    console.log("Got all hardware:");
+    console.log(hardware);
+
+    const returnStations: FullHardware[] = hardware.filter((hardware: FullHardware) => hardware.return);
+    const borrowStations: FullHardware[] = hardware.filter((hardware: FullHardware) => !hardware.return);
+
+    console.log("Hello here...");
 
     return (
         <div className="w-full h-screen bg-black flex items-center justify-center text-white">
@@ -44,10 +50,10 @@ export default async function Page({
                 </h1>
                 <Inventory
                     location={location}
-                    inUseContainerCount={inUseContainerCount}
-                    lostContainerCount={lostContainerCount}
-                    returnStationCount={returnStationCount}
-                    borrowStationCount={borrowStationCount}
+                    inUseContainerCount={getItemsInUse(location.events)}
+                    lostContainerCount={getTotals(location.events).lost}
+                    returnStationCount={returnStations ? returnStations.length : 0}
+                    borrowStationCount={borrowStations ? borrowStations.length : 0}
                 />
                 <h2 className="text-lg font-theinhardt text-white text-center py-6">
                     Owners are able to add/remove other owners and viewers. Viewers are able to view the location and its owners and viewers.

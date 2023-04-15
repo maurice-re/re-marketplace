@@ -52,10 +52,7 @@ interface ServerStore {
   getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
   getGroupById: (groupId: string) => Promise<FullGroup>;
-  getInUseContainerCount: () => Promise<Number>;
-  getLostContainerCount: () => Promise<Number>;
-  getReturnStationCount: () => Promise<Number>;
-  getBorrowStationCount: () => Promise<Number>;
+  getHardware: (locationId: string) => Promise<FullHardware[]>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -115,17 +112,31 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     });
     return group as FullGroup;
   },
-  getInUseContainerCount: async () => {
-    return 0;
-  },
-  getLostContainerCount: async () => {
-    return 0;
-  },
-  getReturnStationCount: async () => {
-    return 0;
-  },
-  getBorrowStationCount: async () => {
-    return 0;
+  getHardware: async (locationId: string) => {
+    const hardware: FullHardware[] = await prisma.hardware.findMany({
+      where: {
+        locationId: locationId,
+      },
+      include: {
+        location: {
+          include: {
+            orders: {
+              include: {
+                items: true,
+                location: true
+              }
+            },
+            settings: true,
+            events: true,
+            groups: true,
+            owners: true,
+            viewers: true
+          },
+        },
+      },
+    });
+
+    return hardware;
   },
   getCompany: async () => {
     const company = get()._company;

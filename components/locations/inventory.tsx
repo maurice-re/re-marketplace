@@ -9,11 +9,11 @@ export default function Inventory({ location, inUseContainerCount, lostContainer
                 {/* TODO(Suhana) */}
                 <InventoryStatistic numericalValue={inUseContainerCount} stringValue={null} description={"# of Containers In Use"} />
                 {/* TODO(Suhana) */}
-                <InventoryStatistic numericalValue={null} stringValue={null} description={"# of Containers Lost"} />
+                <InventoryStatistic numericalValue={lostContainerCount} stringValue={null} description={"# of Containers Lost"} />
                 {/* TODO(Suhana) */}
-                <InventoryStatistic numericalValue={null} stringValue={null} description={"# of Return Stations"} />
+                <InventoryStatistic numericalValue={returnStationCount} stringValue={null} description={"# of Return Stations"} />
                 {/* TODO(Suhana) */}
-                <InventoryStatistic numericalValue={null} stringValue={null} description={"# of Borrow Stations"} />
+                <InventoryStatistic numericalValue={borrowStationCount} stringValue={null} description={"# of Borrow Stations"} />
             </div>
             <h1 className="pt-6">Borrow/Return Stations</h1>
             {/* TODO(Suhana): Show the containerCount, lastReplaced date. */}
