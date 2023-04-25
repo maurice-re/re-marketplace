@@ -91,7 +91,12 @@ elif(endpoint == DELETE_EVENTS):
 
   print(response)
 elif(endpoint == DELETE_SETTINGS):
-    pass  
+  apiUrl = "http://localhost:3000/api/tracking/delete-settings"
+
+  headers = {"content-type":"application/json", "authorization": "Bearer DSwXumUE5eTQbYM3nI6qSPBWrtF0yp6IhjiXEVYvWMcahTyR0MWdUka1ywkWWaK8"}
+  response = requests.post(apiUrl, headers=headers)
+
+  print(response)
 elif(endpoint == EDIT_EVENTS):
   apiUrl = "http://localhost:3000/api/tracking/edit-events"
 
