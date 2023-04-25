@@ -46,8 +46,6 @@ type Statistic = {
   isPercent: boolean;
 };
 
-// We can have one client component dedicated to selecting the filter, and the one inside it is just passed events
-
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
@@ -98,8 +96,21 @@ function Tracking({
 
   const [data, setData] = useState(baseData);
 
+  const [itemsInUse, setItemsInUse] = useState(0);
+  const [lifetimeBorrows, setLifetimesBorrows] = useState(0);
+  const [reuseRate, setReuseRate] = useState(0);
+  const [returnRate, setReturnRate] = useState(0);
+  const [avgDaysBetweenBorrowAndReturn, setAvgDaysBetweenBorrowAndReturn] = useState(0);
+
   useEffect(() => {
     if (events && events.length > 0) {
+      /* Set all statistics. */
+      setItemsInUse(getItemsInUse(events));
+      setLifetimesBorrows(getLifetimeBorrows(events));
+      setReuseRate(getReuseRate(events));
+      setReturnRate(getReturnRate(events));
+      setAvgDaysBetweenBorrowAndReturn(getAvgDaysBetweenBorrowAndReturn(events));
+
       const sortedEvents = sortByDate(events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
       setMonthYearForDaily(latestMonthYear.map(String).join(","));
@@ -258,40 +269,37 @@ function Tracking({
   const stats: Statistic[] = [];
   stats.push({
     title: "Items In Use",
-    value: getItemsInUse(events),
+    value: itemsInUse,
     info: "currently borrowed",
     isPercent: false,
   });
   stats.push({
     title: "Borrowed",
-    value: getLifetimeBorrows(events),
+    value: lifetimeBorrows,
     info: "lifetime borrows",
     isPercent: false,
   });
   stats.push({
     title: "Reuse Rate",
-    value: getReuseRate(events),
+    value: reuseRate,
     info: "(items used more than once) ÷ (items used)",
     isPercent: true,
   });
   stats.push({
     title: "Return Rate",
-    value: getReturnRate(events),
+    value: returnRate,
     info: "(items returned) ÷ (items borrowed)",
     isPercent: true,
   });
   stats.push({
     title: "Avg. Days Borrowed",
-    value: getAvgDaysBetweenBorrowAndReturn(
-      events,
-      settings?.borrowReturnBuffer ?? undefined
-    ),
+    value: avgDaysBetweenBorrowAndReturn,
     info: "days between borrow and return",
     isPercent: false,
   });
   stats.push({
     title: "Number of Users",
-    value: 61,
+    value: 61, // TODO(Suhana): Fix this value
     info: "unique users",
     isPercent: false,
   });
@@ -329,7 +337,7 @@ function Tracking({
                 {stat.title}
               </div>
               <div className="font-theinhardt text-4xl mt-2">
-                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                {Number.isNaN(stat.value) ? `N/A` : `${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
                   }`}
               </div>
             </div>
@@ -364,7 +372,6 @@ function Tracking({
             </tbody>
           </table>
         </div>
-
         <div className="w-2/3 flex-col bg-re-dark-green-300 border h-min rounded-md border-re-gray-300 p-4">
           <div className="flex items-center h-min pb-4">
             <h2 className="text-lg mr-4">Borrows and Returns</h2>

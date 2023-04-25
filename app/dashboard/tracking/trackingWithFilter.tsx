@@ -22,7 +22,7 @@ function TrackingWithFilter({
   demo: boolean;
 }) {
   const filters: string[] = ["Location", "All Locations", "Group", "Sku", "Order", "Location / Sku", "Location / Order", "Location / Order / Order Item", "Order / Order Item", "Consumer", "Location / Consumer"];
-  const [filter, setFilter] = useState<string>("All Locations");
+  const [filter, setFilter] = useState<string>("Location");
   const [group, setGroup] = useState<FullGroup>(groups[0]);
   const [location, setLocation] = useState<FullLocation>(locations[0]);
   const [sku, setSku] = useState<FullSku>(skus[0]);
@@ -31,6 +31,9 @@ function TrackingWithFilter({
   const [consumerId, setConsumerId] = useState<string>("");
   const [settings, setSettings] = useState<Settings | null>(null);
   const [events, setEvents] = useState<Event[]>(locations[0].events);
+
+  console.log("all locations:");
+  console.log(locations);
 
   // Update events and settings on changes
   useEffect(() => {
@@ -63,8 +66,12 @@ function TrackingWithFilter({
       });
     }
     if (filter == "All Locations") {
-      location.events.forEach((event: Event) => {
-        newEvents.push(event);
+      console.log("in here now");
+      locations.forEach((location: FullLocation) => {
+        location.events.forEach((event: Event) => {
+          console.log(event.action);
+          newEvents.push(event);
+        });
       });
     }
     if (filter == "Location / Order") {
@@ -127,6 +134,8 @@ function TrackingWithFilter({
     /* Update settings. */
     let newSettings: Settings | null = null;
     if (filter == "Location" || filter == "Location / Sku" || filter == "Location / Order" || filter == "Location / Order / Order Item" || filter === "Location / Consumer") {
+      console.log("Setting settings to...");
+      console.log(location.settings);
       newSettings = location.settings;
     }
     if (filter == "All Locations") {
@@ -441,7 +450,7 @@ function TrackingWithFilter({
             Configure Settings
           </h1>
           <div className="flex w-full gap-8">
-            <SettingsForm settings={settings} setSettings={setSettings} />
+            <SettingsForm locationId={location.id} settings={settings} setSettings={setSettings} />
           </div>
         </div>
       )}
