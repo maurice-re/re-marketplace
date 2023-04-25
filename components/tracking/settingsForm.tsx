@@ -6,7 +6,7 @@ export default function SettingsForm({
   settings,
   setSettings,
 }: {
-  locationId: String;
+  locationId: string;
   settings: Settings | null;
   setSettings: Dispatch<SetStateAction<Settings | null>>;
 }) {
@@ -17,19 +17,9 @@ export default function SettingsForm({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
-  // console.log("Inside of here");
-  // console.log(settings);
-  // console.log(borrowReturnBuffer);
-  // console.log(!settings);
-  // console.log(
-  //   !borrowReturnBuffer);
-  // console.log(
-  //   borrowReturnBuffer === 0);
-  // console.log(
-  //   borrowReturnBuffer === initialBorrowReturnBuffer);
   useEffect(() => {
     if (settings) {
-      setBorrowReturnBuffer(settings.borrowReturnBuffer);
+      setBorrowReturnBuffer(settings.borrowReturnBuffer ?? 0);
     }
   }, [settings]);
 
@@ -38,8 +28,6 @@ export default function SettingsForm({
     setIsLoading(true);
 
     if (borrowReturnBuffer && borrowReturnBuffer > 0) {
-      console.log(locationId);
-      console.log(borrowReturnBuffer);
       const res = await fetch("/api/tracking/edit-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,10 +36,7 @@ export default function SettingsForm({
           borrowReturnBuffer: borrowReturnBuffer,
         }),
       });
-      console.log("Have this");
-      console.log(res);
-      const { success } = await res.json();
-      console.log(success);
+
       if (res.status != 200) {
         const { message } = await res.json();
         setMessage(message);
