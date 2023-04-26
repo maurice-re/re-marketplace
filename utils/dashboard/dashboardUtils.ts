@@ -1,4 +1,5 @@
-import { Company, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
+import { Company, Event, Location, Order, OrderItem, Product, Settings, Sku, User } from "@prisma/client";
+import { FullLocation } from "../../app/server-store";
 import { calculatePriceFromCatalog } from "../prisma/dbUtils";
 
 export type ItemSkuProduct = OrderItem & {
@@ -44,6 +45,39 @@ export type SkuProduct = Sku & {
 export type UserCompany = User & {
   company: Company;
 };
+
+export function getUniqueLocations(locations: FullLocation[]) {
+  const uniqueLocations: FullLocation[] = [];
+  locations.forEach((location: FullLocation) => {
+    if (!uniqueLocations.some((l) => l.id === location.id)) {
+      uniqueLocations.push(location);
+    }
+  });
+  return uniqueLocations;
+}
+
+export function getConsumerIds(byLocation: boolean, location: FullLocation, locations: FullLocation[]): string[] {
+  const consumerIds: string[] = [];
+
+  if (byLocation) {
+    location.events.forEach((event: Event) => {
+      if (event.consumerId && !consumerIds.includes(event.consumerId)) {
+        consumerIds.push(event.consumerId);
+      }
+    });
+  } else {
+    // Get consumer IDs across all locations
+    locations.forEach((location: FullLocation) => {
+      location.events.forEach((event: Event) => {
+        if (event.consumerId && !consumerIds.includes(event.consumerId)) {
+          consumerIds.push(event.consumerId);
+        }
+      });
+    });
+  }
+
+  return consumerIds;
+}
 
 export type OrderItemLocationName = Order & {
   items: OrderItem & {

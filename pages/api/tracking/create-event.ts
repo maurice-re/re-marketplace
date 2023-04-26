@@ -1,4 +1,4 @@
-import { Action, Sku } from "@prisma/client";
+import { Action, Hardware, Sku } from "@prisma/client";
 import type { Request, Response } from "express";
 import { prisma } from "../../../constants/prisma";
 import { logApi } from "../../../utils/apiUtils";
@@ -8,15 +8,15 @@ async function createEvent(req: Request, res: Response) {
   if (req.method != "POST") {
     await logApi(`${req.method} event`, false, "HTTP Operation not supported");
     res.status(401).send("Bad Request");
+    return;
   }
   // Check API Key Format
   const { authorization } = req.headers;
   if (!authorization || !authorization?.startsWith("Bearer")) {
     await logApi("create-event", false, `Missing or Invalid API key: ${authorization}`);
-    res.status(401).send(`Invalid API key format`);
+    res.status(401).send("Invalid API key format");
     return;
   }
-
 
   // Get request info
   const {
@@ -24,6 +24,7 @@ async function createEvent(req: Request, res: Response) {
     consumerId,
     itemId,
     locationId,
+    hardwareId,
     skuId,
     action,
     timestamp
@@ -33,11 +34,12 @@ async function createEvent(req: Request, res: Response) {
     consumerId: string;
     itemId: string;
     locationId: string;
+    hardwareId: string;
     skuId: string;
     timestamp: string;
   } = req.body;
 
-  const company = prisma.company.findUnique({
+  const company = await prisma.company.findUnique({
     where: {
       id: companyId
     },
@@ -68,19 +70,46 @@ async function createEvent(req: Request, res: Response) {
         action: action,
         companyId: companyId,
         consumerId: consumerId === "" ? null : consumerId,
+        hardwareId: hardwareId === "" ? null : hardwareId,
         itemId: itemId === "" ? null : itemId,
         skuId: skuId === "" ? null : skuId,
         locationId: locationId,
         timestamp: timestamp ? new Date(timestamp) : new Date()
       },
     });
+
+    /* If valid device was referenced, update its containerCount. */
+    const hardware: Hardware | null = await prisma.hardware.findUnique({
+      where: {
+        id: hardwareId ?? ""
+      },
+    });
+    if (hardware) {
+      let newContainerCount = 0;
+      if (action == Action.BORROW) {
+        /* One less container remains in the device. */
+        newContainerCount = hardware.containerCount - 1;
+      } else if (action == Action.RETURN) {
+        /* One more container was added to the device. */
+        newContainerCount = hardware.containerCount - 1;
+      }
+      await prisma.hardware.update({
+        where: {
+          id: hardware.id,
+        },
+        data: {
+          containerCount: newContainerCount,
+        },
+      });
+    }
+
   } else {
     await logApi(action, false, "Company invalid/outdated");
     res.status(400).send("Company invalid/outdated");
   }
 
   await logApi(action.toLowerCase());
-  res.status(200).send({ success: `successfully tracked ${itemId}` });
+  res.status(200).send({ success: `Successfully tracked ${itemId}.` });
   // updateUntracked(itemId, company, sku!.id);
 }
 

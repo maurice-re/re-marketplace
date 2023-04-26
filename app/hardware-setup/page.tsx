@@ -23,7 +23,7 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col h-screen w-full bg-re-dark-green-500 items-center justify-center font-theinhardt">
-      <HardwareForm locations={[]} />
+      <HardwareForm locations={locations} />
     </div>
   );
 }

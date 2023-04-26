@@ -46,8 +46,6 @@ type Statistic = {
   isPercent: boolean;
 };
 
-// We can have one client component dedicated to selecting the filter, and the one inside it is just passed events
-
 const monthsInYear = getMonthsInYear();
 
 function Tracking({
@@ -98,8 +96,21 @@ function Tracking({
 
   const [data, setData] = useState(baseData);
 
+  const [itemsInUse, setItemsInUse] = useState(0);
+  const [lifetimeBorrows, setLifetimesBorrows] = useState(0);
+  const [reuseRate, setReuseRate] = useState(0);
+  const [returnRate, setReturnRate] = useState(0);
+  const [avgDaysBetweenBorrowAndReturn, setAvgDaysBetweenBorrowAndReturn] = useState(0);
+
   useEffect(() => {
     if (events && events.length > 0) {
+      /* Set all statistics. */
+      setItemsInUse(getItemsInUse(events));
+      setLifetimesBorrows(getLifetimeBorrows(events));
+      setReuseRate(getReuseRate(events));
+      setReturnRate(getReturnRate(events));
+      setAvgDaysBetweenBorrowAndReturn(getAvgDaysBetweenBorrowAndReturn(events));
+
       const sortedEvents = sortByDate(events);
       const latestMonthYear = getBoundingMonthYear(sortedEvents, false);
       setMonthYearForDaily(latestMonthYear.map(String).join(","));
@@ -258,40 +269,37 @@ function Tracking({
   const stats: Statistic[] = [];
   stats.push({
     title: "Items In Use",
-    value: getItemsInUse(events),
+    value: itemsInUse,
     info: "currently borrowed",
     isPercent: false,
   });
   stats.push({
     title: "Borrowed",
-    value: getLifetimeBorrows(events),
+    value: lifetimeBorrows,
     info: "lifetime borrows",
     isPercent: false,
   });
   stats.push({
     title: "Reuse Rate",
-    value: getReuseRate(events),
+    value: reuseRate,
     info: "(items used more than once) ÷ (items used)",
     isPercent: true,
   });
   stats.push({
     title: "Return Rate",
-    value: getReturnRate(events),
+    value: returnRate,
     info: "(items returned) ÷ (items borrowed)",
     isPercent: true,
   });
   stats.push({
     title: "Avg. Days Borrowed",
-    value: getAvgDaysBetweenBorrowAndReturn(
-      events,
-      settings?.borrowReturnBuffer ?? undefined
-    ),
+    value: avgDaysBetweenBorrowAndReturn,
     info: "days between borrow and return",
     isPercent: false,
   });
   stats.push({
     title: "Number of Users",
-    value: 61,
+    value: 61, // TODO(Suhana): Fix this value
     info: "unique users",
     isPercent: false,
   });
@@ -316,8 +324,8 @@ function Tracking({
 
   return events && events.length != 0 ? (
     // TODO(Suhana): Create more sub-components here
-    <div>
-      <div className="flex items-center justify-between mt-4 mb-10 w-full">
+    <div className="border-t-1/2 border-re-gray-300">
+      <div className="flex items-center justify-between mt-6 mb-10 w-full px-6">
         {stats.map((stat) => (
           <div
             key={stat.title}
@@ -329,15 +337,14 @@ function Tracking({
                 {stat.title}
               </div>
               <div className="font-theinhardt text-4xl mt-2">
-                {`${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
+                {Number.isNaN(stat.value) ? `N/A` : `${Math.round(stat.value * 10) / 10}${stat.isPercent ? `%` : ``
                   }`}
               </div>
             </div>
           </div>
         ))}
       </div>
-
-      <div className="flex w-full gap-8">
+      <div className="flex w-full gap-8 px-6">
         <div className="flex w-1/3 h-148 overflow-scroll border border-re-gray-300 rounded-md">
           <table className="w-full h-min font-theinhardt-300">
             <thead>
@@ -365,7 +372,6 @@ function Tracking({
             </tbody>
           </table>
         </div>
-
         <div className="w-2/3 flex-col bg-re-dark-green-300 border h-min rounded-md border-re-gray-300 p-4">
           <div className="flex items-center h-min pb-4">
             <h2 className="text-lg mr-4">Borrows and Returns</h2>
@@ -432,7 +438,7 @@ function Tracking({
       <div className="py-6"></div>
     </div>
   ) : (
-    <div className="flex gap-3 mx-auto h-full items-start justify-start">
+    <div className="flex gap-3 mx-auto h-full items-start justify-start px-6 pt-6 border-re-gray-300 border-t-1/2">
       <AiOutlineDisconnect
         className="text-re-green-500"
         size={40} />
