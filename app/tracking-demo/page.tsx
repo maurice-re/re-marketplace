@@ -3,7 +3,23 @@ import Tracking from "../dashboard/tracking/tracking";
 import { useServerStore } from "../server-store";
 
 export default async function Page() {
-  const demoLocation = await useServerStore.getState().getLocationById("219");
+  const demoLocation = await useServerStore.getState().getLocationById("13");
+  // Set demoLocations most recent event as today and change all other events to corresponding days
+  const today = new Date();
+  const mostRecentEvent = demoLocation.events.sort((a, b) => {
+    return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+  })[0];
+  console.log(mostRecentEvent);
+  const mostRecentEventDate = new Date(mostRecentEvent.timestamp);
+  const daysSinceMostRecentEvent =
+    today.getTime() - mostRecentEventDate.getTime();
+  demoLocation.events = demoLocation.events.map((event) => {
+    const eventDate = new Date(event.timestamp).getTime();
+    return {
+      ...event,
+      timestamp: new Date(eventDate + daysSinceMostRecentEvent),
+    };
+  });
 
   return (
     <div className="w-full h-screen bg-re-black flex overflow-auto">
@@ -54,7 +70,7 @@ export default async function Page() {
         </div>
         <Tracking
           settings={demoLocation.settings}
-          events={demoLocation.events}
+          events={JSON.parse(JSON.stringify(demoLocation.events))}
         />
       </main>
     </div>

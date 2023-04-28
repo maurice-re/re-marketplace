@@ -56,10 +56,10 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
             <Image
               src={sku.mainImage}
               alt={"Image of Sku"}
-              height={128}
-              width={128}
-              className={`rounded-md p-1 hover:w-1/2 hover:absolute hover:top-10 ${
-                index > 2 ? "hover:left-0" : "hover:right-0"
+              height={880}
+              width={880}
+              className={`rounded-md w-32 p-1 hover:w-1/2 hover:absolute hover:top-10 ${
+                index > 2 ? "hover:left-0" : "hover:right-0 hover:rounded-xl"
               }`}
             />
             <div className="flex flex-col justify-evenly items-start py-1 px-4">
@@ -163,7 +163,6 @@ function Sample({ skus }: { skus: SkuProduct[] }) {
             <input
               type={"text"}
               placeholder={"Address Line 2"}
-              required
               className="rounded bg-re-black bg-opacity-[0.32] text-white w-full p-2 outline-[0.5px] outline-re-gray-500"
               onChange={(e) => {
                 setInfo({ ...info, line2: e.target.value });
