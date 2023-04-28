@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Circular Packing Chart</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+      .chart-container {
+        display: inline-block;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chart-container" id="red"></div>
+    <div class="chart-container" id="blue"></div>
+    <div class="chart-container" id="yellow"></div>
+    <div class="chart-container" id="green"></div>
+    <script>
+      var data = [
+        {team: "Red", name: "Blaze Runner", points: 1400},
+        {team: "Red", name: "Ember Flame", points: 4000},
+        {team: "Red", name: "Crimson Tide", points: 2600},
+        {team: "Red", name: "Scarlet Storm", points: 1600},
+        {team: "Red", name: "Ruby Rose", points: 1800},
+        {team: "Red", name: "Phoenix Fire", points: 4200},
+        {team: "Red", name: "Flame Keeper", points: 75},
+        {team: "Red", name: "Garnet Heart", points: 2075},
+        {team: "Red", name: "Cherry Blossom", points: 200},
+        {team: "Red", name: "Jasper Stone", points: 675},
+        {team: "Red", name: "Raven Claw", points: 1000},
+        {team: "Red", name: "Viper Fang", points: 875},
+        {team: "Red", name: "Scarlet Blade", points: 1200},
+        {team: "Blue", name: "Ocean Breeze", points: 1200},
+        {team: "Blue", name: "Azure Sky", points: 400},
+        {team: "Blue", name: "Sapphire Seas", points: 1000},
+        {team: "Blue", name: "Sky Walker", points: 3600},
+        {team: "Blue", name: "Navy Blue", points: 675},
+        {team: "Blue", name: "Cobalt Ice", points: 400},
+        {team: "Blue", name: "Indigo Night", points: 2600},
+        {team: "Blue", name: "Cerulean Wave", points: 275},
+        {team: "Blue", name: "Turquoise Crystal", points: 400},
+        {team: "Blue", name: "Denim Jeans", points: 600},
+        {team: "Blue", name: "Falcon Wing", points: 1600},
+        {team: "Blue", name: "Thunder Bolt", points: 1475},
+        {team: "Blue", name: "Blue Jay", points: 2200},
+        {team: "Yellow", name: "Sunny Day", points: 3400},
+        {team: "Yellow", name: "Gold Rush", points: 1875},
+        {team: "Yellow", name: "Lemon Zest", points: 1000},
+        {team: "Yellow", name: "Canary Bird", points: 400},
+        {team: "Yellow", name: "Marigold Flower", points: 1875},
+        {team: "Yellow", name: "Amber Glow", points: 1800},
+        {team: "Yellow", name: "Honey Bee", points: 400},
+        {team: "Yellow", name: "Dandelion Wind", points: 400},
+    {team: "Yellow", name: "Saffron Spice", points: 1600},
+    {team: "Yellow", name: "Buttercup Field", points: 475},
+    {team: "Yellow", name: "Luna Moon", points: 2475},
+    {team: "Yellow", name: "Star Shine", points: 1400},
+    {team: "Green", name: "Forest Green", points: 1200},
+    {team: "Green", name: "Emerald Stone", points: 1275},
+    {team: "Green", name: "Sage Wisdom", points: 600},
+    {team: "Green", name: "Olive Branch", points: 3600},
+    {team: "Green", name: "Lime Leaf", points: 1200},
+    {team: "Green", name: "Ivy Vine", points: 2200},
+    {team: "Green", name: "Mint Frost", points: 400},
+    {team: "Green", name: "Hunter Hunt", points: 1675},
+    {team: "Green", name: "Fern Leaf", points: 800},
+    {team: "Green", name: "Moss Stone", points: 2800},
+    {team: "Green", name: "Wolf Fang", points: 1200},
+    {team: "Green", name: "Bear Claw", points: 1075}
+  ];
+
+  var teamData = [    {team: "Red", children: []},
+    {team: "Blue", children: []},
+    {team: "Yellow", children: []},
+    {team: "Green", children: []}
+  ];
+
+  for (var i = 0; i < data.length; i++) {
+    var teamIndex = teamData.findIndex(function(d) { return d.team == data[i].team; });
+    if (teamIndex > -1) {
+      if(!teamData[teamIndex].children) teamData[teamIndex].children = [];
+      teamData[teamIndex].children.push({name: data[i].name, points: data[i].points});
+    }
+  }
+      var width = 250;
+      var height = 250;
+      var padding = 10;
+
+      teamData.forEach(function(team) {
+        var hierarchy = d3.hierarchy(team)
+                          .sum(function(d) { return d.points; })
+                          .sort(function(a, b) { return b.value - a.value; });
+
+        var svg = d3.select("#" + team.team.toLowerCase()).append("svg")
+                  .attr("width", width)
+                  .attr("height", height)
+                  .attr("xmlns", "http://www.w3.org/2000/svg");
+
+        var teamCircle = svg.append("circle")
+                            .attr("cx", width / 2)
+                            .attr("cy", height / 2)
+                            .attr("r", Math.min(width, height) / 2 - padding)
+                            .attr("fill", team.team.toLowerCase())
+                            .attr("opacity", 0.55)
+                            .attr("stroke", "black")
+                            .attr("stroke-width", 2);
+
+        var memberCircles = svg.selectAll("circle.member")
+                               .data(team.children)
+                               .enter()
+                               .append("circle")
+                               .attr("class", "member")
+                               .attr("r", function(d) { return Math.sqrt(d.points) / 10; })
+                               .attr("cx", function(d) {
+                                 return (Math.random() - 0.5) * (width / 2 - d.r - padding) + width / 2;
+                               })
+                               .attr("cy", function(d) {
+                                 return (Math.random() - 0.5) * (height / 2 - d.r - padding) + height / 2;
+                               })
+                               .attr("fill", team.team.toLowerCase())
+                               .attr("stroke", "black");
+
+        var memberLabels = svg.selectAll("text.member")
+                              .data(team.children)
+                              .enter()
+                              .append("text")
+                              .attr("class", "member")
+                              .text(function(d) { return d.name; })
+                              .attr("x", function(d) { return d3.select(d3.select(this).node().parentNode).select("circle.member").attr("cx"); })
+                              .attr("y", function(d) { return d3.select(d3.select(this).node().parentNode).select("circle.member").attr("cy"); })
+                              .attr("text-anchor", "middle")
+                              .attr("dy", "0.35em")
+                              .style("font-size", "0.6em");
+      });
+
+    </script>
+  </body>
+</html>

@@ -11,46 +11,50 @@ type RoiFields = {
 
 const college = {
   type: "College",
-  population: 40000,
-  singleUse: 0.15,
+  population: 30000,
+  singleUse: 0.33,
   locations: 1,
 };
 
 const corporate = {
   type: "Corporate",
-  population: 1000,
-  singleUse: 0.15,
+  population: 5000,
+  singleUse: 0.33,
   locations: 1,
 };
 const hospital = {
   type: "Hospital",
   population: 500,
-  singleUse: 0.15,
+  singleUse: 0.33,
   locations: 1,
 };
 
-const reuseCost = 1.5;
-const daysBetween = 7;
+const reuseCost = 3;
+const daysBetween = 4;
 const returnRate = 0.9;
 const months = [1, 3, 6, 9, 12, 24, 36];
+const softwareCosts = 1500;
 
 export default function Page() {
   const [form, setForm] = useState<RoiFields>(college);
   function getDailyUses() {
     if (form.type == "College") {
-      return form.population / 50;
+      return form.population / 15;
     } else if (form.type == "Corporate") {
-      return form.population / 20;
+      return form.population / 5;
     }
-    return form.population / 5;
+    return form.population / 2;
   }
 
   function getInitialCost() {
-    return getDailyUses() * (daysBetween + 3) * reuseCost;
+    return getDailyUses() * (daysBetween + 3) * reuseCost + 3500 * 3;
   }
 
   function getMonthlyReuseCost() {
-    return getDailyUses() * (daysBetween + 3) * (1 - returnRate) * reuseCost;
+    return (
+      getDailyUses() * (daysBetween + 3) * (1 - returnRate) * reuseCost +
+      softwareCosts
+    );
   }
 
   function getMonthlyCost() {
