@@ -52,6 +52,7 @@ interface ServerStore {
   getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
   getGroupById: (groupId: string) => Promise<FullGroup>;
+  getHardware: (locationId: string) => Promise<FullHardware[]>;
 }
 
 export const useServerStore = create<ServerStore>((set, get) => ({
@@ -110,6 +111,32 @@ export const useServerStore = create<ServerStore>((set, get) => ({
       }
     });
     return group as FullGroup;
+  },
+  getHardware: async (locationId: string) => {
+    const hardware: FullHardware[] = await prisma.hardware.findMany({
+      where: {
+        locationId: locationId,
+      },
+      include: {
+        location: {
+          include: {
+            orders: {
+              include: {
+                items: true,
+                location: true
+              }
+            },
+            settings: true,
+            events: true,
+            groups: true,
+            owners: true,
+            viewers: true
+          },
+        },
+      },
+    });
+
+    return hardware;
   },
   getCompany: async () => {
     const company = get()._company;

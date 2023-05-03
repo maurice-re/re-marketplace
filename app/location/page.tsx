@@ -1,5 +1,6 @@
 import 'tailwindcss/tailwind.css';
 import ReLogo from '../../components/form/re-logo';
+import Inventory from '../../components/locations/inventory';
 import LocationUsersList from '../../components/locations/location/locationUsersList';
 import UpdateLocationForm from '../../components/locations/updateLocationForm';
 import { useServerStore } from '../server-store';
@@ -26,6 +27,8 @@ export default async function Page({
     const ownerEmails = await useServerStore.getState().getLocationUserEmails(locationId, true);
     const viewerEmails = await useServerStore.getState().getLocationUserEmails(locationId, false);
     const ownedLocations = await useServerStore.getState().getLocations(true);
+    const allHardware = await useServerStore.getState().getHardware(locationId);
+
     const owned = ownedLocations.some(l => l.id === locationId);
 
     return (
@@ -35,10 +38,14 @@ export default async function Page({
                 <h1 className="text-2xl font-theinhardt text-white text-center pt-10 pb-3">
                     Location Details
                 </h1>
-                <h2 className="text-lg font-theinhardt text-white text-center pb-6">
+                <Inventory
+                    location={location}
+                    allHardware={allHardware}
+                />
+                <h2 className="text-lg font-theinhardt text-white text-center py-6">
                     Owners are able to add/remove other owners and viewers. Viewers are able to view the location and its owners and viewers.
                 </h2>
-                <div className="flex w-full gap-4 items-center justify-center space-y-4">
+                <div className="flex w-full gap-4 items-center justify-center space-y-4 mb-8">
                     <div className='w-1/2 flex flex-col items-center justify-center'>
                         <h1>Owners</h1>
                         <LocationUsersList locationId={locationId} users={owners} owned={owned} owner={true} />
@@ -50,8 +57,9 @@ export default async function Page({
                 </div>
                 {/* Only let them update the location if they are an owner of the location. */}
                 {owned &&
-                    (<div className='mt-6 flex flex-col w-1/2 items-center justify-center'>
-                        <h1>Update Location</h1>
+                    (<div className="bg-re-dark-green-300 border rounded-md border-re-gray-300 flex flex-col font-theinhardt text-white w-1/2">
+                        <div className="p-4 text-lg">Update Location</div>
+                        <div className="bg-re-gray-300 h-px" />
                         <UpdateLocationForm user={user} location={location} initialOwnerEmails={ownerEmails} initialViewerEmails={viewerEmails} />
                     </div>)
                 }

@@ -199,85 +199,87 @@ export default function UpdateLocationForm({ location, user, initialOwnerEmails,
     const locationTypes = [LocationType.SHIPPING, LocationType.SAMPLE, LocationType.TRACKING];
 
     return (
-        <form id="add-location-form" className="justify-center items-center flex w-full flex-col" onSubmit={handleSubmit}>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Address</div>
-                <InputField top placeholder={getPlaceholder(location.displayName, "Display Name")} value={displayName} name={"displayName"} onChange={handleChange} />
-                <InputField placeholder={getPlaceholder(location.shippingName, "Location Name")} value={shippingName} name={"shippingName"} onChange={handleChange} />
-                <InputField placeholder={getPlaceholder(location.line1, "Address Line 1")} value={line1} name={"line1"} onChange={handleChange} />
-                <InputField placeholder={getPlaceholder(location.line2, "Address Line 2")} value={line2} name={"line2"} onChange={handleChange} />
-                <DoubleInputField leftPlaceholder={getPlaceholder(location.city, "City")} leftValue={city} leftName={"city"} rightPlaceholder={getPlaceholder(location.state, "State")} rightValue={state} rightName={"state"} onChange={handleChange} />
-                <DoubleInputField bottom leftPlaceholder={getPlaceholder(location.zip, "Zip")} leftValue={zip} leftName={"zip"} rightPlaceholder={getPlaceholder(location.country, "Country")} rightValue={country} rightName={"country"} onChange={handleChange} />
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Tracking Type</div>
-                <DropdownField top bottom options={trackingTypes} placeholder={"Tracking Type"} value={trackingType} name={"trackingType"} onChange={handleChange} />
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Shipping Type</div>
-                <DropdownField top bottom options={locationTypes} placeholder={"Location Type"} value={type} name={"type"} onChange={handleChange} />
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Pricing Penalty</div>
-                <DropdownField top bottom options={penalties} placeholder={"Penalty"} value={penalty} name={"penalty"} onChange={handleChange} />
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Owners</div>
-                <div className='w-full flex'>
-                    <div className="w-full">
-                        <InputField top bottom placeholder={"Owner Email"} value={ownerEmail} name={"ownerEmail"} onChange={handleChange} />
-                    </div>
-                    <div className="justify-center items-center">
-                        <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${ownerEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addUser(true)} />
-                    </div>
+        <form id="update-location-form" onSubmit={handleSubmit}>
+            <div className="form-control w-full p-4">
+                <div className="w-full">
+                    <label className="text-lg font-semibold">Address</label>
+                    <InputField top placeholder={getPlaceholder(location.displayName, "Display Name")} value={displayName} name={"displayName"} onChange={handleChange} />
+                    <InputField placeholder={getPlaceholder(location.shippingName, "Location Name")} value={shippingName} name={"shippingName"} onChange={handleChange} />
+                    <InputField placeholder={getPlaceholder(location.line1, "Address Line 1")} value={line1} name={"line1"} onChange={handleChange} />
+                    <InputField placeholder={getPlaceholder(location.line2, "Address Line 2")} value={line2} name={"line2"} onChange={handleChange} />
+                    <DoubleInputField leftPlaceholder={getPlaceholder(location.city, "City")} leftValue={city} leftName={"city"} rightPlaceholder={getPlaceholder(location.state, "State")} rightValue={state} rightName={"state"} onChange={handleChange} />
+                    <DoubleInputField bottom leftPlaceholder={getPlaceholder(location.zip, "Zip")} leftValue={zip} leftName={"zip"} rightPlaceholder={getPlaceholder(location.country, "Country")} rightValue={country} rightName={"country"} onChange={handleChange} />
                 </div>
-                {ownerEmails.map((email, index) => {
-                    return (
-                        <div key={index} className="leading-tight flex">
-                            <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeUser(true, email)} />
-                            <span>{email}</span>
-                        </div>
-                    );
-                })}
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Viewers</div>
-                <div className='w-full flex'>
-                    <div className="w-full">
-                        <InputField top bottom placeholder={"Viewer Email"} value={viewerEmail} name={"viewerEmail"} onChange={handleChange} />
-                    </div>
-                    <div className="justify-center items-center">
-                        <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${viewerEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addUser(false)} />
-                    </div>
+                <div className="pt-2 w-full">
+                    <label className="text-lg font-semibold">Tracking Type</label>
+                    <DropdownField top bottom options={trackingTypes} placeholder={"Tracking Type"} value={trackingType} name={"trackingType"} onChange={handleChange} />
                 </div>
-                {viewerEmails.map((email, index) => {
-                    return (
-                        <div key={index} className="leading-tight flex">
-                            <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeUser(false, email)} />
-                            <span>{email}</span>
+                <div className="pt-2 w-full">
+                    <label className="text-lg font-semibold">Shipping Type</label>
+                    <DropdownField top bottom options={locationTypes} placeholder={"Location Type"} value={type} name={"type"} onChange={handleChange} />
+                </div>
+                <div className="pt-2 w-full">
+                    <label className="text-lg font-semibold">Pricing Penalty</label>
+                    <DropdownField top bottom options={penalties} placeholder={"Penalty"} value={penalty} name={"penalty"} onChange={handleChange} />
+                </div>
+                <div className="pt-2 w-full">
+                    <label className="text-lg font-semibold">Owners</label>
+                    <div className='w-full flex'>
+                        <div className="w-full">
+                            <InputField top bottom placeholder={"Owner Email"} value={ownerEmail} name={"ownerEmail"} onChange={handleChange} />
                         </div>
-                    );
-                })}
-            </div>
-            <button
-                id="submit"
-                disabled={!canSubmit}
-                className={`${(!canSubmit || isLoading)
-                    ? "text-re-gray-300  border-re-gray-300"
-                    : "border-re-green-300"
-                    } border-2 rounded-md py-1 font-theinhardt-300 text-white text-lg w-1/4 mt-4`}
-            >
-                Update
-            </button>
-            {message && (errorInputValues === inputValues || successInputValues === inputValues) && (
-                <div
-                    id="error-message"
-                    className={`font-theinhardt text-left mt-4 ${errorInputValues === inputValues ? "text-error" : "text-re-green-500"
-                        }`}
+                        <div className="justify-center items-center">
+                            <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${ownerEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addUser(true)} />
+                        </div>
+                    </div>
+                    {ownerEmails.map((email, index) => {
+                        return (
+                            <div key={index} className="leading-tight flex">
+                                <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeUser(true, email)} />
+                                <span>{email}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="pt-2 w-full">
+                    <label className="text-lg font-semibold">Viewers</label>
+                    <div className='w-full flex'>
+                        <div className="w-full">
+                            <InputField top bottom placeholder={"Viewer Email"} value={viewerEmail} name={"viewerEmail"} onChange={handleChange} />
+                        </div>
+                        <div className="justify-center items-center">
+                            <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${viewerEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addUser(false)} />
+                        </div>
+                    </div>
+                    {viewerEmails.map((email, index) => {
+                        return (
+                            <div key={index} className="leading-tight flex">
+                                <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeUser(false, email)} />
+                                <span>{email}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+                <button
+                    id="submit"
+                    disabled={!canSubmit}
+                    className={`${(!canSubmit || isLoading)
+                        ? "bg-re-dark-green-500"
+                        : "bg-re-purple-500"
+                        } w-full text-white text-lg rounded-md p-2 mt-4`}
                 >
-                    {message}
-                </div>
-            )}
+                    Update
+                </button>
+                {message && (errorInputValues === inputValues || successInputValues === inputValues) && (
+                    <div
+                        id="error-message"
+                        className={`font-theinhardt text-left mt-4 ${errorInputValues === inputValues ? "text-error" : "text-re-green-500"
+                            }`}
+                    >
+                        {message}
+                    </div>
+                )}
+            </div>
         </form>
     );
 }

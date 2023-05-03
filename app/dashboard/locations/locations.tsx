@@ -38,17 +38,17 @@ function Locations({
                     <LocationsList locations={ownedLocations} title="Owned Locations" caption="The locations you can make orders for." handleDelete={deleteLocation} deleteDescription="delete a location" />
                     <LocationsList locations={viewableLocations} title="Viewable Locations" caption="The locations you can view orders of." handleDelete={null} deleteDescription="delete a location" />
                 </div>
-                <div className="w-full flex gap-8">
-                    <div className="flex-col w-1/2 flex items-start justify-start">
-                        <h1 className="w-full text-xl text-left pb-2 pt-8">Add Location</h1>
-                        <AddLocationForm user={user} />
-                    </div>
-                    <div className="flex-col w-1/2 flex items-start justify-start">
-                        <h1 className="w-full text-xl text-left pb-2 pt-8">Add Group</h1>
-                        <AddGroupForm user={user} ownedLocations={ownedLocations} />
-                    </div>
+                <div className="mx-auto mt-8 bg-re-dark-green-300 border rounded-md border-re-gray-300 flex flex-col font-theinhardt text-white w-1/2">
+                    <div className="p-4 text-lg">Add Location</div>
+                    <div className="bg-re-gray-300 h-px" />
+                    <AddLocationForm user={user} />
                 </div>
-                <div className="flex w-full justify-center items-center gap-6">
+                <div className="mx-auto mt-8 bg-re-dark-green-300 border rounded-md border-re-gray-300 flex flex-col font-theinhardt text-white w-1/2">
+                    <div className="p-4 text-lg">Add Group</div>
+                    <div className="bg-re-gray-300 h-px" />
+                    <AddGroupForm user={user} ownedLocations={ownedLocations} />
+                </div>
+                <div className="flex w-full mt-3 justify-center items-center gap-6">
                     <GroupsList user={user} createdGroups={createdGroups} memberGroups={memberGroups} />
                 </div>
             </div>

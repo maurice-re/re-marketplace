@@ -20,13 +20,5 @@ export default async function handler(req: Request, res: Response) {
     };
     await transporter.sendMail(emailToCustomer).catch(e => console.log(e));
 
-    const emailToSales = {
-        from: "Re Platform",
-        to: "matt@re.company",
-        subject: "Update to Order #" + orderId,
-        text: "Order #" + orderId + " is now " + status + ".",
-    };
-    await transporter.sendMail(emailToSales).catch(e => console.log(e));
-
     res.send();
 }
