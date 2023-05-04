@@ -1,40 +1,48 @@
 import { Settings } from "@prisma/client";
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useEffect, useState } from "react";
 
 export default function SettingsForm({
+  locationId,
   settings,
   setSettings,
 }: {
+  locationId: string;
   settings: Settings | null;
   setSettings: Dispatch<SetStateAction<Settings | null>>;
 }) {
-  const [initialBorrowReturnBuffer, setInitialBorrowReturnBuffer] =
-    useState<number>(settings?.borrowReturnBuffer ?? 0);
-  const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(
-    settings?.borrowReturnBuffer ?? 0
+  const [changedBorrowReturnBuffer, setChangedBorrowReturnBuffer] =
+    useState<boolean>(false);
+  const [borrowReturnBuffer, setBorrowReturnBuffer] = useState<number>(0
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (settings) {
+      setBorrowReturnBuffer(settings.borrowReturnBuffer ?? 0);
+    }
+  }, [settings]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (borrowReturnBuffer && borrowReturnBuffer > 0 && settings) {
+    if (borrowReturnBuffer && borrowReturnBuffer > 0) {
       const res = await fetch("/api/tracking/edit-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          locationId: settings.locationId,
+          locationId: locationId,
           borrowReturnBuffer: borrowReturnBuffer,
         }),
       });
+
       if (res.status != 200) {
         const { message } = await res.json();
         setMessage(message);
         return;
       } else {
-        setInitialBorrowReturnBuffer(borrowReturnBuffer);
+        setChangedBorrowReturnBuffer(false);
       }
 
       const settingsRes = await fetch(
@@ -54,6 +62,7 @@ export default function SettingsForm({
     setBorrowReturnBuffer(
       parseInt(borrowReturnBuffer == "" ? "0" : borrowReturnBuffer)
     );
+    setChangedBorrowReturnBuffer(true);
   };
 
   return (
@@ -78,10 +87,9 @@ export default function SettingsForm({
       </div>
       <button
         disabled={
-          !settings ||
           !borrowReturnBuffer ||
           borrowReturnBuffer === 0 ||
-          borrowReturnBuffer === initialBorrowReturnBuffer
+          !changedBorrowReturnBuffer
         }
         id="submit"
         className={`btn btn-accent btn-outline w-28 mt-4 ${isLoading ? "loading" : ""

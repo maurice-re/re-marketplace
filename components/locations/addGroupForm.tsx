@@ -116,69 +116,71 @@ export default function AddGroupForm({ user, ownedLocations }: { user: User; own
     };
 
     return (
-        <form id="add-location-form" className="justify-center items-center flex w-full flex-col" onSubmit={handleSubmit}>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Name</div>
-                <InputField top bottom placeholder={"Name"} value={name} name={"name"} onChange={handleChange} />
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Locations</div>
-                <div className="p-0 my-0 relative w-full">
-                    <div className="flex cursor-pointer px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                        <h1 className="w-full">{locations.length} selected</h1>
-                        {dropdownOpen ? (<div className="flex items-center justify-center">< BsChevronUp size={20} /></div>
-                        ) : (<div className="flex items-center justify-center"><BsChevronDown size={20} /></div>)}                    </div>
-                    <ul className={`${dropdownOpen ? "block" : "hidden"} hover:block absolute left-0 w-full bg-re-dark-green-200 rounded-lg`}>
-                        {ownedLocations.map((location, index) => {
-                            const isSelected = locations.some(l => l.id === location.id);
-                            return (
-                                <li key={index} className="flex items-center px-2 py-4 cursor-pointer hover:bg-re-gray-500 rounded" onClick={() => handleMultiselectDropdownChange(location)}>
-                                    <input type="checkbox" checked={isSelected} className="mr-2" readOnly />
-                                    <span>{location.displayName}</span>
-                                </li>
-                            );
-                        })}
-                    </ul>
+        <form id="add-group-form" onSubmit={handleSubmit}>
+            <div className="form-control w-full p-4">
+                <div className="pt-2 w-full">
+                    <div className="text-lg font-semibold">Name</div>
+                    <InputField top bottom placeholder={"Name"} value={name} name={"name"} onChange={handleChange} />
                 </div>
-            </div>
-            <div className="pt-2 w-full">
-                <div className="text-lg font-semibold">Members</div>
-                <div className='w-full flex'>
-                    <div className="w-full">
-                        <InputField top bottom placeholder={"Member Email"} value={memberEmail} name={"memberEmail"} onChange={handleChange} />
-                    </div>
-                    <div className="justify-center items-center">
-                        <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${memberEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addMember()} />
+                <div className="pt-2 w-full">
+                    <div className="text-lg font-semibold">Locations</div>
+                    <div className="p-0 my-0 relative w-full">
+                        <div className="flex cursor-pointer px-1 py-2 border-x-2 border-y text-lg w-full bg-stripe-gray border-gray-500 outline-re-green-800 border-t-2 mt-2 rounded-t border-b-2 rounded-b" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                            <h1 className="w-full">{locations.length} selected</h1>
+                            {dropdownOpen ? (<div className="flex items-center justify-center">< BsChevronUp size={20} /></div>
+                            ) : (<div className="flex items-center justify-center"><BsChevronDown size={20} /></div>)}                    </div>
+                        <ul className={`${dropdownOpen ? "block" : "hidden"} hover:block absolute left-0 w-full bg-re-dark-green-200 rounded-lg`}>
+                            {ownedLocations.map((location, index) => {
+                                const isSelected = locations.some(l => l.id === location.id);
+                                return (
+                                    <li key={index} className="flex items-center px-2 py-4 cursor-pointer hover:bg-re-gray-500 rounded" onClick={() => handleMultiselectDropdownChange(location)}>
+                                        <input type="checkbox" checked={isSelected} className="mr-2" readOnly />
+                                        <span>{location.displayName}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
                 </div>
-                {memberEmails.map((email, index) => {
-                    return (
-                        <div key={index} className="leading-tight flex">
-                            <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeMember(email)} />
-                            <span>{email}</span>
+                <div className="pt-2 w-full">
+                    <div className="text-lg font-semibold">Members</div>
+                    <div className='w-full flex'>
+                        <div className="w-full">
+                            <InputField top bottom placeholder={"Member Email"} value={memberEmail} name={"memberEmail"} onChange={handleChange} />
                         </div>
-                    );
-                })}
-            </div>
-            <button
-                id="submit"
-                disabled={!canSubmit()}
-                className={`${(!canSubmit() || isLoading)
-                    ? "text-re-gray-300  border-re-gray-300"
-                    : "border-re-green-300"
-                    } border-2 rounded-md py-1 font-theinhardt-300 text-white text-lg w-1/4 mt-4`}
-            >
-                Create
-            </button>
-            {message && (errorInputValues === inputValues || successInputValues === inputValues) && (
-                <div
-                    id="error-message"
-                    className={`font-theinhardt text-left mt-4 ${errorInputValues === inputValues ? "text-error" : "text-re-green-500"
-                        }`}
-                >
-                    {message}
+                        <div className="justify-center items-center">
+                            <BsArrowRight className={`self-center my-4 justify-center items-center ml-4 ${memberEmail !== "" && "cursor-pointer"}`} size={25} onClick={() => addMember()} />
+                        </div>
+                    </div>
+                    {memberEmails.map((email, index) => {
+                        return (
+                            <div key={index} className="leading-tight flex">
+                                <BiX className="self-center cursor-pointer text-white hover:text-red-600" onClick={() => removeMember(email)} />
+                                <span>{email}</span>
+                            </div>
+                        );
+                    })}
                 </div>
-            )}
+                <button
+                    id="submit"
+                    disabled={!canSubmit()}
+                    className={`${(!canSubmit() || isLoading)
+                        ? "bg-re-dark-green-500"
+                        : "bg-re-purple-500"
+                        } w-full text-white text-lg rounded-md p-2 mt-4`}
+                >
+                    Create
+                </button>
+                {message && (errorInputValues === inputValues || successInputValues === inputValues) && (
+                    <div
+                        id="error-message"
+                        className={`font-theinhardt text-left mt-4 ${errorInputValues === inputValues ? "text-error" : "text-re-green-500"
+                            }`}
+                    >
+                        {message}
+                    </div>
+                )}
+            </div>
         </form>
     );
 }

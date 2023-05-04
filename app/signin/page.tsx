@@ -6,10 +6,8 @@ import { useServerStore } from "../server-store";
 import SignInForm from "./signinForm";
 
 export default async function Page() {
-  console.log("signin page");
   const session = await getServerSession(authOptions);
 
-  console.log("session", session);
   if (session) {
     const orders = await useServerStore.getState().getOrders();
 
