@@ -17,19 +17,27 @@ export default function Page() {
           <div className="flex flex-col">
             {Object.entries(teamPointTotals)
               .sort((a, b) => b[1] - a[1])
-              .map(([team, points]) => (
-                <div key={team} className="flex items-center">
-                  <Image
-                    src={`/images/team-${team.toLowerCase()}-logo.png`}
-                    height={150}
-                    width={150}
-                    alt={`The logo for team ${team}`}
-                  />
-                  <div className={`text-2xl ${colorNameToColor(team, true)} `}>
-                    {points}
-                  </div>
-                </div>
-              ))}
+              .map(
+                ([team, points]) => (
+                  console.log(team),
+                  (
+                    <div key={team} className="flex items-center">
+                      <Image
+                        src={`/images/team-${team.toLowerCase()}-logo.png`}
+                        height={150}
+                        width={150}
+                        alt={`The logo for team ${team}`}
+                        unoptimized
+                      />
+                      <div
+                        className={`text-2xl ${colorNameToColor(team, true)} `}
+                      >
+                        {points}
+                      </div>
+                    </div>
+                  )
+                )
+              )}
           </div>
 
           <BouncingPhysicsD3 />
