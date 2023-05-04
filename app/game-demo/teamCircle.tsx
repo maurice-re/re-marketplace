@@ -60,7 +60,7 @@ const TeamCircle: React.ForwardRefRenderFunction<
       .sum(
         (d) => (d as unknown as { name: string; points: number }).points || 0
       )
-      .sort((a, b) => b.value! - a.value!);
+      .sort((a, b) => (b.value || 0) - (a.value || 0));
 
     const pack = d3.pack().size([width, height]).padding(10);
 
@@ -68,7 +68,7 @@ const TeamCircle: React.ForwardRefRenderFunction<
 
     const svg = d3.select(svgRef.current);
 
-    const teamCircle = svg
+    svg // Team circle
       .append("circle")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
@@ -78,7 +78,7 @@ const TeamCircle: React.ForwardRefRenderFunction<
       .attr("stroke", "black")
       .attr("stroke-width", 2);
 
-    const memberCircles = svg
+    svg // Member circles
       .selectAll("circle.member")
       .data(nodes.filter((d) => d.depth === 1))
       .enter()
@@ -89,7 +89,7 @@ const TeamCircle: React.ForwardRefRenderFunction<
       .attr("cy", (d) => d.y)
       .attr("fill", colorNameToColor(teamColor))
       .attr("stroke", "black");
-    const memberLabels = svg
+    svg // Member labels
       .selectAll("text.member")
       .data(nodes.filter((d) => d.depth === 1))
       .enter()

@@ -184,7 +184,7 @@ const BouncingPhysicsD3 = () => {
   return (
     <div ref={containerRef} style={containerStyle}>
       <svg width={containerWidth} height={containerHeight}>
-        {colors.map((color, index) => {
+        {colors.map((color) => {
           if (color === "bg-red-500") {
             return (
               <TeamCircle
