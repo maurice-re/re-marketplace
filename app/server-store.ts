@@ -34,6 +34,10 @@ export type FullGroup = Group & {
   members: User[];
 };
 
+export type FullProduct = Product & {
+  skus: FullSku[];
+};
+
 interface ServerStore {
   sessionLastUpdated: Date;
   _user: User | null;
@@ -48,6 +52,7 @@ interface ServerStore {
   getOrders: () => Promise<FullOrder[]>;
   getOrderItems: () => Promise<OrderItem[]>;
   getSkus: () => Promise<FullSku[]>;
+  getProducts: () => Promise<FullProduct[]>;
   getOrderItemsByOrderId: (orderId: string) => Promise<OrderItem[]>;
   getGroups: (created: boolean) => Promise<FullGroup[]>;
   getGroupLocations: (groupId: string) => Promise<FullLocation[]>;
@@ -244,6 +249,17 @@ export const useServerStore = create<ServerStore>((set, get) => ({
     return await prisma.sku.findMany({
       include: {
         product: true,
+      },
+    });
+  },
+  getProducts: async () => {
+    return await prisma.product.findMany({
+      include: {
+        skus: {
+          include: {
+            product: true,
+          },
+        },
       },
     });
   },
