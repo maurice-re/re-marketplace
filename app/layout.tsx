@@ -1,3 +1,4 @@
+import "@uploadthing/react/styles.css";
 import "../styles/globals.css";
 
 export default function RootLayout({

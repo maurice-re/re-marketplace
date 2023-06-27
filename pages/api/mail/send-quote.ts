@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 
 export default async function handler(req: Request, res: Response) {
-  const { message } = req.body;
+  const { email, message }: {email: string, message: string} = req.body;
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -11,13 +11,22 @@ export default async function handler(req: Request, res: Response) {
       pass: process.env.EMAIL_PASS,
     },
   });
-  const email = {
-    from: "Maurice @ RE",
-    to: "maurice@re.company, maddie@re.company, matt@re.company, avantika@re.company",
-    subject: "Product Matching Quote Requested",
-    text: message,
+  const requestedQuote = {
+    from: "Shop @ Re Company <maurice@re.company",
+    to: "maurice@re.company, maddie@re.company",
+    subject: "Product Quote Requested",
+    text: `Product Quote request by: ${email} \nProducts Requested: \n ${message}`,
   };
-  await transporter.sendMail(email).catch(e => console.log(e));
+  await transporter.sendMail(requestedQuote).catch(e => console.log(e));
+
+  const emailToCustomer = {
+    from: "Shop @ Re Company <maurice@re.company>",
+    to: email,
+    subject: "Your Quote Is Being Processed",
+    text: "Thank you for your interest in our products. We will get back to you shortly.",
+  };
+
+  await transporter.sendMail(emailToCustomer).catch(e => console.log(e));
 
   res.send();
 }
