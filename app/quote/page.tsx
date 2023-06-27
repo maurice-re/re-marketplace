@@ -232,6 +232,7 @@ export default function Page() {
             className="w-3/5 rounded border border-re-gray-300 bg-re-dark-green-500 py-2 pl-4 text-white"
             type="text"
             placeholder="Email(s) for quote to be sent to"
+            required
           />
           <button className="w-1/5 rounded-md bg-re-purple-500">Submit</button>
         </div>
