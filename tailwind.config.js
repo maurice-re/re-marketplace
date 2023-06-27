@@ -107,17 +107,4 @@ module.exports = {
     },
   },
   plugins: [require("daisyui")],
-  daisyui: {
-    themes: [
-      {
-        dark: {
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          ...require("daisyui/src/colors/themes")["[data-theme=dark]"],
-          accent: "#46CB9C",
-          "base-100": "#353535",
-          primary: '#2B2B2B',
-        },
-      },
-    ],
-  },
 };
