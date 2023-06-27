@@ -2,6 +2,7 @@
 
 import { UploadDropzone } from "@uploadthing/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ReLogo from "../../components/form/re-logo";
 import { OurFileRouter } from "../api/uploadthing/core";
@@ -100,6 +101,8 @@ function ColorPicker() {
 }
 
 export default function Page() {
+  const router = useRouter();
+
   async function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formElements = (event.target as any).elements as HTMLInputElement[];
@@ -136,7 +139,8 @@ export default function Page() {
         email: formElements[24].value,
       }),
     });
-    console.log("sent");
+
+    router.push("/quote/success");
   }
   return (
     <div className="flex h-screen w-full flex-col overflow-auto bg-re-black font-theinhardt text-white">
