@@ -20,6 +20,7 @@ const products: QuoteProduct[] = [
   { name: "20oz Cold Cup", image: "/images/coldcup_main.png" },
   { name: "1 L Swapbox", image: "/images/swapbox_main.png" },
   { name: "1.5 L Swapbox", image: "/images/1_5L_swapbox_main.png" },
+  { name: "Clamshell", image: "/images/clamshell_main.png" },
 ];
 
 type QuoteRequest = {
@@ -260,7 +261,7 @@ export default function Page() {
                         alt={request.name}
                         width={120}
                         height={120}
-                        className="mx-auto bg-blue-300"
+                        className="mx-auto bg-white"
                       />
                     </td>
                     <td className="px-2">{request.name}</td>
